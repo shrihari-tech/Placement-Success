@@ -1,8 +1,8 @@
 "use client";
 import React, { useState, useRef } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import toast from 'react-hot-toast';
 import { useRouter } from "next/navigation";
+import { Toaster, toast } from 'sonner';
 
 export default function Home() {
   const [showPassword, setShowPassword] = useState(false);
@@ -37,6 +37,7 @@ export default function Home() {
 
   return (
     <div className="container mx-auto flex items-center justify-center h-screen px-4">
+       <Toaster position="top-right"/>
       <div className="flex flex-col md:flex-row items-center justify-center gap-8 py-10 px-6 md:px-16 bg-white rounded-lg shadow-lg w-full max-w-4xl">
         
         {/* Logo Section */}
