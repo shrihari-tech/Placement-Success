@@ -18,26 +18,42 @@ export default function Home() {
 
   const handleSubmitFunction = () => {
     if (email === "" || password === "") {
-      toast.error("Please fill in all fields");
+      toast.error("Please fill in all fields",{
+        duration: 2000,
+        position: 'top-right',
+        icon : '❌'
+      });
       return;
     }
     if (!isValidEmail(email)) {
-      toast.error("Please enter a valid email address");
+      toast.error("Please enter a valid email address",{
+        duration: 2000,
+        position: 'top-right',
+        icon : '❌'
+      });
       return;
     }
     if (email === "admin@123.com" && password === "123") {
-      toast.success("Login successful!");
+      toast.success("Login successful!",{
+        duration: 2000,
+        position: 'top-right',
+        icon : '✅'
+      });
       router.push("/home");
       setEmail("");
       setPassword("");
     } else {
-      toast.error("Please enter the valid Email & Password");
+      toast.error("Please enter the valid Email & Password",{
+        duration: 2000,
+        position: 'top-right',
+        icon : '❌'
+      });
     }
   };
 
   return (
     <div className="container mx-auto flex items-center justify-center h-screen px-4">
-       <Toaster position="top-right"/>
+       <Toaster />
       <div className="flex flex-col md:flex-row items-center justify-center gap-8 py-10 px-6 md:px-16 bg-white rounded-lg shadow-lg w-full max-w-4xl">
         
         {/* Logo Section */}
