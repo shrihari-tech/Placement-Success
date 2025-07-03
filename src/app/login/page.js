@@ -3,6 +3,7 @@ import React, { useState, useRef } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Toaster, toast } from 'sonner';
 
 export default function Home() {
@@ -43,7 +44,7 @@ export default function Home() {
         
         {/* Logo Section */}
         <div className="flex items-center justify-center md:me-20 mb-6 md:mb-0">
-          <img src='/logo1.webp' className="h-25 w-60 md:h-40 md:w-160" alt="Logo" />
+          <Image src='/logo1.webp' className="h-25 w-60 md:h-40 md:w-160" alt="Logo" width={160} height={40}/>
         </div>
 
         {/* Form Section */}

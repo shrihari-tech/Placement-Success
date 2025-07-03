@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Toaster, toast } from "sonner";
 import Link from "next/link";   
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 export default function ResetPassword() {
@@ -35,7 +36,7 @@ export default function ResetPassword() {
         
         {/* Logo Section */}
         <div className="flex items-center justify-center md:me-20 mb-6 md:mb-0">
-          <img src='/logo1.webp' className="h-25 w-60 md:h-40 md:w-160" alt="Logo" />
+          <Image src='/logo1.webp' className="h-25 w-60 md:h-40 md:w-160" alt="Logo" width={160} height={40} />
         </div>
 
         {/* Form Section */}
