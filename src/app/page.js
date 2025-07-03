@@ -1,7 +1,6 @@
 import Login from "../app/login/page.js";
 
 export default function Home() {
-<<<<<<< HEAD  
 const [showPassword, setShowPassword] = useState(false);
 const [password, setPassword] = useState("");
 const [email, setEmail] = useState("");
@@ -137,9 +136,5 @@ return (
         </div>
       </div>
     </div>
-=======
-  return (
-    <Login />
->>>>>>> 3011c9bbee9f4985a8c06cf5e7e9e1b21644efeb
   );
 }

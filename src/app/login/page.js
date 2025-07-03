@@ -134,7 +134,7 @@ export default function Home() {
                 <Link href="/passwordreset" className="text-blue-900 hover:underline">Forgot Password?</Link>
               </p>
               <p className="text-sm text-gray-500 mt-2">
-                Don't have an account?
+                Don&apos;t have an account?
                 <Link href="#" className="text-blue-900 hover:underline"> Create one</Link>
               </p>
             </div>
