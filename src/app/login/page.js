@@ -135,7 +135,7 @@ export default function Home() {
               </p>
               <p className="text-sm text-gray-500 mt-2">
                 Don&apos;t have an account?
-                <Link href="#" className="text-blue-900 hover:underline"> Create one</Link>
+                <Link href="/createaccount" className="text-blue-900 hover:underline"> Create one</Link>
               </p>
             </div>
           </div>
