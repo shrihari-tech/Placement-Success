@@ -1,37 +1,37 @@
 import Login from "../app/login/page.js";
 
 export default function Home() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
-  const passwordRef = useRef(null);
-  const router = useRouter();
+const [showPassword, setShowPassword] = useState(false);
+const [password, setPassword] = useState("");
+const [email, setEmail] = useState("");
+const passwordRef = useRef(null);
+const router = useRouter();
 
-  const isValidEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-    return emailRegex.test(email);
-  };
+const isValidEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+  return emailRegex.test(email);
+};
 
-  const handleSubmitFunction = () => {
-    if (email === "" || password === "") {
-      toast.error("Please fill in all fields");
-      return;
-    }
-    if (!isValidEmail(email)) {
-      toast.error("Please enter a valid email address");
-      return;
-    }
-    if (email === "admin@123.com" && password === "123") {
-      toast.success("Login successful!");
-      router.push("/home");
-      setEmail("");
-      setPassword("");
-    } else {
-      toast.error("Please enter the valid Email & Password");
-    }
-  };
+const handleSubmitFunction = () => {
+  if (email === "" || password === "") {
+    toast.error("Please fill in all fields");
+    return;
+  }
+  if (!isValidEmail(email)) {
+    toast.error("Please enter a valid email address");
+    return;
+  }
+  if (email === "admin@123.com" && password === "123") {
+    toast.success("Login successful!");
+    router.push("/home");
+    setEmail("");
+    setPassword("");
+  } else {
+    toast.error("Please enter the valid Email & Password");
+  }
+};
 
-  return (
+return (
     <div className="container mx-auto flex items-center justify-center h-screen px-4">
        <Toaster position="top-right"/>
       <div className="flex flex-col md:flex-row items-center justify-center gap-8 py-10 px-6 md:px-16 bg-white rounded-lg shadow-lg w-full max-w-4xl">
