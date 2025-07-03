@@ -1,7 +1,9 @@
 import Login from "../app/login/page.js";
 
 export default function Home() {
-  return (
-    <Login />
+return (
+    <div >
+      <Login />
+    </div>
   );
 }
