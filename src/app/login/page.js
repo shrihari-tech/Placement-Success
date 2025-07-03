@@ -1,4 +1,9 @@
-import Login from "../app/login/page.js";
+"use client";
+import React, { useState, useRef } from "react";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Toaster, toast } from 'sonner';
 
 export default function Home() {
   const [showPassword, setShowPassword] = useState(false);
@@ -38,7 +43,7 @@ export default function Home() {
         
         {/* Logo Section */}
         <div className="flex items-center justify-center md:me-20 mb-6 md:mb-0">
-          <img src="/logo.webp" className="h-25 w-60 md:h-40 md:w-160" alt="Logo" />
+          <img src='/logo1.webp' className="h-25 w-60 md:h-40 md:w-160" alt="Logo" />
         </div>
 
         {/* Form Section */}
@@ -93,7 +98,7 @@ export default function Home() {
                   ${password ? "-top-2 text-sm text-blue-900" : "top-2.5 text-base text-gray-400"}
                   peer-focus:-top-2 peer-focus:text-sm peer-focus:text-blue-900`}
               >
-                Password
+                password
               </label>
               {/* Eye Toggle */}
               <div
@@ -125,11 +130,11 @@ export default function Home() {
             {/* password forget & account creating */}
             <div className="mt-4 text-center space-y-2 w-full">
               <p className="text-sm text-gray-500 mt-2">
-                <a href="#" className="text-blue-900 hover:underline">Forgot Password?</a>
+                <Link href="/passwordreset" className="text-blue-900 hover:underline">Forgot Password?</Link>
               </p>
               <p className="text-sm text-gray-500 mt-2">
                 Don't have an account?
-                <a href="#" className="text-blue-900 hover:underline"> Create one</a>
+                <Link href="#" className="text-blue-900 hover:underline"> Create one</Link>
               </p>
             </div>
           </div>
