@@ -97,7 +97,7 @@ export default function Home() {
                   ${password ? "-top-2 text-sm text-blue-900" : "top-2.5 text-base text-gray-400"}
                   peer-focus:-top-2 peer-focus:text-sm peer-focus:text-blue-900`}
               >
-                Password
+                password
               </label>
               {/* Eye Toggle */}
               <div
