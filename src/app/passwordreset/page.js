@@ -72,7 +72,7 @@ const validate = () => {
         <div className="flex flex-col items-start justify-start w-full max-w-md">
           <div className="mb-6">
             <h1 className="font-bold text-3xl md:text-4xl">Reset Password</h1>
-            <p className="text-gray-500 mt-1">We'll send a link to reset your password</p>
+            <p className="text-gray-500 mt-1">{"We'll send a link to reset your password"}</p>
           </div>
           <div className="relative w-full">
             <input
