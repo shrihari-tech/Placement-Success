@@ -119,8 +119,8 @@ export default function Home() {
 
           <form noValidate className="flex flex-col items-center justify-center space-y-4 w-full" onSubmit={handleSubmit}>
             {/* Email Input */}
-            <div className="relative w-full">
-              <input
+                  <div className="relative w-full">
+                    <input
                 type="text"
                 id="email"
                 value={email}
@@ -129,27 +129,27 @@ export default function Home() {
                   validateEmailField(e.target.value);
                 }}
                 placeholder="Enter your email"
-                className={`peer w-full p-3 rounded-sm border transition-all duration-200 placeholder-transparent
-                  ${emailError ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-gray-400"}
-                `}
+                className={`peer w-full p-2 rounded-sm border ${emailError ? "border-red-500" : "border-gray-300"} text-black 
+                  focus:border-[#3f2fb4] focus:border-2 focus:outline-none transition-all duration-200 
+                  placeholder-transparent`}
                 required
-              />
-              <label
-                htmlFor="email"
-                className={`absolute left-3 bg-white px-1 transition-all
-                  ${email ? "-top-2 text-sm text-[#3f2fb4]" : "top-3 text-base text-gray-400"}
-                  peer-focus:-top-3 peer-focus:text-sm peer-focus:text-[#3f2fb4]`}
-              >
-                Enter your email
-              </label>
-              {emailError && (
-                <p className="text-red-600 text-sm mt-1">{emailError}</p>
-              )}
-            </div>
+                    />
+                    <label
+                    htmlFor="email"
+                    className={`absolute left-3 bg-white px-1 transition-all
+                      ${email ? "-top-2 text-sm text-[#3f2fb4]" : "top-3 text-base text-gray-400"}
+                      peer-focus:-top-3 peer-focus:text-sm peer-focus:text-[#3f2fb4]`}
+                    >
+                    Enter your email
+                    </label>
+                    {emailError && (
+                    <p className="text-red-600 text-sm mt-1">{emailError}</p>
+                    )}
+                  </div>
 
-            {/* Password Input */}
+                  {/* Password Input */}
             <div className="relative w-full">
-              <input
+               <input
                 type={showPassword ? "text" : "password"}
                 id="password"
                 ref={passwordRef}
@@ -159,9 +159,9 @@ export default function Home() {
                   passwordValidate(e.target.value);
                 }}
                 placeholder="Password"
-                className={`peer w-full p-3 pr-10 rounded-sm border transition-all duration-200 placeholder-transparent
-                  ${passwordError ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-gray-400"}
-                `}
+                className={`peer w-full p-2 pr-10 rounded-sm border ${passwordError ? "border-red-500" : "border-gray-300"} text-black 
+                  focus:border-[#3f2fb4] focus:border-2 focus:outline-none transition-all duration-200 
+                  placeholder-transparent`}
                 required
               />
               <label
