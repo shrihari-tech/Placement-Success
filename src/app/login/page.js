@@ -39,19 +39,8 @@ export default function Home() {
 
   return (
     <div className="container mx-auto flex items-center justify-center h-screen px-4">
-      <div className="fixed top-0 left-0 z-0 ">
-        <Image
-          src="/Login-Background.png"
-          alt="Background"
-          className="object-contain"
-          priority
-          width={750}
-          height={650}
-        />
-      </div>
        <Toaster position="top-right"/>
-
-      <div className="flex flex-col md:flex-row items-center justify-center gap-8 py-10 px-6 md:px-16 md:ms-60 md:mt-10 bg-transparent  w-full max-w-4xl z-10 absolute">
+      <div className="flex flex-col md:flex-row items-center justify-center gap-8 py-10 px-6 md:px-16 bg-white  w-full max-w-4xl">
         {/* Logo Section */}
         <div className="flex items-center justify-center md:me-20 mb-6 md:mb-0">
           <Image src='/logo1.webp' className="h-25 w-60 md:h-40 md:w-160" alt="Logo" width={160} height={40}/>
