@@ -20,7 +20,7 @@ export default function Home() {
   // Validate only the email field (for onChange)
   const validateEmailField = (value) => {
     if (!value.trim()) {
-      setEmailError("Email is required");
+      setEmailError("");
     } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(value)) {
       setEmailError("Invalid email format");
     } else if (value.split('@')[0].length > 40) {
@@ -32,17 +32,6 @@ export default function Home() {
       } else {
         setEmailError("");
       }
-    }
-  };
-
-  // Validate only the password field (for onChange)
-  const validatePasswordField = (value) => {
-    if (!value) {
-      setPasswordError("Password is required");
-    } else if (value.length < 6) {
-      setPasswordError("Password must be at least 6 characters");
-    } else {
-      setPasswordError("");
     }
   };
 
@@ -70,9 +59,6 @@ export default function Home() {
     // Password validation
     if (!password) {
       setPasswordError("Password is required");
-      valid = false;
-    } else if (password.length < 6) {
-      setPasswordError("Password must be at least 6 characters");
       valid = false;
     }
 
@@ -122,7 +108,7 @@ export default function Home() {
         <div className="flex flex-col items-start justify-start w-full max-w-md">
           <div className="mb-5">
             <h1 className="font-bold text-3xl md:text-4xl">Welcome !</h1>
-            <h2 className="font-bold text-2xl md:text-3xl">Placement Team</h2>
+            <h2 className="font-bold text-3xl md:text-4xl">Placement Team</h2>
           </div>
 
           <form noValidate className="flex flex-col items-center justify-center space-y-4 w-full" onSubmit={handleSubmit}>
@@ -137,16 +123,16 @@ export default function Home() {
                   validateEmailField(e.target.value);
                 }}
                 placeholder="Enter your email"
-                className={`peer w-full p-2 rounded-sm border ${emailError ? "border-red-500" : "border-gray-300"} text-black 
-                  focus:border-blue-900 focus:ring-1 focus:outline-none transition-all duration-200 
+                className={`peer w-full p-3 rounded-sm border ${emailError ? "border-red-500" : "border-gray-300"} text-black 
+                  focus:border-[#3f2fb4] focus:border-2 focus:outline-none transition-all duration-200 
                   placeholder-transparent`}
                 required
               />
               <label
                 htmlFor="email"
                 className={`absolute left-3 bg-white px-1 transition-all
-                  ${email ? "-top-2 text-sm text-blue-900" : "top-2.5 text-base text-gray-400"}
-                  peer-focus:-top-2 peer-focus:text-sm peer-focus:text-blue-900`}
+                  ${email ? "-top-2 text-sm text-[#3f2fb4]" : "top-3 text-base text-gray-400"}
+                  peer-focus:-top-3 peer-focus:text-sm peer-focus:text-[#3f2fb4]`}
               >
                 Enter your email
               </label>
@@ -164,21 +150,21 @@ export default function Home() {
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
-                  validatePasswordField(e.target.value);
+                  
                 }}
                 placeholder="Password"
-                className={`peer w-full p-2 pr-10 rounded-sm border ${passwordError ? "border-red-500" : "border-gray-300"} text-black 
-                  focus:border-blue-900 focus:ring-1 focus:outline-none transition-all duration-200 
+                className={`peer w-full p-3 pr-10 rounded-sm border ${passwordError ? "border-red-500" : "border-gray-300"} text-black 
+                  focus:border-[#3f2fb4] focus:border-2 focus:outline-none transition-all duration-200 
                   placeholder-transparent`}
                 required
               />
               <label
                 htmlFor="password"
                 className={`absolute left-3 bg-white px-1 transition-all
-                  ${password ? "-top-2 text-sm text-blue-900" : "top-2.5 text-base text-gray-400"}
-                  peer-focus:-top-2 peer-focus:text-sm peer-focus:text-blue-900`}
+                  ${password ? "-top-2 text-sm text-[#3f2fb4]" : "top-3 text-base text-gray-400"}
+                  peer-focus:-top-3 peer-focus:text-sm peer-focus:text-[#3f2fb4]`}
               >
-                password
+                Password
               </label>
               {/* Eye Toggle */}
               <div
@@ -203,21 +189,21 @@ export default function Home() {
 
             {/* Submit Button */}
             <button
-              type="submit"
-              className="w-full p-2 mt-4 rounded-xl border-none bg-blue-900 font-bold text-white 
-                hover:bg-green-600 transition-colors duration-300"
+            onClick={validate}
+            className="w-full p-3 mt-6 rounded-xl border-none bg-gray-300 font-bold text-gray-400 
+                       hover:bg-[#3f2fb4] hover:text-white transition-colors duration-300"
             >
-              Login
+            Login
             </button>
 
             {/* password forget & account creating */}
             <div className="mt-4 text-center space-y-2 w-full">
               <p className="text-sm text-gray-500 mt-2">
-                <Link href="/passwordreset" className="text-blue-900 hover:underline">Forgot Password?</Link>
+                <Link href="/passwordreset" className="text-[#3f2fb4] hover:underline">Forgot Password?</Link>
               </p>
              <p className="text-sm text-gray-500 mt-2">
                 Don&apos;t have an account?
-                <Link href="/createaccount" className="text-blue-900 hover:underline"> Create one</Link>
+                <Link href="/createaccount" className="text-[#3f2fb4] hover:underline"> Create one</Link>
               </p>
             </div>
           </form>
