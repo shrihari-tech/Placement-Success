@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function pagenotfound(){
+export default function PageNotFound(){
     return (
         <div className="flex items-center justify-center h-screen bg-gray-100">
             <div className="text-center">
