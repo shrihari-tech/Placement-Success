@@ -190,8 +190,8 @@ export default function Home() {
             {/* Submit Button */}
             <button
             onClick={validate}
-            className="w-full p-3 mt-6 rounded-xl border-none bg-gray-300 font-bold text-gray-400 
-                       hover:bg-[#3f2fb4] hover:text-white transition-colors duration-300"
+            className={`w-full p-3 mt-6 rounded-xl border-none ${email || password ? "bg-[#3f2fb4] text-white" : "bg-gray-300 text-gray-400"} font-bold 
+                        hover:text-white transition-colors duration-300`}
             >
             Login
             </button>
