@@ -129,7 +129,7 @@ export default function Home() {
                   validateEmailField(e.target.value);
                 }}
                 placeholder="Enter your email"
-                className={`peer w-full p-2 rounded-sm border ${emailError ? "border-red-500" : "border-gray-300"} text-black 
+                className={`peer w-full p-3 rounded-sm border ${emailError ? "border-red-500" : "border-gray-300"} text-black 
                   focus:border-[#3f2fb4] focus:border-2 focus:outline-none transition-all duration-200 
                   placeholder-transparent`}
                 required
@@ -159,7 +159,7 @@ export default function Home() {
                   passwordValidate(e.target.value);
                 }}
                 placeholder="Password"
-                className={`peer w-full p-2 pr-10 rounded-sm border ${passwordError ? "border-red-500" : "border-gray-300"} text-black 
+                className={`peer w-full p-3 pr-10 rounded-sm border ${passwordError ? "border-red-500" : "border-gray-300"} text-black 
                   focus:border-[#3f2fb4] focus:border-2 focus:outline-none transition-all duration-200 
                   placeholder-transparent`}
                 required
