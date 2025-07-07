@@ -10,43 +10,114 @@ export default function Home() {
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const passwordRef = useRef(null);
   const router = useRouter();
 
-  const isValidEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-    return emailRegex.test(email);
+  const allowedDomains = ["gmail.com", "skac.ac.in"];
+
+  // Validate only the email field (for onChange)
+  const validateEmailField = (value) => {
+    if (!value.trim()) {
+      setEmailError("Email is required");
+    } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(value)) {
+      setEmailError("Invalid email format");
+    } else if (value.split('@')[0].length > 40) {
+      setEmailError("Email prefix should not exceed 40 characters");
+    } else {
+      const emailDomain = value.split('@')[1];
+      if (emailDomain && !allowedDomains.includes(emailDomain)) {
+        setEmailError("Invalid email format");
+      } else {
+        setEmailError("");
+      }
+    }
   };
 
-  const handleSubmitFunction = () => {
-    if (email === "" || password === "") {
-      toast.error("Please fill in all fields");
-      return;
-    }
-    if (!isValidEmail(email)) {
-      toast.error("Please enter a valid email address");
-      return;
-    }
-    if (email === "admin@123.com" && password === "123") {
-      toast.success("Login successful!");
-      router.push("/home");
-      setEmail("");
-      setPassword("");
+  // Validate only the password field (for onChange)
+  const validatePasswordField = (value) => {
+    if (!value) {
+      setPasswordError("Password is required");
+    } else if (value.length < 6) {
+      setPasswordError("Password must be at least 6 characters");
     } else {
-      toast.error("Please enter the valid Email & Password");
+      setPasswordError("");
+    }
+  };
+
+  // Full validation for onSubmit
+  const validate = () => {
+    let valid = true;
+    // Email validation
+    if (!email.trim()) {
+      setEmailError("Email is required");
+      valid = false;
+    } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(email)) {
+      setEmailError("Invalid email format");
+      valid = false;
+    } else if (email.split('@')[0].length > 40) {
+      setEmailError("Email prefix should not exceed 40 characters");
+      valid = false;
+    } else {
+      const emailDomain = email.split('@')[1];
+      if (!allowedDomains.includes(emailDomain)) {
+        setEmailError("Invalid email format");
+        valid = false;
+      }
+    }
+
+    // Password validation
+    if (!password) {
+      setPasswordError("Password is required");
+      valid = false;
+    } else if (password.length < 6) {
+      setPasswordError("Password must be at least 6 characters");
+      valid = false;
+    }
+
+    if (valid) {
+      toast.success("Login successful! Redirecting...");
+    }
+    return valid;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validate()) {
+      setTimeout(() => router.push('/home'), 2000);
     }
   };
 
   return (
-    <div className="container mx-auto flex items-center justify-center h-screen px-4">
-       <Toaster position="top-right"/>
-      <div className="flex flex-col md:flex-row items-center justify-center gap-8 py-10 px-6 md:px-16 bg-white rounded-lg shadow-lg w-full max-w-4xl">
-        
-        {/* Logo Section */}
-        <div className="flex items-center justify-center md:me-20 mb-6 md:mb-0">
-          <Image src='/logo1.webp' className="h-25 w-60 md:h-40 md:w-160" alt="Logo" width={160} height={40}/>
+    <div className="container mx-auto flex items-center justify-center h-screen px-4 relative overflow-hidden">
+      {/* Background Image at Top Left */}
+      <div className="fixed top-0 left-0 z-0 ">
+        <Image
+          src="/Background.png"
+          alt="Background"
+          className="object-contain"
+          priority
+          width={650}
+          height={650}
+        />
+      </div>
+      <div>
+        <div>
+          <Toaster position="top-right"/>
         </div>
-
+      </div>
+      {/* Logo Section */}
+      <div className="absolute top-6 right-6 flex items-center justify-center z-20">
+        <Image
+          src='/logo1.webp'
+          className="h-12 w-36 md:h-16 md:w-44"
+          alt="Logo"
+          width={70}
+          height={50}
+        />
+      </div>
+      <div className="flex flex-col md:flex-row items-center justify-center gap-8 py-10 px-8 md:px-16 bg-blur-saturation mt-[105] w-full max-w-4xl z-10 absolute">
         {/* Form Section */}
         <div className="flex flex-col items-start justify-start w-full max-w-md">
           <div className="mb-5">
@@ -54,19 +125,21 @@ export default function Home() {
             <h2 className="font-bold text-2xl md:text-3xl">Placement Team</h2>
           </div>
 
-          <div noValidate className="flex flex-col items-center justify-center space-y-4 w-full">
-
+          <form noValidate className="flex flex-col items-center justify-center space-y-4 w-full" onSubmit={handleSubmit}>
             {/* Email Input */}
             <div className="relative w-full">
               <input
                 type="text"
                 id="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  validateEmailField(e.target.value);
+                }}
                 placeholder="Enter your email"
-                className="peer w-full p-2 rounded-2xl border border-gray-300 text-black 
-                           focus:border-blue-900 focus:ring-1 focus:outline-none transition-all duration-200 
-                           placeholder-transparent"
+                className={`peer w-full p-2 rounded-sm border ${emailError ? "border-red-500" : "border-gray-300"} text-black 
+                  focus:border-blue-900 focus:ring-1 focus:outline-none transition-all duration-200 
+                  placeholder-transparent`}
                 required
               />
               <label
@@ -77,6 +150,9 @@ export default function Home() {
               >
                 Enter your email
               </label>
+              {emailError && (
+                <p className="text-red-600 text-sm mt-1">{emailError}</p>
+              )}
             </div>
 
             {/* Password Input */}
@@ -86,11 +162,14 @@ export default function Home() {
                 id="password"
                 ref={passwordRef}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  validatePasswordField(e.target.value);
+                }}
                 placeholder="Password"
-                className="peer w-full p-2 pr-10 rounded-2xl border border-gray-300 text-black 
-                           focus:border-blue-900 focus:ring-1 focus:outline-none transition-all duration-200 
-                           placeholder-transparent"
+                className={`peer w-full p-2 pr-10 rounded-sm border ${passwordError ? "border-red-500" : "border-gray-300"} text-black 
+                  focus:border-blue-900 focus:ring-1 focus:outline-none transition-all duration-200 
+                  placeholder-transparent`}
                 required
               />
               <label
@@ -117,13 +196,16 @@ export default function Home() {
               >
                 {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
               </div>
+              {passwordError && (
+                <p className="text-red-600 text-sm mt-1">{passwordError}</p>
+              )}
             </div>
 
             {/* Submit Button */}
             <button
-              onClick={handleSubmitFunction}
-              className="w-full p-2 mt-4 rounded-full border-none bg-blue-900 font-bold text-white 
-                         hover:bg-green-600 transition-colors duration-300"
+              type="submit"
+              className="w-full p-2 mt-4 rounded-xl border-none bg-blue-900 font-bold text-white 
+                hover:bg-green-600 transition-colors duration-300"
             >
               Login
             </button>
@@ -133,12 +215,12 @@ export default function Home() {
               <p className="text-sm text-gray-500 mt-2">
                 <Link href="/passwordreset" className="text-blue-900 hover:underline">Forgot Password?</Link>
               </p>
-              <p className="text-sm text-gray-500 mt-2">
+             <p className="text-sm text-gray-500 mt-2">
                 Don&apos;t have an account?
                 <Link href="/createaccount" className="text-blue-900 hover:underline"> Create one</Link>
               </p>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>
