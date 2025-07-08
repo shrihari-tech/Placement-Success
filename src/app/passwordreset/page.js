@@ -104,7 +104,7 @@ const validate = () => {
           <button
             onClick={validate}
             className={`w-full p-3 mt-6 rounded-xl border-none font-bold transition-colors duration-300
-              ${inputFocused || isDisabled ? 'bg-[#3F2FB4] text-white' : 'bg-gray-200 text-gray-400 hover:bg-[#3F2FB4] hover:text-white'}`}
+              ${inputFocused || isDisabled ? 'bg-[#3F2FB4] text-white' : 'bg-gray-200 text-gray-400 '}`}
             disabled={isDisabled}
           >
             Send Reset Link
