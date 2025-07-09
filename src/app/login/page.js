@@ -113,7 +113,7 @@ export default function Home() {
         {/* Form Section */}
         <div className="flex flex-col items-start justify-start w-full max-w-md">
           <div className="mb-5">
-            <h1 className="font-bold text-3xl md:text-4xl">Welcome !</h1>
+            <h1 className="font-bold text-3xl md:text-4xl">Welcome !☕</h1>
             <h2 className="font-bold text-3xl md:text-4xl">Placement Team</h2>
           </div>
 

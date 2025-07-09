@@ -1,13 +1,16 @@
 "use client";
 import React from "react";
+import NavBar from "../navBar/page";
 
 export default function HomePage() {
   return (
-    <div className="h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-green-400">
-      <div className="text-center text-white">
-        <h1 className="text-5xl font-bold mb-4">🎉 Welcome, Admin!</h1>
-        <p className="text-xl">You have successfully logged in.</p>
-      </div>
+    <div className="container justify-center items-center mx-auto p-4">
+      <NavBar />
+      {/* Main Content */}
+      <h1>Welcome to the Home Page</h1>
+      <p>This is the main entry point of our application.</p>
+      <p>Feel free to explore the features and functionalities we offer.</p>
+      <p>Enjoy your stay!</p>
     </div>
   );
 }
