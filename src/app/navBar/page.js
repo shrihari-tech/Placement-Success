@@ -37,6 +37,7 @@ export default function NavBar() {
       setShowSubNav(true);
       
     } else if (pathname === '/showbatches') {
+      setActiveNavItem('batches');
       setShowSubNav(true);
     } 
     else {

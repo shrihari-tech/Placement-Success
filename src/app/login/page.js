@@ -87,7 +87,7 @@ export default function Home() {
   };
 
   return (
-    <div className="container mx-auto flex items-center justify-center h-screen px-4 relative overflow-hidden">
+    <div className="container mx-auto flex items-center justify-center h-screen px-2 overflow-hidden">
       {/* Background Image at Top Left */}
       <div className="fixed top-0 left-0 z-0 ">
         <Image
@@ -114,7 +114,7 @@ export default function Home() {
           height={50}
         />
       </div>
-      <div className="flex flex-col md:flex-row items-center justify-center gap-8 py-10 px-8 md:px-16 bg-blur-saturation mt-[100] w-full max-w-4xl z-10 fixed">
+      <div className="flex flex-col md:flex-row items-center justify-center gap-8 py-10 px-8 md:px-16 bg-blur-saturation mt-[105] w-full max-w-4xl z-10 fixed">
         {/* Form Section */}
         <div className="flex flex-col items-start justify-start w-full max-w-md">
           <div className="mb-5">
