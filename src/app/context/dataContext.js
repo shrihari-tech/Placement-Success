@@ -1,5 +1,4 @@
 "use client"
-
 import { createContext, useContext } from "react";
 import { useState } from "react";
 
@@ -25,7 +24,7 @@ const DataProvider = ({ children }) => {
         }}>
             {children}
         </DataContext.Provider>
-    );
+    ); 
 };
 
 export default DataProvider;
