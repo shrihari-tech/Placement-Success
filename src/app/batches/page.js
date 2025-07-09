@@ -337,11 +337,11 @@ export default function BatchModel() {
   };
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen mx-[-16]">
       {/* Main Content */}
-      <div className={`pt-25 flex-1 bg-[#eff4ff] overflow-y-auto width-full ${showModal || showDeleteModal ? 'pointer-events-none' : ''}`}>
-        <div className="fixed top-0 flex items-center p-5 justify-between mb-6 bg-white w-full py-10 z-10">
-          <h1 className=" fixed top-5 text-lg font-semibold">Full Stack Development</h1>
+      <div className={` px-3 pt-24 flex-1 bg-[#eff4ff] overflow-hidden width-full  ${showModal || showDeleteModal ? 'pointer-events-none' : ''}`}>
+        <div className="fixed top-0 left-70  flex items-center p-5 justify-between mb-6 bg-white w-full py-10 z-10">
+          <h1 className=" fixed top-8.5 text-lg font-semibold">Full Stack Development</h1>
           <button 
             onClick={() => setShowModal(true)}
             className="fixed top-5 right-5 bg-[#3f2fb4] hover:bg-[#3f2fb4d4] text-white text-l font-bold px-4 py-2.5 rounded-lg shadow-sm"
@@ -382,7 +382,7 @@ export default function BatchModel() {
           </div>
 
           {/* Search Section */}
-          <div className="bg-[#E8DEF8] p-6 rounded-xl mb-6">
+          <div className="bg-[#E8DEF8] px-6 py-4 rounded-xl">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 px-3 py-3">
               {/* Batch ID */}
               <div className="relative">
@@ -496,7 +496,7 @@ export default function BatchModel() {
               </div>
 
               {/* Buttons */}
-              <div className="flex gap-2 md:col-start-3 md:justify-end md:pt-29">
+              <div className="flex gap-2 md:col-start-3 md:justify-end md:pt-24">
                 <button
                   onClick={handleReset}
                   className="bg-[#f1ecfb] hover:bg-[#f1eaff] px-6 py-2 rounded-2xl text-sm text-gray-700 flex items-center gap-1"
@@ -515,7 +515,7 @@ export default function BatchModel() {
 
           {/* Table - Only shown after search with criteria */}
           {searchInitiated ? (
-            <div className="bg-white rounded-2xl shadow-sm overflow-auto scrollbar-hide">
+            <div className="bg-white rounded-2xl shadow-sm overflow-auto scrollbar-hide md:mt-11">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>

@@ -3,11 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { GiHamburgerMenu } from "react-icons/gi";
-import { LuLayoutGrid } from "react-icons/lu";
-import { MdOutlineGroups, MdOutlineSettings, MdOutlineNotifications } from "react-icons/md";
-import { RiGraduationCapLine } from "react-icons/ri";
+import { GiHamburgerMenu } from "react-icons/gi"; //hamburger icon
+import { LuLayoutGrid } from "react-icons/lu"; //home icon
+import { MdOutlineGroups } from "react-icons/md"; //batch icon
+import { MdOutlineSettings } from "react-icons/md"; //settings icon
+import { MdOutlineNotifications } from "react-icons/md"; //notification icon
+import { RiGraduationCapLine } from "react-icons/ri"; //graduation icon
 import { usePathname, useRouter } from 'next/navigation';
+import { useDataContext } from '../context/dataContext';
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -15,58 +18,66 @@ export default function NavBar() {
   const [showSubNav, setShowSubNav] = useState(false);
   const [activeSubNav, setActiveSubNav] = useState('');
   const [activeNavItem, setActiveNavItem] = useState('');
-  const [prevPath, setPrevPath] = useState('');
 
+  //access the datacontext variable
+   const { setBatchingValue ,firstLetterUser } = useDataContext();
   // Set initial active state based on current pathname
   useEffect(() => {
     if (pathname === '/home') {
       setActiveNavItem('home');
-      setShowSubNav(false);
+      setShowSubNav(false); // Close sub-nav when on other pages
     } else if (pathname === '/student') {
       setActiveNavItem('student');
-      setShowSubNav(false);
+      setShowSubNav(false); // Close sub-nav when on other pages
     } else if (pathname === '/seting') {
       setActiveNavItem('settings');
-      setShowSubNav(false);
+      setShowSubNav(false); // Close sub-nav when on other pages
     } else if (pathname === '/batches') {
       setActiveNavItem('batches');
       setShowSubNav(true);
-    } else {
+      
+    } else if (pathname === '/showbatches') {
+      setShowSubNav(true);
+    } 
+    else {
+      // For any other page, close sub-nav
       setShowSubNav(false);
     }
-    setPrevPath(pathname);
   }, [pathname]);
 
   const handleNavItemClick = (navItem) => {
     setActiveNavItem(navItem);
-    setShowSubNav(false);
+    // setShowSubNav(false);
     setActiveSubNav(null);
   };
 
   const handleBatchesClick = () => {
     setActiveNavItem('batches');
-    if (pathname !== '/batches') {
-      router.push('/batches');
+    // setShowSubNav((prev) => !prev);
+    if (showSubNav) {
+      setActiveSubNav(null);
     }
-    // Do NOT setShowSubNav here! Let useEffect handle submenu visibility.
-    setActiveSubNav(null);
+    router.push('/showbatches');
   };
 
   const handleSubNavClick = (subNavItem) => {
     setActiveSubNav(subNavItem);
-    // Submenu stays open; do NOT setShowSubNav(false)
-    if (pathname !== '/batches') router.push('/batches');
+    setBatchingValue(subNavItem)
+    router.push('/batches');
   };
 
   return (
     <>
       <aside className="fixed top-0 left-0 h-screen w-10 md:w-20 bg-[#EADDFF] flex flex-col justify-between items-center z-30">
+        {/* Top: Menu Icon */}
         <div className="flex flex-col items-center w-full">
+          {/* Menu Icon (Hamburger) */}
           <div className='mt-5 mb-3'>
-            <button className="mb-2 p-2 rounded-lg">
-              <GiHamburgerMenu size={20} className="text-black" />
-            </button>
+              <button className="mb-2 p-2 rounded-lg">
+            <GiHamburgerMenu size={20} className="text-black" />
+          </button>
           </div>
+          {/* Navigation Icons */}
           <nav className="flex flex-col items-center w-full">
             <div className="flex flex-col items-center w-full mb-5">
               <Link 
@@ -81,7 +92,7 @@ export default function NavBar() {
             <div className="flex flex-col items-center w-full mb-5">
               <button
                 className={`flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl transition-colors ${activeNavItem === 'batches' ? 'bg-[#6750A4] text-white' : 'text-black hover:bg-[#e0ccff] hover:text-black'}`}
-                onClick={handleBatchesClick}
+                 onClick={handleBatchesClick}
               >
                 <MdOutlineGroups size={20} />
               </button>
@@ -99,38 +110,41 @@ export default function NavBar() {
             </div>
           </nav>
         </div>
+        {/* Bottom: Notification, Settings, User Avatar */}
         <div className="flex flex-col items-center w-full mb-15">
           <div className="flex flex-col items-center w-full mb-5">
-            <button 
-              className="flex flex-col items-center mb-1 px-3.5 py-1 text-black hover:bg-[#e0ccff] hover:text-black rounded-2xl transition-colors"
-              onClick={() => {
-                setShowSubNav(false);
-                setActiveSubNav(null);
-              }}
-            >
+              <button 
+                className="flex flex-col items-center mb-1 px-3.5 py-1 text-black hover:bg-[#e0ccff] hover:text-black rounded-2xl transition-colors"
+                onClick={() => {
+                  // Close sub-nav when clicking notification
+                  setShowSubNav(false);
+                  setActiveSubNav(null);
+                }}
+              >
               <MdOutlineNotifications size={20} />
             </button>
             <span className="text-xs font-semibold text-[#49454F] mb-2">Notification</span>
           </div>
           <div className="flex flex-col items-center w-full mb-5">
-            <Link 
-              href="/seting" 
-              className={`flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl transition-colors ${activeNavItem === 'settings' ? 'bg-[#6750A4] text-white' : 'text-black hover:bg-[#e0ccff] hover:text-black'}`}
-              onClick={() => handleNavItemClick('settings')}
-            >
+              <Link 
+                href="/seting" 
+                className={`flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl transition-colors ${activeNavItem === 'settings' ? 'bg-[#6750A4] text-white' : 'text-black hover:bg-[#e0ccff] hover:text-black'}`}
+                onClick={() => handleNavItemClick('settings')}
+              >
               <MdOutlineSettings size={20} />
             </Link>
             <span className="text-xs font-semibold text-[#49454F] mb-2">Settings</span>
           </div>
           <div className="flex flex-col items-center w-full mb-5">
-            <button 
-              className="flex flex-col items-center mb-2 px-3.5 py-1 bg-black text-white rounded-2xl w-10 h-10 justify-center font-bold text-lg"
-              onClick={() => {
-                setShowSubNav(false);
-                setActiveSubNav(null);
-              }}
-            >
-              A
+              <button 
+                className="flex flex-col items-center mb-2 px-3.5 py-1 bg-black text-white rounded-2xl w-10 h-10 justify-center font-bold text-lg"
+                onClick={() => {
+                  // Close sub-nav when clicking user avatar
+                  setShowSubNav(false);
+                  setActiveSubNav(null);
+                }}
+              >
+              {firstLetterUser}
             </button>
           </div>
         </div>
@@ -151,7 +165,9 @@ export default function NavBar() {
               height={15}
               className="object-contain"
             />
-            <span className="font-bold text-[10px] text-[#49454F]">Full Stack Development</span>
+            <span className={`font-bold text-[10px] ${activeSubNav === 'fullstack' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}
+                
+            >Full Stack Development</span>
           </button>
         </div>
         <div className="flex flex-col items-start mt-2">
@@ -166,7 +182,7 @@ export default function NavBar() {
               height={15}
               className="object-contain"
             />
-            <span className="font-bold text-[10px] text-[#49454F]">Data Analytics & Science</span>
+            <span className={`font-bold text-[10px] ${activeSubNav === 'dataanalytics' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>Data Analytics & Science</span>
           </button>
         </div>
         <div className="flex flex-col items-start mt-2">
@@ -180,8 +196,7 @@ export default function NavBar() {
               width={15}
               height={15}
               className="object-contain"
-            /> 
-            <span className="font-bold text-[10px] text-[#49454F]">Banking & Financial Services</span>
+            /> <span className={`font-bold text-[10px] ${activeSubNav === 'banking' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>Banking & Financial Services</span>
           </button>
         </div>
         <div className="flex flex-col items-start mt-2">
@@ -195,8 +210,7 @@ export default function NavBar() {
               width={15}
               height={15}
               className="object-contain"
-            />          
-            <span className="font-bold text-[10px] text-[#49454F]">Digital Marketing</span>
+            />          <span className={`font-bold text-[10px] ${activeSubNav === 'marketing' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>Digital Marketing</span>
           </button>
         </div>
         <div className="flex flex-col items-start mt-2">
@@ -210,8 +224,7 @@ export default function NavBar() {
               width={15}
               height={15}
               className="object-contain"
-            />  
-            <span className="font-bold text-[10px] text-[#49454F]">SAP</span>
+            />  <span className={`font-bold text-[10px] ${activeSubNav === 'sap' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>SAP</span>
           </button>
         </div>
         <div className="flex flex-col items-start mt-2">
@@ -225,8 +238,7 @@ export default function NavBar() {
               width={15}
               height={15}
               className="object-contain"
-            />
-            <span className="font-bold text-[10px] text-[#49454F]">DevOps</span>
+            /><span className={`font-bold text-[10px] ${activeSubNav === 'devops' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>DevOps</span>
           </button>
         </div>
       </div>

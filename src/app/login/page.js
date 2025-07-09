@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Toaster, toast } from 'sonner';
+import { useDataContext } from '../context/dataContext';
 
 export default function Home() {
   const [showPassword, setShowPassword] = useState(false);
@@ -14,6 +15,9 @@ export default function Home() {
   const [passwordError, setPasswordError] = useState("");
   const passwordRef = useRef(null);
   const router = useRouter();
+
+  //usecontext variable 
+     const { setLoginUser } = useDataContext();
 
   const allowedDomains = ["gmail.com", "skac.ac.in"];
 
@@ -70,6 +74,7 @@ export default function Home() {
 
     if (valid) {
       toast.success("Login successful! Redirecting...");
+      setLoginUser(email);
     }
     return valid;
   };
@@ -100,7 +105,7 @@ export default function Home() {
         </div>
       </div>
       {/* Logo Section */}
-      <div className="fixed top-2 right-6 flex items-center justify-center z-20">
+      <div className="absolute top-6 right-6 flex items-center justify-center z-20">
         <Image
           src='/logo1.webp'
           className="h-12 w-36 md:h-16 md:w-44"
@@ -109,11 +114,19 @@ export default function Home() {
           height={50}
         />
       </div>
-      <div className="flex flex-col md:flex-row items-center justify-center gap-8 py-10 px-8 md:px-16 bg-blur-saturation mt-[105] w-full max-w-4xl z-10 fixed">
+      <div className="flex flex-col md:flex-row items-center justify-center gap-8 py-10 px-8 md:px-16 bg-blur-saturation mt-[105] w-full max-w-4xl z-10 absolute">
         {/* Form Section */}
         <div className="flex flex-col items-start justify-start w-full max-w-md">
           <div className="mb-5">
-            <h1 className="font-bold text-3xl md:text-4xl">Welcome !☕</h1>
+            <div className="flex flex-row gap-1">
+                <h1 className="font-bold text-3xl md:text-4xl">Welcome !</h1>
+            <Image
+                src='/Rocket SVG Icon 1.svg' 
+                alt="Rocket image"
+                width={40}
+                height={40} 
+              />
+            </div>
             <h2 className="font-bold text-3xl md:text-4xl">Placement Team</h2>
           </div>
 
@@ -174,7 +187,7 @@ export default function Home() {
               </label>
               {/* Eye Toggle */}
               <div
-                className="absolute right-3 top-3 text-xl text-gray-500 cursor-pointer"
+                className="absolute right-3 top-4 text-xl text-gray-500 cursor-pointer"
                 onClick={() => {
                   setShowPassword((prev) => !prev);
                   setTimeout(() => {
