@@ -32,6 +32,7 @@ export default function NavBar() {
     } else if (pathname === '/batches') {
       setActiveNavItem('batches');
       setShowSubNav(true);
+      
     } else {
       // For any other page, close sub-nav
       setShowSubNav(false);
@@ -156,7 +157,9 @@ export default function NavBar() {
               height={15}
               className="object-contain"
             />
-            <span className="font-bold text-[10px] text-[#49454F]">Full Stack Development</span>
+            <span className={`font-bold text-[10px] ${activeSubNav === 'fullstack' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}
+                
+            >Full Stack Development</span>
           </button>
         </div>
         <div className="flex flex-col items-start mt-2">
@@ -171,7 +174,7 @@ export default function NavBar() {
               height={15}
               className="object-contain"
             />
-            <span className="font-bold text-[10px] text-[#49454F]">Data Analytics & Science</span>
+            <span className={`font-bold text-[10px] ${activeSubNav === 'dataanalytics' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>Data Analytics & Science</span>
           </button>
         </div>
         <div className="flex flex-col items-start mt-2">
@@ -185,7 +188,7 @@ export default function NavBar() {
               width={15}
               height={15}
               className="object-contain"
-            /> <span className="font-bold text-[10px] text-[#49454F]">Banking & Financial Services</span>
+            /> <span className={`font-bold text-[10px] ${activeSubNav === 'banking' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>Banking & Financial Services</span>
           </button>
         </div>
         <div className="flex flex-col items-start mt-2">
@@ -199,7 +202,7 @@ export default function NavBar() {
               width={15}
               height={15}
               className="object-contain"
-            />          <span className="font-bold text-[10px] text-[#49454F]">Digital Marketing</span>
+            />          <span className={`font-bold text-[10px] ${activeSubNav === 'marketing' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>Digital Marketing</span>
           </button>
         </div>
         <div className="flex flex-col items-start mt-2">
@@ -213,7 +216,7 @@ export default function NavBar() {
               width={15}
               height={15}
               className="object-contain"
-            />  <span className="font-bold text-[10px] text-[#49454F]">SAP</span>
+            />  <span className={`font-bold text-[10px] ${activeSubNav === 'sap' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>SAP</span>
           </button>
         </div>
         <div className="flex flex-col items-start mt-2">
@@ -227,7 +230,7 @@ export default function NavBar() {
               width={15}
               height={15}
               className="object-contain"
-            /><span className="font-bold text-[10px] text-[#49454F]">DevOps</span>
+            /><span className={`font-bold text-[10px] ${activeSubNav === 'devops' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>DevOps</span>
           </button>
         </div>
       </div>
