@@ -10,6 +10,7 @@ import { MdOutlineSettings } from "react-icons/md"; //settings icon
 import { MdOutlineNotifications } from "react-icons/md"; //notification icon
 import { RiGraduationCapLine } from "react-icons/ri"; //graduation icon
 import { usePathname, useRouter } from 'next/navigation';
+import { useDataContext } from '../context/dataContext';
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -18,6 +19,8 @@ export default function NavBar() {
   const [activeSubNav, setActiveSubNav] = useState('');
   const [activeNavItem, setActiveNavItem] = useState('');
 
+  //access the datacontext variable
+   const { setBatchingValue ,firstLetterUser } = useDataContext();
   // Set initial active state based on current pathname
   useEffect(() => {
     if (pathname === '/home') {
@@ -33,7 +36,10 @@ export default function NavBar() {
       setActiveNavItem('batches');
       setShowSubNav(true);
       
-    } else {
+    } else if (pathname === '/showbatches') {
+      setShowSubNav(true);
+    } 
+    else {
       // For any other page, close sub-nav
       setShowSubNav(false);
     }
@@ -41,20 +47,22 @@ export default function NavBar() {
 
   const handleNavItemClick = (navItem) => {
     setActiveNavItem(navItem);
-    setShowSubNav(false);
+    // setShowSubNav(false);
     setActiveSubNav(null);
   };
 
   const handleBatchesClick = () => {
     setActiveNavItem('batches');
-    setShowSubNav((prev) => !prev);
+    // setShowSubNav((prev) => !prev);
     if (showSubNav) {
       setActiveSubNav(null);
     }
+    router.push('/showbatches');
   };
 
   const handleSubNavClick = (subNavItem) => {
     setActiveSubNav(subNavItem);
+    setBatchingValue(subNavItem)
     router.push('/batches');
   };
 
@@ -136,7 +144,7 @@ export default function NavBar() {
                   setActiveSubNav(null);
                 }}
               >
-              A
+              {firstLetterUser}
             </button>
           </div>
         </div>
