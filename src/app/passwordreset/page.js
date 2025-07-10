@@ -17,51 +17,58 @@ export default function ResetPassword() {
 
   const allowedDomains = ["gmail.com", "skac.ac.in"];
 
-  const validateEmailField = (value) => {
-    if (!value.trim()) {
+ const validateEmailField = (value) => {
+  if (!value.trim()) {
+    setEmailError("");
+  } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(value)) {
+    setEmailError("Invalid email format");
+  } else if (!/^[a-zA-Z0-9]+$/.test(value.split("@")[0])) {
+    setEmailError("Invalid email format");
+  } else if (value.split("@")[0].length > 40) {
+    setEmailError("Email prefix should not exceed 40 characters");
+  } else {
+    const emailDomain = value.split("@")[1];
+    if (!allowedDomains.includes(emailDomain)) {
+      setEmailError("Invalid email format");
+    } else {
       setEmailError("");
-    } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(value)) {
-      setEmailError("Invalid email format");
-    } else if (value.split('@')[0].length > 40) {
-      setEmailError("Email prefix should not exceed 40 characters");
-    } else {
-      const emailDomain = value.split('@')[1];
-      if (emailDomain && !allowedDomains.includes(emailDomain)) {
-        setEmailError("Invalid email format");
-      } else {
-        setEmailError("");
-      }
     }
-  };
+  }
+};
 
-  const handleReset = () => {
-    // Validation on button press
-    if (!email.trim()) {
-      setEmailError("Email is required");
-      emailRef.current?.focus(); // 👉 focus input
-      return;
-    } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(email)) {
+
+ const handleReset = () => {
+  if (!email.trim()) {
+    setEmailError("Email is required");
+    emailRef.current?.focus();
+    return;
+  } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(email)) {
+    setEmailError("Invalid email format");
+    emailRef.current?.focus();
+    return;
+  } else if (!/^[a-zA-Z0-9]+$/.test(email.split("@")[0])) {
+    setEmailError("Invalid email format");
+    emailRef.current?.focus();
+    return;
+  } else if (email.split("@")[0].length > 40) {
+    setEmailError("Email prefix should not exceed 40 characters");
+    emailRef.current?.focus();
+    return;
+  } else {
+    const domain = email.split("@")[1];
+    if (!allowedDomains.includes(domain)) {
       setEmailError("Invalid email format");
       emailRef.current?.focus();
       return;
-    } else if (email.split('@')[0].length > 40) {
-      setEmailError("Email prefix should not exceed 40 characters");
-      emailRef.current?.focus();
-      return;
-    } else {
-      const domain = email.split("@")[1];
-      if (!allowedDomains.includes(domain)) {
-        setEmailError("Invalid email format");
-        emailRef.current?.focus();
-        return;
-      }
     }
+  }
 
-    const id = toast.success("Reset link sent to your email", { duration: Infinity });
-    setToastId(id);
-    setIsDisabled(true);
-    setIsSubmitted(true);
-  };
+  const id = toast.success("Reset link sent to your email", { duration: Infinity });
+  setToastId(id);
+  setIsDisabled(true);
+  setIsSubmitted(true);
+};
+
 
   return (
     <div className="container mx-auto flex items-center justify-center h-screen px-4 relative overflow-hidden">
