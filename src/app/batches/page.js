@@ -8,7 +8,6 @@ import { X } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { useDataContext } from '../context/dataContext';
 
-
 export default function BatchModel() {
 
   const [batches, setBatches] = useState([
@@ -43,8 +42,7 @@ export default function BatchModel() {
   const [completedCount, setCompletedCount] = useState(0);
 
   //datacontext variable
-     const { batchHead} = useDataContext();
-  
+  const { batchHead } = useDataContext();
 
   // Date validation error states for search
   const [searchDateError, setSearchDateError] = useState('');
@@ -66,7 +64,7 @@ export default function BatchModel() {
   const [newBatch, setNewBatch] = useState({
     batchNo: '',
     status: 'Ongoing',
-    mode: 'Offline',
+    mode: '', // Set to empty string for no preselected option
     sections: {
       Domain: { startDate: '', endDate: '' },
       Aptitude: { startDate: '', endDate: '' },
@@ -98,11 +96,11 @@ export default function BatchModel() {
     if (start && end) {
       const startDateObj = new Date(start);
       const endDateObj = new Date(end);
-      
+
       if (endDateObj < startDateObj) {
         setSearchDateError('End date cannot be earlier than start date');
         return false;
-      }else if (endDateObj <= startDateObj) {
+      } else if (endDateObj <= startDateObj) {
         setSearchDateError('End date cannot be  same as the start date');
         return false;
       }
@@ -335,7 +333,7 @@ export default function BatchModel() {
             [section]: 'End date cannot be same as the start date'
 
           }));
-        }else {
+        } else {
           setModalDateErrors(prev => ({
             ...prev,
             [section]: ''
@@ -733,7 +731,7 @@ export default function BatchModel() {
               )}
             </div>
 
-          {/* Mode Selector */}
+            {/* Mode Selector */}
 <div className="relative mb-6">
   <input
     type="text"
@@ -741,23 +739,22 @@ export default function BatchModel() {
     className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
     placeholder=" "
     readOnly
-    value={newBatch.mode === 'Off' ? '' : newBatch.mode}
+    value={newBatch.mode}
     onClick={() => setShowNewBatchModeDropdown(!showNewBatchModeDropdown)}
     required
   />
   <label
     htmlFor="new-mode"
-    className={`absolute px-2 text-sm text-gray-500 duration-300 bg-[#F8FAFD] transform ${newBatch.mode && newBatch.mode !== 'Off' ? "-translate-y-4 scale-75" : "translate-y-0 scale-100"} top-4 z-5 origin-[0] left-4 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-[#6750A4]`}
+    className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F8FAFD] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
   >
     Mode
   </label>
   <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
-  {newBatch.mode && newBatch.mode !== 'Off' && (
+  {newBatch.mode && (
     <button
       onClick={(e) => {
         e.stopPropagation();
-        setNewBatch({ ...newBatch, mode: 'Off' });
-        setShowNewBatchModeDropdown(false);
+        setNewBatch({ ...newBatch, mode: '' });
       }}
       className="absolute top-4 right-8 bg-gray-300 p-1 rounded-full hover:bg-gray-500"
     >
@@ -781,7 +778,6 @@ export default function BatchModel() {
     </div>
   )}
 </div>
-
 
             {/* Buttons */}
             <div className="flex justify-end gap-4">
