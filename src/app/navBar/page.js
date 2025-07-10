@@ -162,7 +162,7 @@ export default function NavBar() {
             onClick={() => handleSubNavClick('fullstack')}
           >
             <Image
-              src='/computer.png'
+              src='/computer.svg'
               alt="Computer Icon"
               width={15}
               height={15}
@@ -179,7 +179,7 @@ export default function NavBar() {
             onClick={() => handleSubNavClick('dataanalytics')}
           >
             <Image
-              src='/bar_chart_4_bars.png'
+              src='/bar_chart_4_bars.svg'
               alt="Data Analytics Icon"
               width={15}
               height={15}
@@ -194,7 +194,7 @@ export default function NavBar() {
             onClick={() => handleSubNavClick('banking')}
           >
             <Image
-              src='/account_balance.png'
+              src='/account_balance.svg'
               alt="Banking Icon"
               width={15}
               height={15}
@@ -208,7 +208,7 @@ export default function NavBar() {
             onClick={() => handleSubNavClick('marketing')}
           >
             <Image
-              src='/ad.png'
+              src='/ad.svg'
               alt="Marketing Icon"
               width={15}
               height={15}
@@ -222,7 +222,7 @@ export default function NavBar() {
             onClick={() => handleSubNavClick('sap')}
           >
             <Image
-              src='/device_hub.png'
+              src='/device_hub.svg'
               alt="SAP Icon"
               width={15}
               height={15}
@@ -236,7 +236,7 @@ export default function NavBar() {
             onClick={() => handleSubNavClick('devops')}
           >
             <Image
-              src='/deployed_code_history.png'
+              src='/deployed_code_history.svg'
               alt="DevOps Icon"
               width={15}
               height={15}

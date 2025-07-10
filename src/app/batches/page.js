@@ -359,9 +359,14 @@ export default function BatchModel() {
           <h1 className=" fixed top-8.5 text-lg font-semibold">{batchHead}</h1>
           <button 
             onClick={() => setShowModal(true)}
-            className="fixed top-5 right-5 bg-[#3f2fb4] hover:bg-[#3f2fb4d4] text-white text-l font-bold px-4 py-2.5 rounded-lg shadow-sm"
-          >
-            <span className='bg-white px-1.5 mr-1.5 rounded-full text-[#3f2fb4]'>+</span> Add Batch
+            className="fixed flex p-2 top-5 right-5 bg-[#3f2fb4] hover:bg-[#3f2fb4d4] text-white text-l font-bold px-2 py-2.5 rounded-lg shadow-sm">
+            <Image
+              src='/icon (1).svg'
+              alt="SAP Icon"
+              width={20}
+              height={20}
+              className="mx-2"
+            /> Add Batch
           </button>
         </div>
 
@@ -516,7 +521,13 @@ export default function BatchModel() {
                   onClick={handleReset}
                   className="bg-[#f1ecfb] hover:bg-[#E8DEF8] px-6 py-2 rounded-2xl text-sm font-semibold text-gray-700 flex items-center gap-1"
                 >
-                  <RefreshCcw className='w-3 h-3 text-black'/> Reset
+                  <Image
+                                src='/icon.svg'
+                                alt="SAP Icon"
+                                width={20}
+                                height={20}
+                                className="object-contain"
+                              />Reset
                 </button>
                 <button
                   onClick={handleSearch}
@@ -552,9 +563,20 @@ export default function BatchModel() {
                           {batch.batchNo}
                         </td>
                         <td className="px-2 py-1 whitespace-nowrap">
-                          <span className={`ml-2 px-5 text-center inline-flex text-xs leading-5 font-semibold rounded-sm
-                            ${batch.status === 'Completed' ? 'bg-green-100 text-green-800' : 'px-7 bg-blue-100 text-blue-800'}`}>
-                            {batch.status}
+                          <span className={`ml-2 px-5 text-center inline-flex text-xs leading-5 font-semibold rounded-sm`}>
+                            {batch.status === 'Completed' ? <Image
+                                src='going.svg'
+                                alt="SAP Icon"
+                                width={80}
+                                height={25}
+                                className="object-contain"
+                              /> : <Image
+                                src='/com.svg'
+                                alt="SAP Icon"
+                                width={80}
+                                height={25}
+                                className="object-contain"
+                              />}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{batch.startDate}</td>
