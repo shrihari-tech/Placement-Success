@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Toaster, toast } from "sonner";
 import Link from "next/link";
 import Image from "next/image";
-// import { useRouter } from "next/navigation";
 
 export default function ResetPassword() {
   const [email, setEmail] = useState("");
@@ -14,39 +13,49 @@ export default function ResetPassword() {
   const [isDisabled, setIsDisabled] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  const emailRef = useRef(null); // 👉 Create a ref for the input
+
   const allowedDomains = ["gmail.com", "skac.ac.in"];
 
-  const isValidEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-    return emailRegex.test(email);
-  };
-
-  const validate = () => {
-    setEmailError("");
-    // setIsSubmitted(false);
-    if (!email) {
-      toast.error("Email is required");
-      setEmailError("Email field is empty");
-      return false;
-    } else if (!isValidEmail(email)) {
-      toast.error("Please enter a valid email address");
+  const validateEmailField = (value) => {
+    if (!value.trim()) {
+      setEmailError("");
+    } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(value)) {
       setEmailError("Invalid email format");
-      return false;
-    } else if (email.split("@")[0].length > 40) {
+    } else if (value.split('@')[0].length > 40) {
       setEmailError("Email prefix should not exceed 40 characters");
-      return false;
     } else {
-      const domain = email.split("@")[1];
-      if (!allowedDomains.includes(domain)) {
-        setEmailError("Email domain not allowed");
-        return false;
+      const emailDomain = value.split('@')[1];
+      if (emailDomain && !allowedDomains.includes(emailDomain)) {
+        setEmailError("Invalid email format");
+      } else {
+        setEmailError("");
       }
     }
-    return true;
   };
 
   const handleReset = () => {
-    if (!validate()) return;
+    // Validation on button press
+    if (!email.trim()) {
+      setEmailError("Email is required");
+      emailRef.current?.focus(); // 👉 focus input
+      return;
+    } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(email)) {
+      setEmailError("Invalid email format");
+      emailRef.current?.focus();
+      return;
+    } else if (email.split('@')[0].length > 40) {
+      setEmailError("Email prefix should not exceed 40 characters");
+      emailRef.current?.focus();
+      return;
+    } else {
+      const domain = email.split("@")[1];
+      if (!allowedDomains.includes(domain)) {
+        setEmailError("Invalid email format");
+        emailRef.current?.focus();
+        return;
+      }
+    }
 
     const id = toast.success("Reset link sent to your email", { duration: Infinity });
     setToastId(id);
@@ -77,18 +86,20 @@ export default function ResetPassword() {
       </div>
 
       {/* Form */}
-      <div className="flex flex-col items-center justify-center gap-8 py-10 px-8 md:px-16 bg-none  w-full max-w-4xl z-10 fixed">
+      <div className="flex flex-col items-center justify-center gap-8 py-10 px-8 md:px-16 bg-none w-full max-w-4xl z-10 fixed">
         <div className="w-full max-w-md">
-          <h1 className="font-bold text-3xl md:text-4xl">Reset Password... </h1>
-          <p className="text-gray-500 mt-1">{"We'll send a link to reset your password"}</p>
+          <h1 className="font-bold text-3xl md:text-4xl">Reset Password</h1>
+          <p className="text-gray-500 mt-1">We'll send a link to reset your password</p>
 
           <div className="relative w-full mt-6">
             <input
+              ref={emailRef} // 👉 Attach ref
               type="email"
               id="email"
               value={email}
-             onChange={(e) => {
+              onChange={(e) => {
                 setEmail(e.target.value);
+                validateEmailField(e.target.value);
                 setIsDisabled(false);
                 setIsSubmitted(false);
               }}
