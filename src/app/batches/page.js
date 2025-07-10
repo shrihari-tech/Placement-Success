@@ -8,7 +8,6 @@ import { X } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { useDataContext } from '../context/dataContext';
 
-
 export default function BatchModel() {
 
   const [batches, setBatches ] = useState([]);
@@ -64,7 +63,7 @@ export default function BatchModel() {
   const [newBatch, setNewBatch] = useState({
     batchNo: '',
     status: 'Ongoing',
-    mode: 'Offline',
+    mode: '', // Set to empty string for no preselected option
     sections: {
       Domain: { startDate: '', endDate: '' },
       Aptitude: { startDate: '', endDate: '' },
@@ -100,9 +99,12 @@ export default function BatchModel() {
     if (start && end) {
       const startDateObj = new Date(start);
       const endDateObj = new Date(end);
-      
+
       if (endDateObj < startDateObj) {
         setSearchDateError('End date cannot be earlier than start date');
+        return false;
+      } else if (endDateObj <= startDateObj) {
+        setSearchDateError('End date cannot be  same as the start date');
         return false;
       }
     }
@@ -175,6 +177,7 @@ export default function BatchModel() {
     setBatchToDelete(null);
     setDeleteConfirmationInput('');
     setDeleteError('');
+    toast.success("The Data is Successfully Deleted");
   };
 
   const handleCloseDeleteModal = () => {
@@ -324,6 +327,13 @@ export default function BatchModel() {
           setModalDateErrors(prev => ({
             ...prev,
             [section]: 'End date cannot be earlier than start date'
+
+          }));
+        } else if (endDate <= startDate) {
+          setModalDateErrors(prev => ({
+            ...prev,
+            [section]: 'End date cannot be same as the start date'
+
           }));
         } else {
           setModalDateErrors(prev => ({
@@ -346,22 +356,27 @@ export default function BatchModel() {
   return (
     <div className="flex min-h-screen mx-[-16]">
       {/* Main Content */}
-      <div className={` px-3 pt-24 flex-1 bg-[#eff4ff] overflow-hidden width-full  ${showModal || showDeleteModal ? 'pointer-events-none' : ''}`}>
+      <div className={` px-3 pt-24 flex-1 bg-[#F8FAFD] overflow-hidden width-full  ${showModal || showDeleteModal ? 'pointer-events-none' : ''}`}>
         <div className="fixed top-0 left-70  flex items-center p-5 justify-between mb-6 bg-white w-full py-10 z-10">
           <h1 className=" fixed top-8.5 text-lg font-semibold">{batchHead}</h1>
           <button 
             onClick={() => setShowModal(true)}
-            className="fixed top-5 right-5 bg-[#3f2fb4] hover:bg-[#3f2fb4d4] text-white text-l font-bold px-4 py-2.5 rounded-lg shadow-sm"
-          >
-            <span className='bg-white px-1.5 mr-1.5 rounded-full text-[#3f2fb4]'>+</span> Add Batch
+            className="fixed flex p-2 top-5 right-5 bg-[#3f2fb4] hover:bg-[#3f2fb4d4] text-white text-l font-bold px-2 py-2.5 rounded-lg shadow-sm">
+            <Image
+              src='/icon (1).svg'
+              alt="SAP Icon"
+              width={20}
+              height={20}
+              className="mx-2"
+            /> Add Batch
           </button>
         </div>
 
         <div className='p-3'>
           {/* Cards */}
           <div className='flex flex-col md:flex-row gap-4 mb-6'>
-            <div className="relative bg-[#efe6ff] w-full max-w-md h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
-              <div className="absolute left-6 top-6 text-black text-4xl font-medium leading-10">{ongoingCount}</div>
+            <div className="relative bg-[#efeeff] w-full max-w-md h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
+              <div className="absolute left-6 top-6 text-black text-4xl font-bold leading-10">{ongoingCount}</div>
               <div className="absolute left-6 top-[84px] text-black text-xl font-normal leading-7">Ongoing Count</div>
               <div className="absolute right-4.5 top-6 w-12 h-9 rounded-full flex items-center justify-center">
                 <Image
@@ -373,8 +388,8 @@ export default function BatchModel() {
                 />
               </div>
             </div>
-            <div className="relative bg-[#efe6ff] w-full max-w-md h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
-              <div className="absolute left-6 top-6 text-black text-4xl font-medium leading-10">{completedCount}</div>
+            <div className="relative bg-[#efeeff] w-full max-w-md h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
+              <div className="absolute left-6 top-6 text-black text-4xl font-bold leading-10">{completedCount}</div>
               <div className="absolute left-6 top-[84px] text-black text-xl font-normal leading-7">Completed Count</div>
               <div className="absolute right-4.5 top-6 w-12 h-9 rounded-full flex items-center justify-center">
                 <Image
@@ -389,21 +404,21 @@ export default function BatchModel() {
           </div>
 
           {/* Search Section */}
-          <div className="bg-[#E8DEF8] px-6 py-4 rounded-xl">
+          <div className="bg-[#F4F3FF] px-6 py-4 rounded-xl">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 px-3 py-3">
               {/* Batch ID */}
               <div className="relative">
                 <input
                   type="text"
                   id="batch-id"
-                  className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#E8DEF8] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+                  className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
                   placeholder=" "
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <label
                   htmlFor="batch-id"
-                  className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#E8DEF8] transform -translate-y-3 scale-75 top-3.5 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+                  className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-3 scale-75 top-3.5 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750a4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#efeeff]"
                 >
                   Search by Batch number
                 </label>
@@ -423,12 +438,12 @@ export default function BatchModel() {
                   id="start-date"
                   type='date'
                   value={startDate}
-                  className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#E8DEF8] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+                  className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
                   onChange={(e) => handleSearchStartDateChange(e.target.value)}
                 />
                 <label
                   htmlFor="start-date"
-                  className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#E8DEF8] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+                  className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
                 >
                   Start date
                 </label>
@@ -439,7 +454,7 @@ export default function BatchModel() {
                 <input
                   type="text"
                   id="mode"
-                  className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#E8DEF8] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+                  className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
                   placeholder=" "
                   readOnly
                   value={mode === 'Off' ? '' : mode}
@@ -447,7 +462,7 @@ export default function BatchModel() {
                 />
                 <label
                   htmlFor="mode"
-                  className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#E8DEF8] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+                  className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
                 >
                   Mode
                 </label>
@@ -487,12 +502,12 @@ export default function BatchModel() {
                   id="end-date"
                   type='date'
                   value={endDate}
-                  className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#E8DEF8] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+                  className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
                   onChange={(e) => handleSearchEndDateChange(e.target.value)}
                 />
                 <label
                   htmlFor="end-date"
-                  className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#E8DEF8] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+                  className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
                 >
                   End date
                 </label>
@@ -506,13 +521,19 @@ export default function BatchModel() {
               <div className="flex gap-2 md:col-start-3 md:justify-end md:pt-24">
                 <button
                   onClick={handleReset}
-                  className="bg-[#f1ecfb] hover:bg-[#f1eaff] px-6 py-2 rounded-2xl text-sm text-gray-700 flex items-center gap-1"
+                  className="bg-[#f1ecfb] hover:bg-[#E8DEF8] px-6 py-2 rounded-2xl text-sm font-semibold text-gray-700 flex items-center gap-1"
                 >
-                  <RefreshCcw className='w-3 h-3 text-black'/> Reset
+                  <Image
+                                src='/icon.svg'
+                                alt="SAP Icon"
+                                width={20}
+                                height={20}
+                                className="object-contain"
+                              />Reset
                 </button>
                 <button
                   onClick={handleSearch}
-                  className="bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-6 py-2 rounded-2xl text-sm"
+                  className="bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-6 py-2 rounded-2xl text-sm font-semibold"
                 >
                   Search
                 </button>
@@ -538,15 +559,26 @@ export default function BatchModel() {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredBatches.length > 0 ? (
                     filteredBatches.map((batch, index) => (
-                      <tr key={batch.id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{index + 1}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      <tr key={batch.id} className="hover:bg-[#e1cfff] hover:text-[#6750a4] hover:font-bold">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 ">{index + 1}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm  text-gray-500">
                           {batch.batchNo}
                         </td>
                         <td className="px-2 py-1 whitespace-nowrap">
-                          <span className={`ml-2 px-5 text-center inline-flex text-xs leading-5 font-semibold rounded-sm
-                            ${batch.status === 'Completed' ? 'bg-green-100 text-green-800' : 'px-7 bg-blue-100 text-blue-800'}`}>
-                            {batch.status}
+                          <span className={`ml-2 px-5 text-center inline-flex text-xs leading-5 font-semibold rounded-sm`}>
+                            {batch.status === 'Completed' ? <Image
+                                src='going.svg'
+                                alt="SAP Icon"
+                                width={80}
+                                height={25}
+                                className="object-contain"
+                              /> : <Image
+                                src='/com.svg'
+                                alt="SAP Icon"
+                                width={80}
+                                height={25}
+                                className="object-contain"
+                              />}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{batch.startDate}</td>
@@ -603,9 +635,9 @@ export default function BatchModel() {
       {/* Add Batch Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="w-[500px] bg-slate-50 rounded-[10px] p-6">
+          <div className="w-[500px] bg-[#F8FAFD] rounded-[10px] p-6">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-lg font-medium">Add new batch</h2>
+              <h2 className="text-lg font-bold">Add new batch</h2>
               <button
                 onClick={() => setShowModal(false)}
                 className="text-gray-500 hover:text-gray-700"
@@ -619,7 +651,7 @@ export default function BatchModel() {
               <input
                 type="text"
                 id="batch-number"
-                className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+                className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
                 placeholder=" "
                 value={newBatch.batchNo}
                 onChange={(e) => setNewBatch({...newBatch, batchNo: e.target.value})}
@@ -627,17 +659,17 @@ export default function BatchModel() {
               />
               <label
                 htmlFor="batch-number"
-                className="absolute px-2 text-sm text-gray-500 duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+                className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
               >
                 Batch Number
               </label>
             </div>
 
             {/* Tab Navigation */}
-            <div className="flex bg-gray-200 rounded-xl p-1 mb-6 relative">
+            <div className="flex bg-[#ECE6F0] rounded-xl p-1 mb-6 relative">
               {/* Moving background indicator */}
               <div
-                className={`absolute top-1 bottom-1 bg-white rounded-lg shadow-sm transition-all duration-300 ease-in-out ${
+                className={`absolute top-1 bottom-1 bg-[#F8FAFD] rounded-lg shadow-sm transition-all duration-300 ease-in-out ${
                   activeTab === 'Domain' ? 'left-1 w-[calc(33.33%-0.5rem)]' : 
                   activeTab === 'Aptitude' ? 'left-[calc(33.33%+0.25rem)] w-[calc(33.33%-0.5rem)]' : 
                   'left-[calc(66.66%+0.25rem)] w-[calc(33.33%-0.5rem)]'
@@ -646,24 +678,24 @@ export default function BatchModel() {
               {/* Tab buttons */}
               <button
                 onClick={() => setActiveTab('Domain')}
-                className={`flex-1 py-2 text-sm font-medium relative z-10 ${
-                  activeTab === 'Domain' ? 'text-indigo-600' : 'text-gray-600'
+                className={`flex-1 py-2 text-sm font-bold relative z-10 ${
+                  activeTab === 'Domain' ? 'text-indigo-600' : 'text-black'
                 }`}
               >
                 Domain
               </button>
               <button
                 onClick={() => setActiveTab('Aptitude')}
-                className={`flex-1 py-2 text-sm font-medium relative z-10 ${
-                  activeTab === 'Aptitude' ? 'text-indigo-600' : 'text-gray-600'
+                className={`flex-1 py-2 text-sm font-bold relative z-10 ${
+                  activeTab === 'Aptitude' ? 'text-indigo-600' : 'text-black'
                 }`}
               >
                 Aptitude
               </button>
               <button
                 onClick={() => setActiveTab('Communication')}
-                className={`flex-1 py-2 text-sm font-medium relative z-10 ${
-                  activeTab === 'Communication' ? 'text-indigo-600' : 'text-gray-600'
+                className={`flex-1 py-2 text-sm font-bold relative z-10 ${
+                  activeTab === 'Communication' ? 'text-indigo-600' : 'text-black'
                 }`}
               >
                 Communication
@@ -671,9 +703,9 @@ export default function BatchModel() {
             </div>
 
             {/* Date Range Section */}
-            <div className="bg-white rounded-3xl p-4 mb-6 border border-gray-200">
+            <div className="bg-[#ECE6F0] rounded-3xl p-4 mb-6 border border-gray-200">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-sm font-medium text-gray-500">Select date</h3>
+                <h3 className="text-sm font-semibold text-gray-500">Select date</h3>
               </div>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-2xl font-normal">Enter dates</h3>
@@ -687,14 +719,14 @@ export default function BatchModel() {
                   <input
                     type="date"
                     id={`${activeTab.toLowerCase()}-start-date`}
-                    className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+                    className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#ECE6F0] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
                     placeholder=" "
                     value={newBatch.sections[activeTab].startDate}
                     onChange={(e) => handleSectionDateChange(activeTab, 'startDate', e.target.value)}
                   />
                   <label
                     htmlFor={`${activeTab.toLowerCase()}-start-date`}
-                    className="absolute px-2 text-sm text-gray-500 duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+                    className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ECE6F0] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
                   >
                     Start date
                   </label>
@@ -704,14 +736,14 @@ export default function BatchModel() {
                   <input
                     type="date"
                     id={`${activeTab.toLowerCase()}-end-date`}
-                    className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+                    className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#ECE6F0] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
                     placeholder=" "
                     value={newBatch.sections[activeTab].endDate}
                     onChange={(e) => handleSectionDateChange(activeTab, 'endDate', e.target.value)}
                   />
                   <label
                     htmlFor={`${activeTab.toLowerCase()}-end-date`}
-                    className="absolute px-2 text-sm text-gray-500 duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+                    className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ECE6F0] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
                   >
                     End date
                   </label>
@@ -724,11 +756,11 @@ export default function BatchModel() {
             </div>
 
             {/* Mode Selector */}
-              <div className="relative mb-6">
+<div className="relative mb-6">
   <input
     type="text"
     id="new-mode"
-    className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+    className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
     placeholder=" "
     readOnly
     value={newBatch.mode}
@@ -737,7 +769,7 @@ export default function BatchModel() {
   />
   <label
     htmlFor="new-mode"
-    className="absolute px-2 text-sm text-gray-500 duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+    className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F8FAFD] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
   >
     Mode
   </label>
@@ -746,8 +778,7 @@ export default function BatchModel() {
     <button
       onClick={(e) => {
         e.stopPropagation();
-        setNewBatch({...newBatch, mode: ''});
-        setShowNewBatchModeDropdown(false);
+        setNewBatch({ ...newBatch, mode: '' });
       }}
       className="absolute top-4 right-8 bg-gray-300 p-1 rounded-full hover:bg-gray-500"
     >
@@ -755,7 +786,7 @@ export default function BatchModel() {
     </button>
   )}
   {showNewBatchModeDropdown && (
-    <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-md">
+    <div className="absolute z-10 mt-1 w-full bg-[#ECE6F0] border border-gray-300 rounded-md shadow-md">
       {['Online', 'Offline'].map((item) => (
         <div
           key={item}
@@ -797,7 +828,7 @@ export default function BatchModel() {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && batchToDelete && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="w-[500px] bg-slate-50 rounded-[10px] p-6">
+          <div className="w-[500px] bg-[#F8FAFD] rounded-[10px] p-6">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg font-medium">Delete Batch Info</h2>
               <button
@@ -813,7 +844,7 @@ export default function BatchModel() {
               <input
                 type="text"
                 id="delete-confirmation"
-                className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+                className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
                 placeholder=" "
                 value={deleteConfirmationInput}
                 onChange={(e) => setDeleteConfirmationInput(e.target.value)}
@@ -821,7 +852,7 @@ export default function BatchModel() {
               />
               <label
                 htmlFor="delete-confirmation"
-                className="absolute px-2 text-sm text-gray-500 duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+                className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
               >
                 Batch Name
               </label>
