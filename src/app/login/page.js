@@ -105,7 +105,7 @@ export default function Home() {
         </div>
       </div>
       {/* Logo Section */}
-      <div className="absolute top-6 right-6 flex items-center justify-center z-20">
+      <div className="fixed top-6 right-6 flex items-center justify-center z-20">
         <Image
           src='/logo1.webp'
           className="h-12 w-36 md:h-16 md:w-44"
@@ -114,7 +114,7 @@ export default function Home() {
           height={50}
         />
       </div>
-      <div className="flex flex-col md:flex-row items-center justify-center gap-8 py-10 px-8 md:px-16 bg-blur-saturation mt-[105] w-full max-w-4xl z-10 absolute">
+      <div className="flex flex-col md:flex-row items-center justify-center gap-8 py-10 px-8 md:px-16 bg-blur-saturation mt-[105] w-full max-w-4xl z-10 fixed">
         {/* Form Section */}
         <div className="flex flex-col items-start justify-start w-full max-w-md">
           <div className="mb-5">

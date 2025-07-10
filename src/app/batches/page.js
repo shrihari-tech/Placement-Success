@@ -6,6 +6,8 @@ import { RefreshCcw } from 'lucide-react';
 import { Toaster, toast } from 'react-hot-toast';
 import { X } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
+import { useDataContext } from '../context/dataContext';
+
 
 export default function BatchModel() {
 
@@ -39,6 +41,10 @@ export default function BatchModel() {
   const [deleteError, setDeleteError] = useState('');
   const [ongoingCount, setOngoingCount] = useState(0);
   const [completedCount, setCompletedCount] = useState(0);
+
+  //datacontext variable
+     const { batchHead} = useDataContext();
+  
 
   // Date validation error states for search
   const [searchDateError, setSearchDateError] = useState('');
@@ -93,8 +99,11 @@ export default function BatchModel() {
       const startDateObj = new Date(start);
       const endDateObj = new Date(end);
       
-      if (endDateObj <= startDateObj) {
-        setSearchDateError('End date cannot be earlier than or same as start date');
+      if (endDateObj < startDateObj) {
+        setSearchDateError('End date cannot be earlier than start date');
+        return false;
+      }else if (endDateObj <= startDateObj) {
+        setSearchDateError('End date cannot be  same as the start date');
         return false;
       }
     }
@@ -349,7 +358,7 @@ export default function BatchModel() {
       {/* Main Content */}
       <div className={` px-3 pt-24 flex-1 bg-[#f3f6fd] overflow-hidden width-full  ${showModal || showDeleteModal ? 'pointer-events-none' : ''}`}>
         <div className="fixed top-0 left-70  flex items-center p-5 justify-between mb-6 bg-white w-full py-10 z-10">
-          <h1 className=" fixed top-8.5 text-lg font-semibold">Full Stack Development</h1>
+          <h1 className=" fixed top-8.5 text-lg font-semibold">{batchHead}</h1>
           <button 
             onClick={() => setShowModal(true)}
             className="fixed top-5 right-5 bg-[#3f2fb4] hover:bg-[#3f2fb4d4] text-white text-l font-bold px-4 py-2.5 rounded-lg shadow-sm"
