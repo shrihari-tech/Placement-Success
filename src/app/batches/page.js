@@ -354,7 +354,7 @@ export default function BatchModel() {
   return (
     <div className="flex min-h-screen mx-[-16]">
       {/* Main Content */}
-      <div className={` px-3 pt-24 flex-1 bg-[#f3f6fd] overflow-hidden width-full  ${showModal || showDeleteModal ? 'pointer-events-none' : ''}`}>
+      <div className={` px-3 pt-24 flex-1 bg-[#F8FAFD] overflow-hidden width-full  ${showModal || showDeleteModal ? 'pointer-events-none' : ''}`}>
         <div className="fixed top-0 left-70  flex items-center p-5 justify-between mb-6 bg-white w-full py-10 z-10">
           <h1 className=" fixed top-8.5 text-lg font-semibold">{batchHead}</h1>
           <button 
@@ -368,7 +368,7 @@ export default function BatchModel() {
         <div className='p-3'>
           {/* Cards */}
           <div className='flex flex-col md:flex-row gap-4 mb-6'>
-            <div className="relative bg-[#efe6ff] w-full max-w-md h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
+            <div className="relative bg-[#efeeff] w-full max-w-md h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
               <div className="absolute left-6 top-6 text-black text-4xl font-bold leading-10">{ongoingCount}</div>
               <div className="absolute left-6 top-[84px] text-black text-xl font-normal leading-7">Ongoing Count</div>
               <div className="absolute right-4.5 top-6 w-12 h-9 rounded-full flex items-center justify-center">
@@ -381,7 +381,7 @@ export default function BatchModel() {
                 />
               </div>
             </div>
-            <div className="relative bg-[#efe6ff] w-full max-w-md h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
+            <div className="relative bg-[#efeeff] w-full max-w-md h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
               <div className="absolute left-6 top-6 text-black text-4xl font-bold leading-10">{completedCount}</div>
               <div className="absolute left-6 top-[84px] text-black text-xl font-normal leading-7">Completed Count</div>
               <div className="absolute right-4.5 top-6 w-12 h-9 rounded-full flex items-center justify-center">
@@ -397,21 +397,21 @@ export default function BatchModel() {
           </div>
 
           {/* Search Section */}
-          <div className="bg-[#efe6ff] px-6 py-4 rounded-xl">
+          <div className="bg-[#F4F3FF] px-6 py-4 rounded-xl">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 px-3 py-3">
               {/* Batch ID */}
               <div className="relative">
                 <input
                   type="text"
                   id="batch-id"
-                  className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#efe6ff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+                  className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
                   placeholder=" "
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <label
                   htmlFor="batch-id"
-                  className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#efe6ff] transform -translate-y-3 scale-75 top-3.5 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+                  className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-3 scale-75 top-3.5 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750a4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#efeeff]"
                 >
                   Search by Batch number
                 </label>
@@ -431,12 +431,12 @@ export default function BatchModel() {
                   id="start-date"
                   type='date'
                   value={startDate}
-                  className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#efe6ff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+                  className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
                   onChange={(e) => handleSearchStartDateChange(e.target.value)}
                 />
                 <label
                   htmlFor="start-date"
-                  className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#efe6ff] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+                  className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
                 >
                   Start date
                 </label>
@@ -447,7 +447,7 @@ export default function BatchModel() {
                 <input
                   type="text"
                   id="mode"
-                  className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#efe6ff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+                  className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
                   placeholder=" "
                   readOnly
                   value={mode === 'Off' ? '' : mode}
@@ -455,7 +455,7 @@ export default function BatchModel() {
                 />
                 <label
                   htmlFor="mode"
-                  className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#efe6ff] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+                  className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
                 >
                   Mode
                 </label>
@@ -495,12 +495,12 @@ export default function BatchModel() {
                   id="end-date"
                   type='date'
                   value={endDate}
-                  className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#efe6ff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+                  className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
                   onChange={(e) => handleSearchEndDateChange(e.target.value)}
                 />
                 <label
                   htmlFor="end-date"
-                  className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#efe6ff] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+                  className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
                 >
                   End date
                 </label>
@@ -642,7 +642,7 @@ export default function BatchModel() {
             </div>
 
             {/* Tab Navigation */}
-            <div className="flex bg-gray-200 rounded-xl p-1 mb-6 relative">
+            <div className="flex bg-[#ECE6F0] rounded-xl p-1 mb-6 relative">
               {/* Moving background indicator */}
               <div
                 className={`absolute top-1 bottom-1 bg-[#F8FAFD] rounded-lg shadow-sm transition-all duration-300 ease-in-out ${
@@ -679,7 +679,7 @@ export default function BatchModel() {
             </div>
 
             {/* Date Range Section */}
-            <div className="bg-gray-200 rounded-3xl p-4 mb-6 border border-gray-200">
+            <div className="bg-[#ECE6F0] rounded-3xl p-4 mb-6 border border-gray-200">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-sm font-semibold text-gray-500">Select date</h3>
               </div>
@@ -695,14 +695,14 @@ export default function BatchModel() {
                   <input
                     type="date"
                     id={`${activeTab.toLowerCase()}-start-date`}
-                    className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-gray-200 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+                    className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#ECE6F0] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
                     placeholder=" "
                     value={newBatch.sections[activeTab].startDate}
                     onChange={(e) => handleSectionDateChange(activeTab, 'startDate', e.target.value)}
                   />
                   <label
                     htmlFor={`${activeTab.toLowerCase()}-start-date`}
-                    className="absolute px-2 text-sm text-gray-500 duration-300 bg-gray-200 transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+                    className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ECE6F0] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
                   >
                     Start date
                   </label>
@@ -712,14 +712,14 @@ export default function BatchModel() {
                   <input
                     type="date"
                     id={`${activeTab.toLowerCase()}-end-date`}
-                    className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-gray-200 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+                    className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#ECE6F0] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
                     placeholder=" "
                     value={newBatch.sections[activeTab].endDate}
                     onChange={(e) => handleSectionDateChange(activeTab, 'endDate', e.target.value)}
                   />
                   <label
                     htmlFor={`${activeTab.toLowerCase()}-end-date`}
-                    className="absolute px-2 text-sm text-gray-500 duration-300 bg-gray-200 transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+                    className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ECE6F0] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
                   >
                     End date
                   </label>
@@ -762,7 +762,7 @@ export default function BatchModel() {
     </button>
   )}
   {showNewBatchModeDropdown && (
-    <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-md">
+    <div className="absolute z-10 mt-1 w-full bg-[#ECE6F0] border border-gray-300 rounded-md shadow-md">
       {['Online', 'Offline'].map((item) => (
         <div
           key={item}
@@ -803,7 +803,7 @@ export default function BatchModel() {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && batchToDelete && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="w-[500px] bg-[#f8fafd] rounded-[10px] p-6">
+          <div className="w-[500px] bg-[#F8FAFD] rounded-[10px] p-6">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg font-medium">Delete Batch Info</h2>
               <button
@@ -819,7 +819,7 @@ export default function BatchModel() {
               <input
                 type="text"
                 id="delete-confirmation"
-                className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#f8fafd] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+                className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
                 placeholder=" "
                 value={deleteConfirmationInput}
                 onChange={(e) => setDeleteConfirmationInput(e.target.value)}
@@ -827,7 +827,7 @@ export default function BatchModel() {
               />
               <label
                 htmlFor="delete-confirmation"
-                className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#f8fafd] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+                className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
               >
                 Batch Name
               </label>

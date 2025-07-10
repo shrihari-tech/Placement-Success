@@ -69,7 +69,7 @@ export default function NavBar() {
 
   return (
     <>
-      <aside className="fixed top-0 left-0 h-screen w-10 md:w-20 bg-[#EADDFF] flex flex-col justify-between items-center z-30">
+      <aside className="fixed top-0 left-0 h-screen w-10 md:w-20 bg-[#eaddff] flex flex-col justify-between items-center z-30">
         {/* Top: Menu Icon */}
         <div className="flex flex-col items-center w-full">
           {/* Menu Icon (Hamburger) */}
@@ -150,9 +150,11 @@ export default function NavBar() {
           </div>
         </div>
       </aside>
+
+
       {/* Sub Nav */}
       <div
-        className={`fixed top-0 left-10 md:left-20 h-screen bg-[#efe6ff] transition-all duration-300 z-20 ${showSubNav ? 'w-50 opacity-100' : 'w-0 opacity-0 pointer-events-none'}`}
+        className={`fixed top-0 left-10 md:left-20 h-screen bg-[#efeeff] transition-all duration-300 z-20 ${showSubNav ? 'w-50 opacity-100' : 'w-0 opacity-0 pointer-events-none'}`}
       >
         <div className="flex flex-col items-start mt-20">
           <button
