@@ -11,18 +11,7 @@ import { useDataContext } from '../context/dataContext';
 
 export default function BatchModel() {
 
-  const [batches, setBatches] = useState([
-    { id: 1, batchNo: 'RP31', status: 'Ongoing', startDate: '11 Nov 2024', endDate: '11 May 2025', mode: 'Offline' },
-    { id: 2, batchNo: 'RP27', status: 'Completed', startDate: '15 Apr 2024', endDate: '12 Jun 2025', mode: 'Offline' },
-    { id: 3, batchNo: 'RP31-B', status: 'Ongoing', startDate: '15 Apr 24', endDate: '09 Feb 2025', mode: 'Online' },
-    { id: 4, batchNo: 'RP32', status: 'Ongoing', startDate: '15 Apr 24', endDate: '09 Feb 2025', mode: 'Offline' },
-    { id: 5, batchNo: 'RP33', status: 'Completed', startDate: '01 Jan 2024', endDate: '30 Jun 2024', mode: 'Online' },
-    { id: 6, batchNo: 'RP34', status: 'Ongoing', startDate: '01 Mar 2024', endDate: '31 Dec 2024', mode: 'Offline' },
-    { id: 7, batchNo: 'RP35', status: 'Completed', startDate: '15 Feb 2024', endDate: '15 Aug 2024', mode: 'Online' },
-    { id: 8, batchNo: 'RP36', status: 'Ongoing', startDate: '01 May 2024', endDate: '01 Nov 2024', mode: 'Offline' },
-    { id: 9, batchNo: 'RP37', status: 'Completed', startDate: '10 Apr 2024', endDate: '10 Oct 2024', mode: 'Online' },
-    { id: 10, batchNo: 'RP38', status: 'Ongoing', startDate: '20 Mar 2024', endDate: '20 Sep 2024', mode: 'Offline' }
-  ]);
+  const [batches, setBatches ] = useState([]);
 
   const [filteredBatches, setFilteredBatches] = useState([]);
   const [activeTab, setActiveTab] = useState('Domain');
@@ -43,9 +32,18 @@ export default function BatchModel() {
   const [completedCount, setCompletedCount] = useState(0);
 
   //datacontext variable
-     const { batchHead} = useDataContext();
+     const { batchHead , batchData ,addBatch,updateBatch,deleteBatch} = useDataContext();
   
-
+  //search empty during batch change
+  useEffect(()=>{
+    setSearchTerm('');
+    setStartDate('');
+    setEndDate('');
+    setMode('Off');
+    setFilteredBatches([]);
+    setSearchInitiated(false);
+    setSearchDateError('');
+  },[batchHead])
   // Date validation error states for search
   const [searchDateError, setSearchDateError] = useState('');
 
@@ -56,12 +54,12 @@ export default function BatchModel() {
     Communication: ''
   });
 
-  // New state for batch sections
-  const [batchSections, setBatchSections] = useState({
-    Domain: { startDate: '', endDate: '' },
-    Aptitude: { startDate: '', endDate: '' },
-    Communication: { startDate: '', endDate: '' }
-  });
+  // // New state for batch sections
+  // const [batchSections, setBatchSections] = useState({
+  //   Domain: { startDate: '', endDate: '' },
+  //   Aptitude: { startDate: '', endDate: '' },
+  //   Communication: { startDate: '', endDate: '' }
+  // });
 
   const [newBatch, setNewBatch] = useState({
     batchNo: '',
@@ -75,11 +73,15 @@ export default function BatchModel() {
   });
 
   useEffect(() => {
-    const ongoing = batches.filter(b => b.status === 'Ongoing').length;
-    const completed = batches.filter(b => b.status === 'Completed').length;
+    const ongoing = batchData.filter(b => b.status === 'Ongoing').length;
+    const completed = batchData.filter(b => b.status === 'Completed').length;
     setOngoingCount(ongoing);
     setCompletedCount(completed);
-  }, [batches]);
+  }, [batchData]);
+
+  useEffect(()=>{
+    setBatches(batchData)
+  }, [batchData])
 
   // Prevent scrolling when modal is open
   useEffect(() => {
@@ -147,7 +149,7 @@ export default function BatchModel() {
       const updatedFilteredBatches = filteredBatches.filter(batch => batch.id !== batchId);
       setFilteredBatches(updatedFilteredBatches);
     }
-
+    deleteBatch(batchId);
     // Update counts
     const ongoing = updatedBatches.filter(b => b.status === 'Ongoing').length;
     const completed = updatedBatches.filter(b => b.status === 'Completed').length;
@@ -272,9 +274,8 @@ export default function BatchModel() {
       startDate: newBatch.sections[activeTab].startDate,
       endDate: newBatch.sections[activeTab].endDate
     };
-
+    addBatch(newBatchEntry);
     const updatedBatches = [...batches, newBatchEntry];
-    setBatches(updatedBatches);
     setShowModal(false);
 
     // Print the current stored data
@@ -761,6 +762,7 @@ export default function BatchModel() {
           className="px-4 py-2 cursor-pointer hover:bg-gray-100"
           onClick={() => {
             setNewBatch({...newBatch, mode: item});
+            
             setShowNewBatchModeDropdown(false);
           }}
         >
