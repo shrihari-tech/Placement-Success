@@ -79,7 +79,7 @@ export default function ResetPassword() {
       {/* Form */}
       <div className="flex flex-col items-center justify-center gap-8 py-10 px-8 md:px-16 bg-none  w-full max-w-4xl z-10 fixed">
         <div className="w-full max-w-md">
-          <h1 className="font-bold text-3xl md:text-4xl">Reset Password</h1>
+          <h1 className="font-bold text-3xl md:text-4xl">Reset Password... </h1>
           <p className="text-gray-500 mt-1">{"We'll send a link to reset your password"}</p>
 
           <div className="relative w-full mt-6">
