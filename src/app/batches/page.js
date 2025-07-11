@@ -30,15 +30,30 @@ export default function BatchModel() {
 
     const { batchHead, batchData, addBatch, updateBatch, deleteBatch } = useDataContext();
 
-
-
+  
 const formatDate = (dateString) => {
     if (!dateString) return '';
     const [year, month, day] = dateString.split("-");
     return `${day}-${month}-${year}`;
 };
 
+const validateBatchNumber = (batchNo) => {
+  if (!batchNo.trim()) {
+    return 'Batch number is required';
+  }
+  if (batchNo.length > 32) {
+    return 'Batch number must be 32 characters or less';
+  }
+  return ''; // No error
+};
 
+
+const validateMode = (mode) => {
+  if (!mode) {
+    return 'Mode is required';
+  }
+  return ''; // No error
+};
     useEffect(() => {
         setSearchTerm('');
         setStartDate('');
@@ -237,7 +252,6 @@ const formatDate = (dateString) => {
   setShowNewBatchModeDropdown(false);
 };
 
-
     const handleReset = () => {
         setSearchTerm('');
         setStartDate('');
@@ -249,24 +263,16 @@ const formatDate = (dateString) => {
     };
 
     const handleAddBatch = () => {
+        let errors = {};
+        if (!newBatch.batchNo) {
+            errors.batchNo = 'Batch No cannot be empty';
+        } else if (newBatch.batchNo.length > 32) {
+            errors.batchNo = 'Batch No cannot exceed 32 characters';
+        }
 
-      const validateMode = (mode) => {
-  if (!mode) {
-    return 'Mode is required';
-  }
-  return ''; // No error
-};
-  const validateBatchNumber = (batchNo) => {
-  if (!batchNo.trim()) {
-    return 'Batch number is required';
-  }
-  if (batchNo.length > 32) {
-    return 'Batch number must be 32 characters or less';
-  }
-  return ''; // No error
-};
-
-        
+        if (!newBatch.mode.trim()) {
+            errors.mode = 'Mode cannot be empty';
+        }
 
         const hasSectionDates = Object.values(newBatch.sections).some(
             section => section.startDate && section.endDate
@@ -643,7 +649,7 @@ const formatDate = (dateString) => {
         onChange={(e) => {
             const value = e.target.value;
             setNewBatch({ ...newBatch, batchNo: value });
-            validateBatchNumber(value);
+            
             // Clear error when user starts typing
             if (addModelError.batchNo) {
                 setAddModelError({ ...addModelError, batchNo: '' });
@@ -661,9 +667,7 @@ const formatDate = (dateString) => {
             
             setAddModelError({ ...addModelError, batchNo: error });
         }}
-        required
-        maxLength={32} // This prevents input beyond 32 chars
-    />
+        required    />
     <label
         htmlFor="batch-number"
         className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
@@ -774,7 +778,6 @@ const formatDate = (dateString) => {
     placeholder=" "
     readOnly
     value={newBatch.mode}
-    onChange={(e) => {validateMode(e.target.mode)} }
     onClick={() => {
       setShowNewBatchModeDropdown(!showNewBatchModeDropdown);
       // Clear error when user clicks to select
@@ -904,3 +907,4 @@ const formatDate = (dateString) => {
     </div>
   );
 }
+

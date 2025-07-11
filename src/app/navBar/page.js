@@ -18,11 +18,19 @@ export default function NavBar() {
   const [showSubNav, setShowSubNav] = useState(false);
   const [activeSubNav, setActiveSubNav] = useState('');
   const [activeNavItem, setActiveNavItem] = useState('');
+  const [isBatchesHovered, setIsBatchesHovered] = useState(false); // New state for hover
+  // const [check , setCheck] = useState(false);
 
-  //access the datacontext variable
-   const { setBatchingValue ,firstLetterUser } = useDataContext();
+  // Access the data context variable
+  const { setBatchingValue, firstLetterUser } = useDataContext();
+
   // Set initial active state based on current pathname
   useEffect(() => {
+    const storedSubNav = localStorage.getItem('activeSubNav');
+    if (storedSubNav) {
+      setActiveSubNav(storedSubNav);
+      setBatchingValue(storedSubNav);
+    }
     if (pathname === '/home') {
       setActiveNavItem('home');
       setShowSubNav(false); // Close sub-nav when on other pages
@@ -34,13 +42,9 @@ export default function NavBar() {
       setShowSubNav(false); // Close sub-nav when on other pages
     } else if (pathname === '/batches') {
       setActiveNavItem('batches');
-      setShowSubNav(true);
-      
-    } else if (pathname === '/showbatches') {
-      setActiveNavItem('batches');
-      setShowSubNav(true);
-    } 
-    else {
+      setShowSubNav(true);    
+          
+    } else {
       // For any other page, close sub-nav
       setShowSubNav(false);
     }
@@ -48,22 +52,16 @@ export default function NavBar() {
 
   const handleNavItemClick = (navItem) => {
     setActiveNavItem(navItem);
-    // setShowSubNav(false);
-    setActiveSubNav(null);
   };
 
-  const handleBatchesClick = () => {
-    setActiveNavItem('batches');
-    // setShowSubNav((prev) => !prev);
-    if (showSubNav) {
-      setActiveSubNav(null);
-    }
-    router.push('/showbatches');
-  };
+  // const handleBatchesClick = () => {
+  //   setActiveNavItem('batches');
+  // };
 
   const handleSubNavClick = (subNavItem) => {
     setActiveSubNav(subNavItem);
-    setBatchingValue(subNavItem)
+    setBatchingValue(subNavItem);
+    localStorage.setItem('activeSubNav', subNavItem);
     router.push('/batches');
   };
 
@@ -74,13 +72,13 @@ export default function NavBar() {
         <div className="flex flex-col items-center w-full">
           {/* Menu Icon (Hamburger) */}
           <div className='mt-5 mb-3'>
-              <button className="mb-2 p-2 rounded-lg">
-            <GiHamburgerMenu size={20} className="text-black" />
-          </button>
+            <button className="mb-2 p-2 rounded-lg">
+              <GiHamburgerMenu size={20} className="text-black" />
+            </button>
           </div>
           {/* Navigation Icons */}
           <nav className="flex flex-col items-center w-full">
-            <div className="flex flex-col items-center w-full mb-5">
+            <div className="flex flex-col items-center w-full mb-5" onClick={() =>router.push('/home')}>
               <Link 
                 href="/home" 
                 className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${activeNavItem === 'home' ? 'bg-[#6750A4] text-white' : 'hover:bg-[#e0ccff] hover:text-black'}`}
@@ -88,18 +86,23 @@ export default function NavBar() {
               >
                 <LuLayoutGrid size={20} />
               </Link>
-              <span className="text-xs font-semibold text-[#49454F]">Home</span>
+              <span className="text-xs font-semibold cursor-pointer text-[#49454F]"
+                onClick={() =>router.push('/home')}>Home</span>
             </div>
-            <div className="flex flex-col items-center w-full mb-5">
+            <div 
+              className="flex flex-col items-center w-full mb-5"
+              onMouseEnter={() => setIsBatchesHovered(true)} // Set hover state
+              onMouseLeave={() => setIsBatchesHovered(false)} // Reset hover state
+            >
               <button
                 className={`flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl transition-colors ${activeNavItem === 'batches' ? 'bg-[#6750A4] text-white' : 'text-black hover:bg-[#e0ccff] hover:text-black'}`}
-                 onClick={handleBatchesClick}
+                // onClick={handleBatchesClick}
               >
                 <MdOutlineGroups size={20} />
               </button>
-              <span className="text-xs font-semibold text-[#49454F]">Batches</span>
+              <span className="text-xs font-semibold cursor-pointer text-[#49454F]">Batches</span>
             </div>
-            <div className="flex flex-col items-center w-full mb-5">
+            <div className="flex flex-col items-center w-full mb-5" onClick={() =>router.push('/student')}>
               <Link 
                 href="/student" 
                 className={`flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl transition-colors ${activeNavItem === 'student' ? 'bg-[#6750A4] text-white' : 'text-black hover:bg-[#e0ccff] hover:text-black'}`}
@@ -107,59 +110,64 @@ export default function NavBar() {
               >
                 <RiGraduationCapLine size={20} />
               </Link>
-              <span className="text-xs font-semibold text-[#49454F]">Student</span>
+              <span className="text-xs font-semibold cursor-pointer text-[#49454F]"
+              onClick={() => router.push('/student')}>Student</span>
             </div>
           </nav>
         </div>
         {/* Bottom: Notification, Settings, User Avatar */}
         <div className="flex flex-col items-center w-full mb-15">
           <div className="flex flex-col items-center w-full mb-5">
-              <button 
-                className="flex flex-col items-center mb-1 px-3.5 py-1 text-black hover:bg-[#e0ccff] hover:text-black rounded-2xl transition-colors"
-                onClick={() => {
-                  // Close sub-nav when clicking notification
-                  setShowSubNav(false);
-                  setActiveSubNav(null);
-                }}
-              >
+            <button 
+              className="flex flex-col items-center mb-1 px-3.5 py-1 text-black hover:bg-[#e0ccff] hover:text-black rounded-2xl transition-colors cursor-pointer"
+              onClick={() => {
+                setShowSubNav(false);
+              }}
+            >
               <MdOutlineNotifications size={20} />
             </button>
-            <span className="text-xs font-semibold text-[#49454F] mb-2">Notification</span>
+            <span className="text-xs font-semibold cursor-pointer text-[#49454F] mb-2">Notification</span>
           </div>
-          <div className="flex flex-col items-center w-full mb-5">
-              <Link 
-                href="/seting" 
-                className={`flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl transition-colors ${activeNavItem === 'settings' ? 'bg-[#6750A4] text-white' : 'text-black hover:bg-[#e0ccff] hover:text-black'}`}
-                onClick={() => handleNavItemClick('settings')}
-              >
+          <div className="flex flex-col items-center w-full mb-5" onClick={() =>router.push('/seting')}>
+            <Link 
+              href="/seting" 
+              className={`flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl transition-colors ${activeNavItem === 'settings' ? 'bg-[#6750A4] text-white' : 'text-black hover:bg-[#e0ccff] hover:text-black'}`}
+              onClick={() => {handleNavItemClick('settings')
+                
+              }}
+            >
               <MdOutlineSettings size={20} />
             </Link>
-            <span className="text-xs font-semibold text-[#49454F] mb-2">Settings</span>
+            <span className="text-xs font-semibold cursor-pointer text-[#49454F] mb-2"
+            onClick={() =>router.push('/seting')}>Settings</span>
           </div>
           <div className="flex flex-col items-center w-full mb-5">
-              <button 
-                className="flex flex-col items-center mb-2 px-3.5 py-1 bg-black text-white rounded-2xl w-10 h-10 justify-center font-bold text-lg"
-                onClick={() => {
-                  // Close sub-nav when clicking user avatar
-                  setShowSubNav(false);
-                  setActiveSubNav(null);
-                }}
-              >
+            <button 
+              className="flex flex-col items-center mb-2 px-3.5 py-1 bg-black text-white rounded-2xl w-10 h-10 justify-center font-bold text-lg"
+              onClick={() => {
+                setShowSubNav(false);
+              }}
+            >
               {firstLetterUser}
             </button>
           </div>
         </div>
       </aside>
 
-
       {/* Sub Nav */}
       <div
-        className={`fixed top-0 left-10 md:left-20 h-screen bg-[#efeeff] transition-all duration-300 z-20 ${showSubNav ? 'w-50 opacity-100' : 'w-0 opacity-0 pointer-events-none'}`}
+        className={`fixed top-0 left-10 md:left-20 h-screen bg-[#efeeff] transition-all duration-300 z-20 ${showSubNav || isBatchesHovered ? 'w-50 opacity-100' : 'w-0 opacity-0 pointer-events-none'}`} // Show sub-nav on hover
+        onMouseEnter={() => {
+          setIsBatchesHovered(true);
+        }} // Set hover state
+        onMouseLeave={() => setIsBatchesHovered(false)}
       >
         <div className="flex flex-col items-start mt-20">
           <button
-            className={`flex items-center mx-2 ps-1 pe-9 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'fullstack' ? 'bg-[#be99ff] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
-            onClick={() => handleSubNavClick('fullstack')}
+            className={`cursor-pointer flex items-center mx-2 ps-1 pe-9 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'fullstack' ? 'bg-[#be99ff] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
+            onClick={(e) =>{ 
+              e.preventDefault();
+              handleSubNavClick('fullstack')}}
           >
             <Image
               src='/computer.svg'
@@ -168,15 +176,17 @@ export default function NavBar() {
               height={15}
               className="object-contain"
             />
-            <span className={`font-bold text-[10px] ${activeSubNav === 'fullstack' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}
-                
-            >Full Stack Development</span>
+            <span className={`font-bold text-[10px] ${activeSubNav === 'fullstack' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>
+              Full Stack Development
+            </span>
           </button>
         </div>
         <div className="flex flex-col items-start mt-2">
           <button
-            className={`flex items-center mx-2 ps-1 pe-7 py-2 rounded-md transition-colors font-semibold  gap-2 ${activeSubNav === 'dataanalytics' ? 'bg-[#be99ff] text-black' : 'text-black hover:bg-[#E8DEF8]' }`}
-            onClick={() => handleSubNavClick('dataanalytics')}
+            className={`cursor-pointer flex items-center mx-2 ps-1 pe-7 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'dataanalytics' ? 'bg-[#be99ff] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
+            onClick={(e) => {
+              e.preventDefault();
+              handleSubNavClick('dataanalytics')}}
           >
             <Image
               src='/bar_chart_4_bars.svg'
@@ -185,13 +195,15 @@ export default function NavBar() {
               height={15}
               className="object-contain"
             />
-            <span className={`font-bold text-[10px] ${activeSubNav === 'dataanalytics' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>Data Analytics & Science</span>
+            <span className={` font-bold text-[10px] ${activeSubNav === 'dataanalytics' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>Data Analytics & Science</span>
           </button>
         </div>
         <div className="flex flex-col items-start mt-2">
           <button
-            className={`flex items-center mx-2 ps-1 pe-2 py-2 rounded-md transition-colors font-semibold  gap-2 ${activeSubNav === 'banking' ? 'bg-[#be99ff] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
-            onClick={() => handleSubNavClick('banking')}
+            className={`cursor-pointer flex items-center mx-2 ps-1 pe-2 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'banking' ? 'bg-[#be99ff] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
+            onClick={(e) =>{ 
+              e.preventDefault();
+              handleSubNavClick('banking')}}
           >
             <Image
               src='/account_balance.svg'
@@ -199,13 +211,16 @@ export default function NavBar() {
               width={15}
               height={15}
               className="object-contain"
-            /> <span className={`font-bold text-[10px] ${activeSubNav === 'banking' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>Banking & Financial Services</span>
+            />
+            <span className={` font-bold text-[10px] ${activeSubNav === 'banking' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>Banking & Financial Services</span>
           </button>
         </div>
         <div className="flex flex-col items-start mt-2">
           <button
-            className={`flex items-center mx-2 ps-1 pe-17 py-2 rounded-md transition-colors font-semibold  gap-2 ${activeSubNav === 'marketing' ? 'bg-[#be99ff] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
-            onClick={() => handleSubNavClick('marketing')}
+            className={`cursor-pointer flex items-center mx-2 ps-1 pe-17 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'marketing' ? 'bg-[#be99ff] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
+            onClick={(e) => {
+              e.preventDefault();
+              handleSubNavClick('marketing')}}
           >
             <Image
               src='/ad.svg'
@@ -213,13 +228,16 @@ export default function NavBar() {
               width={15}
               height={15}
               className="object-contain"
-            />          <span className={`font-bold text-[10px] ${activeSubNav === 'marketing' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>Digital Marketing</span>
+            />
+            <span className={`font-bold text-[10px] ${activeSubNav === 'marketing' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>Digital Marketing</span>
           </button>
         </div>
         <div className="flex flex-col items-start mt-2">
           <button
-            className={`flex items-center mx-2 ps-1 pe-30 py-2 rounded-md transition-colors font-semibold  gap-2 ${activeSubNav === 'sap' ? 'bg-[#be99ff] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
-            onClick={() => handleSubNavClick('sap')}
+            className={`cursor-pointer flex items-center mx-2 ps-1 pe-30 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'sap' ? 'bg-[#be99ff] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
+            onClick={(e) => {
+              e.preventDefault();
+              handleSubNavClick('sap')}}
           >
             <Image
               src='/device_hub.svg'
@@ -227,13 +245,16 @@ export default function NavBar() {
               width={15}
               height={15}
               className="object-contain"
-            />  <span className={`font-bold text-[10px] ${activeSubNav === 'sap' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>SAP</span>
+            />
+            <span className={`font-bold text-[10px] ${activeSubNav === 'sap' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>SAP</span>
           </button>
         </div>
         <div className="flex flex-col items-start mt-2">
           <button
-            className={`flex items-center mx-2 ps-1 pe-27 py-2 rounded-md transition-colors font-semibold  gap-2 ${activeSubNav === 'devops' ? 'bg-[#be99ff] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
-            onClick={() => handleSubNavClick('devops')}
+            className={`cursor-pointer flex items-center mx-2 ps-1 pe-27 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'devops' ? 'bg-[#be99ff] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
+            onClick={(e) => {
+              e.preventDefault();
+              handleSubNavClick('devops')}}
           >
             <Image
               src='/deployed_code_history.svg'
@@ -241,7 +262,8 @@ export default function NavBar() {
               width={15}
               height={15}
               className="object-contain"
-            /><span className={`font-bold text-[10px] ${activeSubNav === 'devops' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>DevOps</span>
+            />
+            <span className={`font-bold text-[10px] ${activeSubNav === 'devops' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>DevOps</span>
           </button>
         </div>
       </div>
