@@ -1,8 +1,6 @@
 "use client";
-
 import { FiEye, FiEdit, FiTrash2, FiMoreVertical, FiCalendar, FiChevronDown } from 'react-icons/fi';
 import Image from 'next/image';
-import { RefreshCcw } from 'lucide-react';
 import { Toaster, toast } from 'react-hot-toast';
 import { X } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
@@ -356,14 +354,14 @@ export default function BatchModel() {
   return (
     <div className="flex min-h-screen mx-[-16]">
       {/* Main Content */}
-      <div className={` px-3 pt-24 flex-1 bg-[#F8FAFD] overflow-hidden width-full  ${showModal || showDeleteModal ? 'pointer-events-none' : ''}`}>
-        <div className="fixed top-0 left-70  flex items-center p-5 justify-between mb-6 bg-white w-full py-10 z-10">
-          <h1 className=" fixed top-8.5 text-lg font-semibold">{batchHead}</h1>
+      <div className={` px-3 pt-20 flex-1 bg-[#F8FAFD] mb-[12] overflow-hidden width-full  ${showModal || showDeleteModal ? 'pointer-events-none' : ''}`}>
+        <div className="fixed top-0 left-70 flex items-center p-5 justify-between bg-white w-full py-10 z-10">
+          <h1 className=" fixed top-7.5 text-lg font-semibold">{batchHead}</h1>
           <button 
             onClick={() => setShowModal(true)}
-            className="fixed flex p-2 top-5 right-5 bg-[#3f2fb4] hover:bg-[#3f2fb4d4] text-white text-l font-bold px-2 py-2.5 rounded-lg shadow-sm">
+            className="fixed flex p-2 top-4 right-5 bg-[#3f2fb4] hover:bg-[#3f2fb4d4] text-white text-l font-bold px-2 py-2.5 rounded-lg shadow-sm">
             <Image
-              src='/icon (1).svg'
+              src='/add.svg'
               alt="SAP Icon"
               width={20}
               height={20}
@@ -524,7 +522,7 @@ export default function BatchModel() {
                   className="bg-[#f1ecfb] hover:bg-[#E8DEF8] px-6 py-2 rounded-2xl text-sm font-semibold text-gray-700 flex items-center gap-1"
                 >
                   <Image
-                                src='/icon.svg'
+                                src='/reset.svg'
                                 alt="SAP Icon"
                                 width={20}
                                 height={20}

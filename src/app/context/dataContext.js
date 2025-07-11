@@ -16,10 +16,15 @@ export const useDataContext = () => {
 
 // Sample data arrays (used only as initial values)
 const fullstackInitial = [
-  { id: 1, batchNo: "FS01", status: "Completed", startDate: "01 Jan 2024", endDate: "30 Jun 2024", mode: "Offline" },
+   { id: 1, batchNo: "FS01", status: "Completed", startDate: "01 Jan 2024", endDate: "30 Jun 2024", mode: "Offline" },
   { id: 2, batchNo: "FS02", status: "Completed", startDate: "10 Feb 2024", endDate: "10 Aug 2024", mode: "Online" },
   { id: 3, batchNo: "FS03", status: "Completed", startDate: "15 Mar 2024", endDate: "15 Sep 2024", mode: "Offline" },
-];
+  { id: 4, batchNo: "FS04", status: "Ongoing", startDate: "01 May 2024", endDate: "31 Oct 2024", mode: "Online" },
+  { id: 5, batchNo: "FS05", status: "Upcoming", startDate: "01 Aug 2024", endDate: "31 Jan 2025", mode: "Offline" },
+  { id: 6, batchNo: "FS06", status: "Completed", startDate: "01 Sep 2023", endDate: "28 Feb 2024", mode: "Online" },
+  { id: 7, batchNo: "FS07", status: "Completed", startDate: "15 Oct 2023", endDate: "15 Apr 2024", mode: "Offline" },
+  { id: 8, batchNo: "FS08", status: "Ongoing", startDate: "10 Jun 2024", endDate: "10 Dec 2024", mode: "Online" },
+  { id: 9, batchNo: "FS09", status: "Upcoming", startDate: "01 Sep 2024", endDate: "28 Feb 2025", mode: "Offline" },];
 
 const dataanalyticsInitial = [
   { id: 1, batchNo: "DA01", status: "Ongoing", startDate: "01 Jan 2024", endDate: "30 Jun 2024", mode: "Online" },
