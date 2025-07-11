@@ -3,6 +3,8 @@ import React from "react";
 import NavBar from "../navBar/page";
 import Image from "next/image";
 import { FaSearch } from "react-icons/fa"; //search Icons
+import {LineChart,Line,XAxis,YAxis,CartesianGrid,Tooltip,LabelList,ResponsiveContainer,} from "recharts";
+
 
 export default function HomePage() {
   //to assume live date
@@ -88,8 +90,58 @@ export default function HomePage() {
         </div>
         </div>
         {/* Barchat code */}
-        <div>
-          
+        <div className="mt-10">
+          <h4 className="text-s text-black font-semibold">Placement projection</h4>
+          {/* Barchat */}
+          <div className="flex flex-col md:flex-row gap-6 mt-4">
+            {["Current month", "Previous month"].map((title, idx) => (
+              <div key={idx} className="bg-white rounded-xl shadow-md p-4 w-full md:w-1/2">
+                <h2 className="font-semibold text-[13px] mb-5 text-[#000000] ">{title}</h2>
+                <ResponsiveContainer width="100%" height={250}>
+                  <LineChart data={[
+                    { name: "FSD", value: 56 },
+                    { name: "DA & DS", value: 64 },
+                    { name: "Banking", value: 76 },
+                    { name: "DM", value: 78 },
+                    { name: "SAP", value: 70 },
+                    { name: "DevOps", value: 37 },
+                  ]}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis 
+                        dataKey="name" 
+                        interval={0} 
+                        tick={{ textAnchor: "middle" ,fontSize: 10}} 
+                        padding={{ left: 40, right: 40 }} 
+                    />
+                    <YAxis 
+                      domain={[0, 100]} 
+                      tick={{ fontSize: 10 }} 
+                      axisLine={false} 
+                      tickLine={false}
+                    />
+                    <Tooltip />
+                    <Line
+                      type="monotone"
+                      dataKey="value"
+                      stroke="#6366f1"
+                      strokeWidth={2}
+                      dot={{ fill: "#6366f1", stroke: "#fff", strokeWidth: 2 }}
+                      activeDot={{ r: 6 }}
+                    >
+                      <LabelList dataKey="value" position="top" />
+                    </Line>
+                  </LineChart>
+                </ResponsiveContainer>
+                <div className="text-center text-sm text-gray-500 mt-2">
+                  <span><Image 
+                  src='/LegendNode.svg' width={20} height={20} alt="legendNode"
+                  /> </span>
+                  2025
+                </div>
+              </div>
+            ))}
+          </div>
+
         </div>
       </div>
     </div>
