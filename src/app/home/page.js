@@ -111,7 +111,7 @@ export default function HomePage() {
                         dataKey="name" 
                         interval={0} 
                         tick={{ textAnchor: "middle" ,fontSize: 10}} 
-                        padding={{ left: 40, right: 40 }} 
+                        // padding={{ left: 40 }} 
                     />
                     <YAxis 
                       domain={[0, 100]} 
@@ -128,7 +128,9 @@ export default function HomePage() {
                       dot={{ fill: "#6366f1", stroke: "#fff", strokeWidth: 2 }}
                       activeDot={{ r: 6 }}
                     >
-                      <LabelList dataKey="value" position="top" />
+                      <LabelList dataKey="value" position="top" 
+                      style={{ fontSize: 10, fill: "#666" }}
+                      />
                     </Line>
                   </LineChart>
                 </ResponsiveContainer>

@@ -3,8 +3,8 @@ import { FiEye, FiEdit, FiTrash2, FiMoreVertical, FiCalendar, FiChevronDown } fr
 import Image from 'next/image';
 import { Toaster, toast } from 'react-hot-toast';
 import { X } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
-import { useDataContext } from '../context/dataContext';
+import React, { useState, useEffect,useRef } from 'react';
+import { useDataContext } from '../context/dataContext';;
 
 export default function BatchModel() {
 
@@ -109,8 +109,40 @@ export default function BatchModel() {
     setSearchDateError('');
     return true;
   };
+  
+const handleCloseModal = () => {
+  setShowModal(false);
+}
 
-  // Handle start date change in search
+ const handleCloseModelSelect = () =>{
+   setShowNewBatchModeDropdown(false);
+ }
+const modeDropdownRef = useRef(null); // for filter section
+const newBatchDropdownRef = useRef(null); // for Add Batch Modal
+useEffect(() => {
+  function handleClickOutside(event) {
+    if (
+      modeDropdownRef.current &&
+      !modeDropdownRef.current.contains(event.target)
+    ) {
+      setShowModeDropdown(false); // for main filter dropdown
+    }
+
+    if (
+      newBatchDropdownRef.current &&
+      !newBatchDropdownRef.current.contains(event.target)
+    ) {
+      setShowNewBatchModeDropdown(false); // for modal dropdown
+    }
+  }
+
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
+
+
   const handleSearchStartDateChange = (value) => {
     setStartDate(value);
     validateSearchDates(value, endDate);
@@ -355,7 +387,7 @@ export default function BatchModel() {
     <div className="flex min-h-screen mx-[-16]">
       {/* Main Content */}
       <div className={` px-3 pt-20 flex-1 bg-[#F8FAFD] mb-[12] overflow-hidden width-full  ${showModal || showDeleteModal ? 'pointer-events-none' : ''}`}>
-        <div className="fixed top-0 left-70 flex items-center p-5 justify-between bg-white w-full py-10 z-10">
+        <div className="fixed top-0 left-70 flex border-b-2 border-gray-300 items-center p-5 justify-between bg-white w-full py-10 z-10">
           <h1 className=" fixed top-7.5 text-lg font-semibold">{batchHead}</h1>
           <button 
             onClick={() => setShowModal(true)}
@@ -448,11 +480,11 @@ export default function BatchModel() {
               </div>
 
               {/* Mode Selector */}
-              <div className="relative">
+              <div className="relative" ref={modeDropdownRef}>
                 <input
                   type="text"
                   id="mode"
-                  className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+                  className="block rounded-sm px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
                   placeholder=" "
                   readOnly
                   value={mode === 'Off' ? '' : mode}
@@ -477,7 +509,7 @@ export default function BatchModel() {
                   </button>
                 )}
                 {showModeDropdown && (
-                  <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-md">
+                  <div className="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-md">
                     {['Online', 'Offline'].map((item) => (
                       <div
                         key={item}
@@ -632,12 +664,19 @@ export default function BatchModel() {
 
       {/* Add Batch Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="w-[500px] bg-[#F8FAFD] rounded-[10px] p-6">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+        onClick={() => {
+          handleCloseModal();
+          handleCloseModelSelect();
+        }}
+        >
+          <div className="w-[500px] bg-[#F8FAFD] rounded-[10px] p-6" onClick={(e) => {e.stopPropagation()
+            
+          }}>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg font-bold">Add new batch</h2>
               <button
-                onClick={() => setShowModal(false)}
+                onClick={handleCloseModal}
                 className="text-gray-500 hover:text-gray-700"
               >
                 <X size={24} />
@@ -754,7 +793,7 @@ export default function BatchModel() {
             </div>
 
             {/* Mode Selector */}
-<div className="relative mb-6">
+<div className="relative mb-6" ref={newBatchDropdownRef}>
   <input
     type="text"
     id="new-mode"
@@ -784,14 +823,13 @@ export default function BatchModel() {
     </button>
   )}
   {showNewBatchModeDropdown && (
-    <div className="absolute z-10 mt-1 w-full bg-[#ECE6F0] border border-gray-300 rounded-md shadow-md">
+    <div className="absolute z-10 w-full bg-[#ECE6F0] border border-gray-300 rounded-md shadow-md">
       {['Online', 'Offline'].map((item) => (
         <div
           key={item}
           className="px-4 py-2 cursor-pointer hover:bg-gray-100"
           onClick={() => {
-            setNewBatch({...newBatch, mode: item});
-            
+            setNewBatch({ ...newBatch, mode: item });
             setShowNewBatchModeDropdown(false);
           }}
         >
@@ -801,6 +839,7 @@ export default function BatchModel() {
     </div>
   )}
 </div>
+
 
             {/* Buttons */}
             <div className="flex justify-end gap-4">
@@ -825,8 +864,10 @@ export default function BatchModel() {
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && batchToDelete && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="w-[500px] bg-[#F8FAFD] rounded-[10px] p-6">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+        onClick={handleCloseDeleteModal}
+        >
+          <div className="w-[500px] bg-[#F8FAFD] rounded-[10px] p-6" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg font-medium">Delete Batch Info</h2>
               <button
