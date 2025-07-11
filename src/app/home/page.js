@@ -13,6 +13,18 @@ export default function HomePage() {
   const dd = String(date.getDate()).padStart(2, '0');
   const yyyy = date.getFullYear();
   const formattedDate = `${mm}/${dd}/${yyyy}`;
+  const CustomDot = ({ cx, cy }) => {
+  return (
+    <g>
+      {/* Outermost light blue circle */}
+      <circle cx={cx} cy={cy} r={10} fill="#c7d2fe" />
+      {/* Middle white circle */}
+      <circle cx={cx} cy={cy} r={5.5} fill="#ffffff" />
+      {/* Innermost blue circle */}
+      <circle cx={cx} cy={cy} r={3.5} fill="#3b82f6" />
+    </g>
+  );
+};
 
   return (
     <div className="container justify-center items-center mx-auto  p-4">
@@ -111,7 +123,7 @@ export default function HomePage() {
                         dataKey="name" 
                         interval={0} 
                         tick={{ textAnchor: "middle" ,fontSize: 10}} 
-                        // padding={{ left: 40 }} 
+                        padding={{ left: 50, right: 50}} 
                     />
                     <YAxis 
                       domain={[0, 100]} 
@@ -125,11 +137,14 @@ export default function HomePage() {
                       dataKey="value"
                       stroke="#6366f1"
                       strokeWidth={2}
-                      dot={{ fill: "#6366f1", stroke: "#fff", strokeWidth: 2 }}
                       activeDot={{ r: 6 }}
+                     dot={<CustomDot />}
                     >
-                      <LabelList dataKey="value" position="top" 
-                      style={{ fontSize: 10, fill: "#666" }}
+                      <LabelList
+                        dataKey="value"
+                        position="top"
+                        offset={12}
+                        style={{ fontSize: 12, fill: "#666" }}
                       />
                     </Line>
                   </LineChart>
@@ -137,6 +152,7 @@ export default function HomePage() {
                 <div className="text-center text-sm text-gray-500 mt-2">
                   <span><Image 
                   src='/LegendNode.svg' width={20} height={20} alt="legendNode"
+                  className="text-center"
                   /> </span>
                   2025
                 </div>

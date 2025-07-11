@@ -381,6 +381,7 @@ useEffect(() => {
 
       return updatedBatch;
     });
+    
   };
 
   return (
