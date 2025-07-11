@@ -72,11 +72,14 @@ export default function Home() {
       valid = false;
     }
 
-    if (valid) {
+    if (valid && email === 'admin@gmail.com' && password === '1234567') {
       toast.success("Login successful! Redirecting...");
       setLoginUser(email);
+      return valid;
     }
-    return valid;
+    else{
+      toast.error("Enter the valid Email and Password");
+    }
   };
 
   const handleSubmit = (e) => {
