@@ -389,7 +389,7 @@ useEffect(() => {
       {/* Main Content */}
       <div className={` px-3 pt-20 flex-1 bg-[#F8FAFD] mb-[12] overflow-hidden width-full  ${showModal || showDeleteModal ? 'pointer-events-none' : ''}`}>
         <div className="fixed top-0 left-70 flex border-b-2 border-gray-300 items-center p-5 justify-between bg-white w-full py-10 z-10">
-          <h1 className=" fixed top-7.5 text-lg font-semibold">{batchHead}</h1>
+          <h1 className=" fixed top-7.5 text-lg font-semibold text-gray-700">{batchHead}</h1>
           <button 
             onClick={() => setShowModal(true)}
             className="fixed flex p-2 top-4 right-5 bg-[#3f2fb4] hover:bg-[#3f2fb4d4] text-white text-l font-bold px-2 py-2.5 rounded-lg shadow-sm">
@@ -407,8 +407,8 @@ useEffect(() => {
           {/* Cards */}
           <div className='flex flex-col md:flex-row gap-4 mb-6'>
             <div className="relative bg-[#efeeff] w-full max-w-md h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
-              <div className="absolute left-6 top-6 text-black text-4xl font-bold leading-10">{ongoingCount}</div>
-              <div className="absolute left-6 top-[84px] text-black text-xl font-normal leading-7">Ongoing Count</div>
+              <div className="absolute left-6 top-6 text-gray-800 text-4xl font-bold leading-10">{ongoingCount}</div>
+              <div className="absolute left-6 top-[84px] text-gray-700 text-xl font-normal leading-7">Ongoing Count</div>
               <div className="absolute right-4.5 top-6 w-12 h-9 rounded-full flex items-center justify-center">
                 <Image
                   src="/onging count.png"
@@ -420,8 +420,8 @@ useEffect(() => {
               </div>
             </div>
             <div className="relative bg-[#efeeff] w-full max-w-md h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
-              <div className="absolute left-6 top-6 text-black text-4xl font-bold leading-10">{completedCount}</div>
-              <div className="absolute left-6 top-[84px] text-black text-xl font-normal leading-7">Completed Count</div>
+              <div className="absolute left-6 top-6 text-gray-800 text-4xl font-bold leading-10">{completedCount}</div>
+              <div className="absolute left-6 top-[84px] text-gray-700 text-xl font-normal leading-7">Completed Count</div>
               <div className="absolute right-4.5 top-6 w-12 h-9 rounded-full flex items-center justify-center">
                 <Image
                   src="/completed count.png"

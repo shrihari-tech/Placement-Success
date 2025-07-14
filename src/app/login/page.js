@@ -212,7 +212,7 @@ export default function Home() {
             {/* Submit Button */}
             <button
             type="submit"
-            className={`w-full p-3 mt-6 rounded-xl border-none ${email || password ? "bg-[#3f2fb4] text-white" : "bg-gray-300 text-gray-400"} font-bold 
+            className={`w-full p-3 mt-6 cursor-pointer rounded-xl border-none ${email || password ? "bg-[#3f2fb4] text-white" : "bg-gray-300 text-gray-400"} font-bold 
                         hover:text-white transition-colors duration-300`}
             >
             Login
