@@ -15,37 +15,211 @@ export const useDataContext = () => {
 };
 
 // Sample data arrays (used only as initial values)
-const fullstackInitial = [
-   { id: 1, batchNo: "FS01", status: "Completed", startDate: "01 Jan 2024", endDate: "30 Jun 2024", mode: "Offline" },
-  { id: 2, batchNo: "FS02", status: "Completed", startDate: "10 Feb 2024", endDate: "10 Aug 2024", mode: "Online" },
-  { id: 3, batchNo: "FS03", status: "Completed", startDate: "15 Mar 2024", endDate: "15 Sep 2024", mode: "Offline" },
-  { id: 4, batchNo: "FS04", status: "Ongoing", startDate: "01 May 2024", endDate: "31 Oct 2024", mode: "Online" },
-  { id: 5, batchNo: "FS05", status: "Upcoming", startDate: "01 Aug 2024", endDate: "31 Jan 2025", mode: "Offline" },
-  { id: 6, batchNo: "FS06", status: "Completed", startDate: "01 Sep 2023", endDate: "28 Feb 2024", mode: "Online" },
-  { id: 7, batchNo: "FS07", status: "Completed", startDate: "15 Oct 2023", endDate: "15 Apr 2024", mode: "Offline" },
-  { id: 8, batchNo: "FS08", status: "Ongoing", startDate: "10 Jun 2024", endDate: "10 Dec 2024", mode: "Online" },
-  { id: 9, batchNo: "FS09", status: "Upcoming", startDate: "01 Sep 2024", endDate: "28 Feb 2025", mode: "Offline" },];
-
-const dataanalyticsInitial = [
-  { id: 1, batchNo: "DA01", status: "Ongoing", startDate: "01 Jan 2024", endDate: "30 Jun 2024", mode: "Online" },
-  { id: 2, batchNo: "DA02", status: "Ongoing", startDate: "05 Feb 2024", endDate: "05 Aug 2024", mode: "Offline" },
+// 🗂️ Full‑stack batch seed data (template)
+// ===== Full‑Stack =====
+export const fullstackInitial = [
+  { id: 1, batchNo: "FS01", mode: "Online",  status: "Completed", startDate: "2024-01-01", endDate: "2024-06-30",
+    sections: { Domain:{startDate:"2024-01-01",endDate:"2024-03-01"}, Aptitude:{startDate:"2024-03-02",endDate:"2024-05-01"}, Communication:{startDate:"2024-05-02",endDate:"2024-06-30"} } },
+  { id: 2, batchNo: "FS02", mode: "Offline", status: "Completed", startDate: "2024-02-01", endDate: "2024-07-31",
+    sections: { Domain:{startDate:"2024-02-01",endDate:"2024-04-01"}, Aptitude:{startDate:"2024-04-02",endDate:"2024-06-01"}, Communication:{startDate:"2024-06-02",endDate:"2024-07-31"} } },
+  { id: 3, batchNo: "FS03", mode: "Online",  status: "Completed", startDate: "2024-03-01", endDate: "2024-08-31",
+    sections: { Domain:{startDate:"2024-03-01",endDate:"2024-05-01"}, Aptitude:{startDate:"2024-05-02",endDate:"2024-07-01"}, Communication:{startDate:"2024-07-02",endDate:"2024-08-31"} } },
+  { id: 4, batchNo: "FS04", mode: "Offline", status: "Completed", startDate: "2024-04-01", endDate: "2024-09-30",
+    sections: { Domain:{startDate:"2024-04-01",endDate:"2024-06-01"}, Aptitude:{startDate:"2024-06-02",endDate:"2024-08-01"}, Communication:{startDate:"2024-08-02",endDate:"2024-09-30"} } },
+  { id: 5, batchNo: "FS05", mode: "Online",  status: "Completed", startDate: "2024-05-01", endDate: "2024-10-31",
+    sections: { Domain:{startDate:"2024-05-01",endDate:"2024-07-01"}, Aptitude:{startDate:"2024-07-02",endDate:"2024-09-01"}, Communication:{startDate:"2024-09-02",endDate:"2024-10-31"} } },
+  { id: 6, batchNo: "FS06", mode: "Offline", status: "Completed", startDate: "2024-06-01", endDate: "2024-11-30",
+    sections: { Domain:{startDate:"2024-06-01",endDate:"2024-08-01"}, Aptitude:{startDate:"2024-08-02",endDate:"2024-10-01"}, Communication:{startDate:"2024-10-02",endDate:"2024-11-30"} } },
+  { id: 7, batchNo: "FS07", mode: "Online",  status: "Completed", startDate: "2024-07-01", endDate: "2024-12-31",
+    sections: { Domain:{startDate:"2024-07-01",endDate:"2024-09-01"}, Aptitude:{startDate:"2024-09-02",endDate:"2024-11-01"}, Communication:{startDate:"2024-11-02",endDate:"2024-12-31"} } },
+  { id: 8, batchNo: "FS08", mode: "Offline", status: "Completed", startDate: "2024-08-01", endDate: "2025-01-31",
+    sections: { Domain:{startDate:"2024-08-01",endDate:"2024-10-01"}, Aptitude:{startDate:"2024-10-02",endDate:"2024-12-01"}, Communication:{startDate:"2024-12-02",endDate:"2025-01-31"} } },
+  { id: 9, batchNo: "FS09", mode: "Online",  status: "Completed", startDate: "2024-09-01", endDate: "2025-02-28",
+    sections: { Domain:{startDate:"2024-09-01",endDate:"2024-11-01"}, Aptitude:{startDate:"2024-11-02",endDate:"2025-01-01"}, Communication:{startDate:"2025-01-02",endDate:"2025-02-28"} } },
+  { id:10, batchNo: "FS10", mode: "Offline", status: "Ongoing",   startDate: "2024-10-01", endDate: "2025-03-31",
+    sections: { Domain:{startDate:"2024-10-01",endDate:"2024-12-01"}, Aptitude:{startDate:"2024-12-02",endDate:"2025-02-01"}, Communication:{startDate:"2025-02-02",endDate:"2025-03-31"} } }
 ];
 
-const bankingInitial = [
-  { id: 1, batchNo: "BK01", status: "Completed", startDate: "01 Jan 2024", endDate: "01 Jul 2024", mode: "Offline" },
+// ===== Data‑Analytics =====
+export const dataanalyticsInitial = [
+  { id: 1, batchNo: "DA01", mode: "Online",  status: "Completed", startDate: "2024-01-01", endDate: "2024-06-30",
+    sections: { Domain:{startDate:"2024-01-01",endDate:"2024-03-01"}, Aptitude:{startDate:"2024-03-02",endDate:"2024-05-01"}, Communication:{startDate:"2024-05-02",endDate:"2024-06-30"} } },
+  { id: 2, batchNo: "DA02", mode: "Offline", status: "Completed", startDate: "2024-02-01", endDate: "2024-07-31",
+    sections: { Domain:{startDate:"2024-02-01",endDate:"2024-04-01"}, Aptitude:{startDate:"2024-04-02",endDate:"2024-06-01"}, Communication:{startDate:"2024-06-02",endDate:"2024-07-31"} } },
+  { id: 3, batchNo: "DA03", mode: "Online",  status: "Completed", startDate: "2024-03-01", endDate: "2024-08-31",
+    sections: { Domain:{startDate:"2024-03-01",endDate:"2024-05-01"}, Aptitude:{startDate:"2024-05-02",endDate:"2024-07-01"}, Communication:{startDate:"2024-07-02",endDate:"2024-08-31"} } },
+  { id: 4, batchNo: "DA04", mode: "Offline", status: "Completed", startDate: "2024-04-01", endDate: "2024-09-30",
+    sections: { Domain:{startDate:"2024-04-01",endDate:"2024-06-01"}, Aptitude:{startDate:"2024-06-02",endDate:"2024-08-01"}, Communication:{startDate:"2024-08-02",endDate:"2024-09-30"} } },
+  { id: 5, batchNo: "DA05", mode: "Online",  status: "Completed", startDate: "2024-05-01", endDate: "2024-10-31",
+    sections: { Domain:{startDate:"2024-05-01",endDate:"2024-07-01"}, Aptitude:{startDate:"2024-07-02",endDate:"2024-09-01"}, Communication:{startDate:"2024-09-02",endDate:"2024-10-31"} } },
+  { id: 6, batchNo: "DA06", mode: "Offline", status: "Completed", startDate: "2024-06-01", endDate: "2024-11-30",
+    sections: { Domain:{startDate:"2024-06-01",endDate:"2024-08-01"}, Aptitude:{startDate:"2024-08-02",endDate:"2024-10-01"}, Communication:{startDate:"2024-10-02",endDate:"2024-11-30"} } },
+  { id: 7, batchNo: "DA07", mode: "Online",  status: "Completed", startDate: "2024-07-01", endDate: "2024-12-31",
+    sections: { Domain:{startDate:"2024-07-01",endDate:"2024-09-01"}, Aptitude:{startDate:"2024-09-02",endDate:"2024-11-01"}, Communication:{startDate:"2024-11-02",endDate:"2024-12-31"} } },
+  { id: 8, batchNo: "DA08", mode: "Offline", status: "Completed", startDate: "2024-08-01", endDate: "2025-01-31",
+    sections: { Domain:{startDate:"2024-08-01",endDate:"2024-10-01"}, Aptitude:{startDate:"2024-10-02",endDate:"2024-12-01"}, Communication:{startDate:"2024-12-02",endDate:"2025-01-31"} } },
+  { id: 9, batchNo: "DA09", mode: "Online",  status: "Completed", startDate: "2024-09-01", endDate: "2025-02-28",
+    sections: { Domain:{startDate:"2024-09-01",endDate:"2024-11-01"}, Aptitude:{startDate:"2024-11-02",endDate:"2025-01-01"}, Communication:{startDate:"2025-01-02",endDate:"2025-02-28"} } },
+  { id:10, batchNo: "DA10", mode: "Offline", status: "Ongoing",   startDate: "2024-10-01", endDate: "2025-03-31",
+    sections: { Domain:{startDate:"2024-10-01",endDate:"2024-12-01"}, Aptitude:{startDate:"2024-12-02",endDate:"2025-02-01"}, Communication:{startDate:"2025-02-02",endDate:"2025-03-31"} } }
 ];
 
-const marketingInitial = [
-  { id: 1, batchNo: "DM01", status: "Ongoing", startDate: "01 Jan 2024", endDate: "30 Jun 2024", mode: "Online" },
+// ===== Banking =====
+export const bankingInitial = [
+  { id: 1, batchNo: "BK01", mode: "Offline", status: "Completed", startDate: "2024-01-01", endDate: "2024-06-30",
+    sections: { Domain:{startDate:"2024-01-01",endDate:"2024-03-01"}, Aptitude:{startDate:"2024-03-02",endDate:"2024-05-01"}, Communication:{startDate:"2024-05-02",endDate:"2024-06-30"} } },
+  { id: 2, batchNo: "BK02", mode: "Online",  status: "Completed", startDate: "2024-02-01", endDate: "2024-07-31",
+    sections: { Domain:{startDate:"2024-02-01",endDate:"2024-04-01"}, Aptitude:{startDate:"2024-04-02",endDate:"2024-06-01"}, Communication:{startDate:"2024-06-02",endDate:"2024-07-31"} } },
+  { id: 3, batchNo: "BK03", mode: "Offline", status: "Completed", startDate: "2024-03-01", endDate: "2024-08-31",
+    sections: { Domain:{startDate:"2024-03-01",endDate:"2024-05-01"}, Aptitude:{startDate:"2024-05-02",endDate:"2024-07-01"}, Communication:{startDate:"2024-07-02",endDate:"2024-08-31"} } },
+  { id: 4, batchNo: "BK04", mode: "Online",  status: "Completed", startDate: "2024-04-01", endDate: "2024-09-30",
+    sections: { Domain:{startDate:"2024-04-01",endDate:"2024-06-01"}, Aptitude:{startDate:"2024-06-02",endDate:"2024-08-01"}, Communication:{startDate:"2024-08-02",endDate:"2024-09-30"} } },
+  { id: 5, batchNo: "BK05", mode: "Offline", status: "Completed", startDate: "2024-05-01", endDate: "2024-10-31",
+    sections: { Domain:{startDate:"2024-05-01",endDate:"2024-07-01"}, Aptitude:{startDate:"2024-07-02",endDate:"2024-09-01"}, Communication:{startDate:"2024-09-02",endDate:"2024-10-31"} } },
+  { id: 6, batchNo: "BK06", mode: "Online",  status: "Completed", startDate: "2024-06-01", endDate: "2024-11-30",
+    sections: { Domain:{startDate:"2024-06-01",endDate:"2024-08-01"}, Aptitude:{startDate:"2024-08-02",endDate:"2024-10-01"}, Communication:{startDate:"2024-10-02",endDate:"2024-11-30"} } },
+  { id: 7, batchNo: "BK07", mode: "Offline", status: "Completed", startDate: "2024-07-01", endDate: "2024-12-31",
+    sections: { Domain:{startDate:"2024-07-01",endDate:"2024-09-01"}, Aptitude:{startDate:"2024-09-02",endDate:"2024-11-01"}, Communication:{startDate:"2024-11-02",endDate:"2024-12-31"} } },
+  { id: 8, batchNo: "BK08", mode: "Online",  status: "Completed", startDate: "2024-08-01", endDate: "2025-01-31",
+    sections: { Domain:{startDate:"2024-08-01",endDate:"2024-10-01"}, Aptitude:{startDate:"2024-10-02",endDate:"2024-12-01"}, Communication:{startDate:"2024-12-02",endDate:"2025-01-31"} } },
+  { id: 9, batchNo: "BK09", mode: "Offline", status: "Completed", startDate: "2024-09-01", endDate: "2025-02-28",
+    sections: { Domain:{startDate:"2024-09-01",endDate:"2024-11-01"}, Aptitude:{startDate:"2024-11-02",endDate:"2025-01-01"}, Communication:{startDate:"2025-01-02",endDate:"2025-02-28"} } },
+  { id:10, batchNo: "BK10", mode: "Online",  status: "Ongoing",   startDate: "2024-10-01", endDate: "2025-03-31",
+    sections: { Domain:{startDate:"2024-10-01",endDate:"2024-12-01"}, Aptitude:{startDate:"2024-12-02",endDate:"2025-02-01"}, Communication:{startDate:"2025-02-02",endDate:"2025-03-31"} } }
 ];
 
-const sapInitial = [
-  { id: 1, batchNo: "SAP01", status: "Ongoing", startDate: "01 Feb 2024", endDate: "01 Aug 2024", mode: "Offline" },
+// ===== Digital‑Marketing =====
+export const marketingInitial = [
+  { id: 1, batchNo: "DM01", mode: "Online",  status: "Completed", startDate: "2024-01-01", endDate: "2024-06-30",
+    sections: { Domain:{startDate:"2024-01-01",endDate:"2024-03-01"}, Aptitude:{startDate:"2024-03-02",endDate:"2024-05-01"}, Communication:{startDate:"2024-05-02",endDate:"2024-06-30"} } },
+  { id: 2, batchNo: "DM02", mode: "Offline", status: "Completed", startDate: "2024-02-01", endDate: "2024-07-31",
+    sections: { Domain:{startDate:"2024-02-01",endDate:"2024-04-01"}, Aptitude:{startDate:"2024-04-02",endDate:"2024-06-01"}, Communication:{startDate:"2024-06-02",endDate:"2024-07-31"} } },
+  { id: 3, batchNo: "DM03", mode: "Online",  status: "Completed", startDate: "2024-03-01", endDate: "2024-08-31",
+    sections: { Domain:{startDate:"2024-03-01",endDate:"2024-05-01"}, Aptitude:{startDate:"2024-05-02",endDate:"2024-07-01"}, Communication:{startDate:"2024-07-02",endDate:"2024-08-31"} } },
+  { id: 4, batchNo: "DM04", mode: "Offline", status: "Completed", startDate: "2024-04-01", endDate: "2024-09-30",
+    sections: { Domain:{startDate:"2024-04-01",endDate:"2024-06-01"}, Aptitude:{startDate:"2024-06-02",endDate:"2024-08-01"}, Communication:{startDate:"2024-08-02",endDate:"2024-09-30"} } },
+  { id: 5, batchNo: "DM05", mode: "Online",  status: "Completed", startDate: "2024-05-01", endDate: "2024-10-31",
+    sections: { Domain:{startDate:"2024-05-01",endDate:"2024-07-01"}, Aptitude:{startDate:"2024-07-02",endDate:"2024-09-01"}, Communication:{startDate:"2024-09-02",endDate:"2024-10-31"} } },
+  { id: 6, batchNo: "DM06", mode: "Offline", status: "Completed", startDate: "2024-06-01", endDate: "2024-11-30",
+    sections: { Domain:{startDate:"2024-06-01",endDate:"2024-08-01"}, Aptitude:{startDate:"2024-08-02",endDate:"2024-10-01"}, Communication:{startDate:"2024-10-02",endDate:"2024-11-30"} } },
+  { id: 7, batchNo: "DM07", mode: "Online",  status: "Completed", startDate: "2024-07-01", endDate: "2024-12-31",
+    sections: { Domain:{startDate:"2024-07-01",endDate:"2024-09-01"}, Aptitude:{startDate:"2024-09-02",endDate:"2024-11-01"}, Communication:{startDate:"2024-11-02",endDate:"2024-12-31"} } },
+  { id: 8, batchNo: "DM08", mode: "Offline", status: "Completed", startDate: "2024-08-01", endDate: "2025-01-31",
+    sections: { Domain:{startDate:"2024-08-01",endDate:"2024-10-01"}, Aptitude:{startDate:"2024-10-02",endDate:"2024-12-01"}, Communication:{startDate:"2024-12-02",endDate:"2025-01-31"} } },
+  { id: 9, batchNo: "DM09", mode: "Online",  status: "Completed", startDate: "2024-09-01", endDate: "2025-02-28",
+    sections: { Domain:{startDate:"2024-09-01",endDate:"2024-11-01"}, Aptitude:{startDate:"2024-11-02",endDate:"2025-01-01"}, Communication:{startDate:"2025-01-02",endDate:"2025-02-28"} } },
+  { id:10, batchNo: "DM10", mode: "Offline", status: "Ongoing",   startDate: "2024-10-01", endDate: "2025-03-31",
+    sections: { Domain:{startDate:"2024-10-01",endDate:"2024-12-01"}, Aptitude:{startDate:"2024-12-02",endDate:"2025-02-01"}, Communication:{startDate:"2025-02-02",endDate:"2025-03-31"} } }
 ];
 
-const devopsInitial = [
-  { id: 1, batchNo: "DO01", status: "Completed", startDate: "01 Jan 2024", endDate: "01 Jul 2024", mode: "Online" },
+// ===== DevOps =====
+export const devopsInitial = [
+  { id: 1, batchNo: "DO01", mode: "Online",  status: "Completed", startDate: "2024-01-01", endDate: "2024-06-30",
+    sections: { Domain:{startDate:"2024-01-01",endDate:"2024-03-01"}, Aptitude:{startDate:"2024-03-02",endDate:"2024-05-01"}, Communication:{startDate:"2024-05-02",endDate:"2024-06-30"} } },
+  { id: 2, batchNo: "DO02", mode: "Offline", status: "Completed", startDate: "2024-02-01", endDate: "2024-07-31",
+    sections: { Domain:{startDate:"2024-02-01",endDate:"2024-04-01"}, Aptitude:{startDate:"2024-04-02",endDate:"2024-06-01"}, Communication:{startDate:"2024-06-02",endDate:"2024-07-31"} } },
+  { id: 3, batchNo: "DO03", mode: "Online",  status: "Completed", startDate: "2024-03-01", endDate: "2024-08-31",
+    sections: { Domain:{startDate:"2024-03-01",endDate:"2024-05-01"}, Aptitude:{startDate:"2024-05-02",endDate:"2024-07-01"}, Communication:{startDate:"2024-07-02",endDate:"2024-08-31"} } },
+  { id: 4, batchNo: "DO04", mode: "Offline", status: "Completed", startDate: "2024-04-01", endDate: "2024-09-30",
+    sections: { Domain:{startDate:"2024-04-01",endDate:"2024-06-01"}, Aptitude:{startDate:"2024-06-02",endDate:"2024-08-01"}, Communication:{startDate:"2024-08-02",endDate:"2024-09-30"} } },
+  { id: 5, batchNo: "DO05", mode: "Online",  status: "Completed", startDate: "2024-05-01", endDate: "2024-10-31",
+    sections: { Domain:{startDate:"2024-05-01",endDate:"2024-07-01"}, Aptitude:{startDate:"2024-07-02",endDate:"2024-09-01"}, Communication:{startDate:"2024-09-02",endDate:"2024-10-31"} } },
+  { id: 6, batchNo: "DO06", mode: "Offline", status: "Completed", startDate: "2024-06-01", endDate: "2024-11-30",
+    sections: { Domain:{startDate:"2024-06-01",endDate:"2024-08-01"}, Aptitude:{startDate:"2024-08-02",endDate:"2024-10-01"}, Communication:{startDate:"2024-10-02",endDate:"2024-11-30"} } },
+  { id: 7, batchNo: "DO07", mode: "Online",  status: "Completed", startDate: "2024-07-01", endDate: "2024-12-31",
+    sections: { Domain:{startDate:"2024-07-01",endDate:"2024-09-01"}, Aptitude:{startDate:"2024-09-02",endDate:"2024-11-01"}, Communication:{startDate:"2024-11-02",endDate:"2024-12-31"} } },
+  { id: 8, batchNo: "DO08", mode: "Offline", status: "Completed", startDate: "2024-08-01", endDate: "2025-01-31",
+    sections: { Domain:{startDate:"2024-08-01",endDate:"2024-10-01"}, Aptitude:{startDate:"2024-10-02",endDate:"2024-12-01"}, Communication:{startDate:"2024-12-02",endDate:"2025-01-31"} } },
+  { id: 9, batchNo: "DO09", mode: "Online",  status: "Completed", startDate: "2024-09-01", endDate: "2025-02-28",
+    sections: { Domain:{startDate:"2024-09-01",endDate:"2024-11-01"}, Aptitude:{startDate:"2024-11-02",endDate:"2025-01-01"}, Communication:{startDate:"2025-01-02",endDate:"2025-02-28"} } },
+  { id:10, batchNo: "DO10", mode: "Offline", status: "Ongoing",   startDate: "2024-10-01", endDate: "2025-03-31",
+    sections: { Domain:{startDate:"2024-10-01",endDate:"2024-12-01"}, Aptitude:{startDate:"2024-12-02",endDate:"2025-02-01"}, Communication:{startDate:"2025-02-02",endDate:"2025-03-31"} } }
 ];
+
+export const sapInitial = [
+  {
+    id: 1, batchNo: "SAP01", mode: "Offline", status: "Completed", startDate: "2024-01-10", endDate: "2024-06-30",
+    sections: {
+      Domain: { startDate: "2024-01-10", endDate: "2024-03-10" },
+      Aptitude: { startDate: "2024-03-11", endDate: "2024-05-10" },
+      Communication: { startDate: "2024-05-11", endDate: "2024-06-30" }
+    }
+  },
+  {
+    id: 2, batchNo: "SAP02", mode: "Online", status: "Completed", startDate: "2024-02-01", endDate: "2024-07-31",
+    sections: {
+      Domain: { startDate: "2024-02-01", endDate: "2024-04-01" },
+      Aptitude: { startDate: "2024-04-02", endDate: "2024-06-01" },
+      Communication: { startDate: "2024-06-02", endDate: "2024-07-31" }
+    }
+  },
+  {
+    id: 3, batchNo: "SAP03", mode: "Offline", status: "Completed", startDate: "2024-03-01", endDate: "2024-08-31",
+    sections: {
+      Domain: { startDate: "2024-03-01", endDate: "2024-05-01" },
+      Aptitude: { startDate: "2024-05-02", endDate: "2024-07-01" },
+      Communication: { startDate: "2024-07-02", endDate: "2024-08-31" }
+    }
+  },
+  {
+    id: 4, batchNo: "SAP04", mode: "Online", status: "Completed", startDate: "2024-04-01", endDate: "2024-09-30",
+    sections: {
+      Domain: { startDate: "2024-04-01", endDate: "2024-06-01" },
+      Aptitude: { startDate: "2024-06-02", endDate: "2024-08-01" },
+      Communication: { startDate: "2024-08-02", endDate: "2024-09-30" }
+    }
+  },
+  {
+    id: 5, batchNo: "SAP05", mode: "Offline", status: "Completed", startDate: "2024-05-01", endDate: "2024-10-31",
+    sections: {
+      Domain: { startDate: "2024-05-01", endDate: "2024-07-01" },
+      Aptitude: { startDate: "2024-07-02", endDate: "2024-09-01" },
+      Communication: { startDate: "2024-09-02", endDate: "2024-10-31" }
+    }
+  },
+  {
+    id: 6, batchNo: "SAP06", mode: "Online", status: "Completed", startDate: "2024-06-01", endDate: "2024-11-30",
+    sections: {
+      Domain: { startDate: "2024-06-01", endDate: "2024-08-01" },
+      Aptitude: { startDate: "2024-08-02", endDate: "2024-10-01" },
+      Communication: { startDate: "2024-10-02", endDate: "2024-11-30" }
+    }
+  },
+  {
+    id: 7, batchNo: "SAP07", mode: "Offline", status: "Completed", startDate: "2024-07-01", endDate: "2024-12-31",
+    sections: {
+      Domain: { startDate: "2024-07-01", endDate: "2024-09-01" },
+      Aptitude: { startDate: "2024-09-02", endDate: "2024-11-01" },
+      Communication: { startDate: "2024-11-02", endDate: "2024-12-31" }
+    }
+  },
+  {
+    id: 8, batchNo: "SAP08", mode: "Online", status: "Ongoing", startDate: "2024-08-01", endDate: "2025-01-31",
+    sections: {
+      Domain: { startDate: "2024-08-01", endDate: "2024-10-01" },
+      Aptitude: { startDate: "2024-10-02", endDate: "2024-12-01" },
+      Communication: { startDate: "2024-12-02", endDate: "2025-01-31" }
+    }
+  },
+  {
+    id: 9, batchNo: "SAP09", mode: "Offline", status: "Ongoing", startDate: "2024-09-01", endDate: "2025-02-28",
+    sections: {
+      Domain: { startDate: "2024-09-01", endDate: "2024-11-01" },
+      Aptitude: { startDate: "2024-11-02", endDate: "2025-01-01" },
+      Communication: { startDate: "2025-01-02", endDate: "2025-02-28" }
+    }
+  },
+  {
+    id: 10, batchNo: "SAP10", mode: "Online", status: "Ongoing", startDate: "2024-10-01", endDate: "2025-03-31",
+    sections: {
+      Domain: { startDate: "2024-10-01", endDate: "2024-12-01" },
+      Aptitude: { startDate: "2024-12-02", endDate: "2025-02-01" },
+      Communication: { startDate: "2025-02-02", endDate: "2025-03-31" }
+    }
+  }
+];
+
+
 
 // ➤ Provider Component
 const DataProvider = ({ children }) => {

@@ -39,31 +39,49 @@ export default function BatchModel() {
         }
     });
 
-const formatDate = (dateString) => {
-    if (!dateString) return '';
-    
-    // If already in "DD-MM-YYYY" format, return as-is
-    if (/^\d{2}-\d{2}-\d{4}$/.test(dateString)) {
-        return dateString;
-    }
-    
-    // Handle "DD MMM YYYY" format (e.g., "01 Jan 2024")
-    const months = {
-        Jan: '01', Feb: '02', Mar: '03', Apr: '04', May: '05', Jun: '06',
-        Jul: '07', Aug: '08', Sep: '09', Oct: '10', Nov: '11', Dec: '12'
-    };
-    
-    const parts = dateString.split(' ');
-    if (parts.length === 3) {
-        const [day, month, year] = parts;
-        if (months[month]) {
-            return `${day}-${months[month]}-${year}`;
-        }
-    }
-    
-    console.warn('Unrecognized date format:', dateString);
-    return dateString; // Return original if we can't parse it
+const sectionIsValid = (tab) => {
+  const sec = newBatch.sections[tab];
+  return (
+    sec.startDate &&
+    sec.endDate &&
+    !modalDateErrors[tab] &&
+    !formErrors.sections[tab]
+  );
 };
+
+const flagSectionEmptyError = (tab) => {
+  setFormErrors(prev => ({
+    ...prev,
+    sections: {
+      ...prev.sections,
+      [tab]: 'Both start and end dates are required'
+    }
+  }));
+};
+
+
+
+const toDDMMYYYY = (d) => {
+  const date = d instanceof Date ? d : new Date(d);
+  const dd = String(date.getDate()).padStart(2, "0");
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const yyyy = date.getFullYear();
+  return `${dd}-${mm}-${yyyy}`;
+};
+
+const parseDate = (str) => {
+  if (!str) return null;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return new Date(str);
+  if (/^\d{2}-\d{2}-\d{4}$/.test(str)) {
+    const [dd, mm, yyyy] = str.split("-");
+    return new Date(`${yyyy}-${mm}-${dd}`);
+  }
+  return new Date(str);
+};
+
+const formatDate = (str) => (str ? toDDMMYYYY(parseDate(str)) : "");
+
+
 
     useEffect(() => {
         setSearchTerm('');
@@ -213,22 +231,22 @@ const formatDate = (dateString) => {
         }
         let results = batches;
         if (searchTerm) {
-            results = results.filter(batch =>
+            results = results.filter(batch => 
                 batch.batchNo.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
         if (mode && mode !== 'Off') {
-            results = results.filter(batch =>
+            results = results.filter(batch => 
                 batch.mode.toLowerCase() === mode.toLowerCase()
             );
         }
         if (startDate) {
-            results = results.filter(batch =>
+            results = results.filter(batch => 
                 new Date(batch.startDate) >= new Date(startDate)
             );
         }
         if (endDate) {
-            results = results.filter(batch =>
+            results = results.filter(batch => 
                 new Date(batch.endDate) <= new Date(endDate)
             );
         }
@@ -276,105 +294,117 @@ const formatDate = (dateString) => {
         setSearchDateError('');
     };
 
-    const validateForm = () => {
-        let isValid = true;
-        const newErrors = {
-            batchNo: '',
-            mode: '',
-            sections: {
-                Domain: '',
-                Aptitude: '',
-                Communication: ''
-            }
-        };
+const validateForm = () => {
+    let isValid = true;
 
-        // Validate batch number
-        if (!newBatch.batchNo.trim()) {
-            newErrors.batchNo = 'Batch number is required';
-            isValid = false;
-        } else if (newBatch.batchNo.length > 32) {
-            newErrors.batchNo = 'Batch number must be 32 characters or less';
-            isValid = false;
-        }
-
-        // Validate mode
-        if (!newBatch.mode.trim()) {
-            newErrors.mode = 'Mode is required';
-            isValid = false;
-        }
-
-        // Validate at least one section has dates
-        const hasSectionDates = Object.values(newBatch.sections).some(
-            section => section.startDate && section.endDate
-        );
-        if (!hasSectionDates) {
-            newErrors.sections[activeTab] = 'Please add the dates';
-            // toast.error('please add the dates for the all the batches');
-            isValid = false;
-        } else {
-            // Validate active tab dates
-            // const sectionData = newBatch.sections[activeTab];
-            // if (!sectionData.startDate || !sectionData.endDate) {
-            //     newErrors.sections[activeTab] = 'Both start and end dates are required';
-            //     isValid = false;
-            // }else if (!sectionData.startDate) {
-            //     newErrors.sections[activeTab] = 'start date are required';
-            //     isValid = false;
-            // }else if (!sectionData.endDate) {
-            //     newErrors.sections[activeTab] = ' end date are required';
-            //     isValid = false;
-            // }
-            newErrors.sections[activeTab] = '';
-        }
-
-        setFormErrors(newErrors);
-        return isValid;
-    };
-
-    const handleAddBatch = () => {
-        if (!validateForm()) {
-            return;
-        }
-
-        const hasDateErrors = Object.values(modalDateErrors).some(error => error !== '');
-        if (hasDateErrors) {
-            toast.error('Please fix the date range errors before adding the batch');
-            return;
-        }
-
-        const today = new Date().toISOString().split("T")[0];
-        const sectionData = newBatch.sections[activeTab];
-        if (sectionData.startDate && sectionData.startDate < today) {
-            setAddModelError(prev => ({ ...prev, startDate: 'Start date cannot be earlier than present date' }));
-            return;
-        }
-
-        const newBatchEntry = {
-            id: batches.length + 1,
-            batchNo: newBatch.batchNo,
-            status: newBatch.status,
-            mode: newBatch.mode,
-            startDate: newBatch.sections[activeTab].startDate,
-            endDate: newBatch.sections[activeTab].endDate
-        };
-
-        addBatch(newBatchEntry);
-        const updatedBatches = [...batches, newBatchEntry];
-        setShowModal(false);
-        
-        resetForm();
-        toast.success("Batch added successfully");
-    };
-
-    const validateBatchNumber = (batchNo) => {
-        if (!batchNo.trim()) {
-            setAddModelError(prev => ({ ...prev, batchNo: 'Batch number is required' }));
-        } else if (batchNo.length > 32) {
-            setAddModelError(prev => ({ ...prev, batchNo: 'Batch number must be 32 characters or less' }));
-        } else {
-            setAddModelError(prev => ({ ...prev, batchNo: '' }));
+    // baseline error object
+    const newErrors = {
+        batchNo: '',
+        mode: '',
+        sections: {
+            Domain: '',
+            Aptitude: '',
+            Communication: ''
         }
     };
+
+    /* 🔽 1. per‑section date validation */
+    let firstInvalidTab = null;
+    Object.entries(newBatch.sections).forEach(([sectionName, section]) => {
+        if (!(section.startDate && section.endDate)) {
+            newErrors.sections[sectionName] = 'Start and end dates are required';
+            isValid = false;
+            if (!firstInvalidTab) firstInvalidTab = sectionName;
+        }
+    });
+    /* ensure we land on the first section that needs fixing */
+    if (firstInvalidTab) setActiveTab(firstInvalidTab);
+
+    /* 2. batch number validation */
+    if (!newBatch.batchNo.trim()) {
+        newErrors.batchNo = 'Batch number is required';
+        isValid = false;
+    } else if (newBatch.batchNo.length > 32) {
+        newErrors.batchNo = 'Batch number must be 32 characters or less';
+        isValid = false;
+    }
+
+    /* 3. mode validation */
+    if (!newBatch.mode.trim()) {
+        newErrors.mode = 'Mode is required';
+        isValid = false;
+    }
+    // inside validateForm, before returning:
+if (batches.some(
+      b => b.batchNo.trim().toLowerCase() === newBatch.batchNo.trim().toLowerCase()
+)) {
+  newErrors.batchNo = 'This batch number already exists';
+  isValid = false;
+}
+    setFormErrors(newErrors);
+    return isValid;
+};
+
+const handleAddBatch = () => {
+  if (!validateForm()) return;
+  if (Object.values(modalDateErrors).some(e => e)) {
+    toast.error("Please fix the date range errors before adding the batch");
+    return;
+  }
+
+  const todayISO = new Date().toISOString().split("T")[0];
+
+  /* ⬇️ earliest / latest across sections */
+  const allSecs = Object.values(newBatch.sections);
+  const earliest = new Date(Math.min(...allSecs.map(s => new Date(s.startDate))));
+  const latest   = new Date(Math.max(...allSecs.map(s => new Date(s.endDate))));
+
+  /* convert every section date to DD-MM-YYYY */
+  const sectionCopy = {};
+  for (const [k, s] of Object.entries(newBatch.sections)) {
+    sectionCopy[k] = {
+      startDate: toDDMMYYYY(parseDate(s.startDate)),
+      endDate:   toDDMMYYYY(parseDate(s.endDate))
+    };
+  }
+
+  const newBatchEntry = {
+    id: batches.length + 1,
+    batchNo: newBatch.batchNo,
+    status: newBatch.status,
+    mode:   newBatch.mode,
+    startDate: toDDMMYYYY(earliest),
+    endDate:   toDDMMYYYY(latest),
+    sections:  sectionCopy
+  };
+
+  addBatch(newBatchEntry);
+  setShowModal(false);
+  resetForm();
+  toast.success("Batch added successfully");
+};
+
+
+  // 👇 runs on each onChange
+const validateBatchNumber = (value) => {
+  let message = '';
+
+  // duplicate?
+  const exists = batches.some(
+    b => b.batchNo.trim().toLowerCase() === value.trim().toLowerCase()
+  );
+  if (exists) {
+    message = 'This batch number already exists';
+  } else if (!value.trim()) {
+    message = 'Batch number is required';
+  } else if (value.length > 32) {
+    message = 'Batch number must be 32 characters or less';
+  }
+
+  // update error state shown under the field
+  setFormErrors(prev => ({ ...prev, batchNo: message }));
+};
+
 
     const validateMode = (mode) => {
         if (!mode) {
@@ -384,67 +414,71 @@ const formatDate = (dateString) => {
         }
     };
 
-   const handleSectionDateChange = (section, field, value) => {
-    setNewBatch(prev => {
-        const updatedBatch = {
-            ...prev,
-            sections: {
-                ...prev.sections,
-                [section]: {
-                    ...prev.sections[section],
-                    [field]: value
+    const handleSectionDateChange = (section, field, value) => {
+        setNewBatch(prev => {
+            const updatedBatch = {
+                ...prev,
+                sections: {
+                    ...prev.sections,
+                    [section]: {
+                        ...prev.sections[section],
+                        [field]: value
+                    }
                 }
-            }
-        };
+            };
 
-        const sectionData = updatedBatch.sections[section];
-        const today = new Date();
-        today.setHours(0, 0, 0, 0); // Normalize to start of day
+            
 
-        if (sectionData.startDate || sectionData.endDate) {
-            const startDate = new Date(sectionData.startDate);
-            const endDate = new Date(sectionData.endDate);
 
-            if (startDate < today) {
-                setModalDateErrors(prev => ({
-                    ...prev,
-                    [section]: 'Start date cannot be earlier than today'
-                }));
-            } else if (endDate < startDate) {
-                setModalDateErrors(prev => ({
-                    ...prev,
-                    [section]: 'End date cannot be earlier than start date'
-                }));
-            } else if (endDate.getTime() === startDate.getTime()) {
-                setModalDateErrors(prev => ({
-                    ...prev,
-                    [section]: 'End date cannot be same as start date'
-                }));
+            const sectionData = updatedBatch.sections[section];
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Normalize to start of day
+
+            if (sectionData.startDate || sectionData.endDate) {
+                const startDate = new Date(sectionData.startDate);
+                const endDate = new Date(sectionData.endDate);
+
+                if (startDate < today) {
+                    setModalDateErrors(prev => ({
+                        ...prev,
+                        [section]: 'Start date cannot be earlier than today'
+                    }));
+                } else if (endDate < startDate) {
+                    setModalDateErrors(prev => ({
+                        ...prev,
+                        [section]: 'End date cannot be earlier than start date'
+                    }));
+                } else if (endDate.getTime() === startDate.getTime()) {
+                    setModalDateErrors(prev => ({
+                        ...prev,
+                        [section]: 'End date cannot be same as start date'
+                    }));
+                } else {
+                    // Clear error if dates are valid
+                    setModalDateErrors(prev => ({
+                        ...prev,
+                        [section]: ''
+                    }));
+                }
             } else {
-                // Clear error if dates are valid
+                // Clear error if either date is empty
                 setModalDateErrors(prev => ({
                     ...prev,
                     [section]: ''
                 }));
             }
-        } else {
-            // Clear error if either date is empty
-            setModalDateErrors(prev => ({
-                ...prev,
-                [section]: ''
-            }));
-        }
 
-        return updatedBatch;
-    });
-};
+            return updatedBatch;
+        });
+    };
+
     return (
         <div className="flex min-h-screen mx-[-16] md:width-[750px]">
             <Toaster position='top-right' />
 <div className={`px-3 pt-20 flex-1 bg-[#F8FAFD] mb-[12] ${showModal || showDeleteModal ? 'pointer-events-none' : ''}`}>
     <div className="fixed top-0 left-70 border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-7 z-10">
-        <h1 className="fixed pl-3 text-lg font-semibold">{batchHead}</h1>
-        <button
+        <h1 className="fixed pl-3 text-lg  font-semibold">{batchHead}</h1>
+        {/* <button
             onClick={() => setShowModal(true)}
             className="fixed flex p-2 right-5 bg-[#3f2fb4] hover:bg-[#3f2fb4d4] text-white text-sm font-bold px-2 py-2.5 rounded-lg shadow-sm">
             <Image
@@ -454,11 +488,26 @@ const formatDate = (dateString) => {
                 height={18}
                 className="mx-2"
             /> Add Batch
-        </button>
+        </button> */}
     </div>
     <div className='p-3'>
-        <div className='flex flex-col md:flex-row gap-4 mb-6'>
-            <div className="relative bg-[#efeeff] w-full max-w-md h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
+         <div className='mt-[-30]'>
+            <button
+            onClick={() => setShowModal(true)}
+            className="absolute cursor-pointer z-1 flex p-2 right-5 bg-[#3f2fb4] hover:bg-[#3f2fb4d4] text-white text-sm font-bold px-2 py-2.5 rounded-lg shadow-sm">
+            <Image
+                src='/add.svg'
+                alt="SAP Icon"
+                width={18}
+                height={18}
+                className="mx-2"
+            /> Add Batch
+        </button>
+        </div>
+
+        <div className='flex flex-col md:flex-row gap-4 mt-15 mb-6'>
+
+           <div className="relative bg-[#efeeff] w-full max-w-md h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
                 <div className="absolute left-6 top-6 text-black text-4xl font-bold leading-10">{ongoingCount}</div>
                 <div className="absolute left-6 top-[84px] text-black text-xl font-normal leading-7">Ongoing Count</div>
                 <div className="absolute right-4.5 top-6 w-12 h-9 rounded-full flex items-center justify-center">
@@ -505,7 +554,7 @@ const formatDate = (dateString) => {
                     {searchTerm && (
                         <button
                             onClick={() => setSearchTerm('')}
-                            className="absolute top-4 right-3 text-gray-500 hover:text-gray-00"
+                            className="cursor-pointer absolute top-4 right-3 text-gray-500 hover:text-gray-00"
                         >
                             <RiCloseCircleLine size={20} />
                         </button>
@@ -516,7 +565,7 @@ const formatDate = (dateString) => {
                         id="start-date"
                         type='date'
                         value={startDate}
-                        className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                        className={` cursor-pointer block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
                         onChange={(e) => handleSearchStartDateChange(e.target.value)}
                     />
                     <label
@@ -549,7 +598,7 @@ const formatDate = (dateString) => {
                                 e.stopPropagation();
                                 setMode('Off');
                             }}
-                            className="absolute top-4 right-8 text-gray-500 hover:text-gray-700"
+                            className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700"
                         >
                             <RiCloseCircleLine size={20} />
                         </button>
@@ -576,7 +625,7 @@ const formatDate = (dateString) => {
                         id="end-date"
                         type='date'
                         value={endDate}
-                        className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                        className={`cursor-pointer block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
                         onChange={(e) => handleSearchEndDateChange(e.target.value)}
                     />
                     <label
@@ -592,7 +641,7 @@ const formatDate = (dateString) => {
                 <div className="flex gap-2 md:col-start-3 md:justify-end md:pt-24">
                     <button
                         onClick={handleReset}
-                        className="bg-[#f1ecfb] hover:bg-[#E8DEF8] px-6 py-2 rounded-2xl text-sm font-semibold text-gray-700 flex items-center gap-1"
+                        className="cursor-pointer bg-[#f1ecfb] hover:bg-[#E8DEF8] px-6 py-2 rounded-2xl text-sm font-semibold text-gray-700 flex items-center gap-1"
                     >
                         <Image
                             src='/reset.svg'
@@ -604,38 +653,43 @@ const formatDate = (dateString) => {
                     </button>
                     <button
                         onClick={handleSearch}
-                        className="bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-6 py-2 rounded-2xl text-sm font-semibold"
+                        className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-6 py-2 rounded-2xl text-sm font-semibold"
                     >
                         Search
                     </button>
                 </div>
             </div>
         </div>
-        
-     {searchInitiated && (
-    <div className="bg-white rounded-2xl shadow-sm mt-6 w-full overflow-scroll">
-        <div className="w-full overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                    <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">S.No</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Batch No</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Status</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Start Date</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">End Date</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Mode</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Actions</th>
-                    </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                    {filteredBatches.length > 0 ? (
-                        filteredBatches.map((batch, index) => (
-                            <tr key={batch.id} className="hover:bg-[#e1cfff] hover:text-[#6750a4] hover:font-bold">
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{index + 1}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{batch.batchNo}</td>
-                                <td className="px-2 py-1 whitespace-nowrap">
-    <span className={`ml-2 text-center inline-flex items-center justify-center text-xs leading-5 font-semibold rounded-sm`}>
-        {new Date(batch.endDate) < new Date() ? (
+
+        {searchInitiated && (
+            <div className="bg-white rounded-2xl shadow-sm mt-6 w-full">
+                <div className="w-full overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">S.No</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Batch No</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                {/* <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Overall&nbsp;Start</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Overall&nbsp;End</th> */}
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Domain</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aptitude</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Communication</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mode</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+  {filteredBatches.map((batch, index) => (
+    <tr key={batch.id} className="hover:bg-[#e1cfff]">
+      <td className="px-4 py-3 text-sm whitespace-nowrap">{index + 1}</td>
+
+      {/* Batch No */}
+      <td className="px-4 py-3 text-sm whitespace-nowrap">{batch.batchNo}</td>
+
+      {/* Status */}
+      <td className="px-4 py-3 text-sm whitespace-nowrap">
+{new Date(batch.endDate) < new Date() ? (
             <Image
                 src="/com.svg" // Replace with your actual completed status image path
                 alt="Completed"
@@ -652,86 +706,75 @@ const formatDate = (dateString) => {
                 className="w-20 h-7"
             />
         )}
-    </span>
-</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(batch.startDate)}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(batch.endDate)}</td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{batch.mode}</td>
-                                <td className="pl-19 py-4 whitespace-nowrap text-sm text-gray-500 relative">
-                                    <button
-                                        onClick={() => toggleActions(batch.id)}
-                                        className="text-gray-400 hover:text-gray-600 focus:outline-none"
-                                    >
-                                        <FiMoreVertical className="h-5 w-5" />
-                                    </button>
-                                    {showActions === batch.id && (
-                                        <div className="absolute right-12 mt-[-35] w-auto bg-white rounded-md shadow-lg z-10 border border-gray-200">
-                                            <div className="flex flex-row">
-                                                <button
-                                                    onClick={() => handleAction('view', batch.id)}
-                                                    className="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                                >
-                                                    <FiEye className="h-4 w-4" />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleAction('edit', batch.id)}
-                                                    className="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                                >
-                                                    <FiEdit className="h-4 w-4" />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleAction('delete', batch.id)}
-                                                    className="flex items-center px-3 py-2 text-sm text-red-600 hover:bg-gray-100"
-                                                >
-                                                    <FiTrash2 className="h-4 w-4" />
-                                                </button>
-                                            </div>
-                                        </div>
-                                    )}
-                                </td>
-                            </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan="7" className="px-6 py-4 text-center text-sm text-gray-500">
-                                No matching batches found
-                            </td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
+      </td>
+
+      {/* Domain dates */}
+      <td className="px-4 py-3 text-xs whitespace-nowrap w-44">
+        {formatDate(batch.sections?.Domain?.startDate)} – {formatDate(batch.sections?.Domain?.endDate)}
+      </td>
+
+      {/* Aptitude dates */}
+      <td className="px-4 py-3 text-xs whitespace-nowrap w-44">
+        {formatDate(batch.sections?.Aptitude?.startDate)} – {formatDate(batch.sections?.Aptitude?.endDate)}
+      </td>
+
+      {/* Communication dates */}
+      <td className="px-4 py-3 text-xs whitespace-nowrap w-44">
+        {formatDate(batch.sections?.Communication?.startDate)} – {formatDate(batch.sections?.Communication?.endDate)}
+      </td>
+
+      {/* Mode */}
+      <td className="px-4 py-3 text-sm whitespace-nowrap">{batch.mode}</td>
+
+      {/* Actions */}
+      <td className="px-4 py-3 text-sm whitespace-nowrap">
+        <div className="flex gap-1">
+          <button onClick={() => handleAction('view', batch.id)} className=" cursor-pointer p-1 hover:bg-gray-100 rounded">
+            <FiEye className="h-4 w-4" />
+          </button>
+          <button onClick={() => handleAction('edit', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded">
+            <FiEdit className="h-4 w-4" />
+          </button>
+          <button onClick={() => handleAction('delete', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded text-red-600">
+            <FiTrash2 className="h-4 w-4" />
+          </button>
         </div>
-    </div>
-)}
+      </td>
+    </tr>
+  ))}
+</tbody>
+
+                    </table>
+                </div>
+            </div>
+        )}
     </div>
 </div>
 
-
-
-            
 {showModal && (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-        <div className="w-[450px] h-auto bg-[#F8FAFD] rounded-[10px] px-13 py-4">
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-sm font-bold ml-[-30]">Add new batch</h2>
+        <div className="w-[380px] bg-[#F8FAFD] rounded-[10px] px-6 py-4">
+            <div className="flex justify-between items-center mb-4">
+                <h2 className="text-sm font-bold">Add new batch</h2>
                 <button
                     onClick={() => {
                         setShowModal(false);
+                        resetForm();
                     }}
-                    className="text-gray-500 hover:text-gray-700 mr-[-30]"
+                    className="cursor-pointer text-gray-500 hover:text-gray-700"
                 >
                     <RiCloseCircleLine size={20} />
                 </button>
             </div>
 
             {/* Batch Number Field */}
-            <div className="relative mb-6">
+            <div className="relative mb-4">
                 <input
                     type="text"
                     id="batch-number"
                     className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${
-                        formErrors.batchNo ? 'border-red-500' : 'border-gray-400'
-                    } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                    formErrors.batchNo ? ' border-red-500' : 'border-gray-400'
+                    } ${setFormErrors ? 'border-gray-400':'focus:border-red-500 border-red-500' } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
                     placeholder=" "
                     value={newBatch.batchNo}
                     onChange={(e) => {
@@ -757,20 +800,22 @@ const formatDate = (dateString) => {
                             setNewBatch({ ...newBatch, batchNo: '' });
                             setFormErrors({ ...formErrors, batchNo: '' });
                         }}
-                        className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                        className="cursor-pointer absolute top-4 right-4 text-gray-500 hover:text-gray-700"
                     >
                         <RiCloseCircleLine size={20} />
                     </button>
                 )}
                 {formErrors.batchNo && (
-                    <p className="text-red-600 text-sm mt-1">{formErrors.batchNo}</p>
+                    <p className="text-red-600 text-xs mt-1">{formErrors.batchNo}</p>
                 )}
             </div>
 
-            {/* Section Tabs */}
-            <div className="flex bg-[#ECE6F0] rounded-xl p-1 mb-6 relative">
+            {/* Section Labels */}
+            <div className="flex bg-[#ECE6F0] rounded-xl p-1 mb-4 relative">
                 <div
-                    className={`absolute top-1 bottom-1 bg-[#F8FAFD] rounded-lg shadow-sm transition-all duration-300 ease-in-out ${
+                    className={`absolute top-1 bottom-1 bg-[#F8FAFD] rounded-lg shadow-sm transition-all
+                    duration-300 ease-in-out z-0
+                    ${
                         activeTab === 'Domain'
                             ? 'left-1 w-[calc(33.33%-0.5rem)]'
                             : activeTab === 'Aptitude'
@@ -778,115 +823,99 @@ const formatDate = (dateString) => {
                             : 'left-[calc(65.66%+0.25rem)] w-[calc(34%-0.5rem)]'
                     }`}
                 />
-                <button
-                    onClick={() => setActiveTab('Domain')}
-                    className={`flex-1 py-2 text-sm font-semibold relative z-10 ${
-                        activeTab === 'Domain' ? 'text-indigo-600' : 'text-black'
-                    }`}
-                >
-                    Domain
-                </button>
-                <button
-                    onClick={() => setActiveTab('Aptitude')}
-                    className={`flex-1 py-2 text-sm font-semibold relative z-10 ${
-                        activeTab === 'Aptitude' ? 'text-indigo-600' : 'text-black'
-                    }`}
-                >
-                    Aptitude
-                </button>
-                <button
-                    onClick={() => setActiveTab('Communication')}
-                    className={`flex-1 py-2 text-sm font-semibold relative z-10 ${
-                        activeTab === 'Communication' ? 'text-indigo-600' : 'text-black'
-                    }`}
-                >
-                    Communication
-                </button>
+                {['Domain', 'Aptitude', 'Communication'].map(label => (
+                    <span
+                        key={label}
+                        className={`flex-1 items-center text-center py-2 text-xs font-semibold select-none cursor-default relative z-10
+                            ${activeTab === label ? 'text-indigo-600' : 'text-black'}`}
+                    >
+                        {label}
+                    </span>
+                ))}
             </div>
 
             {/* Date Selection */}
-<div className="bg-[#ECE6F0] rounded-3xl p-4 mb-6 border border-gray-200">
-    <div className="flex justify-between items-center mb-4">
-        <h3 className="text-sm font-semibold text-gray-500">Select date</h3>
-    </div>
-    <div className="flex items-center justify-between mb-4">
-        <h3 className="text-2xl font-normal">Enter dates</h3>
-        <button className="text-gray-500">
-            <FiCalendar size={20} />
-        </button>
-    </div>
-    <div className="grid grid-cols-2 gap-4 mb-4">
-        <div className="relative">
-            <input
-                type="date"
-                id={`${activeTab.toLowerCase()}-start-date`}
-                className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#ECE6F0] rounded-sm border-2 ${
-                    formErrors.sections[activeTab] || modalDateErrors[activeTab] ? 'border-red-500' : 'border-gray-400'
-                } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
-                placeholder=" "
-                value={newBatch.sections[activeTab].startDate}
-                onChange={(e) => {
-                    handleSectionDateChange(activeTab, 'startDate', e.target.value);
-                    // Clear error when user starts typing
-                    if (formErrors.sections[activeTab]) {
-                        setFormErrors({
-                            ...formErrors,
-                            sections: {
-                                ...formErrors.sections,
-                                [activeTab]: ''
-                            }
-                        });
-                    }
-                }}
-            />
-            <label
-                htmlFor={`${activeTab.toLowerCase()}-start-date`}
-                className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ECE6F0] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
-            >
-                Start date
-            </label>
-        </div>
-        <div className="relative">
-            <input
-                type="date"
-                id={`${activeTab.toLowerCase()}-end-date`}
-                className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#ECE6F0] rounded-sm border-2 ${
-                    formErrors.sections[activeTab] || modalDateErrors[activeTab] ? 'border-red-500' : 'border-gray-400'
-                } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
-                placeholder=" "
-                value={newBatch.sections[activeTab].endDate}
-                onChange={(e) => {
-                    handleSectionDateChange(activeTab, 'endDate', e.target.value);
-                    // Clear error when user starts typing
-                    if (formErrors.sections[activeTab]) {
-                        setFormErrors({
-                            ...formErrors,
-                            sections: {
-                                ...formErrors.sections,
-                                [activeTab]: ''
-                            }
-                        });
-                    }
-                }}
-            />
-            <label
-                htmlFor={`${activeTab.toLowerCase()}-end-date`}
-                className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ECE6F0] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
-            >
-                End date
-            </label>
-        </div>
-    </div>
-    {modalDateErrors[activeTab] && (
-        <p className="text-red-500 text-xs mt-1 px-2">{modalDateErrors[activeTab]}</p>
-    )}
-    {formErrors.sections[activeTab] && (
-        <p className="text-red-500 text-xs mt-1 px-2">{formErrors.sections[activeTab]}</p>
-    )}
-</div>
+            <div className="bg-[#ECE6F0] rounded-2xl p-3 mb-4 border border-gray-200">
+                <div className="flex items-center justify-between mb-3">
+                    <h3 className="text-lg font-normal">Enter dates</h3>
+                    <button className="text-gray-500">
+                        <FiCalendar size={18} />
+                    </button>
+                </div>
+                <div className="grid grid-cols-2 gap-3 mb-3">
+                    <div className="relative">
+                        <input
+                            type="date"
+                            id={`${activeTab.toLowerCase()}-start-date`}
+                            className={`block px-3 pb-1.5 pt-4 w-full text-xs text-gray-900 bg-[#ECE6F0] rounded-sm border-2 ${
+                                formErrors.sections[activeTab] || modalDateErrors[activeTab]
+                                    ? 'border-red-500'
+                                    : 'border-gray-400'
+                            } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                            placeholder=" "
+                            value={newBatch.sections[activeTab].startDate}
+                            onChange={(e) => {
+                                handleSectionDateChange(activeTab, 'startDate', e.target.value);
+                                if (formErrors.sections[activeTab]) {
+                                    setFormErrors({
+                                        ...formErrors,
+                                        sections: {
+                                            ...formErrors.sections,
+                                            [activeTab]: ''
+                                        }
+                                    });
+                                }
+                            }}
+                        />
+                        <label
+                            htmlFor={`${activeTab.toLowerCase()}-start-date`}
+                            className="absolute px-2 text-xs text-gray-500 duration-300 bg-[#ECE6F0] transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-[10px] peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-5"
+                        >
+                            Start date
+                        </label>
+                    </div>
+                    <div className="relative">
+                        <input
+                            type="date"
+                            id={`${activeTab.toLowerCase()}-end-date`}
+                            className={`block px-3 pb-1.5 pt-4 w-full text-xs text-gray-900 bg-[#ECE6F0] rounded-sm border-2 ${
+                                formErrors.sections[activeTab] || modalDateErrors[activeTab]
+                                    ? 'border-red-500'
+                                    : 'border-gray-400'
+                            } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                            placeholder=" "
+                            value={newBatch.sections[activeTab].endDate}
+                            onChange={(e) => {
+                                handleSectionDateChange(activeTab, 'endDate', e.target.value);
+                                if (formErrors.sections[activeTab]) {
+                                    setFormErrors({
+                                        ...formErrors,
+                                        sections: {
+                                            ...formErrors.sections,
+                                            [activeTab]: ''
+                                        }
+                                    });
+                                }
+                            }}
+                        />
+                        <label
+                            htmlFor={`${activeTab.toLowerCase()}-end-date`}
+                            className="absolute px-2 text-xs text-gray-500 duration-300 bg-[#ECE6F0] transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-[10px] peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-5"
+                        >
+                            End date
+                        </label>
+                    </div>
+                </div>
+                {modalDateErrors[activeTab] && (
+                    <p className="text-red-500 text-xs mt-1 px-2">{modalDateErrors[activeTab]}</p>
+                )}
+                {formErrors.sections[activeTab] && (
+                    <p className="text-red-500 text-xs mt-1 px-2">{formErrors.sections[activeTab]}</p>
+                )}
+            </div>
 
             {/* Mode Selection */}
-            <div className="relative mb-6">
+            <div className="relative mb-4">
                 <input
                     type="text"
                     id="new-mode"
@@ -917,7 +946,7 @@ const formatDate = (dateString) => {
                             setNewBatch({ ...newBatch, mode: '' });
                             setFormErrors({ ...formErrors, mode: 'Mode is required' });
                         }}
-                        className="absolute top-4 right-8 text-gray-500 hover:text-gray-700"
+                        className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700"
                     >
                         <RiCloseCircleLine size={20} />
                     </button>
@@ -928,7 +957,7 @@ const formatDate = (dateString) => {
                         {['Online', 'Offline'].map((item) => (
                             <div
                                 key={item}
-                                className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                className="px-3 py-1.5 text-xs cursor-pointer hover:bg-gray-100"
                                 onClick={() => {
                                     setNewBatch({ ...newBatch, mode: item });
                                     setShowNewBatchModeDropdown(false);
@@ -940,26 +969,56 @@ const formatDate = (dateString) => {
                         ))}
                     </div>
                 )}
-                {formErrors.mode && <p className="text-red-600 text-sm mt-1">{formErrors.mode}</p>}
+                {formErrors.mode && <p className="text-red-600 text-xs mt-1">{formErrors.mode}</p>}
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex justify-end gap-4">
+            {/* Prev / Next / Create Button Navigation */}
+            <div className="flex justify-between mt-10 mb-5">
                 <button
-                    onClick={() => {
-                        setShowModal(false);
-                        resetForm();
-                    }}
-                    className="text-[#6750A4] px-4 py-2.5 text-sm font-medium"
-                >
-                    Cancel
-                </button>
-                <button
-                    onClick={handleAddBatch}
-                    className="bg-[#5e4eff] text-white px-4 py-2.5 rounded-2xl text-sm font-medium"
-                >
-                    Create
-                </button>
+    disabled={activeTab === 'Domain'}
+    className="cursor-pointer px-3 py-1 rounded-lg text-xs font-medium
+      disabled:opacity-40 disabled:cursor-default
+      bg-[#ECE6F0] hover:bg-[#d8d1dd]"
+    onClick={() => {
+      const order = ['Domain', 'Aptitude', 'Communication'];
+      const idx = order.indexOf(activeTab);
+      if (idx > 0) setActiveTab(order[idx - 1]);
+    }}
+  >
+    Prev
+  </button>
+
+  {activeTab !== 'Communication' ? (
+    <button
+      className="cursor-pointer px-3 py-1 rounded-lg text-xs font-medium
+        bg-[#5e4eff] text-white hover:bg-[#453cff]"
+      onClick={() => {
+        if (!sectionIsValid(activeTab)) {
+          flagSectionEmptyError(activeTab);   // show red helper
+          return;                             // stop navigation
+        }
+        const order = ['Domain', 'Aptitude', 'Communication'];
+        const idx = order.indexOf(activeTab);
+        if (idx < order.length - 1) setActiveTab(order[idx + 1]);
+      }}
+    >
+      Next
+    </button>
+  ) : (
+    <button
+      className="cursor-pointer px-3 py-1 rounded-lg text-xs font-medium
+        bg-[#5e4eff] text-white hover:bg-[#453cff]"
+      onClick={() => {
+        if (!sectionIsValid(activeTab)) {
+          flagSectionEmptyError(activeTab);   // block & show error
+          return;
+        }
+        handleAddBatch();                      // final submit
+      }}
+    >
+      Create
+    </button>
+                )}
             </div>
         </div>
     </div>
@@ -973,9 +1032,9 @@ const formatDate = (dateString) => {
                 <h2 className="text-lg font-medium">Delete Batch Info</h2>
                 <button
                     onClick={handleCloseDeleteModal}
-                    className="text-gray-500 hover:text-gray-700"
+                    className="cursor-pointer text-gray-500 hover:text-gray-700"
                 >
-                        <RiCloseCircleLine size={20} />
+                    <RiCloseCircleLine size={20} />
                 </button>
             </div>
 
@@ -1005,7 +1064,7 @@ const formatDate = (dateString) => {
             <div className="flex justify-end gap-4">
                 <button
                     onClick={handleConfirmDelete}
-                    className="bg-[#6750A4] text-white px-4 py-2.5 rounded-2xl text-sm font-medium"
+                    className="cursor-pointer bg-[#6750A4] text-white px-4 py-2.5 rounded-2xl text-sm font-medium"
                 >
                     Delete
                 </button>
@@ -1018,4 +1077,3 @@ const formatDate = (dateString) => {
     </div>
   );
 }
-
