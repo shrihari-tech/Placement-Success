@@ -4,15 +4,21 @@ import NavBar from "../navBar/page";
 import Image from "next/image";
 import { FaSearch } from "react-icons/fa"; //search Icons
 import {LineChart,Line,XAxis,YAxis,CartesianGrid,Tooltip,LabelList,ResponsiveContainer,} from "recharts";
+import { useDataContext } from '../context/dataContext';
+
 
 
 export default function HomePage() {
+
+  const { userName } = useDataContext();
+  
   //to assume live date
   const date = new Date();
   const mm = String(date.getMonth() + 1).padStart(2, '0');
   const dd = String(date.getDate()).padStart(2, '0');
   const yyyy = date.getFullYear();
   const formattedDate = `${mm}/${dd}/${yyyy}`;
+  const monthyear = `${mm}/${yyyy}`;
   const CustomDot = ({ cx, cy }) => {
   return (
     <g>
@@ -29,10 +35,16 @@ export default function HomePage() {
   return (
     <div className="container justify-center items-center mx-auto  p-4">
       <NavBar />
+      <div className="border-b-2 border-gray-300 mb-10 ms-[-35] me-[-30] ">
+            <p
+              className="ms-10 text-2xl text-gray-700  font-semibold mb-4"
+            >Welcome {userName} !</p>
+        </div>
       {/* Main Content */}
-      <div className=" p-6 shadow-md bg-[#F8FAFD] mx-[-30] mt-[-30]">
+      <div className=" p-7 shadow-md bg-[#F8FAFD] mx-[-30] mt-[-39]">
+        
         {/* Search Input */}
-        <div className="mb-15 mt-5 flex flex-row justify-center items-center">
+        <div className="mb-15 mt-4 flex flex-row justify-center items-center">
           <input
             type="text"
             placeholder="Search for files"
@@ -44,7 +56,7 @@ export default function HomePage() {
         </div>
         <div>
            {/* Live Count Section */}
-        <h2 className="text-s text-black font-semibold mb-4">Live Count</h2>
+        <h2 className="text-s text-gray-700 font-semibold mb-4">Live Count</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {/* Card 1: Live Batch Count */}
           <div className="bg-white rounded-3xl  flex items-center justify-between py-5 px-5 w-90">
@@ -103,12 +115,12 @@ export default function HomePage() {
         </div>
         {/* Barchat code */}
         <div className="mt-10">
-          <h4 className="text-s text-black font-semibold">Placement projection</h4>
+          <h4 className="text-s text-gray-700 font-semibold">Placement projection</h4>
           {/* Barchat */}
           <div className="flex flex-col md:flex-row gap-6 mt-4">
             {["Current month", "Previous month"].map((title, idx) => (
               <div key={idx} className="bg-white rounded-xl shadow-md p-4 w-full md:w-1/2">
-                <h2 className="font-semibold text-[13px] mb-5 text-[#000000] ">{title}</h2>
+                <h2 className="font-semibold text-[13px] mb-5 text-gray-700 ">{title}</h2>
                 <ResponsiveContainer width="100%" height={250}>
                   <LineChart data={[
                     { name: "FSD", value: 56 },
@@ -118,7 +130,12 @@ export default function HomePage() {
                     { name: "SAP", value: 70 },
                     { name: "DevOps", value: 37 },
                   ]}>
-                    <CartesianGrid strokeDasharray="3 3" />
+                    <CartesianGrid 
+                    strokeDasharray="3 3"  // dotted line style
+                    vertical={true}        // show vertical grid lines
+                    horizontal={true}      // show horizontal grid lines
+                    stroke="#d1d5db"       // light gray color (Tailwind: gray-300)
+                  />
                     <XAxis 
                         dataKey="name" 
                         interval={0} 
@@ -136,7 +153,7 @@ export default function HomePage() {
                       type="monotone"
                       dataKey="value"
                       stroke="#6366f1"
-                      strokeWidth={2}
+                      strokeWidth={1}
                       activeDot={{ r: 6 }}
                      dot={<CustomDot />}
                     >
@@ -149,12 +166,14 @@ export default function HomePage() {
                     </Line>
                   </LineChart>
                 </ResponsiveContainer>
-                <div className="text-center text-sm text-gray-500 mt-2">
-                  <span><Image 
-                  src='/LegendNode.svg' width={20} height={20} alt="legendNode"
-                  className="text-center"
-                  /> </span>
-                  2025
+                <div className="flex justify-center items-center text-sm text-gray-500 mt-2 gap-1.5">
+                  <Image 
+                    src='/LegendNode.svg' 
+                    width={16} 
+                    height={16} 
+                    alt="legendNode"
+                  />
+                  <span>{monthyear}</span>
                 </div>
               </div>
             ))}

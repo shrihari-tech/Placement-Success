@@ -1,12 +1,20 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 // Create the context
 const DataContext = createContext({});
 
 // ➤ Hook to use this context in components
 export const useDataContext = () => {
+  const pathname = usePathname();
+  useEffect(()=>{
+    if(pathname === '/'){
+       localStorage.setItem('activeSubNav', '');
+    }
+  },[pathname])
+
   const context = useContext(DataContext);
   if (!context) {
     throw new Error("useDataContext must be used within a DataProvider");
@@ -236,6 +244,7 @@ const DataProvider = ({ children }) => {
   const [sapData, setSapData] = useState(sapInitial);
   const [devopsData, setDevopsData] = useState(devopsInitial);
 
+  const userName =  loginUser.split("@")[0];
   const firstLetterUser = loginUser?.charAt(0).toUpperCase() || "";
 
   // 🔄 Update batchData and batchHead when batchingvalue changes
@@ -353,7 +362,7 @@ const DataProvider = ({ children }) => {
   return (
     <DataContext.Provider
       value={{ batchingvalue,setBatchingValue,loginUser,setLoginUser,firstLetterUser,batchHead,batchData,
-        addBatch,updateBatch,deleteBatch
+        addBatch,updateBatch,deleteBatch ,userName
       }}
     >
       {children}

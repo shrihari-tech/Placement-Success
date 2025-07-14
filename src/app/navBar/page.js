@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { GiHamburgerMenu } from "react-icons/gi"; //hamburger icon
+// import { GiHamburgerMenu } from "react-icons/gi"; //hamburger icon
 import { LuLayoutGrid } from "react-icons/lu"; //home icon
 import { MdOutlineGroups } from "react-icons/md"; //batch icon
 import { MdOutlineSettings } from "react-icons/md"; //settings icon
@@ -24,7 +24,6 @@ export default function NavBar() {
   // Access the data context variable
   const { setBatchingValue, firstLetterUser } = useDataContext();
 
-  // Set initial active state based on current pathname
   useEffect(() => {
     const storedSubNav = localStorage.getItem('activeSubNav');
     if (storedSubNav) {
@@ -50,13 +49,15 @@ export default function NavBar() {
     }
   }, [pathname]);
 
+  useEffect(() => {
+  if (performance.getEntriesByType("navigation")[0]?.type === "reload") {
+    localStorage.setItem('activeSubNav', '');
+  }
+}, []); 
+
   const handleNavItemClick = (navItem) => {
     setActiveNavItem(navItem);
   };
-
-  // const handleBatchesClick = () => {
-  //   setActiveNavItem('batches');
-  // };
 
   const handleSubNavClick = (subNavItem) => {
     setActiveSubNav(subNavItem);
@@ -71,9 +72,14 @@ export default function NavBar() {
         {/* Top: Menu Icon */}
         <div className="flex flex-col items-center w-full">
           {/* Menu Icon (Hamburger) */}
-          <div className='mt-5 mb-3'>
-            <button className="mb-2 p-2 rounded-lg">
-              <GiHamburgerMenu size={20} className="text-black" />
+           <div className="flex flex-col items-center w-full mb-10 mt-7">
+            <button 
+              className="flex flex-col items-center mb-2 px-3.5 py-1 bg-black text-white rounded-2xl w-10 h-10 justify-center font-bold text-lg"
+              onClick={() => {
+                setShowSubNav(false);
+              }}
+            >
+              {firstLetterUser}
             </button>
           </div>
           {/* Navigation Icons */}
@@ -86,7 +92,7 @@ export default function NavBar() {
               >
                 <LuLayoutGrid size={20} />
               </Link>
-              <span className="text-xs font-semibold cursor-pointer text-[#49454F]"
+              <span className="text-xs font-semibold cursor-pointer text-[#46424c]"
                 onClick={() =>router.push('/home')}>Home</span>
             </div>
             <div 
@@ -100,7 +106,7 @@ export default function NavBar() {
               >
                 <MdOutlineGroups size={20} />
               </button>
-              <span className="text-xs font-semibold cursor-pointer text-[#49454F]">Batches</span>
+              <span className="text-xs font-semibold cursor-pointer text-[#46424c]">Batches</span>
             </div>
             <div className="flex flex-col items-center w-full mb-5" onClick={() =>router.push('/student')}>
               <Link 
@@ -116,7 +122,7 @@ export default function NavBar() {
           </nav>
         </div>
         {/* Bottom: Notification, Settings, User Avatar */}
-        <div className="flex flex-col items-center w-full mb-15">
+        <div className="flex flex-col items-center w-full mb-25">
           <div className="flex flex-col items-center w-full mb-5">
             <button 
               className="flex flex-col items-center mb-1 px-3.5 py-1 text-black hover:bg-[#e0ccff] hover:text-black rounded-2xl transition-colors cursor-pointer"
@@ -140,16 +146,6 @@ export default function NavBar() {
             </Link>
             <span className="text-xs font-semibold cursor-pointer text-[#49454F] mb-2"
             onClick={() =>router.push('/seting')}>Settings</span>
-          </div>
-          <div className="flex flex-col items-center w-full mb-5">
-            <button 
-              className="flex flex-col items-center mb-2 px-3.5 py-1 bg-black text-white rounded-2xl w-10 h-10 justify-center font-bold text-lg"
-              onClick={() => {
-                setShowSubNav(false);
-              }}
-            >
-              {firstLetterUser}
-            </button>
           </div>
         </div>
       </aside>

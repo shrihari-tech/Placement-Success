@@ -505,37 +505,33 @@ const validateBatchNumber = (value) => {
         </button>
         </div>
 
-        <div className='flex flex-col md:flex-row gap-4 mt-15 mb-6'>
+        {/* parent row */}
+<div className="flex flex-col md:flex-row md:justify-between gap-4 mt-15 mb-6">
 
-           <div className="relative bg-[#efeeff] w-full max-w-md h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
-                <div className="absolute left-6 top-6 text-black text-4xl font-bold leading-10">{ongoingCount}</div>
-                <div className="absolute left-6 top-[84px] text-black text-xl font-normal leading-7">Ongoing Count</div>
-                <div className="absolute right-4.5 top-6 w-12 h-9 rounded-full flex items-center justify-center">
-                    <Image
-                        src="/onging count.png"
-                        alt="Ongoing Icon"
-                        width={30}
-                        height={30}
-                        className="w-10 h-10"
-                    />
-                </div>
-            </div>
-            <div className="relative bg-[#efeeff] w-full max-w-md h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
-                <div className="absolute left-6 top-6 text-black text-4xl font-bold leading-10">{completedCount}</div>
-                <div className="absolute left-6 top-[84px] text-black text-xl font-normal leading-7">Completed Count</div>
-                <div className="absolute right-4.5 top-6 w-12 h-9 rounded-full flex items-center justify-center">
-                    <Image
-                        src="/completed count.png"
-                        alt="Completed Icon"
-                        width={30}
-                        height={35}
-                        className="w-10 h-10"
-                    />
-                </div>
-            </div>
-        </div>
+  {/* Ongoing */}
+  <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px]
+                  shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
+    <div className="absolute left-6 top-6 text-4xl font-bold leading-10">{ongoingCount}</div>
+    <div className="absolute left-6 top-[84px] text-xl font-normal leading-7">Ongoing&nbsp;Count</div>
+    <div className="absolute right-4.5 top-6 w-12 h-9 flex items-center justify-center">
+      <Image src="/onging count.png" alt="Ongoing Icon" width={30} height={30} className="w-10 h-10" />
+    </div>
+  </div>
+
+  {/* Completed */}
+  <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px]
+                  shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
+    <div className="absolute left-6 top-6 text-4xl font-bold leading-10">{completedCount}</div>
+    <div className="absolute left-6 top-[84px] text-xl font-normal leading-7">Completed&nbsp;Count</div>
+    <div className="absolute right-4.5 top-6 w-12 h-9 flex items-center justify-center">
+      <Image src="/completed count.png" alt="Completed Icon" width={30} height={35} className="w-10 h-10" />
+    </div>
+  </div>
+
+</div>
+
         <div className="bg-[#F4F3FF] px-6 py-4 rounded-xl">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 px-3 py-3">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-5 px-3 py-3">
                 <div className="relative">
                     <input
                         type="text"
@@ -574,6 +570,24 @@ const validateBatchNumber = (value) => {
                     >
                         Start date
                     </label>
+                </div>
+                 <div className="relative">
+                    <input
+                        id="end-date"
+                        type='date'
+                        value={endDate}
+                        className={`cursor-pointer block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                        onChange={(e) => handleSearchEndDateChange(e.target.value)}
+                    />
+                    <label
+                        htmlFor="end-date"
+                        className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+                    >
+                        End date
+                    </label>
+                    {searchDateError && (
+                        <p className="text-red-500 text-xs mt-1 px-2">{searchDateError}</p>
+                    )}
                 </div>
                 <div className="relative">
                     <input
@@ -620,28 +634,11 @@ const validateBatchNumber = (value) => {
                         </div>
                     )}
                 </div>
-                <div className="relative md:col-start-2">
-                    <input
-                        id="end-date"
-                        type='date'
-                        value={endDate}
-                        className={`cursor-pointer block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
-                        onChange={(e) => handleSearchEndDateChange(e.target.value)}
-                    />
-                    <label
-                        htmlFor="end-date"
-                        className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
-                    >
-                        End date
-                    </label>
-                    {searchDateError && (
-                        <p className="text-red-500 text-xs mt-1 px-2">{searchDateError}</p>
-                    )}
-                </div>
-                <div className="flex gap-2 md:col-start-3 md:justify-end md:pt-24">
+               
+                <div className="flex gap-2 md:col-start-3 md:justify-end mr-[-220] md:pt-24">
                     <button
                         onClick={handleReset}
-                        className="cursor-pointer bg-[#f1ecfb] hover:bg-[#E8DEF8] px-6 py-2 rounded-2xl text-sm font-semibold text-gray-700 flex items-center gap-1"
+                        className="cursor-pointer bg-[#f1ecfb] hover:bg-[#E8DEF8] px-4 py-2 rounded-xl text-sm font-semibold text-gray-700 flex items-center gap-1"
                     >
                         <Image
                             src='/reset.svg'
@@ -653,7 +650,7 @@ const validateBatchNumber = (value) => {
                     </button>
                     <button
                         onClick={handleSearch}
-                        className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-6 py-2 rounded-2xl text-sm font-semibold"
+                        className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-5 py-2 rounded-xl text-sm font-semibold"
                     >
                         Search
                     </button>
