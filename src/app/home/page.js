@@ -118,7 +118,12 @@ export default function HomePage() {
                     { name: "SAP", value: 70 },
                     { name: "DevOps", value: 37 },
                   ]}>
-                    <CartesianGrid strokeDasharray="3 3" />
+                    <CartesianGrid 
+                    strokeDasharray="3 3"  // dotted line style
+                    vertical={true}        // show vertical grid lines
+                    horizontal={true}      // show horizontal grid lines
+                    stroke="#d1d5db"       // light gray color (Tailwind: gray-300)
+                  />
                     <XAxis 
                         dataKey="name" 
                         interval={0} 
@@ -136,7 +141,7 @@ export default function HomePage() {
                       type="monotone"
                       dataKey="value"
                       stroke="#6366f1"
-                      strokeWidth={2}
+                      strokeWidth={1}
                       activeDot={{ r: 6 }}
                      dot={<CustomDot />}
                     >
@@ -149,12 +154,14 @@ export default function HomePage() {
                     </Line>
                   </LineChart>
                 </ResponsiveContainer>
-                <div className="text-center text-sm text-gray-500 mt-2">
-                  <span><Image 
-                  src='/LegendNode.svg' width={20} height={20} alt="legendNode"
-                  className="text-center"
-                  /> </span>
-                  2025
+                <div className="flex justify-center items-center text-sm text-gray-500 mt-2 gap-1">
+                  <Image 
+                    src='/LegendNode.svg' 
+                    width={16} 
+                    height={16} 
+                    alt="legendNode"
+                  />
+                  <span>2025</span>
                 </div>
               </div>
             ))}
