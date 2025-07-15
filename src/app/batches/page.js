@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Toaster, toast } from 'react-hot-toast';
 import { X } from 'lucide-react';
 import { RiCloseCircleLine } from "react-icons/ri";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect ,useRef} from 'react';
 import { useDataContext } from '../context/dataContext';
 
 export default function BatchModel() {
@@ -151,6 +151,39 @@ const formatDate = (str) => (str ? toDDMMYYYY(parseDate(str)) : "");
         setSearchDateError('');
         return true;
     };
+
+    const handleCloseModal = () => {
+  setShowModal(false);
+}
+
+ const handleCloseModelSelect = () =>{
+   setShowNewBatchModeDropdown(false);
+ }
+const modeDropdownRef = useRef(null); // for filter section
+const newBatchDropdownRef = useRef(null); // for Add Batch Modal
+useEffect(() => {
+  function handleClickOutside(event) {
+    if (
+      modeDropdownRef.current &&
+      !modeDropdownRef.current.contains(event.target)
+    ) {
+      setShowModeDropdown(false); // for main filter dropdown
+    }
+
+    if (
+      newBatchDropdownRef.current &&
+      !newBatchDropdownRef.current.contains(event.target)
+    ) {
+      setShowNewBatchModeDropdown(false); // for modal dropdown
+    }
+  }
+
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
+
 
     const handleSearchStartDateChange = (value) => {
         setStartDate(value);
@@ -589,7 +622,7 @@ const validateBatchNumber = (value) => {
                         <p className="text-red-500 text-xs mt-1 px-2">{searchDateError}</p>
                     )}
                 </div>
-                <div className="relative">
+                <div className="relative" ref={modeDropdownRef}>
                     <input
                         type="text"
                         id="mode"
@@ -749,8 +782,17 @@ const validateBatchNumber = (value) => {
 </div>
 
 {showModal && (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-        <div className="w-[380px] bg-[#F8FAFD] rounded-[10px] px-6 py-4">
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+        onClick={() => {
+          handleCloseModal();
+          handleCloseModelSelect();
+        }}
+
+    >
+        <div className="w-[380px] bg-[#F8FAFD] rounded-[10px] px-6 py-4"
+            onClick={(e) => {e.stopPropagation()
+          }}
+        >
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-sm font-bold">Add new batch</h2>
                 <button
@@ -912,7 +954,7 @@ const validateBatchNumber = (value) => {
             </div>
 
             {/* Mode Selection */}
-            <div className="relative mb-4">
+            <div className="relative mb-4" ref={newBatchDropdownRef}>
                 <input
                     type="text"
                     id="new-mode"
@@ -1023,8 +1065,12 @@ const validateBatchNumber = (value) => {
 
 {/* Delete Confirmation Modal */}
 {showDeleteModal && batchToDelete && (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-        <div className="w-[500px] bg-[#F8FAFD] rounded-[10px] p-6">
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+        onClick={handleCloseDeleteModal}
+    >
+        <div className="w-[500px] bg-[#F8FAFD] rounded-[10px] p-6"
+        onClick={(e) => e.stopPropagation()}
+        >
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-lg font-medium">Delete Batch Info</h2>
                 <button
