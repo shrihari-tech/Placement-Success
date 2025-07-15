@@ -48,15 +48,30 @@ export default function HomePage() {
             >Hi {userName}  <Image
                 src='/waving-hand_1f44b 1.svg'           
                 alt="hand"
-                className="mt-[-4] ms-2 rotate-y-180"
+                className="mt-[-4] animate-bounce ms-2 rotate-y-180"
                 width={35}
-                height={35}  
-                />
+                height={35}
+               style={{
+                  animation: 'wave 1.5s ease-in-out infinite',
+                  transformOrigin: 'bottom right',
+                }}
+                />  
+                <style jsx>{`
+                  @keyframes wave {
+                    0% { transform: rotate(0deg); }
+                    10% { transform: rotate(14deg); }
+                    20% { transform: rotate(-8deg); }
+                    30% { transform: rotate(14deg); }
+                    40% { transform: rotate(-4deg); }
+                    50% { transform: rotate(10deg); }
+                    60%, 100% { transform: rotate(0deg); }
+                  }
+                `}</style>
              
             </p>
         </div>
       {/* Main Content */}
-      <div className=" p-7 mx-[-30] mt-[-39]">
+      <div className=" p-7 ms-[-30] mt-[-39]">
         <div>
            {/* Live Count Section */}
         <h2 className="text-s text-gray-700 font-semibold mb-4">Live Count</h2>

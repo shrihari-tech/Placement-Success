@@ -23,6 +23,11 @@ export default function BatchModel() {
     const [showActions, setShowActions] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+    const [showEditModal , setShowEditModel] = useState(false);
+    const [editBatchData, setEditBatchData] = useState(null);
+    const [batchNameError, setBatchNameError] = useState(false);
+
     const [batchToDelete, setBatchToDelete] = useState(null);
     const [deleteConfirmationInput, setDeleteConfirmationInput] = useState('');
     const [deleteError, setDeleteError] = useState('');
@@ -206,12 +211,44 @@ useEffect(() => {
             setShowDeleteModal(true);
             setDeleteConfirmationInput('');
             setDeleteError('');
-        } else {
+        } else if(action === 'edit'){
+            handleEditBatch(batchId)
+            setShowEditModel(true);
+        }
+        
+        else {
             console.log(`${action} action for batch ${batchId}`);
         }
         setShowActions(null);
     };
 
+        const handleEditBatch = (batchId) => {
+        const batchToEdit = batches.find(batch => batch.id === batchId);
+        setEditBatchData(batchToEdit);
+        };
+
+        const handleEditModelClode = () => {
+            setShowEditModel(false)
+        }
+        const validateBatchField = () => {
+        if (!editBatchData.batchNo.trim()) {
+            setBatchNameError(true);
+            return false;
+        }
+        setBatchNameError(false);
+        return true;
+        };
+
+        const handleSave = () => {
+        if (!validateBatchField()) return;
+        updateBatch(editBatchData.id, editBatchData);
+        handleEditModelClode();
+        };
+
+        const handleCancel = () => {
+        if (!validateBatchField()) return;
+        handleEditModelClode();
+        };
     const handleDeleteBatch = (batchId) => {
         const updatedBatches = batches.filter(batch => batch.id !== batchId);
         setBatches(updatedBatches);
@@ -509,8 +546,8 @@ const validateBatchNumber = (value) => {
         <div className="flex min-h-screen mx-[-16] md:width-[750px]">
             <Toaster position='top-right' />
 <div className={`px-3 pt-20 flex-1 bg-[#F8FAFD] mb-[12] ${showModal || showDeleteModal ? 'pointer-events-none' : ''}`}>
-    <div className="fixed top-0 left-70 border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-7 z-10">
-        <h1 className="fixed pl-3 text-lg  font-semibold">{batchHead}</h1>
+    <div className="fixed ms-[-10] top-0 left-70 border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 z-10">
+        <h1 className="fixed pl-3 text-xl  font-semibold">{batchHead}</h1>
         {/* <button
             onClick={() => setShowModal(true)}
             className="fixed flex p-2 right-5 bg-[#3f2fb4] hover:bg-[#3f2fb4d4] text-white text-sm font-bold px-2 py-2.5 rounded-lg shadow-sm">
@@ -524,7 +561,7 @@ const validateBatchNumber = (value) => {
         </button> */}
     </div>
     <div className='p-3'>
-         <div className='mt-[-30]'>
+         <div className='mt-[-20]'>
             <button
             onClick={() => setShowModal(true)}
             className="absolute cursor-pointer z-1 flex p-2 right-5 bg-[#3f2fb4] hover:bg-[#3f2fb4d4] text-white text-sm font-bold px-2 py-2.5 rounded-lg shadow-sm">
@@ -711,7 +748,7 @@ const validateBatchNumber = (value) => {
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
   {filteredBatches.map((batch, index) => (
-    <tr key={batch.id} className="hover:bg-[#e1cfff]">
+    <tr key={batch.id} className="hover:bg-[#e1cfff] hover:text-[#4005a0]">
       <td className="px-4 py-3 text-sm whitespace-nowrap">{index + 1}</td>
 
       {/* Batch No */}
@@ -765,7 +802,7 @@ const validateBatchNumber = (value) => {
           <button onClick={() => handleAction('edit', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded">
             <FiEdit className="h-4 w-4" />
           </button>
-          <button onClick={() => handleAction('delete', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded text-red-600">
+          <button onClick={() => handleAction('delete', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded text-black">
             <FiTrash2 className="h-4 w-4" />
           </button>
         </div>
@@ -1114,6 +1151,233 @@ const validateBatchNumber = (value) => {
             </div>
         </div>
     </div>
+)}
+
+{/* Show Edit model */}
+{showEditModal && editBatchData && (
+  <div
+    className="fixed inset-0 bg-black/40 z-50 flex justify-center items-center"
+    onClick={handleCancel}
+  >
+    <div
+      className="bg-white w-auto p-10 rounded-sm shadow-lg relative"
+      onClick={(e) => e.stopPropagation()} // Prevent modal close on inner click
+    >
+      <div className="flex justify-between items-center mb-8 ms-[-19] me-[-19]">
+        <h2 className="text-sm font-bold">Edit batch</h2>
+        <button
+          onClick={handleCancel}
+          className="cursor-pointer text-gray-500 hover:text-gray-700"
+        >
+          <RiCloseCircleLine size={20} />
+        </button>
+      </div>
+<div className="relative w-full mb-7">
+  <input
+    type="text"
+    id="batchName"
+    value={editBatchData.batchNo}
+    onChange={(e) => {
+      setEditBatchData({ ...editBatchData, batchNo: e.target.value });
+      if (batchNameError) setBatchNameError(false); // Clear error on input
+    }}
+    className={`
+      peer w-full p-2.5 pr-10 text-sm rounded border-2
+      placeholder-transparent focus:outline-none focus:ring-0
+      transition-all duration-300 ease-in-out
+      ${
+        batchNameError
+          ? 'border-red-500'
+          : editBatchData.batchNo
+          ? 'border-[#6750a4]'
+          : 'border-[#79747e]'
+      }
+      focus:border-[#6750a4]
+    `}
+    placeholder="Batch name"
+  />
+
+  <label
+    htmlFor="batchName"
+    className={`
+      absolute left-2 px-1 bg-white transition-all pointer-events-none duration-300 ease-in-out
+      ${
+        editBatchData.batchNo
+          ? 'top-[-10px] text-xs text-[#6750a4]'
+          : 'top-3.5 text-sm text-gray-400'
+      }
+      peer-focus:top-[-10px] peer-focus:text-xs peer-focus:text-[#6750a4]
+    `}
+  >
+    Batch name
+  </label>
+
+  {/* Clear icon */}
+  {editBatchData.batchNo && (
+    <RiCloseCircleLine
+      size={18}
+      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+      onClick={() =>
+        setEditBatchData({ ...editBatchData, batchNo: '' })
+      }
+    />
+  )}
+</div>
+
+{/* Error message below input */}
+{batchNameError && (
+  <p className="text-red-500 text-xs mb-4 ms-1">Batch field is empty</p>
+)}
+
+
+     <div className='flex flex-col'>
+        <div className='flex flex-row gap-2'>
+         <div className="mb-4 bg-[#ece6f0] p-4 rounded-xl">
+            <div className='border-b-1 border-gray-400 mb-4 ms-[-15] me-[-15]'>
+                <h3 className="text-2xl font-mono mb-2 ms-5">Domain</h3>
+            </div>
+        <div className="flex gap-4">
+          <input
+            type="date"
+            value={editBatchData.sections?.Domain?.startDate || ""}
+            onChange={(e) =>
+              setEditBatchData({
+                ...editBatchData,
+                sections: {
+                  ...editBatchData.sections,
+                  Domain: {
+                    ...editBatchData.sections?.Domain,
+                    startDate: e.target.value,
+                  },
+                },
+              })
+            }
+            className="border p-2 rounded w-auto text-sm"
+          />
+          <input
+            type="date"
+            value={editBatchData.sections?.Domain?.endDate || ""}
+            onChange={(e) =>
+              setEditBatchData({
+                ...editBatchData,
+                sections: {
+                  ...editBatchData.sections,
+                  Domain: {
+                    ...editBatchData.sections?.Domain,
+                    endDate: e.target.value,
+                  },
+                },
+              })
+            }
+            className="border p-2 rounded w-auto text-sm"
+          />
+        </div>
+      </div>
+
+      {/* Aptitude Section */}
+      <div className="mb-4 bg-[#ece6f0] p-4 rounded-xl">
+        <div className='border-b-1 border-gray-400 mb-4 ms-[-15] me-[-15]'>
+                <h3 className="text-2xl font-mono mb-2 ms-5">Aptitude</h3>
+        </div>
+        <div className="flex gap-4">
+          <input
+            type="date"
+            value={editBatchData.sections?.Aptitude?.startDate || ""}
+            onChange={(e) =>
+              setEditBatchData({
+                ...editBatchData,
+                sections: {
+                  ...editBatchData.sections,
+                  Aptitude: {
+                    ...editBatchData.sections?.Aptitude,
+                    startDate: e.target.value,
+                  },
+                },
+              })
+            }
+            className="border p-2 rounded w-auto text-sm"
+          />
+          <input
+            type="date"
+            value={editBatchData.sections?.Aptitude?.endDate || ""}
+            onChange={(e) =>
+              setEditBatchData({
+                ...editBatchData,
+                sections: {
+                  ...editBatchData.sections,
+                  Aptitude: {
+                    ...editBatchData.sections?.Aptitude,
+                    endDate: e.target.value,
+                  },
+                },
+              })
+            }
+            className="border p-2 rounded w-auto text-sm"
+          />
+        </div>
+      </div>
+        </div>
+        <div>
+     <div className="mb-4 bg-[#ece6f0] p-4 rounded-xl w-1/2">
+         <div className='border-b-1 border-gray-400 mb-4 ms-[-15] me-[-15]'>
+                <h3 className="text-2xl font-mono mb-2 ms-5">Communication</h3>
+        </div>
+            <div className="flex gap-4">
+          <input
+            type="date"
+            value={editBatchData.sections?.Communication?.startDate || ""}
+            onChange={(e) =>
+              setEditBatchData({
+                ...editBatchData,
+                sections: {
+                  ...editBatchData.sections,
+                  Communication: {
+                    ...editBatchData.sections?.Communication,
+                    startDate: e.target.value,
+                  },
+                },
+              })
+            }
+            className="border p-2 rounded w-auto text-sm"
+          />
+          <input
+            type="date"
+            value={editBatchData.sections?.Communication?.endDate || ""}
+            onChange={(e) =>
+              setEditBatchData({
+                ...editBatchData,
+                sections: {
+                  ...editBatchData.sections,
+                  Communication: {
+                    ...editBatchData.sections?.Communication,
+                    endDate: e.target.value,
+                  },
+                },
+              })
+            }
+            className="border p-2 rounded w-auto text-sm"
+          />
+        </div>
+      </div>
+        </div>
+     </div>
+      {/* Footer Actions */}
+      <div className="flex justify-end gap-4">
+        <button
+           onClick={handleCancel}
+          className="bg-[#e8def8] px-4 py-3 cursor-pointer rounded-2xl text-[#4a4459]"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleSave}
+          className="bg-[#6750a4] text-white cursor-pointer px-4 py-3 rounded-2xl"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
 )}
 
 <Toaster position="top-right" reverseOrder={false} />
