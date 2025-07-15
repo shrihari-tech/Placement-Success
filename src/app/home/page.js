@@ -6,8 +6,6 @@ import { FaSearch } from "react-icons/fa"; //search Icons
 import {LineChart,Line,XAxis,YAxis,CartesianGrid,Tooltip,LabelList,ResponsiveContainer,} from "recharts";
 import { useDataContext } from '../context/dataContext';
 
-
-
 export default function HomePage() {
 
   const { userName } = useDataContext();

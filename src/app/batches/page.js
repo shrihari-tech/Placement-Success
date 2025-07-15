@@ -7,6 +7,9 @@ import { X } from 'lucide-react';
 import { RiCloseCircleLine } from "react-icons/ri";
 import React, { useState, useEffect } from 'react';
 import { useDataContext } from '../context/dataContext';
+import { useRef } from "react";
+
+// Inside your component
 
 export default function BatchModel() {
     const [batches, setBatches] = useState([]);
@@ -38,6 +41,8 @@ export default function BatchModel() {
             Communication: ''
         }
     });
+
+
 
 const sectionIsValid = (tab) => {
   const sec = newBatch.sections[tab];
@@ -659,7 +664,7 @@ const validateBatchNumber = (value) => {
         </div>
 
         {searchInitiated && (
-            <div className="bg-white rounded-2xl shadow-sm mt-6 w-full">
+            <div  className="bg-white rounded-2xl shadow-sm mt-6 w-full">
                 <div className="w-full overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50">
