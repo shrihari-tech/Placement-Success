@@ -21,7 +21,7 @@ export const useDataContext = () => {
   }
   return context;
 };
-
+  
 // Sample data arrays (used only as initial values)
 // 🗂️ Full‑stack batch seed data (template)
 // ===== Full‑Stack =====

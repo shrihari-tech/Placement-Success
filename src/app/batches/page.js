@@ -52,6 +52,13 @@ const [showEditConfirmationModal, setShowEditConfirmationModal] = useState(false
           }
       });
 
+const handleKeyDown = (e) => {
+  if (e.key === "Enter" && e.target.tagName === 'INPUT' && e.target.type !== 'text-readonly') {
+    e.preventDefault();
+    handleSearch();
+  }
+};
+
         const todayISO = new Date().toISOString().split("T")[0];
 
   const validateEdit = () => {
@@ -488,41 +495,72 @@ const hasChanges = () => {
           setDeleteError('');
       };
 
-      const handleSearch = () => {
-          const hasSearchCriteria = searchTerm || (mode && mode !== 'Off') || startDate || endDate;
-          if (!hasSearchCriteria) {
-              setSearchInitiated(false);
-              toast.error('Please enter at least one search criterion');
-              return;
-          }
-          if (searchDateError) {
-              toast.error('Please fix the date range error before searching');
-              return;
-          }
-          let results = batches;
-          if (searchTerm) {
-              results = results.filter(batch => 
-                  batch.batchNo.toLowerCase().includes(searchTerm.toLowerCase())
-              );
-          }
-          if (mode && mode !== 'Off') {
-              results = results.filter(batch => 
-                  batch.mode.toLowerCase() === mode.toLowerCase()
-              );
-          }
-          if (startDate) {
-              results = results.filter(batch => 
-                  new Date(batch.startDate) >= new Date(startDate)
-              );
-          }
-          if (endDate) {
-              results = results.filter(batch => 
-                  new Date(batch.endDate) <= new Date(endDate)
-              );
-          }
-          setFilteredBatches(results);
-          setSearchInitiated(true);
-      };
+    const handleSearch = () => {
+  const hasSearchCriteria = searchTerm || (mode && mode !== 'Off') || startDate || endDate;
+
+  if (!hasSearchCriteria) {
+    setSearchInitiated(false);
+    toast.error('Please enter at least one search criterion');
+    return;
+  }
+
+  if (searchDateError) {
+    toast.error('Please fix the date range error before searching');
+    return;
+  }
+
+  let results = batches;
+
+  // Search by Batch No
+  if (searchTerm) {
+    results = results.filter(batch =>
+      batch.batchNo.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }
+
+  // Search by Mode
+  if (mode && mode !== 'Off') {
+    results = results.filter(batch =>
+      batch.mode.toLowerCase() === mode.toLowerCase()
+    );
+  }
+
+  // Normalize input dates
+  const start = startDate ? new Date(startDate) : null;
+  const end = endDate ? new Date(endDate) : null;
+
+  // Filter based on section start/end dates
+  if (start || end) {
+    results = results.filter(batch => {
+      const sectionDates = [
+        batch.sections?.Domain,
+        batch.sections?.Aptitude,
+        batch.sections?.Communication,
+      ].filter(Boolean); // Remove undefined/null sections
+
+      // Check if any section matches the date condition
+      return sectionDates.some(section => {
+        const secStart = section.startDate ? new Date(section.startDate) : null;
+        const secEnd = section.endDate ? new Date(section.endDate) : null;
+
+        if (start && end) {
+          // Section overlaps with range [start, end]
+          return secStart <= end && secEnd >= start;
+        } else if (start) {
+          return secEnd >= start;
+        } else if (end) {
+          return secStart <= end;
+        }
+
+        return true;
+      });
+    });
+  }
+
+  setFilteredBatches(results);
+  setSearchInitiated(true);
+};
+
 
       const resetForm = () => {
           setNewBatch({
@@ -805,7 +843,9 @@ const hasChanges = () => {
                         className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
                         placeholder=" "
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                    onKeyDown={handleKeyDown}  // Add this line
+
+                        onChange={(e) => { setSearchTerm(e.target.value); }}
                     />
                     <label
                         htmlFor="batch-id"
@@ -828,6 +868,8 @@ const hasChanges = () => {
                         type='date'
                         value={startDate}
                         className={` cursor-pointer block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                                            onKeyDown={handleKeyDown}  // Add this line
+
                         onChange={(e) => handleSearchStartDateChange(e.target.value)}
                     />
                     <label
@@ -842,6 +884,8 @@ const hasChanges = () => {
                         id="end-date"
                         type='date'
                         value={endDate}
+                                            onKeyDown={handleKeyDown}  // Add this line
+
                         className={`cursor-pointer block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
                         onChange={(e) => handleSearchEndDateChange(e.target.value)}
                     />
@@ -855,51 +899,63 @@ const hasChanges = () => {
                         <p className="text-red-500 text-xs mt-1 px-2">{searchDateError}</p>
                     )}
                 </div>
-                <div className="relative" ref={modeDropdownRef}>
-                    <input
-                        type="text"
-                        id="mode"
-                        className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer`}
-                        placeholder=" "
-                        readOnly
-                        value={mode === 'Off' ? '' : mode}
-                        onClick={() => setShowModeDropdown(!showModeDropdown)}
-                    />
-                    <label
-                        htmlFor="mode"
-                        className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
-                    >
-                        Mode
-                    </label>
-                    <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
-                    {mode && mode !== 'Off' && (
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setMode('Off');
-                            }}
-                            className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700"
-                        >
-                            <RiCloseCircleLine size={20} />
-                        </button>
-                    )}
-                    {showModeDropdown && (
-                        <div className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md">
-                            {['Online', 'Offline'].map((item) => (
-                                <div
-                                    key={item}
-                                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                    onClick={() => {
-                                        setMode(item);
-                                        setShowModeDropdown(false);
-                                    }}
-                                >
-                                    {item}
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
+                <div className="relative" ref={modeDropdownRef} onKeyDown={handleKeyDown}>
+  <input
+    type="text"
+    id="mode"
+    readOnly
+    placeholder=" "
+    value={mode === 'Off' ? '' : mode}
+    onClick={() => setShowModeDropdown(!showModeDropdown)}
+    className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+  />
+  <label
+    htmlFor="mode"
+    className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+  >
+    Mode
+  </label>
+  <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
+
+  {mode && mode !== 'Off' && (
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        setMode('Off');
+        handleSearch(); // Optional: Trigger search on clear
+      }}
+      className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700"
+    >
+      <RiCloseCircleLine size={20} />
+    </button>
+  )}
+
+  {showModeDropdown && (
+    <div className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md">
+      {['Online', 'Offline'].map((item) => (
+        <div
+          key={item}
+          tabIndex={0} // Makes it focusable with keyboard
+          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+          onClick={() => {
+            setMode(item);
+            setShowModeDropdown(false);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              setMode(item);
+              setShowModeDropdown(false);
+              handleSearch();
+            }
+          }}
+        >
+          {item}
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
                
                 <div className="flex gap-2 md:col-start-3 md:justify-end mr-[-220] md:pt-17">
                     <button
@@ -952,23 +1008,25 @@ const hasChanges = () => {
 
       {/* Status */}
       <td className="px-4 py-3 text-sm whitespace-nowrap">
-{new Date(batch.endDate) < new Date() ? (
-            <Image
-                src="/com.svg" // Replace with your actual completed status image path
-                alt="Completed"
-                width={70}
-                height={50}
-                className="w-20 h-7"
-            />
-        ) : (
-            <Image
-                src="/going.svg" // Replace with your actual ongoing status image path
-                alt="Ongoing"
-                width={70}
-                height={50}
-                className="w-20 h-7"
-            />
-        )}
+{new Date(batch.sections?.Domain?.endDate) < new Date() &&
+ new Date(batch.sections?.Aptitude?.endDate) < new Date() &&
+ new Date(batch.sections?.Communication?.endDate) < new Date() ? (
+  <Image
+    src="/com.svg"
+    alt="Completed"
+    width={70}
+    height={50}
+    className="w-20 h-7"
+  />
+) : (
+  <Image
+    src="/going.svg"
+    alt="Ongoing"
+    width={70}
+    height={50}
+    className="w-20 h-7"
+  />
+)}
       </td>
 
       {/* Domain dates */}
@@ -1050,6 +1108,7 @@ const hasChanges = () => {
                     } ${setFormErrors ? 'border-gray-400':'focus:border-red-500 border-red-500' } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
                     placeholder=" "
                     value={newBatch.batchNo}
+
                     onChange={(e) => {
                         const value = e.target.value;
                         setNewBatch({ ...newBatch, batchNo: value });
@@ -1126,6 +1185,7 @@ const hasChanges = () => {
                                     : 'border-gray-400'
                             } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
                             placeholder=" "
+
                             value={newBatch.sections[activeTab].startDate}
                             onChange={(e) => {
                                 handleSectionDateChange(activeTab, 'startDate', e.target.value);
@@ -1157,6 +1217,7 @@ const hasChanges = () => {
                                     : 'border-gray-400'
                             } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
                             placeholder=" "
+
                             value={newBatch.sections[activeTab].endDate}
                             onChange={(e) => {
                                 handleSectionDateChange(activeTab, 'endDate', e.target.value);
@@ -1197,6 +1258,7 @@ const hasChanges = () => {
                     } appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer`}
                     placeholder=" "
                     readOnly
+
                     value={newBatch.mode}
                     onClick={() => {
                         setShowNewBatchModeDropdown(!showNewBatchModeDropdown);
@@ -1365,7 +1427,7 @@ const hasChanges = () => {
         <h2 className="text-sm font-bold">Edit batch</h2>
         <button
           onClick={() => !hasErrors && handleEditModelClose()}
-          className="text-gray-500 hover:text-gray-700"
+          className="text-gray-500 hover:text-gray-700 cursor-pointer"
           disabled={hasErrors}
         >
           <RiCloseCircleLine size={20} />
@@ -1426,7 +1488,7 @@ const hasChanges = () => {
                 onChange={(e) =>
                   handleChange("sections.Domain.startDate", e.target.value)
                 }
-                className={`w-auto rounded border p-2 text-sm ${
+                className={`w-auto rounded border p-2 text-sm cursor-pointer ${
                   errors["sections.Domain.startDate"] ? "border-red-500" : ""
                 }`}
               />
@@ -1438,7 +1500,7 @@ const hasChanges = () => {
                 onChange={(e) =>
                   handleChange("sections.Domain.endDate", e.target.value)
                 }
-                className={`w-auto rounded border p-2 text-sm ${
+                className={`w-auto rounded border cursor-pointer p-2 text-sm ${
                   errors["sections.Domain.endDate"] ? "border-red-500" : ""
                 }`}
               />
@@ -1465,7 +1527,7 @@ const hasChanges = () => {
                 onChange={(e) =>
                   handleChange("sections.Aptitude.startDate", e.target.value)
                 }
-                className={`w-auto rounded border p-2 text-sm ${
+                className={`w-auto rounded border p-2 cursor-pointer text-sm ${
                   errors["sections.Aptitude.startDate"] ? "border-red-500" : ""
                 }`}
               />
@@ -1476,7 +1538,7 @@ const hasChanges = () => {
                 onChange={(e) =>
                   handleChange("sections.Aptitude.endDate", e.target.value)
                 }
-                className={`w-auto rounded border p-2 text-sm ${
+                className={`w-auto rounded border p-2 cursor-pointer text-sm ${
                   errors["sections.Aptitude.endDate"] ? "border-red-500" : ""
                 }`}
               />
@@ -1510,7 +1572,7 @@ const hasChanges = () => {
                     e.target.value
                   )
                 }
-                className={`w-auto rounded border p-2 text-sm ${
+                className={`w-auto rounded border p-2 cursor-pointer text-sm ${
                   errors["sections.Communication.startDate"] ? "border-red-500" : ""
                 }`}
               />
@@ -1524,7 +1586,7 @@ const hasChanges = () => {
                     e.target.value
                   )
                 }
-                className={`w-auto rounded border p-2 text-sm ${
+                className={`w-auto rounded border p-2 cursor-pointer text-sm ${
                   errors["sections.Communication.endDate"] ? "border-red-500" : ""
                 }`}
               />
@@ -1546,7 +1608,7 @@ const hasChanges = () => {
       <div className="flex justify-end gap-4">
         <button
           onClick={() => !hasErrors && handleEditModelClose()}
-          className={`rounded-2xl px-4 py-3 ${
+          className={` cursor-pointer rounded-2xl px-4 py-3 ${
             hasErrors ? "bg-[#f1ecfb] text-gray-400" : "bg-[#e8def8] text-[#4a4459]"
           }`}
         >
@@ -1554,7 +1616,7 @@ const hasChanges = () => {
         </button>
         <button
           onClick={handleSaveEdit}
-          className={`rounded-2xl px-4 py-3 text-white ${
+          className={` cursor-pointer rounded-2xl px-4 py-3 text-white ${
             hasErrors
               ? "cursor-not-allowed bg-[#b5a9d4]"
               : "bg-[#6750a4] hover:bg-[#56438d]"
