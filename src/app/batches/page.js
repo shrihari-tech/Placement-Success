@@ -52,6 +52,8 @@ export default function BatchModel() {
 
       const todayISO = new Date().toISOString().split("T")[0];
 
+      
+
 const validateEdit = () => {
   if (!editBatchData) return false;
   
@@ -905,7 +907,7 @@ const validateBatchNumber = (value) => {
                         </button>
                     )}
                     {showModeDropdown && (
-                        <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-md">
+                        <div className="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-md">
                             {['Online', 'Offline'].map((item) => (
                                 <div
                                     key={item}
