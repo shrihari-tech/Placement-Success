@@ -975,23 +975,25 @@ const validateBatchNumber = (value) => {
 
       {/* Status */}
       <td className="px-4 py-3 text-gray-700 text-sm whitespace-nowrap">
-{new Date(batch.endDate) < new Date() ? (
-            <Image
-                src="/com.svg" // Replace with your actual completed status image path
-                alt="Completed"
-                width={70}
-                height={50}
-                className="w-20 h-7"
-            />
-        ) : (
-            <Image
-                src="/going.svg" // Replace with your actual ongoing status image path
-                alt="Ongoing"
-                width={70}
-                height={50}
-                className="w-20 h-7"
-            />
-        )}
+{ Date(batch.sections?.Domain?.endDate) < new Date() &&
+ new Date(batch.sections?.Aptitude?.endDate) < new Date() &&
+ new Date(batch.sections?.Communication?.endDate) < new Date() ? (
+  <Image
+    src="/com.svg"
+    alt="Completed"
+    width={70}
+    height={50}
+    className="w-20 h-7"
+  />
+) : (
+  <Image
+    src="/going.svg"
+    alt="Ongoing"
+    width={70}
+    height={50}
+    className="w-20 h-7"
+  />
+)}
       </td>
 
       {/* Domain dates */}
@@ -1020,7 +1022,7 @@ const validateBatchNumber = (value) => {
           </button>
           <button onClick={() => handleAction('edit', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded">
             <FiEdit className="h-4 w-4" />
-          </button>
+          </button>new
           <button onClick={() => handleAction('delete', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded text-black">
             <FiTrash2 className="h-4 w-4" />
           </button>
