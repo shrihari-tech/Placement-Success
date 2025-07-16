@@ -11,7 +11,7 @@ export default function NavWrapper({ children }) {
   let mainClass = "flex-1 p-4 w-full";
   if (showNavBar) {
     if (pathname === "/batches" || pathname === "/showbatches") {
-      mainClass = "flex-1 p-4 ml-70";
+      mainClass = "flex-1 p-4 ml-68";
     } else {
       mainClass = "flex-1 p-4 ml-10 md:ml-20";
     }

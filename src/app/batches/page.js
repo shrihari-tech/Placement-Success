@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Toaster, toast } from 'react-hot-toast';
 import { X } from 'lucide-react';
 import { RiCloseCircleLine } from "react-icons/ri";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
 import { useDataContext } from '../context/dataContext';
 import { useRef } from "react";
 
@@ -26,6 +26,14 @@ export default function BatchModel() {
     const [showActions, setShowActions] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+    const [showEditModal , setShowEditModel] = useState(false);
+    const [editBatchData, setEditBatchData] = useState(null);
+    const [errors, setErrors] = useState({}); 
+      const [hasErrors, setHasErrors] = useState(false);
+
+    const [batchNameError, setBatchNameError] = useState(false);
+
     const [batchToDelete, setBatchToDelete] = useState(null);
     const [deleteConfirmationInput, setDeleteConfirmationInput] = useState('');
     const [deleteError, setDeleteError] = useState('');
@@ -42,7 +50,189 @@ export default function BatchModel() {
         }
     });
 
+      const todayISO = new Date().toISOString().split("T")[0];
 
+const validateEdit = () => {
+  if (!editBatchData) return false;
+  
+  const todayISO = new Date().toISOString().split("T")[0];
+  const e = {};
+  let hasErrors = false;
+
+  // Batch name validation
+  if (!editBatchData.batchNo.trim()) {
+    e.batchNo = "Batch name is required";
+    hasErrors = true;
+  } else if (batches.some(b => 
+    b.id !== editBatchData.id && 
+    b.batchNo.trim().toLowerCase() === editBatchData.batchNo.trim().toLowerCase()
+  )) {
+    e.batchNo = "This batch number already exists";
+    hasErrors = true;
+  }
+
+  // Date validation for each section
+  ["Domain", "Aptitude", "Communication"].forEach((sec) => {
+    const s = editBatchData.sections?.[sec] || {};
+    const path = `sections.${sec}`;
+    
+    if (!s.startDate) {
+      e[`${path}.startDate`] = "Start date required";
+      hasErrors = true;
+    }
+    
+    if (!s.endDate) {
+      e[`${path}.endDate`] = "End date required";
+      hasErrors = true;
+    }
+
+    if (s.startDate && s.endDate) {
+      const startDate = new Date(s.startDate);
+      const endDate = new Date(s.endDate);
+      
+      if (startDate.getTime() === endDate.getTime()) {
+        e[`${path}.endDate`] = "End date cannot be same as start date";
+        hasErrors = true;
+      } else if (endDate < startDate) {
+        e[`${path}.endDate`] = "End date cannot be before start date";
+        hasErrors = true;
+      }
+      
+      // if (startDate < new Date(todayISO)) {
+      //   e[`${path}.startDate`] = "Start date cannot be earlier than today";
+      //   hasErrors = true;
+      // }
+    }
+  });
+
+  setErrors(e);
+  setHasErrors(hasErrors);
+  return !hasErrors;
+};
+
+const handleChange = (path, value) => {
+  const newData = JSON.parse(JSON.stringify(editBatchData)); // clone current state
+  path.split(".").reduce((obj, key, idx, arr) => {
+    if (idx === arr.length - 1) obj[key] = value;
+    else obj[key] = obj[key] || {};
+    return obj[key];
+  }, newData);
+
+  // Update state
+  setEditBatchData(newData);
+
+  // Inline validation using the updated data
+  const newErrors = { ...errors };
+  let hasErrors = false;
+
+  // validate just this field
+  const seg = path.split(".");
+  const sec = seg[1];
+  const field = seg.at(-1);
+
+  if (path === "batchNo") {
+    if (!newData.batchNo.trim()) {
+      newErrors.batchNo = "Batch name is required";
+      hasErrors = true;
+    } else if (
+      batches.some(
+        (b) =>
+          b.id !== newData.id &&
+          b.batchNo.trim().toLowerCase() === newData.batchNo.trim().toLowerCase()
+      )
+    ) {
+      newErrors.batchNo = "This batch number already exists";
+      hasErrors = true;
+    } else {
+      delete newErrors.batchNo;
+    }
+  }
+
+  // date field
+  if (path.startsWith("sections.")) {
+    const s = newData.sections?.[sec] || {};
+    const start = s.startDate;
+    const end = s.endDate;
+
+    if (!start) {
+      newErrors[`sections.${sec}.startDate`] = "Start date required";
+      hasErrors = true;
+    } else {
+      delete newErrors[`sections.${sec}.startDate`];
+    }
+
+    if (!end) {
+      newErrors[`sections.${sec}.endDate`] = "End date required";
+      hasErrors = true;
+    } else {
+      delete newErrors[`sections.${sec}.endDate`];
+    }
+
+    if (start && end) {
+      if (start === end) {
+        newErrors[`sections.${sec}.endDate`] = "End date cannot be same as start date";
+        hasErrors = true;
+      } else if (end < start) {
+        newErrors[`sections.${sec}.endDate`] = "End date cannot be before start date";
+        hasErrors = true;
+      } else {
+        delete newErrors[`sections.${sec}.endDate`];
+      }
+    }
+  }
+
+  setErrors(newErrors);
+  setHasErrors(Object.keys(newErrors).length > 0);
+};
+
+
+const handleEditModelClose = () => {
+  setShowEditModel(false);
+  setEditBatchData(null);
+  setErrors({});
+  setHasErrors(false);
+};
+
+const handleSaveEdit = () => {
+  if (!validateEdit()) {
+    toast.error("Please fix all errors before saving");
+    return;
+  }
+
+  // Build the updated batch data
+  const updatedBatch = {
+    ...editBatchData,
+    sections: {
+      Domain: {
+        startDate: editBatchData.sections.Domain.startDate,
+        endDate: editBatchData.sections.Domain.endDate
+      },
+      Aptitude: {
+        startDate: editBatchData.sections.Aptitude.startDate,
+        endDate: editBatchData.sections.Aptitude.endDate
+      },
+      Communication: {
+        startDate: editBatchData.sections.Communication.startDate,
+        endDate: editBatchData.sections.Communication.endDate
+      }
+    }
+  };
+
+  // Update in context
+  updateBatch(updatedBatch);
+
+  // Update local state
+  setBatches(prev => 
+    prev.map(b => b.id === updatedBatch.id ? updatedBatch : b)
+  );
+  setFilteredBatches(prev => 
+    prev.map(b => b.id === updatedBatch.id ? updatedBatch : b)
+  );
+
+  // Close modal and show success
+  handleEditModelClose();
+  toast.success("Batch updated successfully");
+};
 
 const sectionIsValid = (tab) => {
   const sec = newBatch.sections[tab];
@@ -85,8 +275,6 @@ const parseDate = (str) => {
 };
 
 const formatDate = (str) => (str ? toDDMMYYYY(parseDate(str)) : "");
-
-
 
     useEffect(() => {
         setSearchTerm('');
@@ -157,6 +345,39 @@ const formatDate = (str) => (str ? toDDMMYYYY(parseDate(str)) : "");
         return true;
     };
 
+    const handleCloseModal = () => {
+  setShowModal(false);
+}
+
+ const handleCloseModelSelect = () =>{
+   setShowNewBatchModeDropdown(false);
+ }
+const modeDropdownRef = useRef(null); // for filter section
+const newBatchDropdownRef = useRef(null); // for Add Batch Modal
+useEffect(() => {
+  function handleClickOutside(event) {
+    if (
+      modeDropdownRef.current &&
+      !modeDropdownRef.current.contains(event.target)
+    ) {
+      setShowModeDropdown(false); // for main filter dropdown
+    }
+
+    if (
+      newBatchDropdownRef.current &&
+      !newBatchDropdownRef.current.contains(event.target)
+    ) {
+      setShowNewBatchModeDropdown(false); // for modal dropdown
+    }
+  }
+
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
+
+
     const handleSearchStartDateChange = (value) => {
         setStartDate(value);
         validateSearchDates(value, endDate);
@@ -178,12 +399,44 @@ const formatDate = (str) => (str ? toDDMMYYYY(parseDate(str)) : "");
             setShowDeleteModal(true);
             setDeleteConfirmationInput('');
             setDeleteError('');
-        } else {
+        } else if(action === 'edit'){
+            handleEditBatch(batchId)
+            setShowEditModel(true);
+        }
+        
+        else {
             console.log(`${action} action for batch ${batchId}`);
         }
         setShowActions(null);
     };
 
+        const handleEditBatch = (batchId) => {
+        const batchToEdit = batches.find(batch => batch.id === batchId);
+        setEditBatchData(batchToEdit);
+        };
+
+        const handleEditModelClode = () => {
+            setShowEditModel(false)
+        }
+        const validateBatchField = () => {
+        if (!editBatchData.batchNo.trim()) {
+            setBatchNameError(true);
+            return false;
+        }
+        setBatchNameError(false);
+        return true;
+        };
+
+        const handleSave = () => {
+        if (!validateBatchField()) return;
+        updateBatch(editBatchData.id, editBatchData);
+        handleEditModelClode();
+        };
+
+        const handleCancel = () => {
+        if (!validateBatchField()) return;
+        handleEditModelClode();
+        };
     const handleDeleteBatch = (batchId) => {
         const updatedBatches = batches.filter(batch => batch.id !== batchId);
         setBatches(updatedBatches);
@@ -356,9 +609,6 @@ const handleAddBatch = () => {
     toast.error("Please fix the date range errors before adding the batch");
     return;
   }
-
-  const todayISO = new Date().toISOString().split("T")[0];
-
   /* ⬇️ earliest / latest across sections */
   const allSecs = Object.values(newBatch.sections);
   const earliest = new Date(Math.min(...allSecs.map(s => new Date(s.startDate))));
@@ -480,9 +730,11 @@ const validateBatchNumber = (value) => {
     return (
         <div className="flex min-h-screen mx-[-16] md:width-[750px]">
             <Toaster position='top-right' />
+
+{/* Main model  */}
 <div className={`px-3 pt-20 flex-1 bg-[#F8FAFD] mb-[12] ${showModal || showDeleteModal ? 'pointer-events-none' : ''}`}>
-    <div className="fixed top-0 left-70 border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-7 z-10">
-        <h1 className="fixed pl-3 text-lg  font-semibold">{batchHead}</h1>
+    <div className="fixed ms-[-10] top-0 left-70 border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 z-10">
+        <h1 className="fixed pl-3 text-xl text-gray-800  font-semibold">{batchHead}</h1>
         {/* <button
             onClick={() => setShowModal(true)}
             className="fixed flex p-2 right-5 bg-[#3f2fb4] hover:bg-[#3f2fb4d4] text-white text-sm font-bold px-2 py-2.5 rounded-lg shadow-sm">
@@ -496,7 +748,7 @@ const validateBatchNumber = (value) => {
         </button> */}
     </div>
     <div className='p-3'>
-         <div className='mt-[-30]'>
+         <div className='mt-[-20]'>
             <button
             onClick={() => setShowModal(true)}
             className="absolute cursor-pointer z-1 flex p-2 right-5 bg-[#3f2fb4] hover:bg-[#3f2fb4d4] text-white text-sm font-bold px-2 py-2.5 rounded-lg shadow-sm">
@@ -516,8 +768,8 @@ const validateBatchNumber = (value) => {
   {/* Ongoing */}
   <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px]
                   shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
-    <div className="absolute left-6 top-6 text-4xl font-bold leading-10">{ongoingCount}</div>
-    <div className="absolute left-6 top-[84px] text-xl font-normal leading-7">Ongoing&nbsp;Count</div>
+    <div className="absolute left-6 top-6 text-gray-700 text-4xl font-bold leading-10">{ongoingCount}</div>
+    <div className="absolute left-6 top-[84px] text-xl text-gray-700 font-normal leading-7">Ongoing&nbsp;Count</div>
     <div className="absolute right-4.5 top-6 w-12 h-9 flex items-center justify-center">
       <Image src="/onging count.png" alt="Ongoing Icon" width={30} height={30} className="w-10 h-10" />
     </div>
@@ -526,8 +778,8 @@ const validateBatchNumber = (value) => {
   {/* Completed */}
   <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px]
                   shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
-    <div className="absolute left-6 top-6 text-4xl font-bold leading-10">{completedCount}</div>
-    <div className="absolute left-6 top-[84px] text-xl font-normal leading-7">Completed&nbsp;Count</div>
+    <div className="absolute left-6 top-6 text-4xl text-gray-700 font-bold leading-10">{completedCount}</div>
+    <div className="absolute left-6 top-[84px] text-xl text-gray-700 font-normal leading-7">Completed&nbsp;Count</div>
     <div className="absolute right-4.5 top-6 w-12 h-9 flex items-center justify-center">
       <Image src="/completed count.png" alt="Completed Icon" width={30} height={35} className="w-10 h-10" />
     </div>
@@ -561,40 +813,70 @@ const validateBatchNumber = (value) => {
                         </button>
                     )}
                 </div>
-                <div className="relative">
-                    <input
-                        id="start-date"
-                        type='date'
-                        value={startDate}
-                        className={` cursor-pointer block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
-                        onChange={(e) => handleSearchStartDateChange(e.target.value)}
-                    />
-                    <label
-                        htmlFor="start-date"
-                        className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
-                    >
-                        Start date
-                    </label>
-                </div>
-                 <div className="relative">
-                    <input
-                        id="end-date"
-                        type='date'
-                        value={endDate}
-                        className={`cursor-pointer block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
-                        onChange={(e) => handleSearchEndDateChange(e.target.value)}
-                    />
-                    <label
-                        htmlFor="end-date"
-                        className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
-                    >
-                        End date
-                    </label>
-                    {searchDateError && (
-                        <p className="text-red-500 text-xs mt-1 px-2">{searchDateError}</p>
-                    )}
-                </div>
-                <div className="relative">
+               <div className="relative">
+  <input
+    id="start-date"
+    type="date"
+    value={startDate}
+    className={`cursor-pointer block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer placeholder-transparent focus:placeholder-gray-400`}
+    onChange={(e) => handleSearchStartDateChange(e.target.value)}
+    placeholder="dd/mm/yyyy"
+  />
+  <label
+    htmlFor="start-date"
+    className="absolute text-sm text-gray-500 duration-300 transform -translate-y-1/2 top-1/2 left-4 peer-focus:text-m peer-focus:font-bold peer-focus:text-[#6750A4] peer-focus:top-4 peer-focus:bg-[#F4F3FF] peer-focus:px-2 peer-focus:scale-75 peer-focus:-translate-y-7"
+  >
+    Start date
+  </label>
+  <style jsx>{`
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      opacity: 0;
+    }
+    input[type="date"]:focus::-webkit-calendar-picker-indicator {
+      opacity: 1;
+    }
+    input[type="date"]::-webkit-datetime-edit {
+      color: transparent;
+    }
+    input[type="date"]:focus::-webkit-datetime-edit {
+      color: inherit;
+    }
+  `}</style>
+</div>
+<div className="relative">
+  <input
+    id="end-date"
+    type="date"
+    value={endDate}
+    className={`cursor-pointer block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer placeholder-transparent focus:placeholder-gray-400`}
+    onChange={(e) => handleSearchEndDateChange(e.target.value)}
+    placeholder="dd/mm/yyyy"
+  />
+  <label
+    htmlFor="end-date"
+    className="absolute text-sm text-gray-500 duration-300 transform -translate-y-1/2 top-1/2 left-4 peer-focus:text-m peer-focus:font-bold peer-focus:text-[#6750A4] peer-focus:top-4 peer-focus:bg-[#F4F3FF] peer-focus:px-2 peer-focus:scale-75 peer-focus:-translate-y-7"
+  >
+    End date
+  </label>
+  {searchDateError && (
+    <p className="text-red-500 text-xs mt-1 px-2">{searchDateError}</p>
+  )}
+  <style jsx>{`
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      opacity: 0;
+    }
+    input[type="date"]:focus::-webkit-calendar-picker-indicator {
+      opacity: 1;
+    }
+    input[type="date"]::-webkit-datetime-edit {
+      color: transparent;
+    }
+    input[type="date"]:focus::-webkit-datetime-edit {
+      color: inherit;
+    }
+  `}</style>
+</div>
+                <div className="relative" ref={modeDropdownRef}>
                     <input
                         type="text"
                         id="mode"
@@ -683,14 +965,14 @@ const validateBatchNumber = (value) => {
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
   {filteredBatches.map((batch, index) => (
-    <tr key={batch.id} className="hover:bg-[#e1cfff]">
-      <td className="px-4 py-3 text-sm whitespace-nowrap">{index + 1}</td>
+    <tr key={batch.id} className="hover:bg-[#e1cfff] hover:text-[#4005a0]">
+      <td className="px-4 text-gray-700 py-3 text-sm whitespace-nowrap">{index + 1}</td>
 
       {/* Batch No */}
-      <td className="px-4 py-3 text-sm whitespace-nowrap">{batch.batchNo}</td>
+      <td className="px-4 py-3 text-gray-700 text-sm whitespace-nowrap">{batch.batchNo}</td>
 
       {/* Status */}
-      <td className="px-4 py-3 text-sm whitespace-nowrap">
+      <td className="px-4 py-3 text-gray-700 text-sm whitespace-nowrap">
 {new Date(batch.endDate) < new Date() ? (
             <Image
                 src="/com.svg" // Replace with your actual completed status image path
@@ -711,22 +993,22 @@ const validateBatchNumber = (value) => {
       </td>
 
       {/* Domain dates */}
-      <td className="px-4 py-3 text-xs whitespace-nowrap w-44">
+      <td className="px-4 py-3 text-gray-700 text-xs whitespace-nowrap w-44">
         {formatDate(batch.sections?.Domain?.startDate)} – {formatDate(batch.sections?.Domain?.endDate)}
       </td>
 
       {/* Aptitude dates */}
-      <td className="px-4 py-3 text-xs whitespace-nowrap w-44">
+      <td className="px-4 py-3 text-gray-700 text-xs whitespace-nowrap w-44">
         {formatDate(batch.sections?.Aptitude?.startDate)} – {formatDate(batch.sections?.Aptitude?.endDate)}
       </td>
 
       {/* Communication dates */}
-      <td className="px-4 py-3 text-xs whitespace-nowrap w-44">
+      <td className="px-4 py-3 text-gray-700 text-xs whitespace-nowrap w-44">
         {formatDate(batch.sections?.Communication?.startDate)} – {formatDate(batch.sections?.Communication?.endDate)}
       </td>
 
       {/* Mode */}
-      <td className="px-4 py-3 text-sm whitespace-nowrap">{batch.mode}</td>
+      <td className="px-4 py-3 text-gray-700 text-sm whitespace-nowrap">{batch.mode}</td>
 
       {/* Actions */}
       <td className="px-4 py-3 text-sm whitespace-nowrap">
@@ -737,7 +1019,7 @@ const validateBatchNumber = (value) => {
           <button onClick={() => handleAction('edit', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded">
             <FiEdit className="h-4 w-4" />
           </button>
-          <button onClick={() => handleAction('delete', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded text-red-600">
+          <button onClick={() => handleAction('delete', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded text-black">
             <FiTrash2 className="h-4 w-4" />
           </button>
         </div>
@@ -753,11 +1035,21 @@ const validateBatchNumber = (value) => {
     </div>
 </div>
 
+{/* addNewBatch model */}
 {showModal && (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-        <div className="w-[380px] bg-[#F8FAFD] rounded-[10px] px-6 py-4">
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+        onClick={() => {
+          handleCloseModal();
+          handleCloseModelSelect();
+        }}
+
+    >
+        <div className="w-[380px] bg-[#F8FAFD] rounded-[10px] px-6 py-4"
+            onClick={(e) => {e.stopPropagation()
+          }}
+        >
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-sm font-bold">Add new batch</h2>
+                <h2 className="text-gray-800 text-sm font-bold">Add new batch</h2>
                 <button
                     onClick={() => {
                         setShowModal(false);
@@ -828,7 +1120,7 @@ const validateBatchNumber = (value) => {
                 {['Domain', 'Aptitude', 'Communication'].map(label => (
                     <span
                         key={label}
-                        className={`flex-1 items-center text-center py-2 text-xs font-semibold select-none cursor-default relative z-10
+                        className={`flex-1 items-center text-gray-800 text-center py-2 text-xs font-semibold select-none cursor-default relative z-10
                             ${activeTab === label ? 'text-indigo-600' : 'text-black'}`}
                     >
                         {label}
@@ -838,12 +1130,15 @@ const validateBatchNumber = (value) => {
 
             {/* Date Selection */}
             <div className="bg-[#ECE6F0] rounded-2xl p-3 mb-4 border border-gray-200">
-                <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-lg font-normal">Enter dates</h3>
-                    <button className="text-gray-500">
-                        <FiCalendar size={18} />
-                    </button>
-                </div>
+               <div className="mb-3">
+        <p className="text-xs text-gray-500 mb-5">Select date</p>
+        <div className="flex items-center justify-between pb-2 border-b-1 border-gray-300">
+            <h3 className="text-lg text-gray-800 font-semibold">Enter dates</h3>
+            <button className="text-gray-500">
+                <FiCalendar size={18} />
+            </button>
+        </div>
+    </div>
                 <div className="grid grid-cols-2 gap-3 mb-3">
                     <div className="relative">
                         <input
@@ -871,7 +1166,7 @@ const validateBatchNumber = (value) => {
                         />
                         <label
                             htmlFor={`${activeTab.toLowerCase()}-start-date`}
-                            className="absolute px-2 text-xs text-gray-500 duration-300 bg-[#ECE6F0] transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-[10px] peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-5"
+    className="absolute text-sm text-gray-500 duration-300 transform -translate-y-1/2 top-1/2 left-4 peer-focus:text-m peer-focus:font-bold peer-focus:text-[#6750A4] peer-focus:top-4 peer-focus:bg-[#ECE6F0] peer-focus:px-2 peer-focus:scale-75 peer-focus:-translate-y-7"
                         >
                             Start date
                         </label>
@@ -902,7 +1197,7 @@ const validateBatchNumber = (value) => {
                         />
                         <label
                             htmlFor={`${activeTab.toLowerCase()}-end-date`}
-                            className="absolute px-2 text-xs text-gray-500 duration-300 bg-[#ECE6F0] transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-[10px] peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-5"
+    className="absolute text-sm text-gray-500 duration-300 transform -translate-y-1/2 top-1/2 left-4 peer-focus:text-m peer-focus:font-bold peer-focus:text-[#6750A4] peer-focus:top-4 peer-focu peer-focus:bg-[#ECE6F0] peer-focus:px-2 peer-focus:scale-75 peer-focus:-translate-y-7"
                         >
                             End date
                         </label>
@@ -914,10 +1209,24 @@ const validateBatchNumber = (value) => {
                 {formErrors.sections[activeTab] && (
                     <p className="text-red-500 text-xs mt-1 px-2">{formErrors.sections[activeTab]}</p>
                 )}
+                 <style jsx>{`
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      opacity: 0;
+    }
+    input[type="date"]:focus::-webkit-calendar-picker-indicator {
+      opacity: 1;
+    }
+    input[type="date"]::-webkit-datetime-edit {
+      color: transparent;
+    }
+    input[type="date"]:focus::-webkit-datetime-edit {
+      color: inherit;
+    }
+  `}</style>
             </div>
 
             {/* Mode Selection */}
-            <div className="relative mb-4">
+            <div className="relative mb-4" ref={newBatchDropdownRef}>
                 <input
                     type="text"
                     id="new-mode"
@@ -1028,8 +1337,12 @@ const validateBatchNumber = (value) => {
 
 {/* Delete Confirmation Modal */}
 {showDeleteModal && batchToDelete && (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-        <div className="w-[500px] bg-[#F8FAFD] rounded-[10px] p-6">
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+        onClick={handleCloseDeleteModal}
+    >
+        <div className="w-[500px] bg-[#F8FAFD] rounded-[10px] p-6"
+        onClick={(e) => e.stopPropagation()}
+        >
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-lg font-medium">Delete Batch Info</h2>
                 <button
@@ -1074,6 +1387,233 @@ const validateBatchNumber = (value) => {
         </div>
     </div>
 )}
+
+{/* Show Edit model */}
+{showEditModal && editBatchData && (
+  <div
+    className="fixed inset-0 bg-black/40 z-50 flex justify-center items-center"
+    onClick={() => !hasErrors && handleEditModelClode()}
+  >
+    <div
+      className="relative w-auto bg-white p-10 rounded-sm shadow-lg"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* ───── Header ───── */}
+      <div className="mb-8 flex items-center justify-between">
+        <h2 className="text-sm font-bold">Edit batch</h2>
+        <button
+          onClick={() => !hasErrors && handleEditModelClode()}
+          className="text-gray-500 hover:text-gray-700"
+          disabled={hasErrors}
+        >
+          <RiCloseCircleLine size={20} />
+        </button>
+      </div>
+
+      {/* ───── Batch-name field ───── */}
+      <div className="relative mb-4 w-full">
+        <input
+          id="batchName"
+          type="text"
+          value={editBatchData.batchNo}
+          onChange={(e) => handleChange("batchNo", e.target.value)}
+          placeholder="Batch name"
+          className={`
+            peer w-full rounded border-2 p-2.5 pr-10 text-sm transition-all
+            ${errors.batchNo
+              ? "border-red-500"
+              : editBatchData.batchNo
+              ? "border-[#6750a4]"
+              : "border-[#79747e]"}
+            focus:border-[#6750a4] focus:outline-none
+          `}
+        />
+        <label
+          htmlFor="batchName"
+          className={`
+            absolute left-2 bg-white px-1 transition-all pointer-events-none
+            ${editBatchData.batchNo
+              ? "top-[-10px] text-xs text-[#6750a4]"
+              : "top-3.5 text-sm text-gray-400"}
+            peer-focus:top-[-10px] peer-focus:text-xs peer-focus:text-[#6750a4]
+          `}
+        >
+          Batch name
+        </label>
+        {/* clear icon */}
+        {editBatchData.batchNo && (
+          <RiCloseCircleLine
+            size={18}
+            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
+            onClick={() => handleChange("batchNo", "")}
+          />
+        )}
+      </div>
+      {errors.batchNo && (
+        <p className="mb-4 ms-1 text-xs text-red-500">{errors.batchNo}</p>
+      )}
+
+      {/* ───── Sections ───── */}
+      <div className="flex flex-col">
+        {/* first row: Domain & Aptitude */}
+        <div className="flex flex-row gap-2">
+          {/* Domain */}
+          <div className="mb-4 rounded-xl bg-[#ece6f0] p-4">
+            <h3 className="mb-4 border-b font-mono text-2xl">Domain</h3>
+            <div className="flex gap-4">
+              {/* Domain start */}
+              <input
+                type="date"
+                min={todayISO}
+                value={editBatchData.sections?.Domain?.startDate || ""}
+                onChange={(e) =>
+                  handleChange("sections.Domain.startDate", e.target.value)
+                }
+                className={`w-auto rounded border p-2 text-sm ${
+                  errors["sections.Domain.startDate"] ? "border-red-500" : ""
+                }`}
+              />
+              {/* Domain end */}
+              <input
+                type="date"
+                min={editBatchData.sections?.Domain?.startDate || todayISO}
+                value={editBatchData.sections?.Domain?.endDate || ""}
+                onChange={(e) =>
+                  handleChange("sections.Domain.endDate", e.target.value)
+                }
+                className={`w-auto rounded border p-2 text-sm ${
+                  errors["sections.Domain.endDate"] ? "border-red-500" : ""
+                }`}
+              />
+            </div>
+            {errors["sections.Domain.startDate"] && (
+              <p className="mt-1 text-xs text-red-500">
+                {errors["sections.Domain.startDate"]}
+              </p>
+            )}
+            {errors["sections.Domain.endDate"] && (
+              <p className="mt-1 text-xs text-red-500">
+                {errors["sections.Domain.endDate"]}
+              </p>
+            )}
+          </div>
+
+          {/* Aptitude */}
+          <div className="mb-4 rounded-xl bg-[#ece6f0] p-4">
+            <h3 className="mb-4 border-b font-mono text-2xl">Aptitude</h3>
+            <div className="flex gap-4">
+              <input
+                type="date"
+                min={todayISO}
+                value={editBatchData.sections?.Aptitude?.startDate || ""}
+                onChange={(e) =>
+                  handleChange("sections.Aptitude.startDate", e.target.value)
+                }
+                className={`w-auto rounded border p-2 text-sm ${
+                  errors["sections.Aptitude.startDate"] ? "border-red-500" : ""
+                }`}
+              />
+              <input
+                type="date"
+                min={editBatchData.sections?.Aptitude?.startDate || todayISO}
+                value={editBatchData.sections?.Aptitude?.endDate || ""}
+                onChange={(e) =>
+                  handleChange("sections.Aptitude.endDate", e.target.value)
+                }
+                className={`w-auto rounded border p-2 text-sm ${
+                  errors["sections.Aptitude.endDate"] ? "border-red-500" : ""
+                }`}
+              />
+            </div>
+            {errors["sections.Aptitude.startDate"] && (
+              <p className="mt-1 text-xs text-red-500">
+                {errors["sections.Aptitude.startDate"]}
+              </p>
+            )}
+            {errors["sections.Aptitude.endDate"] && (
+              <p className="mt-1 text-xs text-red-500">
+                {errors["sections.Aptitude.endDate"]}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* second row: Communication */}
+        <div className="w-1/2">
+          <div className="mb-4 rounded-xl bg-[#ece6f0] p-4">
+            <h3 className="mb-4 border-b font-mono text-2xl">
+              Communication
+            </h3>
+            <div className="flex gap-4">
+              <input
+                type="date"
+                min={todayISO}
+                value={editBatchData.sections?.Communication?.startDate || ""}
+                onChange={(e) =>
+                  handleChange(
+                    "sections.Communication.startDate",
+                    e.target.value
+                  )
+                }
+                className={`w-auto rounded border p-2 text-sm ${
+                  errors["sections.Communication.startDate"] ? "border-red-500" : ""
+                }`}
+              />
+              <input
+                type="date"
+                min={editBatchData.sections?.Communication?.startDate || todayISO}
+                value={editBatchData.sections?.Communication?.endDate || ""}
+                onChange={(e) =>
+                  handleChange(
+                    "sections.Communication.endDate",
+                    e.target.value
+                  )
+                }
+                className={`w-auto rounded border p-2 text-sm ${
+                  errors["sections.Communication.endDate"] ? "border-red-500" : ""
+                }`}
+              />
+            </div>
+            {errors["sections.Communication.startDate"] && (
+              <p className="mt-1 text-xs text-red-500">
+                {errors["sections.Communication.startDate"]}
+              </p>
+            )}
+            {errors["sections.Communication.endDate"] && (
+              <p className="mt-1 text-xs text-red-500">
+                {errors["sections.Communication.endDate"]}
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ───── Footer actions ───── */}
+      <div className="flex justify-end gap-4">
+        <button
+          onClick={() => !hasErrors && handleEditModelClode()}
+          className={`rounded-2xl px-4 py-3 ${
+            hasErrors ? "bg-[#f1ecfb] text-gray-400" : "bg-[#e8def8] text-[#4a4459]"
+          }`}
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleSaveEdit}
+          className={`rounded-2xl px-4 py-3 text-white ${
+            hasErrors
+              ? "cursor-not-allowed bg-[#b5a9d4]"
+              : "bg-[#6750a4] hover:bg-[#56438d]"
+          }`}
+          disabled={hasErrors}
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
 
 <Toaster position="top-right" reverseOrder={false} />
     </div>

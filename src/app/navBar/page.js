@@ -68,7 +68,7 @@ export default function NavBar() {
 
   return (
     <>
-      <aside className="fixed top-0 left-0 h-screen w-10 md:w-20 bg-[#eaddff] flex flex-col justify-between items-center z-30">
+      <aside className="fixed top-0 left-0 h-screen w-10 md:w-[72px] bg-[#eaddff] flex flex-col justify-between items-center z-30">
         {/* Top: Menu Icon */}
         <div className="flex flex-col items-center w-full">
           {/* Menu Icon (Hamburger) */}
@@ -152,7 +152,7 @@ export default function NavBar() {
 
       {/* Sub Nav */}
       <div
-        className={`fixed top-0 left-10 md:left-20 h-screen bg-[#efeeff] transition-all duration-300 z-20 ${showSubNav || isBatchesHovered ? 'w-50 opacity-100' : 'w-0 opacity-0 pointer-events-none'}`} // Show sub-nav on hover
+        className={`fixed top-0 left-10 md:left-[72px]  h-screen bg-[#efeeff] transition-all duration-300 z-20 ${showSubNav || isBatchesHovered ? 'w-50 opacity-100' : 'w-0 opacity-0 pointer-events-none'}`} // Show sub-nav on hover
         onMouseEnter={() => {
           setIsBatchesHovered(true);
         }} // Set hover state
@@ -160,7 +160,7 @@ export default function NavBar() {
       >
         <div className="flex flex-col items-start mt-20">
           <button
-            className={`cursor-pointer flex items-center mx-2 ps-1 pe-9 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'fullstack' ? 'bg-[#be99ff] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
+            className={`cursor-pointer flex items-center mx-2 ps-1 pe-9 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'fullstack' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
             onClick={(e) =>{ 
               e.preventDefault();
               handleSubNavClick('fullstack')}}
@@ -172,14 +172,14 @@ export default function NavBar() {
               height={15}
               className="object-contain"
             />
-            <span className={`font-bold text-[10px] ${activeSubNav === 'fullstack' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>
+            <span className={`font-bold text-[10px] ${activeSubNav === 'fullstack' ? 'text-[#49454F]' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>
               Full Stack Development
             </span>
           </button>
         </div>
         <div className="flex flex-col items-start mt-2">
           <button
-            className={`cursor-pointer flex items-center mx-2 ps-1 pe-7 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'dataanalytics' ? 'bg-[#be99ff] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
+            className={`cursor-pointer flex items-center mx-2 ps-1 pe-7 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'dataanalytics' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
             onClick={(e) => {
               e.preventDefault();
               handleSubNavClick('dataanalytics')}}
@@ -191,12 +191,12 @@ export default function NavBar() {
               height={15}
               className="object-contain"
             />
-            <span className={` font-bold text-[10px] ${activeSubNav === 'dataanalytics' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>Data Analytics & Science</span>
+            <span className={` font-bold text-[10px] ${activeSubNav === 'dataanalytics' ? 'text-[#49454F]' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>Data Analytics & Science</span>
           </button>
         </div>
         <div className="flex flex-col items-start mt-2">
           <button
-            className={`cursor-pointer flex items-center mx-2 ps-1 pe-2 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'banking' ? 'bg-[#be99ff] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
+            className={`cursor-pointer flex items-center mx-2 ps-1 pe-2 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'banking' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
             onClick={(e) =>{ 
               e.preventDefault();
               handleSubNavClick('banking')}}
@@ -208,12 +208,12 @@ export default function NavBar() {
               height={15}
               className="object-contain"
             />
-            <span className={` font-bold text-[10px] ${activeSubNav === 'banking' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>Banking & Financial Services</span>
+            <span className={` font-bold text-[10px] ${activeSubNav === 'banking' ? 'text-[#49454F]' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>Banking & Financial Services</span>
           </button>
         </div>
         <div className="flex flex-col items-start mt-2">
           <button
-            className={`cursor-pointer flex items-center mx-2 ps-1 pe-17 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'marketing' ? 'bg-[#be99ff] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
+            className={`cursor-pointer flex items-center mx-2 ps-1 pe-17 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'marketing' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
             onClick={(e) => {
               e.preventDefault();
               handleSubNavClick('marketing')}}
@@ -225,12 +225,12 @@ export default function NavBar() {
               height={15}
               className="object-contain"
             />
-            <span className={`font-bold text-[10px] ${activeSubNav === 'marketing' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>Digital Marketing</span>
+            <span className={`font-bold text-[10px] ${activeSubNav === 'marketing' ? 'text-[#49454F]' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>Digital Marketing</span>
           </button>
         </div>
         <div className="flex flex-col items-start mt-2">
           <button
-            className={`cursor-pointer flex items-center mx-2 ps-1 pe-30 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'sap' ? 'bg-[#be99ff] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
+            className={`cursor-pointer flex items-center mx-2 ps-1 pe-30 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'sap' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
             onClick={(e) => {
               e.preventDefault();
               handleSubNavClick('sap')}}
@@ -242,12 +242,12 @@ export default function NavBar() {
               height={15}
               className="object-contain"
             />
-            <span className={`font-bold text-[10px] ${activeSubNav === 'sap' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>SAP</span>
+            <span className={`font-bold text-[10px] ${activeSubNav === 'sap' ? 'text-[#49454F]' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>SAP</span>
           </button>
         </div>
         <div className="flex flex-col items-start mt-2">
           <button
-            className={`cursor-pointer flex items-center mx-2 ps-1 pe-27 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'devops' ? 'bg-[#be99ff] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
+            className={`cursor-pointer flex items-center mx-2 ps-1 pe-27 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'devops' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
             onClick={(e) => {
               e.preventDefault();
               handleSubNavClick('devops')}}
@@ -259,7 +259,7 @@ export default function NavBar() {
               height={15}
               className="object-contain"
             />
-            <span className={`font-bold text-[10px] ${activeSubNav === 'devops' ? 'text-black' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>DevOps</span>
+            <span className={`font-bold text-[10px] ${activeSubNav === 'devops' ? 'text-[#49454F]' : 'text-[#49454F] hover:bg-[#E8DEF8]'}`}>DevOps</span>
           </button>
         </div>
       </div>
