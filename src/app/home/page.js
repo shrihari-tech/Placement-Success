@@ -6,8 +6,6 @@ import Image from "next/image";
 import { ComposedChart, Line, Area, XAxis, YAxis, CartesianGrid, LabelList, ResponsiveContainer } from 'recharts';
 import { useDataContext } from '../context/dataContext';
 
-
-
 export default function HomePage() {
 
   const { userName } = useDataContext();

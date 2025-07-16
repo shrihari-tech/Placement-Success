@@ -781,7 +781,7 @@ const hasChanges = () => {
 {/* Main model  */}
 <div className={`px-3 pt-20 flex-1 bg-[#F8FAFD] mb-[12] ${showModal || showDeleteModal ? 'pointer-events-none' : ''}`}>
     <div className="fixed ms-[-10] top-0 left-70 border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 z-10">
-        <h1 className="fixed pl-3 text-xl  font-semibold">{batchHead}</h1>
+        <h1 className="fixed pl-3 text-xl text-gray-800  font-semibold">{batchHead}</h1>
         {/* <button
             onClick={() => setShowModal(true)}
             className="fixed flex p-2 right-5 bg-[#3f2fb4] hover:bg-[#3f2fb4d4] text-white text-sm font-bold px-2 py-2.5 rounded-lg shadow-sm">
@@ -815,8 +815,8 @@ const hasChanges = () => {
   {/* Ongoing */}
   <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px]
                   shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
-    <div className="absolute left-6 top-6 text-4xl font-bold leading-10">{ongoingCount}</div>
-    <div className="absolute left-6 top-[84px] text-xl font-normal leading-7">Ongoing&nbsp;Count</div>
+    <div className="absolute left-6 top-6 text-gray-700 text-4xl font-bold leading-10">{ongoingCount}</div>
+    <div className="absolute left-6 top-[84px] text-xl text-gray-700 font-normal leading-7">Ongoing&nbsp;Count</div>
     <div className="absolute right-4.5 top-6 w-12 h-9 flex items-center justify-center">
       <Image src="/onging count.png" alt="Ongoing Icon" width={30} height={30} className="w-10 h-10" />
     </div>
@@ -825,8 +825,8 @@ const hasChanges = () => {
   {/* Completed */}
   <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px]
                   shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
-    <div className="absolute left-6 top-6 text-4xl font-bold leading-10">{completedCount}</div>
-    <div className="absolute left-6 top-[84px] text-xl font-normal leading-7">Completed&nbsp;Count</div>
+    <div className="absolute left-6 top-6 text-4xl text-gray-700 font-bold leading-10">{completedCount}</div>
+    <div className="absolute left-6 top-[84px] text-xl text-gray-700 font-normal leading-7">Completed&nbsp;Count</div>
     <div className="absolute right-4.5 top-6 w-12 h-9 flex items-center justify-center">
       <Image src="/completed count.png" alt="Completed Icon" width={30} height={35} className="w-10 h-10" />
     </div>
@@ -1001,10 +1001,10 @@ const hasChanges = () => {
                         <tbody className="bg-white divide-y divide-gray-200">
   {filteredBatches.map((batch, index) => (
     <tr key={batch.id} className="hover:bg-[#e1cfff] hover:text-[#4005a0]">
-      <td className="px-4 py-3 text-sm whitespace-nowrap">{index + 1}</td>
+      <td className="px-4 text-gray-700 py-3 text-sm whitespace-nowrap">{index + 1}</td>
 
       {/* Batch No */}
-      <td className="px-4 py-3 text-sm whitespace-nowrap">{batch.batchNo}</td>
+      <td className="px-4 py-3 text-gray-700 text-sm whitespace-nowrap">{batch.batchNo}</td>
 
       {/* Status */}
       <td className="px-4 py-3 text-sm whitespace-nowrap">
@@ -1045,7 +1045,7 @@ const hasChanges = () => {
       </td>
 
       {/* Mode */}
-      <td className="px-4 py-3 text-sm whitespace-nowrap">{batch.mode}</td>
+      <td className="px-4 py-3 text-gray-700 text-sm whitespace-nowrap">{batch.mode}</td>
 
       {/* Actions */}
       <td className="px-4 py-3 text-sm whitespace-nowrap">
@@ -1086,7 +1086,7 @@ const hasChanges = () => {
           }}
         >
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-sm font-bold">Add new batch</h2>
+                <h2 className="text-gray-800 text-sm font-bold">Add new batch</h2>
                 <button
                     onClick={() => {
                         setShowModal(false);
@@ -1158,7 +1158,7 @@ const hasChanges = () => {
                 {['Domain', 'Aptitude', 'Communication'].map(label => (
                     <span
                         key={label}
-                        className={`flex-1 items-center text-center py-2 text-xs font-semibold select-none cursor-default relative z-10
+                        className={`flex-1 items-center text-gray-800 text-center py-2 text-xs font-semibold select-none cursor-default relative z-10
                             ${activeTab === label ? 'text-indigo-600' : 'text-black'}`}
                     >
                         {label}
@@ -1168,12 +1168,15 @@ const hasChanges = () => {
 
             {/* Date Selection */}
             <div className="bg-[#ECE6F0] rounded-2xl p-3 mb-4 border border-gray-200">
-                <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-lg font-normal">Enter dates</h3>
-                    <button className="text-gray-500">
-                        <FiCalendar size={18} />
-                    </button>
-                </div>
+               <div className="mb-3">
+        <p className="text-xs text-gray-500 mb-5">Select date</p>
+        <div className="flex items-center justify-between pb-2 border-b-1 border-gray-300">
+            <h3 className="text-lg text-gray-800 font-semibold">Enter dates</h3>
+            <button className="text-gray-500">
+                <FiCalendar size={18} />
+            </button>
+        </div>
+    </div>
                 <div className="grid grid-cols-2 gap-3 mb-3">
                     <div className="relative">
                         <input
@@ -1202,7 +1205,7 @@ const hasChanges = () => {
                         />
                         <label
                             htmlFor={`${activeTab.toLowerCase()}-start-date`}
-                            className="absolute px-2 text-xs text-gray-500 duration-300 bg-[#ECE6F0] transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-[10px] peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-5"
+    className="absolute text-sm text-gray-500 duration-300 transform -translate-y-1/2 top-1/2 left-4 peer-focus:text-m peer-focus:font-bold peer-focus:text-[#6750A4] peer-focus:top-4 peer-focus:bg-[#ECE6F0] peer-focus:px-2 peer-focus:scale-75 peer-focus:-translate-y-7"
                         >
                             Start date
                         </label>
@@ -1234,7 +1237,7 @@ const hasChanges = () => {
                         />
                         <label
                             htmlFor={`${activeTab.toLowerCase()}-end-date`}
-                            className="absolute px-2 text-xs text-gray-500 duration-300 bg-[#ECE6F0] transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-[10px] peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-5"
+    className="absolute text-sm text-gray-500 duration-300 transform -translate-y-1/2 top-1/2 left-4 peer-focus:text-m peer-focus:font-bold peer-focus:text-[#6750A4] peer-focus:top-4 peer-focu peer-focus:bg-[#ECE6F0] peer-focus:px-2 peer-focus:scale-75 peer-focus:-translate-y-7"
                         >
                             End date
                         </label>
@@ -1246,6 +1249,20 @@ const hasChanges = () => {
                 {formErrors.sections[activeTab] && (
                     <p className="text-red-500 text-xs mt-1 px-2">{formErrors.sections[activeTab]}</p>
                 )}
+                 <style jsx>{`
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      opacity: 0;
+    }
+    input[type="date"]:focus::-webkit-calendar-picker-indicator {
+      opacity: 1;
+    }
+    input[type="date"]::-webkit-datetime-edit {
+      color: transparent;
+    }
+    input[type="date"]:focus::-webkit-datetime-edit {
+      color: inherit;
+    }
+  `}</style>
             </div>
 
             {/* Mode Selection */}
@@ -1677,6 +1694,7 @@ const hasChanges = () => {
     </div>
   </div>
 )}
+
 
 <Toaster position="top-right" reverseOrder={false} />
     </div>
