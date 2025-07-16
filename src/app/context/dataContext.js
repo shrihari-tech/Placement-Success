@@ -21,7 +21,7 @@ export const useDataContext = () => {
   }
   return context;
 };
-
+  
 // Sample data arrays (used only as initial values)
 // 🗂️ Full‑stack batch seed data (template)
 // ===== Full‑Stack =====
@@ -307,31 +307,32 @@ const DataProvider = ({ children }) => {
   };
 
   // 🔧 Update an existing batch by ID in current domain
-  const updateBatch = (id, updatedFields) => {
-    const updateList = (list) =>
-      list.map((item) => (item.id === id ? { ...item, ...updatedFields } : item));
+ // DataContext.jsx
+const updateBatch = (id, updatedFields) => {
+  const updateList = (list) =>
+    list.map((item) => (item.id === id ? { ...item, ...updatedFields } : item));
 
-    switch (batchingvalue) {
-      case "fullstack":
-        setFullstackData(updateList);
-        break;
-      case "dataanalytics":
-        setDataanalyticsData(updateList);
-        break;
-      case "banking":
-        setBankingData(updateList);
-        break;
-      case "marketing":
-        setMarketingData(updateList);
-        break;
-      case "sap":
-        setSapData(updateList);
-        break;
-      case "devops":
-        setDevopsData(updateList);
-        break;
-    }
-  };
+  switch (batchingvalue) {
+    case "fullstack":
+      setFullstackData(prev => updateList(prev));
+      break;
+    case "dataanalytics":
+      setDataanalyticsData(prev => updateList(prev));
+      break;
+    case "banking":
+      setBankingData(prev => updateList(prev));
+      break;
+    case "marketing":
+      setMarketingData(prev => updateList(prev));
+      break;
+    case "sap":
+      setSapData(prev => updateList(prev));
+      break;
+    case "devops":
+      setDevopsData(prev => updateList(prev));
+      break;
+  }
+};
 
   // 🔧 Delete a batch by ID from current domain
   const deleteBatch = (id) => {

@@ -1,199 +1,205 @@
-"use client";
+  "use client";
 
-import { FiEye, FiEdit, FiTrash2, FiMoreVertical, FiCalendar, FiChevronDown } from 'react-icons/fi';
-import Image from 'next/image';
-import { Toaster, toast } from 'react-hot-toast';
-import { X } from 'lucide-react';
-import { RiCloseCircleLine } from "react-icons/ri";
-import React, { useState, useEffect} from 'react';
-import { useDataContext } from '../context/dataContext';
-import { useRef } from "react";
+  import { FiEye, FiEdit, FiTrash2, FiMoreVertical, FiCalendar, FiChevronDown } from 'react-icons/fi';
+  import Image from 'next/image';
+  import { Toaster, toast } from 'sonner';
+  import { X } from 'lucide-react';
+  import { RiCloseCircleLine } from "react-icons/ri";
+  import React, { useState, useEffect} from 'react';
+  import { useDataContext } from '../context/dataContext';
+  import { useRef } from "react";
 
-// Inside your component
+  // Inside your component
 
-export default function BatchModel() {
-    const [batches, setBatches] = useState([]);
-    const [filteredBatches, setFilteredBatches] = useState([]);
-    const [activeTab, setActiveTab] = useState('Domain');
-    const [searchInitiated, setSearchInitiated] = useState(false);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [startDate, setStartDate] = useState('');
-    const [addModelError, setAddModelError] = useState({});
-    const [endDate, setEndDate] = useState('');
-    const [mode, setMode] = useState('Off');
-    const [showModeDropdown, setShowModeDropdown] = useState(false);
-    const [showNewBatchModeDropdown, setShowNewBatchModeDropdown] = useState(false);
-    const [showActions, setShowActions] = useState(null);
-    const [showModal, setShowModal] = useState(false);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
+  export default function BatchModel() {
+      const [batches, setBatches] = useState([]);
+      const [filteredBatches, setFilteredBatches] = useState([]);
+      const [activeTab, setActiveTab] = useState('Domain');
+      const [searchInitiated, setSearchInitiated] = useState(false);
+      const [searchTerm, setSearchTerm] = useState('');
+      const [startDate, setStartDate] = useState('');
+      const [addModelError, setAddModelError] = useState({});
+      const [endDate, setEndDate] = useState('');
+      const [mode, setMode] = useState('Off');
+      const [showModeDropdown, setShowModeDropdown] = useState(false);
+      const [showNewBatchModeDropdown, setShowNewBatchModeDropdown] = useState(false);
+      const [showActions, setShowActions] = useState(null);
+      const [showModal, setShowModal] = useState(false);
+      const [showDeleteModal, setShowDeleteModal] = useState(false);
+const [showEditConfirmationModal, setShowEditConfirmationModal] = useState(false);
 
-    const [showEditModal , setShowEditModel] = useState(false);
-    const [editBatchData, setEditBatchData] = useState(null);
-    const [errors, setErrors] = useState({}); 
-      const [hasErrors, setHasErrors] = useState(false);
+      const [showEditModal , setShowEditModel] = useState(false);
+      const [editBatchData, setEditBatchData] = useState(null);
+      const [errors, setErrors] = useState({}); 
+        const [hasErrors, setHasErrors] = useState(false);
+  const [initialEditBatchData, setInitialEditBatchData] = useState(null);   
 
-    const [batchNameError, setBatchNameError] = useState(false);
+      const [batchNameError, setBatchNameError] = useState(false);
 
-    const [batchToDelete, setBatchToDelete] = useState(null);
-    const [deleteConfirmationInput, setDeleteConfirmationInput] = useState('');
-    const [deleteError, setDeleteError] = useState('');
-    const [ongoingCount, setOngoingCount] = useState(0);
-    const [completedCount, setCompletedCount] = useState(0);
-    const { batchHead, batchData, addBatch, updateBatch, deleteBatch } = useDataContext();
-    const [formErrors, setFormErrors] = useState({
-        batchNo: '',
-        mode: '',
-        sections: {
-            Domain: '',
-            Aptitude: '',
-            Communication: ''
-        }
-    });
+      const [batchToDelete, setBatchToDelete] = useState(null);
+      const [deleteConfirmationInput, setDeleteConfirmationInput] = useState('');
+      const [deleteError, setDeleteError] = useState('');
+      const [ongoingCount, setOngoingCount] = useState(0);
+      const [completedCount, setCompletedCount] = useState(0);
+      const { batchHead, batchData, addBatch, updateBatch, deleteBatch } = useDataContext();
+      const [formErrors, setFormErrors] = useState({
+          batchNo: '',
+          mode: '',
+          sections: {
+              Domain: '',
+              Aptitude: '',
+              Communication: ''
+          }
+      });
 
-      const todayISO = new Date().toISOString().split("T")[0];
-
-      
-
-const validateEdit = () => {
-  if (!editBatchData) return false;
-  
-  const todayISO = new Date().toISOString().split("T")[0];
-  const e = {};
-  let hasErrors = false;
-
-  // Batch name validation
-  if (!editBatchData.batchNo.trim()) {
-    e.batchNo = "Batch name is required";
-    hasErrors = true;
-  } else if (batches.some(b => 
-    b.id !== editBatchData.id && 
-    b.batchNo.trim().toLowerCase() === editBatchData.batchNo.trim().toLowerCase()
-  )) {
-    e.batchNo = "This batch number already exists";
-    hasErrors = true;
+const handleKeyDown = (e) => {
+  if (e.key === "Enter" && e.target.tagName === 'INPUT' && e.target.type !== 'text-readonly') {
+    e.preventDefault();
+    handleSearch();
   }
+};
 
-  // Date validation for each section
-  ["Domain", "Aptitude", "Communication"].forEach((sec) => {
-    const s = editBatchData.sections?.[sec] || {};
-    const path = `sections.${sec}`;
+        const todayISO = new Date().toISOString().split("T")[0];
+
+  const validateEdit = () => {
+    if (!editBatchData) return false;
     
-    if (!s.startDate) {
-      e[`${path}.startDate`] = "Start date required";
+    const todayISO = new Date().toISOString().split("T")[0];
+    const e = {};
+    let hasErrors = false;
+
+    // Batch name validation
+    if (!editBatchData.batchNo.trim()) {
+      e.batchNo = "Batch name is required";
+      hasErrors = true;
+    } else if (batches.some(b => 
+      b.id !== editBatchData.id && 
+      b.batchNo.trim().toLowerCase() === editBatchData.batchNo.trim().toLowerCase()
+    )) {
+      e.batchNo = "This batch number already exists";
       hasErrors = true;
     }
-    
-    if (!s.endDate) {
-      e[`${path}.endDate`] = "End date required";
-      hasErrors = true;
-    }
 
-    if (s.startDate && s.endDate) {
-      const startDate = new Date(s.startDate);
-      const endDate = new Date(s.endDate);
+    // Date validation for each section
+    ["Domain", "Aptitude", "Communication"].forEach((sec) => {
+      const s = editBatchData.sections?.[sec] || {};
+      const path = `sections.${sec}`;
       
-      if (startDate.getTime() === endDate.getTime()) {
-        e[`${path}.endDate`] = "End date cannot be same as start date";
-        hasErrors = true;
-      } else if (endDate < startDate) {
-        e[`${path}.endDate`] = "End date cannot be before start date";
+      if (!s.startDate) {
+        e[`${path}.startDate`] = "Start date required";
         hasErrors = true;
       }
       
-      // if (startDate < new Date(todayISO)) {
-      //   e[`${path}.startDate`] = "Start date cannot be earlier than today";
-      //   hasErrors = true;
-      // }
-    }
-  });
-
-  setErrors(e);
-  setHasErrors(hasErrors);
-  return !hasErrors;
-};
-
-const handleChange = (path, value) => {
-  const newData = JSON.parse(JSON.stringify(editBatchData)); // clone current state
-  path.split(".").reduce((obj, key, idx, arr) => {
-    if (idx === arr.length - 1) obj[key] = value;
-    else obj[key] = obj[key] || {};
-    return obj[key];
-  }, newData);
-
-  // Update state
-  setEditBatchData(newData);
-
-  // Inline validation using the updated data
-  const newErrors = { ...errors };
-  let hasErrors = false;
-
-  // validate just this field
-  const seg = path.split(".");
-  const sec = seg[1];
-  const field = seg.at(-1);
-
-  if (path === "batchNo") {
-    if (!newData.batchNo.trim()) {
-      newErrors.batchNo = "Batch name is required";
-      hasErrors = true;
-    } else if (
-      batches.some(
-        (b) =>
-          b.id !== newData.id &&
-          b.batchNo.trim().toLowerCase() === newData.batchNo.trim().toLowerCase()
-      )
-    ) {
-      newErrors.batchNo = "This batch number already exists";
-      hasErrors = true;
-    } else {
-      delete newErrors.batchNo;
-    }
-  }
-
-  // date field
-  if (path.startsWith("sections.")) {
-    const s = newData.sections?.[sec] || {};
-    const start = s.startDate;
-    const end = s.endDate;
-
-    if (!start) {
-      newErrors[`sections.${sec}.startDate`] = "Start date required";
-      hasErrors = true;
-    } else {
-      delete newErrors[`sections.${sec}.startDate`];
-    }
-
-    if (!end) {
-      newErrors[`sections.${sec}.endDate`] = "End date required";
-      hasErrors = true;
-    } else {
-      delete newErrors[`sections.${sec}.endDate`];
-    }
-
-    if (start && end) {
-      if (start === end) {
-        newErrors[`sections.${sec}.endDate`] = "End date cannot be same as start date";
+      if (!s.endDate) {
+        e[`${path}.endDate`] = "End date required";
         hasErrors = true;
-      } else if (end < start) {
-        newErrors[`sections.${sec}.endDate`] = "End date cannot be before start date";
+      }
+
+      if (s.startDate && s.endDate) {
+        const startDate = new Date(s.startDate);
+        const endDate = new Date(s.endDate);
+        
+        if (startDate.getTime() === endDate.getTime()) {
+          e[`${path}.endDate`] = "End date cannot be same as start date";
+          hasErrors = true;
+        } else if (endDate < startDate) {
+          e[`${path}.endDate`] = "End date cannot be before start date";
+          hasErrors = true;
+        }
+        
+        // if (startDate < new Date(todayISO)) {
+        //   e[`${path}.startDate`] = "Start date cannot be earlier than today";
+        //   hasErrors = true;
+        // }
+      }
+    });
+
+    setErrors(e);
+    setHasErrors(hasErrors);
+    return !hasErrors;
+  };
+
+  const handleChange = (path, value) => {
+    const newData = JSON.parse(JSON.stringify(editBatchData)); // clone current state
+    path.split(".").reduce((obj, key, idx, arr) => {
+      if (idx === arr.length - 1) obj[key] = value;
+      else obj[key] = obj[key] || {};
+      return obj[key];
+    }, newData);
+
+    // Update state
+    setEditBatchData(newData);
+
+    // Inline validation using the updated data
+    const newErrors = { ...errors };
+    let hasErrors = false;
+
+    // validate just this field
+    const seg = path.split(".");
+    const sec = seg[1];
+    const field = seg.at(-1);
+
+    if (path === "batchNo") {
+      if (!newData.batchNo.trim()) {
+        newErrors.batchNo = "Batch name is required";
+        hasErrors = true;
+      } else if (
+        batches.some(
+          (b) =>
+            b.id !== newData.id &&
+            b.batchNo.trim().toLowerCase() === newData.batchNo.trim().toLowerCase()
+        )
+      ) {
+        newErrors.batchNo = "This batch number already exists";
+        hasErrors = true;
+      } else {
+        delete newErrors.batchNo;
+      }
+    }
+
+    // date field
+    if (path.startsWith("sections.")) {
+      const s = newData.sections?.[sec] || {};
+      const start = s.startDate;
+      const end = s.endDate;
+
+      if (!start) {
+        newErrors[`sections.${sec}.startDate`] = "Start date required";
+        hasErrors = true;
+      } else {
+        delete newErrors[`sections.${sec}.startDate`];
+      }
+
+      if (!end) {
+        newErrors[`sections.${sec}.endDate`] = "End date required";
         hasErrors = true;
       } else {
         delete newErrors[`sections.${sec}.endDate`];
       }
+
+      if (start && end) {
+        if (start === end) {
+          newErrors[`sections.${sec}.endDate`] = "End date cannot be same as start date";
+          hasErrors = true;
+        } else if (end < start) {
+          newErrors[`sections.${sec}.endDate`] = "End date cannot be before start date";
+          hasErrors = true;
+        } else {
+          delete newErrors[`sections.${sec}.endDate`];
+        }
+      }
     }
-  }
 
-  setErrors(newErrors);
-  setHasErrors(Object.keys(newErrors).length > 0);
-};
+    setErrors(newErrors);
+    setHasErrors(Object.keys(newErrors).length > 0);
+  };
 
-
-const handleEditModelClose = () => {
-  setShowEditModel(false);
-  setEditBatchData(null);
-  setErrors({});
-  setHasErrors(false);
-};
+  const handleEditModelClose = () => {
+    setShowEditModel(false);
+    setEditBatchData(null);
+    setErrors({});
+    setHasErrors(false);
+  };
 
 const handleSaveEdit = () => {
   if (!validateEdit()) {
@@ -201,533 +207,572 @@ const handleSaveEdit = () => {
     return;
   }
 
-  // Build the updated batch data
-  const updatedBatch = {
-    ...editBatchData,
-    sections: {
-      Domain: {
-        startDate: editBatchData.sections.Domain.startDate,
-        endDate: editBatchData.sections.Domain.endDate
-      },
-      Aptitude: {
-        startDate: editBatchData.sections.Aptitude.startDate,
-        endDate: editBatchData.sections.Aptitude.endDate
-      },
-      Communication: {
-        startDate: editBatchData.sections.Communication.startDate,
-        endDate: editBatchData.sections.Communication.endDate
-      }
-    }
-  };
-
-  // Update in context
-  updateBatch(updatedBatch);
-
-  // Update local state
-  setBatches(prev => 
-    prev.map(b => b.id === updatedBatch.id ? updatedBatch : b)
-  );
-  setFilteredBatches(prev => 
-    prev.map(b => b.id === updatedBatch.id ? updatedBatch : b)
-  );
-
-  // Close modal and show success
-  handleEditModelClose();
-  toast.success("Batch updated successfully");
-};
-
-const sectionIsValid = (tab) => {
-  const sec = newBatch.sections[tab];
-  return (
-    sec.startDate &&
-    sec.endDate &&
-    !modalDateErrors[tab] &&
-    !formErrors.sections[tab]
-  );
-};
-
-const flagSectionEmptyError = (tab) => {
-  setFormErrors(prev => ({
-    ...prev,
-    sections: {
-      ...prev.sections,
-      [tab]: 'Both start and end dates are required'
-    }
-  }));
-};
-
-
-
-const toDDMMYYYY = (d) => {
-  const date = d instanceof Date ? d : new Date(d);
-  const dd = String(date.getDate()).padStart(2, "0");
-  const mm = String(date.getMonth() + 1).padStart(2, "0");
-  const yyyy = date.getFullYear();
-  return `${dd}-${mm}-${yyyy}`;
-};
-
-const parseDate = (str) => {
-  if (!str) return null;
-  if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return new Date(str);
-  if (/^\d{2}-\d{2}-\d{4}$/.test(str)) {
-    const [dd, mm, yyyy] = str.split("-");
-    return new Date(`${yyyy}-${mm}-${dd}`);
-  }
-  return new Date(str);
-};
-
-const formatDate = (str) => (str ? toDDMMYYYY(parseDate(str)) : "");
-
-    useEffect(() => {
-        setSearchTerm('');
-        setStartDate('');
-        setEndDate('');
-        setMode('Off');
-        setFilteredBatches([]);
-        setSearchInitiated(false);
-        setSearchDateError('');
-    }, [batchHead]);
-
-    const [searchDateError, setSearchDateError] = useState('');
-    const [modalDateErrors, setModalDateErrors] = useState({
-        Domain: '',
-        Aptitude: '',
-        Communication: ''
-    });
-
-    const [newBatch, setNewBatch] = useState({
-        batchNo: '',
-        status: 'Ongoing',
-        mode: '',
-        sections: {
-            Domain: { startDate: '', endDate: '' },
-            Aptitude: { startDate: '', endDate: '' },
-            Communication: { startDate: '', endDate: '' }
-        }
-    });
-
-    useEffect(() => {
-        const ongoing = batchData.filter(b => b.status === 'Ongoing').length;
-        const completed = batchData.filter(b => b.status === 'Completed').length;
-        setOngoingCount(ongoing);
-        setCompletedCount(completed);
-    }, [batchData]);
-
-    useEffect(() => {
-        setBatches(batchData);
-    }, [batchData]);
-
-    useEffect(() => {
-        if (showModal || showDeleteModal) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'auto';
-        }
-        return () => {
-            document.body.style.overflow = 'auto';
-        };
-    }, [showModal, showDeleteModal]);
-
-    const validateSearchDates = (start, end) => {
-        if (start && end) {
-            const startDateObj = new Date(start);
-            const endDateObj = new Date(end);
-            if (endDateObj < startDateObj) {
-                setSearchDateError('End date cannot be earlier than start date');
-                return false;
-            } else if (endDateObj <= startDateObj) {
-                setSearchDateError('End date cannot be same as the start date');
-                return false;
-            } else if (startDateObj < new Date().toISOString().split("T")[0]) {
-                setSearchDateError('The starting date cannot be earlier than present date');
-                return false;
-            }
-        }
-        setSearchDateError('');
-        return true;
-    };
-
-    const handleCloseModal = () => {
-  setShowModal(false);
-}
-
- const handleCloseModelSelect = () =>{
-   setShowNewBatchModeDropdown(false);
- }
-const modeDropdownRef = useRef(null); // for filter section
-const newBatchDropdownRef = useRef(null); // for Add Batch Modal
-useEffect(() => {
-  function handleClickOutside(event) {
-    if (
-      modeDropdownRef.current &&
-      !modeDropdownRef.current.contains(event.target)
-    ) {
-      setShowModeDropdown(false); // for main filter dropdown
-    }
-
-    if (
-      newBatchDropdownRef.current &&
-      !newBatchDropdownRef.current.contains(event.target)
-    ) {
-      setShowNewBatchModeDropdown(false); // for modal dropdown
-    }
-  }
-
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
-  };
-}, []);
-
-
-    const handleSearchStartDateChange = (value) => {
-        setStartDate(value);
-        validateSearchDates(value, endDate);
-    };
-
-    const handleSearchEndDateChange = (value) => {
-        setEndDate(value);
-        validateSearchDates(startDate, value);
-    };
-
-    const toggleActions = (id) => {
-        setShowActions(showActions === id ? null : id);
-    };
-
-    const handleAction = (action, batchId) => {
-        if (action === 'delete') {
-            const batch = batches.find(b => b.id === batchId);
-            setBatchToDelete(batch);
-            setShowDeleteModal(true);
-            setDeleteConfirmationInput('');
-            setDeleteError('');
-        } else if(action === 'edit'){
-            handleEditBatch(batchId)
-            setShowEditModel(true);
-        }
-        
-        else {
-            console.log(`${action} action for batch ${batchId}`);
-        }
-        setShowActions(null);
-    };
-
-        const handleEditBatch = (batchId) => {
-        const batchToEdit = batches.find(batch => batch.id === batchId);
-        setEditBatchData(batchToEdit);
-        };
-
-        const handleEditModelClode = () => {
-            setShowEditModel(false)
-        }
-        const validateBatchField = () => {
-        if (!editBatchData.batchNo.trim()) {
-            setBatchNameError(true);
-            return false;
-        }
-        setBatchNameError(false);
-        return true;
-        };
-
-        const handleSave = () => {
-        if (!validateBatchField()) return;
-        updateBatch(editBatchData.id, editBatchData);
-        handleEditModelClode();
-        };
-
-        const handleCancel = () => {
-        if (!validateBatchField()) return;
-        handleEditModelClode();
-        };
-    const handleDeleteBatch = (batchId) => {
-        const updatedBatches = batches.filter(batch => batch.id !== batchId);
-        setBatches(updatedBatches);
-        if (searchInitiated) {
-            const updatedFilteredBatches = filteredBatches.filter(batch => batch.id !== batchId);
-            setFilteredBatches(updatedFilteredBatches);
-        }
-        deleteBatch(batchId);
-        const ongoing = updatedBatches.filter(b => b.status === 'Ongoing').length;
-        const completed = updatedBatches.filter(b => b.status === 'Completed').length;
-        setOngoingCount(ongoing);
-        setCompletedCount(completed);
-        console.log('Batch deleted. Updated batches:', updatedBatches);
-    };
-
-    const handleConfirmDelete = () => {
-        if (!deleteConfirmationInput) {
-            setDeleteError('Please enter the batch name to confirm deletion');
-            return;
-        }
-        if (deleteConfirmationInput !== batchToDelete.batchNo) {
-            setDeleteError('Batch name does not match. Please enter the exact batch name.');
-            return;
-        }
-        handleDeleteBatch(batchToDelete.id);
-        setShowDeleteModal(false);
-        setBatchToDelete(null);
-        setDeleteConfirmationInput('');
-        setDeleteError('');
-        toast.success("The Data is Successfully Deleted");
-    };
-
-    const handleCloseDeleteModal = () => {
-        setShowDeleteModal(false);
-        setBatchToDelete(null);
-        setDeleteConfirmationInput('');
-        setDeleteError('');
-    };
-
-    const handleSearch = () => {
-        const hasSearchCriteria = searchTerm || (mode && mode !== 'Off') || startDate || endDate;
-        if (!hasSearchCriteria) {
-            setSearchInitiated(false);
-            toast.error('Please enter at least one search criterion');
-            return;
-        }
-        if (searchDateError) {
-            toast.error('Please fix the date range error before searching');
-            return;
-        }
-        let results = batches;
-        if (searchTerm) {
-            results = results.filter(batch => 
-                batch.batchNo.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-        }
-        if (mode && mode !== 'Off') {
-            results = results.filter(batch => 
-                batch.mode.toLowerCase() === mode.toLowerCase()
-            );
-        }
-        if (startDate) {
-            results = results.filter(batch => 
-                new Date(batch.startDate) >= new Date(startDate)
-            );
-        }
-        if (endDate) {
-            results = results.filter(batch => 
-                new Date(batch.endDate) <= new Date(endDate)
-            );
-        }
-        setFilteredBatches(results);
-        setSearchInitiated(true);
-    };
-
-    const resetForm = () => {
-        setNewBatch({
-            batchNo: '',
-            mode: '',
-            sections: {
-                Domain: { startDate: '', endDate: '' },
-                Aptitude: { startDate: '', endDate: '' },
-                Communication: { startDate: '', endDate: '' }
-            }
-        });
-        setAddModelError({
-            batchNo: '',
-            mode: '',
-            startDate: '',
-            endDate: ''
-        });
-        setModalDateErrors({});
-        setActiveTab('Domain');
-        setShowNewBatchModeDropdown(false);
-        setFormErrors({
-            batchNo: '',
-            mode: '',
-            sections: {
-                Domain: '',
-                Aptitude: '',
-                Communication: ''
-            }
-        });
-    };
-
-    const handleReset = () => {
-        setSearchTerm('');
-        setStartDate('');
-        setEndDate('');
-        setMode('Off');
-        setFilteredBatches([]);
-        setSearchInitiated(false);
-        setSearchDateError('');
-    };
-
-const validateForm = () => {
-    let isValid = true;
-
-    // baseline error object
-    const newErrors = {
-        batchNo: '',
-        mode: '',
-        sections: {
-            Domain: '',
-            Aptitude: '',
-            Communication: ''
-        }
-    };
-
-    /* 🔽 1. per‑section date validation */
-    let firstInvalidTab = null;
-    Object.entries(newBatch.sections).forEach(([sectionName, section]) => {
-        if (!(section.startDate && section.endDate)) {
-            newErrors.sections[sectionName] = 'Start and end dates are required';
-            isValid = false;
-            if (!firstInvalidTab) firstInvalidTab = sectionName;
-        }
-    });
-    /* ensure we land on the first section that needs fixing */
-    if (firstInvalidTab) setActiveTab(firstInvalidTab);
-
-    /* 2. batch number validation */
-    if (!newBatch.batchNo.trim()) {
-        newErrors.batchNo = 'Batch number is required';
-        isValid = false;
-    } else if (newBatch.batchNo.length > 32) {
-        newErrors.batchNo = 'Batch number must be 32 characters or less';
-        isValid = false;
-    }
-
-    /* 3. mode validation */
-    if (!newBatch.mode.trim()) {
-        newErrors.mode = 'Mode is required';
-        isValid = false;
-    }
-    // inside validateForm, before returning:
-if (batches.some(
-      b => b.batchNo.trim().toLowerCase() === newBatch.batchNo.trim().toLowerCase()
-)) {
-  newErrors.batchNo = 'This batch number already exists';
-  isValid = false;
-}
-    setFormErrors(newErrors);
-    return isValid;
-};
-
-const handleAddBatch = () => {
-  if (!validateForm()) return;
-  if (Object.values(modalDateErrors).some(e => e)) {
-    toast.error("Please fix the date range errors before adding the batch");
+  if (!hasChanges()) {
+    // No changes, just close the modal
+    handleEditModelClose();
     return;
   }
-  /* ⬇️ earliest / latest across sections */
-  const allSecs = Object.values(newBatch.sections);
-  const earliest = new Date(Math.min(...allSecs.map(s => new Date(s.startDate))));
-  const latest   = new Date(Math.max(...allSecs.map(s => new Date(s.endDate))));
 
-  /* convert every section date to DD-MM-YYYY */
-  const sectionCopy = {};
-  for (const [k, s] of Object.entries(newBatch.sections)) {
-    sectionCopy[k] = {
-      startDate: toDDMMYYYY(parseDate(s.startDate)),
-      endDate:   toDDMMYYYY(parseDate(s.endDate))
-    };
-  }
+  // Show confirmation modal only if there are changes
+  setBatchToDelete({
+    ...editBatchData,
+    confirmationText: `Are you sure you want to update batch ${editBatchData.batchNo}?`
+  });
+  setShowEditConfirmationModal(true);
+};
 
-  const newBatchEntry = {
-    id: batches.length + 1,
-    batchNo: newBatch.batchNo,
-    status: newBatch.status,
-    mode:   newBatch.mode,
-    startDate: toDDMMYYYY(earliest),
-    endDate:   toDDMMYYYY(latest),
-    sections:  sectionCopy
+  const sectionIsValid = (tab) => {
+    const sec = newBatch.sections[tab];
+    return (
+      sec.startDate &&
+      sec.endDate &&
+      !modalDateErrors[tab] &&
+      !formErrors.sections[tab]
+    );
   };
 
-  addBatch(newBatchEntry);
-  setShowModal(false);
-  resetForm();
-  toast.success("Batch added successfully");
-};
+  const flagSectionEmptyError = (tab) => {
+    setFormErrors(prev => ({
+      ...prev,
+      sections: {
+        ...prev.sections,
+        [tab]: 'Both start and end dates are required'
+      }
+    }));
+  };
 
+  useEffect(() => {
+  if (searchInitiated) {
+    // Re-apply the search filter whenever batches change
+    handleSearch();
+  }
+}, [batches]);
 
-  // 👇 runs on each onChange
-const validateBatchNumber = (value) => {
-  let message = '';
+  const toDDMMYYYY = (d) => {
+    const date = d instanceof Date ? d : new Date(d);
+    const dd = String(date.getDate()).padStart(2, "0");
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const yyyy = date.getFullYear();
+    return `${dd}-${mm}-${yyyy}`;
+  };
 
-  // duplicate?
-  const exists = batches.some(
-    b => b.batchNo.trim().toLowerCase() === value.trim().toLowerCase()
-  );
-  if (exists) {
-    message = 'This batch number already exists';
-  } else if (!value.trim()) {
-    message = 'Batch number is required';
-  } else if (value.length > 32) {
-    message = 'Batch number must be 32 characters or less';
+  const parseDate = (str) => {
+    if (!str) return null;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return new Date(str);
+    if (/^\d{2}-\d{2}-\d{4}$/.test(str)) {
+      const [dd, mm, yyyy] = str.split("-");
+      return new Date(`${yyyy}-${mm}-${dd}`);
+    }
+    return new Date(str);
+  };
+
+  const formatDate = (str) => (str ? toDDMMYYYY(parseDate(str)) : "");
+
+      useEffect(() => {
+          setSearchTerm('');
+          setStartDate('');
+          setEndDate('');
+          setMode('Off');
+          setFilteredBatches([]);
+          setSearchInitiated(false);
+          setSearchDateError('');
+      }, [batchHead]);
+
+      const [searchDateError, setSearchDateError] = useState('');
+      const [modalDateErrors, setModalDateErrors] = useState({
+          Domain: '',
+          Aptitude: '',
+          Communication: ''
+      });
+
+      const [newBatch, setNewBatch] = useState({
+          batchNo: '',
+          status: 'Ongoing',
+          mode: '',
+          sections: {
+              Domain: { startDate: '', endDate: '' },
+              Aptitude: { startDate: '', endDate: '' },
+              Communication: { startDate: '', endDate: '' }
+          }
+      });
+
+      useEffect(() => {
+          const ongoing = batchData.filter(b => b.status === 'Ongoing').length;
+          const completed = batchData.filter(b => b.status === 'Completed').length;
+          setOngoingCount(ongoing);
+          setCompletedCount(completed);
+      }, [batchData]);
+
+      useEffect(() => {
+          setBatches(batchData);
+      }, [batchData]);
+
+      useEffect(() => {
+          if (showModal || showDeleteModal) {
+              document.body.style.overflow = 'hidden';
+          } else {
+              document.body.style.overflow = 'auto';
+          }
+          return () => {
+              document.body.style.overflow = 'auto';
+          };
+      }, [showModal, showDeleteModal]);
+
+      const validateSearchDates = (start, end) => {
+          if (start && end) {
+              const startDateObj = new Date(start);
+              const endDateObj = new Date(end);
+              if (endDateObj < startDateObj) {
+                  setSearchDateError('End date cannot be earlier than start date');
+                  return false;
+              } else if (endDateObj <= startDateObj) {
+                  setSearchDateError('End date cannot be same as the start date');
+                  return false;
+              } else if (startDateObj < new Date().toISOString().split("T")[0]) {
+                  setSearchDateError('The starting date cannot be earlier than present date');
+                  return false;
+              }
+          }
+          setSearchDateError('');
+          return true;
+      };
+
+      const handleCloseModal = () => {
+    setShowModal(false);
   }
 
-  // update error state shown under the field
-  setFormErrors(prev => ({ ...prev, batchNo: message }));
+  const handleCloseModelSelect = () =>{
+    setShowNewBatchModeDropdown(false);
+  }
+  const modeDropdownRef = useRef(null); // for filter section
+  const newBatchDropdownRef = useRef(null); // for Add Batch Modal
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        modeDropdownRef.current &&
+        !modeDropdownRef.current.contains(event.target)
+      ) {
+        setShowModeDropdown(false); // for main filter dropdown
+      }
+
+      if (
+        newBatchDropdownRef.current &&
+        !newBatchDropdownRef.current.contains(event.target)
+      ) {
+        setShowNewBatchModeDropdown(false); // for modal dropdown
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+      const handleSearchStartDateChange = (value) => {
+          setStartDate(value);
+          validateSearchDates(value, endDate);
+      };
+
+      const handleSearchEndDateChange = (value) => {
+          setEndDate(value);
+          validateSearchDates(startDate, value);
+      };
+
+      const toggleActions = (id) => {
+          setShowActions(showActions === id ? null : id);
+      };
+
+      const handleAction = (action, batchId) => {
+  if (action === 'delete') {
+    const batch = batches.find(b => b.id === batchId);
+    setBatchToDelete(batch);
+    setShowDeleteModal(true);
+    setDeleteConfirmationInput('');
+    setDeleteError('');
+  } else if (action === 'edit') {
+    handleEditBatch(batchId);
+    setShowEditModel(true);
+  }
+  setShowActions(null);
+};
+
+const handleEditBatch = (batchId) => {
+  const batchToEdit = batches.find(batch => batch.id === batchId) || 
+                     filteredBatches.find(batch => batch.id === batchId);
+  
+  if (batchToEdit) {
+    const initialData = {
+      ...batchToEdit,
+      sections: {
+        Domain: batchToEdit.sections?.Domain || { startDate: '', endDate: '' },
+        Aptitude: batchToEdit.sections?.Aptitude || { startDate: '', endDate: '' },
+        Communication: batchToEdit.sections?.Communication || { startDate: '', endDate: '' }
+      }
+    };
+    
+    setEditBatchData(initialData);
+    setInitialEditBatchData(JSON.parse(JSON.stringify(initialData))); // Deep clone
+    setShowEditModel(true);
+  }
+};
+const hasChanges = () => {
+  if (!editBatchData || !initialEditBatchData) return false;
+  
+  // Compare batchNo
+  if (editBatchData.batchNo !== initialEditBatchData.batchNo) return true;
+  
+  // Compare all sections
+  const sections = ['Domain', 'Aptitude', 'Communication'];
+  for (const section of sections) {
+    if (editBatchData.sections[section].startDate !== initialEditBatchData.sections[section].startDate ||
+        editBatchData.sections[section].endDate !== initialEditBatchData.sections[section].endDate) {
+      return true;
+    }
+  }
+  
+  return false;
+};
+
+          const handleEditModelClode = () => {
+              setShowEditModel(false)
+          }
+          const validateBatchField = () => {
+          if (!editBatchData.batchNo.trim()) {
+              setBatchNameError(true);
+              return false;
+          }
+          setBatchNameError(false);
+          return true;
+          };
+
+          const handleSave = () => {
+          if (!validateBatchField()) return;
+          updateBatch(editBatchData.id, editBatchData);
+          handleEditModelClode();
+          };
+
+          const handleCancel = () => {
+          if (!validateBatchField()) return;
+          handleEditModelClode();
+          };
+      const handleDeleteBatch = (batchId) => {
+          const updatedBatches = batches.filter(batch => batch.id !== batchId);
+          setBatches(updatedBatches);
+          if (searchInitiated) {
+              const updatedFilteredBatches = filteredBatches.filter(batch => batch.id !== batchId);
+              setFilteredBatches(updatedFilteredBatches);
+          }
+          deleteBatch(batchId);
+          const ongoing = updatedBatches.filter(b => b.status === 'Ongoing').length;
+          const completed = updatedBatches.filter(b => b.status === 'Completed').length;
+          setOngoingCount(ongoing);
+          setCompletedCount(completed);
+          console.log('Batch deleted. Updated batches:', updatedBatches);
+      };
+
+      const handleConfirmDelete = () => {
+          if (!deleteConfirmationInput) {
+              setDeleteError('Please enter the batch name to confirm deletion');
+              return;
+          }
+          if (deleteConfirmationInput !== batchToDelete.batchNo) {
+              setDeleteError('Batch name does not match. Please enter the exact batch name.');
+              return;
+          }
+          handleDeleteBatch(batchToDelete.id);
+          setShowDeleteModal(false);
+          setBatchToDelete(null);
+          setDeleteConfirmationInput('');
+          setDeleteError('');
+          toast.success("The Data is Successfully Deleted");
+      };
+
+      const handleCloseDeleteModal = () => {
+          setShowDeleteModal(false);
+          setBatchToDelete(null);
+          setDeleteConfirmationInput('');
+          setDeleteError('');
+      };
+
+    const handleSearch = () => {
+  const hasSearchCriteria = searchTerm || (mode && mode !== 'Off') || startDate || endDate;
+
+  if (!hasSearchCriteria) {
+    setSearchInitiated(false);
+    toast.error('Please enter at least one search criterion');
+    return;
+  }
+
+  if (searchDateError) {
+    toast.error('Please fix the date range error before searching');
+    return;
+  }
+
+  let results = batches;
+
+  // Search by Batch No
+  if (searchTerm) {
+    results = results.filter(batch =>
+      batch.batchNo.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }
+
+  // Search by Mode
+  if (mode && mode !== 'Off') {
+    results = results.filter(batch =>
+      batch.mode.toLowerCase() === mode.toLowerCase()
+    );
+  }
+
+  // Normalize input dates
+  const start = startDate ? new Date(startDate) : null;
+  const end = endDate ? new Date(endDate) : null;
+
+  // Filter based on section start/end dates
+  if (start || end) {
+    results = results.filter(batch => {
+      const sectionDates = [
+        batch.sections?.Domain,
+        batch.sections?.Aptitude,
+        batch.sections?.Communication,
+      ].filter(Boolean); // Remove undefined/null sections
+
+      // Check if any section matches the date condition
+      return sectionDates.some(section => {
+        const secStart = section.startDate ? new Date(section.startDate) : null;
+        const secEnd = section.endDate ? new Date(section.endDate) : null;
+
+        if (start && end) {
+          // Section overlaps with range [start, end]
+          return secStart <= end && secEnd >= start;
+        } else if (start) {
+          return secEnd >= start;
+        } else if (end) {
+          return secStart <= end;
+        }
+
+        return true;
+      });
+    });
+  }
+
+  setFilteredBatches(results);
+  setSearchInitiated(true);
 };
 
 
-    const validateMode = (mode) => {
-        if (!mode) {
-            setAddModelError(prev => ({ ...prev, mode: 'Mode is required' }));
-        } else {
-            setAddModelError(prev => ({ ...prev, mode: '' }));
-        }
+      const resetForm = () => {
+          setNewBatch({
+              batchNo: '',
+              mode: '',
+              sections: {
+                  Domain: { startDate: '', endDate: '' },
+                  Aptitude: { startDate: '', endDate: '' },
+                  Communication: { startDate: '', endDate: '' }
+              }
+          });
+          setAddModelError({
+              batchNo: '',
+              mode: '',
+              startDate: '',
+              endDate: ''
+          });
+          setModalDateErrors({});
+          setActiveTab('Domain');
+          setShowNewBatchModeDropdown(false);
+          setFormErrors({
+              batchNo: '',
+              mode: '',
+              sections: {
+                  Domain: '',
+                  Aptitude: '',
+                  Communication: ''
+              }
+          });
+      };
+
+      const handleReset = () => {
+          setSearchTerm('');
+          setStartDate('');
+          setEndDate('');
+          setMode('Off');
+          setFilteredBatches([]);
+          setSearchInitiated(false);
+          setSearchDateError('');
+      };
+
+  const validateForm = () => {
+      let isValid = true;
+
+      // baseline error object
+      const newErrors = {
+          batchNo: '',
+          mode: '',
+          sections: {
+              Domain: '',
+              Aptitude: '',
+              Communication: ''
+          }
+      };
+
+      /* 🔽 1. per section date validation */
+      let firstInvalidTab = null;
+      Object.entries(newBatch.sections).forEach(([sectionName, section]) => {
+          if (!(section.startDate && section.endDate)) {
+              newErrors.sections[sectionName] = 'Start and end dates are required';
+              isValid = false;
+              if (!firstInvalidTab) firstInvalidTab = sectionName;
+          }
+      });
+      /* ensure we land on the first section that needs fixing */
+      if (firstInvalidTab) setActiveTab(firstInvalidTab);
+
+      /* 2. batch number validation */
+      if (!newBatch.batchNo.trim()) {
+          newErrors.batchNo = 'Batch number is required';
+          isValid = false;
+      } else if (newBatch.batchNo.length > 32) {
+          newErrors.batchNo = 'Batch number must be 32 characters or less';
+          isValid = false;
+      }
+
+      /* 3. mode validation */
+      if (!newBatch.mode.trim()) {
+          newErrors.mode = 'Mode is required';
+          isValid = false;
+      }
+      // inside validateForm, before returning:
+  if (batches.some(
+        b => b.batchNo.trim().toLowerCase() === newBatch.batchNo.trim().toLowerCase()
+  )) {
+    newErrors.batchNo = 'This batch number already exists';
+    isValid = false;
+  }
+      setFormErrors(newErrors);
+      return isValid;
+  };
+
+  const handleAddBatch = () => {
+    if (!validateForm()) return;
+    if (Object.values(modalDateErrors).some(e => e)) {
+      toast.error("Please fix the date range errors before adding the batch");
+      return;
+    }
+    /* ⬇️ earliest / latest across sections */
+    const allSecs = Object.values(newBatch.sections);
+    const earliest = new Date(Math.min(...allSecs.map(s => new Date(s.startDate))));
+    const latest   = new Date(Math.max(...allSecs.map(s => new Date(s.endDate))));
+
+    /* convert every section date to DD-MM-YYYY */
+    const sectionCopy = {};
+    for (const [k, s] of Object.entries(newBatch.sections)) {
+      sectionCopy[k] = {
+        startDate: toDDMMYYYY(parseDate(s.startDate)),
+        endDate:   toDDMMYYYY(parseDate(s.endDate))
+      };
+    }
+
+    const newBatchEntry = {
+      id: batches.length + 1,
+      batchNo: newBatch.batchNo,
+      status: newBatch.status,
+      mode:   newBatch.mode,
+      startDate: toDDMMYYYY(earliest),
+      endDate:   toDDMMYYYY(latest),
+      sections:  sectionCopy
     };
 
-    const handleSectionDateChange = (section, field, value) => {
-        setNewBatch(prev => {
-            const updatedBatch = {
-                ...prev,
-                sections: {
-                    ...prev.sections,
-                    [section]: {
-                        ...prev.sections[section],
-                        [field]: value
-                    }
-                }
-            };
+    addBatch(newBatchEntry);
+    setShowModal(false);
+    resetForm();
+    toast.success("Batch added successfully");
+  };
 
-            
+    // 👇 runs on each onChange
+  const validateBatchNumber = (value) => {
+    let message = '';
 
+    // duplicate?
+    const exists = batches.some(
+      b => b.batchNo.trim().toLowerCase() === value.trim().toLowerCase()
+    );
+    if (exists) {
+      message = 'This batch number already exists';
+    } else if (!value.trim()) {
+      message = 'Batch number is required';
+    } else if (value.length > 32) {
+      message = 'Batch number must be 32 characters or less';
+    }
 
-            const sectionData = updatedBatch.sections[section];
-            const today = new Date();
-            today.setHours(0, 0, 0, 0); // Normalize to start of day
+    // update error state shown under the field
+    setFormErrors(prev => ({ ...prev, batchNo: message }));
+  };
 
-            if (sectionData.startDate || sectionData.endDate) {
-                const startDate = new Date(sectionData.startDate);
-                const endDate = new Date(sectionData.endDate);
+      const validateMode = (mode) => {
+          if (!mode) {
+              setAddModelError(prev => ({ ...prev, mode: 'Mode is required' }));
+          } else {
+              setAddModelError(prev => ({ ...prev, mode: '' }));
+          }
+      };
 
-                if (startDate < today) {
-                    setModalDateErrors(prev => ({
-                        ...prev,
-                        [section]: 'Start date cannot be earlier than today'
-                    }));
-                } else if (endDate < startDate) {
-                    setModalDateErrors(prev => ({
-                        ...prev,
-                        [section]: 'End date cannot be earlier than start date'
-                    }));
-                } else if (endDate.getTime() === startDate.getTime()) {
-                    setModalDateErrors(prev => ({
-                        ...prev,
-                        [section]: 'End date cannot be same as start date'
-                    }));
-                } else {
-                    // Clear error if dates are valid
-                    setModalDateErrors(prev => ({
-                        ...prev,
-                        [section]: ''
-                    }));
-                }
-            } else {
-                // Clear error if either date is empty
-                setModalDateErrors(prev => ({
-                    ...prev,
-                    [section]: ''
-                }));
-            }
+      const handleSectionDateChange = (section, field, value) => {
+          setNewBatch(prev => {
+              const updatedBatch = {
+                  ...prev,
+                  sections: {
+                      ...prev.sections,
+                      [section]: {
+                          ...prev.sections[section],
+                          [field]: value
+                      }
+                  }
+              };
 
-            return updatedBatch;
-        });
-    };
+              
+
+              const sectionData = updatedBatch.sections[section];
+              const today = new Date();
+              today.setHours(0, 0, 0, 0); // Normalize to start of day
+
+              if (sectionData.startDate || sectionData.endDate) {
+                  const startDate = new Date(sectionData.startDate);
+                  const endDate = new Date(sectionData.endDate);
+
+                  if (startDate < today) {
+                      setModalDateErrors(prev => ({
+                          ...prev,
+                          [section]: 'Start date cannot be earlier than today'
+                      }));
+                  } else if (endDate < startDate) {
+                      setModalDateErrors(prev => ({
+                          ...prev,
+                          [section]: 'End date cannot be earlier than start date'
+                      }));
+                  } else if (endDate.getTime() === startDate.getTime()) {
+                      setModalDateErrors(prev => ({
+                          ...prev,
+                          [section]: 'End date cannot be same as start date'
+                      }));
+                  } else {
+                      // Clear error if dates are valid
+                      setModalDateErrors(prev => ({
+                          ...prev,
+                          [section]: ''
+                      }));
+                  }
+              } else {
+                  // Clear error if either date is empty
+                  setModalDateErrors(prev => ({
+                      ...prev,
+                      [section]: ''
+                  }));
+              }
+
+              return updatedBatch;
+          });
+      };
 
     return (
         <div className="flex min-h-screen mx-[-16] md:width-[750px]">
@@ -798,7 +843,9 @@ const validateBatchNumber = (value) => {
                         className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
                         placeholder=" "
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                    onKeyDown={handleKeyDown}  // Add this line
+
+                        onChange={(e) => { setSearchTerm(e.target.value); }}
                     />
                     <label
                         htmlFor="batch-id"
@@ -815,119 +862,114 @@ const validateBatchNumber = (value) => {
                         </button>
                     )}
                 </div>
-               <div className="relative">
+                {/* Start Date Input */}
+<div className="relative">
   <input
     id="start-date"
     type="date"
     value={startDate}
-    className={`cursor-pointer block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer placeholder-transparent focus:placeholder-gray-400`}
+    onKeyDown={handleKeyDown}
     onChange={(e) => handleSearchStartDateChange(e.target.value)}
-    placeholder="dd/mm/yyyy"
+    className="cursor-pointer block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
   />
   <label
     htmlFor="start-date"
-    className="absolute text-sm text-gray-500 duration-300 transform -translate-y-1/2 top-1/2 left-4 peer-focus:text-m peer-focus:font-bold peer-focus:text-[#6750A4] peer-focus:top-4 peer-focus:bg-[#F4F3FF] peer-focus:px-2 peer-focus:scale-75 peer-focus:-translate-y-7"
+    className={`absolute px-3 pb-2 mt-1 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform z-5 origin-[0] left-4
+      ${startDate
+        ? 'top-2 -translate-y-3 scale-75 text-[#6750A4] font-medium '
+        : 'top-1/2 -translate-y-1/2 scale-100'}
+      peer-focus:top-3.5 peer-focus:-translate-y-7 peer-focus:font-bold peer-focus:scale-75 peer-focus:text-[#6750A4]`}
   >
     Start date
   </label>
-  <style jsx>{`
-    input[type="date"]::-webkit-calendar-picker-indicator {
-      opacity: 0;
-    }
-    input[type="date"]:focus::-webkit-calendar-picker-indicator {
-      opacity: 1;
-    }
-    input[type="date"]::-webkit-datetime-edit {
-      color: transparent;
-    }
-    input[type="date"]:focus::-webkit-datetime-edit {
-      color: inherit;
-    }
-  `}</style>
 </div>
+               {/* End Date Input */}
 <div className="relative">
   <input
     id="end-date"
     type="date"
     value={endDate}
-    className={`cursor-pointer block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer placeholder-transparent focus:placeholder-gray-400`}
+    onKeyDown={handleKeyDown}
     onChange={(e) => handleSearchEndDateChange(e.target.value)}
-    placeholder="dd/mm/yyyy"
+    className="cursor-pointer block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
   />
   <label
     htmlFor="end-date"
-    className="absolute text-sm text-gray-500 duration-300 transform -translate-y-1/2 top-1/2 left-4 peer-focus:text-m peer-focus:font-bold peer-focus:text-[#6750A4] peer-focus:top-4 peer-focus:bg-[#F4F3FF] peer-focus:px-2 peer-focus:scale-75 peer-focus:-translate-y-7"
+    className={`absolute px-3.5 pb-2 mt-1 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform z-5 origin-[0] left-4
+      ${endDate
+        ? 'top-2 -translate-y-3 scale-75 text-[#6750A4] font-medium'
+        : 'top-1/2 -translate-y-1/2 scale-100'}
+      peer-focus:top-3.5 peer-focus:-translate-y-7 peer-focus:font-bold peer-focus:scale-75 peer-focus:text-[#6750A4]`}
   >
     End date
   </label>
+
   {searchDateError && (
     <p className="text-red-500 text-xs mt-1 px-2">{searchDateError}</p>
   )}
-  <style jsx>{`
-    input[type="date"]::-webkit-calendar-picker-indicator {
-      opacity: 0;
-    }
-    input[type="date"]:focus::-webkit-calendar-picker-indicator {
-      opacity: 1;
-    }
-    input[type="date"]::-webkit-datetime-edit {
-      color: transparent;
-    }
-    input[type="date"]:focus::-webkit-datetime-edit {
-      color: inherit;
-    }
-  `}</style>
 </div>
-                <div className="relative" ref={modeDropdownRef}>
-                    <input
-                        type="text"
-                        id="mode"
-                        className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer`}
-                        placeholder=" "
-                        readOnly
-                        value={mode === 'Off' ? '' : mode}
-                        onClick={() => setShowModeDropdown(!showModeDropdown)}
-                    />
-                    <label
-                        htmlFor="mode"
-                        className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
-                    >
-                        Mode
-                    </label>
-                    <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
-                    {mode && mode !== 'Off' && (
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setMode('Off');
-                            }}
-                            className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700"
-                        >
-                            <RiCloseCircleLine size={20} />
-                        </button>
-                    )}
-                    {showModeDropdown && (
-                        <div className="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-md">
-                            {['Online', 'Offline'].map((item) => (
-                                <div
-                                    key={item}
-                                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                    onClick={() => {
-                                        setMode(item);
-                                        setShowModeDropdown(false);
-                                    }}
-                                >
-                                    {item}
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
+                <div className="relative" ref={modeDropdownRef} onKeyDown={handleKeyDown}>
+  <input
+    type="text"
+    id="mode"
+    readOnly
+    placeholder=" "
+    value={mode === 'Off' ? '' : mode}
+    onClick={() => setShowModeDropdown(!showModeDropdown)}
+    className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+  />
+  <label
+    htmlFor="mode"
+    className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+  >
+    Mode
+  </label>
+  <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
+
+  {mode && mode !== 'Off' && (
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        setMode('Off');
+        handleSearch(); // Optional: Trigger search on clear
+      }}
+      className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700"
+    >
+      <RiCloseCircleLine size={20} />
+    </button>
+  )}
+
+  {showModeDropdown && (
+    <div className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md">
+      {['Online', 'Offline'].map((item) => (
+        <div
+          key={item}
+          tabIndex={0} // Makes it focusable with keyboard
+          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+          onClick={() => {
+            setMode(item);
+            setShowModeDropdown(false);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              setMode(item);
+              setShowModeDropdown(false);
+              handleSearch();
+            }
+          }}
+        >
+          {item}
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
                
-                <div className="flex gap-2 md:col-start-3 md:justify-end mr-[-220] md:pt-24">
+                <div className="flex gap-2 md:col-start-3 md:justify-end mr-[-220] md:pt-17">
                     <button
                         onClick={handleReset}
-                        className="cursor-pointer bg-[#f1ecfb] hover:bg-[#E8DEF8] px-4 py-2 rounded-xl text-sm font-semibold text-gray-700 flex items-center gap-1"
+                        className="cursor-pointer bg-[#f1ecfb] hover:bg-[#E8DEF8] px-4 py-4 rounded-xl text-sm font-semibold text-gray-700 flex items-center gap-1"
                     >
                         <Image
                             src='/reset.svg'
@@ -939,7 +981,7 @@ const validateBatchNumber = (value) => {
                     </button>
                     <button
                         onClick={handleSearch}
-                        className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-5 py-2 rounded-xl text-sm font-semibold"
+                        className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-5 py-4 rounded-xl text-sm font-semibold"
                     >
                         Search
                     </button>
@@ -974,8 +1016,8 @@ const validateBatchNumber = (value) => {
       <td className="px-4 py-3 text-gray-700 text-sm whitespace-nowrap">{batch.batchNo}</td>
 
       {/* Status */}
-      <td className="px-4 py-3 text-gray-700 text-sm whitespace-nowrap">
-{ Date(batch.sections?.Domain?.endDate) < new Date() &&
+      <td className="px-4 py-3 text-sm whitespace-nowrap">
+{new Date(batch.sections?.Domain?.endDate) < new Date() &&
  new Date(batch.sections?.Aptitude?.endDate) < new Date() &&
  new Date(batch.sections?.Communication?.endDate) < new Date() ? (
   <Image
@@ -997,18 +1039,18 @@ const validateBatchNumber = (value) => {
       </td>
 
       {/* Domain dates */}
-      <td className="px-4 py-3 text-gray-700 text-xs whitespace-nowrap w-44">
-        {formatDate(batch.sections?.Domain?.startDate)} – {formatDate(batch.sections?.Domain?.endDate)}
+      <td className="px-4 py-3 text-xs whitespace-nowrap w-44">
+        {formatDate(batch.sections?.Domain?.startDate)} – {formatDate(batch.sections?.Domain?.endDate)}
       </td>
 
       {/* Aptitude dates */}
-      <td className="px-4 py-3 text-gray-700 text-xs whitespace-nowrap w-44">
-        {formatDate(batch.sections?.Aptitude?.startDate)} – {formatDate(batch.sections?.Aptitude?.endDate)}
+      <td className="px-4 py-3 text-xs whitespace-nowrap w-44">
+        {formatDate(batch.sections?.Aptitude?.startDate)} – {formatDate(batch.sections?.Aptitude?.endDate)}
       </td>
 
       {/* Communication dates */}
-      <td className="px-4 py-3 text-gray-700 text-xs whitespace-nowrap w-44">
-        {formatDate(batch.sections?.Communication?.startDate)} – {formatDate(batch.sections?.Communication?.endDate)}
+      <td className="px-4 py-3 text-xs whitespace-nowrap w-44">
+        {formatDate(batch.sections?.Communication?.startDate)} – {formatDate(batch.sections?.Communication?.endDate)}
       </td>
 
       {/* Mode */}
@@ -1022,7 +1064,7 @@ const validateBatchNumber = (value) => {
           </button>
           <button onClick={() => handleAction('edit', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded">
             <FiEdit className="h-4 w-4" />
-          </button>new
+          </button>
           <button onClick={() => handleAction('delete', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded text-black">
             <FiTrash2 className="h-4 w-4" />
           </button>
@@ -1075,6 +1117,7 @@ const validateBatchNumber = (value) => {
                     } ${setFormErrors ? 'border-gray-400':'focus:border-red-500 border-red-500' } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
                     placeholder=" "
                     value={newBatch.batchNo}
+
                     onChange={(e) => {
                         const value = e.target.value;
                         setNewBatch({ ...newBatch, batchNo: value });
@@ -1144,89 +1187,91 @@ const validateBatchNumber = (value) => {
         </div>
     </div>
                 <div className="grid grid-cols-2 gap-3 mb-3">
-                    <div className="relative">
-                        <input
-                            type="date"
-                            id={`${activeTab.toLowerCase()}-start-date`}
-                            className={`block px-3 pb-1.5 pt-4 w-full text-xs text-gray-900 bg-[#ECE6F0] rounded-sm border-2 ${
-                                formErrors.sections[activeTab] || modalDateErrors[activeTab]
-                                    ? 'border-red-500'
-                                    : 'border-gray-400'
-                            } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
-                            placeholder=" "
-                            value={newBatch.sections[activeTab].startDate}
-                            onChange={(e) => {
-                                handleSectionDateChange(activeTab, 'startDate', e.target.value);
-                                if (formErrors.sections[activeTab]) {
-                                    setFormErrors({
-                                        ...formErrors,
-                                        sections: {
-                                            ...formErrors.sections,
-                                            [activeTab]: ''
-                                        }
-                                    });
-                                }
-                            }}
-                        />
-                        <label
-                            htmlFor={`${activeTab.toLowerCase()}-start-date`}
-    className="absolute text-sm text-gray-500 duration-300 transform -translate-y-1/2 top-1/2 left-4 peer-focus:text-m peer-focus:font-bold peer-focus:text-[#6750A4] peer-focus:top-4 peer-focus:bg-[#ECE6F0] peer-focus:px-2 peer-focus:scale-75 peer-focus:-translate-y-7"
-                        >
-                            Start date
-                        </label>
-                    </div>
-                    <div className="relative">
-                        <input
-                            type="date"
-                            id={`${activeTab.toLowerCase()}-end-date`}
-                            className={`block px-3 pb-1.5 pt-4 w-full text-xs text-gray-900 bg-[#ECE6F0] rounded-sm border-2 ${
-                                formErrors.sections[activeTab] || modalDateErrors[activeTab]
-                                    ? 'border-red-500'
-                                    : 'border-gray-400'
-                            } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
-                            placeholder=" "
-                            value={newBatch.sections[activeTab].endDate}
-                            onChange={(e) => {
-                                handleSectionDateChange(activeTab, 'endDate', e.target.value);
-                                if (formErrors.sections[activeTab]) {
-                                    setFormErrors({
-                                        ...formErrors,
-                                        sections: {
-                                            ...formErrors.sections,
-                                            [activeTab]: ''
-                                        }
-                                    });
-                                }
-                            }}
-                        />
-                        <label
-                            htmlFor={`${activeTab.toLowerCase()}-end-date`}
-    className="absolute text-sm text-gray-500 duration-300 transform -translate-y-1/2 top-1/2 left-4 peer-focus:text-m peer-focus:font-bold peer-focus:text-[#6750A4] peer-focus:top-4 peer-focu peer-focus:bg-[#ECE6F0] peer-focus:px-2 peer-focus:scale-75 peer-focus:-translate-y-7"
-                        >
-                            End date
-                        </label>
-                    </div>
-                </div>
+  <div className="relative">
+    <input
+      type="date"
+      id={`${activeTab.toLowerCase()}-start-date`}
+      className={`block px-3 py-2 pt-4 w-full text-xs text-gray-900 bg-[#ECE6F0] rounded-sm border-2 ${
+        formErrors.sections[activeTab] || modalDateErrors[activeTab]
+          ? 'border-red-500'
+          : 'border-gray-400'
+      } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+      placeholder=" "
+      value={newBatch.sections[activeTab].startDate}
+      onChange={(e) => {
+        handleSectionDateChange(activeTab, 'startDate', e.target.value);
+        if (formErrors.sections[activeTab]) {
+          setFormErrors({
+            ...formErrors,
+            sections: {
+              ...formErrors.sections,
+              [activeTab]: ''
+            }
+          });
+        }
+      }}
+    />
+    <label
+      htmlFor={`${activeTab.toLowerCase()}-start-date`}
+      className={`absolute px-2 text-sm pb-1 text-gray-500 duration-300 bg-[#ECE6F0] transform z-5 origin-[0] left-4
+        ${
+          newBatch.sections[activeTab].startDate
+            ? 'top-3 -translate-y-3 scale-75 text-[#6750A4] font-medium'
+            : 'top-1/2 -translate-y-1/2 scale-100'
+        }
+        peer-focus:top-3.5 peer-focus:-translate-y-6 peer-focus:font-bold peer-focus:scale-75 peer-focus:text-[#6750A4]`}
+    >
+      Start date
+    </label>
+  </div>
+
+  <div className="relative">
+    <input
+      type="date"
+      id={`${activeTab.toLowerCase()}-end-date`}
+      className={`block px-3 py-2 pt-4 w-full text-xs text-gray-900 bg-[#ECE6F0] rounded-sm border-2 ${
+        formErrors.sections[activeTab] || modalDateErrors[activeTab]
+          ? 'border-red-500'
+          : 'border-gray-400'
+      } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+      placeholder=" "
+      value={newBatch.sections[activeTab].endDate}
+      onChange={(e) => {
+        handleSectionDateChange(activeTab, 'endDate', e.target.value);
+        if (formErrors.sections[activeTab]) {
+          setFormErrors({
+            ...formErrors,
+            sections: {
+              ...formErrors.sections,
+              [activeTab]: ''
+            }
+          });
+        }
+      }}
+    />
+    <label
+      htmlFor={`${activeTab.toLowerCase()}-end-date`}
+      className={`absolute px-2 text-sm pb-1 text-gray-500 duration-300 bg-[#ECE6F0] transform z-5 origin-[0] left-4
+        ${
+          newBatch.sections[activeTab].endDate
+            ? 'top-3 -translate-y-3 scale-75 text-[#6750A4] font-medium'
+            : 'top-1/2 -translate-y-1/2 scale-100'
+        }
+        peer-focus:top-3.5 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-bold peer-focus:text-[#6750A4]`}
+    >
+      End date
+    </label>
+
+  </div>
+</div>
+
                 {modalDateErrors[activeTab] && (
                     <p className="text-red-500 text-xs mt-1 px-2">{modalDateErrors[activeTab]}</p>
                 )}
                 {formErrors.sections[activeTab] && (
                     <p className="text-red-500 text-xs mt-1 px-2">{formErrors.sections[activeTab]}</p>
                 )}
-                 <style jsx>{`
-    input[type="date"]::-webkit-calendar-picker-indicator {
-      opacity: 0;
-    }
-    input[type="date"]:focus::-webkit-calendar-picker-indicator {
-      opacity: 1;
-    }
-    input[type="date"]::-webkit-datetime-edit {
-      color: transparent;
-    }
-    input[type="date"]:focus::-webkit-datetime-edit {
-      color: inherit;
-    }
-  `}</style>
+                 
             </div>
 
             {/* Mode Selection */}
@@ -1239,6 +1284,7 @@ const validateBatchNumber = (value) => {
                     } appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer`}
                     placeholder=" "
                     readOnly
+
                     value={newBatch.mode}
                     onClick={() => {
                         setShowNewBatchModeDropdown(!showNewBatchModeDropdown);
@@ -1268,7 +1314,7 @@ const validateBatchNumber = (value) => {
                 )}
                 <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
                 {showNewBatchModeDropdown && (
-                    <div className="absolute z-10 mt-1 w-full bg-[#ECE6F0] border border-gray-300 rounded-md shadow-md">
+                    <div className="absolute z-10  w-full bg-[#ECE6F0] border border-gray-300 rounded-md shadow-md">
                         {['Online', 'Offline'].map((item) => (
                             <div
                                 key={item}
@@ -1396,7 +1442,7 @@ const validateBatchNumber = (value) => {
 {showEditModal && editBatchData && (
   <div
     className="fixed inset-0 bg-black/40 z-50 flex justify-center items-center"
-    onClick={() => !hasErrors && handleEditModelClode()}
+    onClick={() => !hasErrors && handleEditModelClose()}
   >
     <div
       className="relative w-auto bg-white p-10 rounded-sm shadow-lg"
@@ -1406,14 +1452,13 @@ const validateBatchNumber = (value) => {
       <div className="mb-8 flex items-center justify-between">
         <h2 className="text-sm font-bold">Edit batch</h2>
         <button
-          onClick={() => !hasErrors && handleEditModelClode()}
-          className="text-gray-500 hover:text-gray-700"
+          onClick={() => !hasErrors && handleEditModelClose()}
+          className="text-gray-500 hover:text-gray-700 cursor-pointer"
           disabled={hasErrors}
         >
           <RiCloseCircleLine size={20} />
         </button>
       </div>
-
       {/* ───── Batch-name field ───── */}
       <div className="relative mb-4 w-full">
         <input
@@ -1421,9 +1466,7 @@ const validateBatchNumber = (value) => {
           type="text"
           value={editBatchData.batchNo}
           onChange={(e) => handleChange("batchNo", e.target.value)}
-          placeholder="Batch name"
-          className={`
-            peer w-full rounded border-2 p-2.5 pr-10 text-sm transition-all
+          className={`peer w-full rounded border-2 p-2.5 pr-10 text-sm transition-all
             ${errors.batchNo
               ? "border-red-500"
               : editBatchData.batchNo
@@ -1434,8 +1477,7 @@ const validateBatchNumber = (value) => {
         />
         <label
           htmlFor="batchName"
-          className={`
-            absolute left-2 bg-white px-1 transition-all pointer-events-none
+          className={`absolute left-2 bg-white px-1 transition-all pointer-events-none
             ${editBatchData.batchNo
               ? "top-[-10px] text-xs text-[#6750a4]"
               : "top-3.5 text-sm text-gray-400"}
@@ -1456,7 +1498,6 @@ const validateBatchNumber = (value) => {
       {errors.batchNo && (
         <p className="mb-4 ms-1 text-xs text-red-500">{errors.batchNo}</p>
       )}
-
       {/* ───── Sections ───── */}
       <div className="flex flex-col">
         {/* first row: Domain & Aptitude */}
@@ -1473,7 +1514,7 @@ const validateBatchNumber = (value) => {
                 onChange={(e) =>
                   handleChange("sections.Domain.startDate", e.target.value)
                 }
-                className={`w-auto rounded border p-2 text-sm ${
+                className={`w-auto rounded border p-2 text-sm cursor-pointer ${
                   errors["sections.Domain.startDate"] ? "border-red-500" : ""
                 }`}
               />
@@ -1485,7 +1526,7 @@ const validateBatchNumber = (value) => {
                 onChange={(e) =>
                   handleChange("sections.Domain.endDate", e.target.value)
                 }
-                className={`w-auto rounded border p-2 text-sm ${
+                className={`w-auto rounded border cursor-pointer p-2 text-sm ${
                   errors["sections.Domain.endDate"] ? "border-red-500" : ""
                 }`}
               />
@@ -1501,7 +1542,6 @@ const validateBatchNumber = (value) => {
               </p>
             )}
           </div>
-
           {/* Aptitude */}
           <div className="mb-4 rounded-xl bg-[#ece6f0] p-4">
             <h3 className="mb-4 border-b font-mono text-2xl">Aptitude</h3>
@@ -1513,7 +1553,7 @@ const validateBatchNumber = (value) => {
                 onChange={(e) =>
                   handleChange("sections.Aptitude.startDate", e.target.value)
                 }
-                className={`w-auto rounded border p-2 text-sm ${
+                className={`w-auto rounded border p-2 cursor-pointer text-sm ${
                   errors["sections.Aptitude.startDate"] ? "border-red-500" : ""
                 }`}
               />
@@ -1524,7 +1564,7 @@ const validateBatchNumber = (value) => {
                 onChange={(e) =>
                   handleChange("sections.Aptitude.endDate", e.target.value)
                 }
-                className={`w-auto rounded border p-2 text-sm ${
+                className={`w-auto rounded border p-2 cursor-pointer text-sm ${
                   errors["sections.Aptitude.endDate"] ? "border-red-500" : ""
                 }`}
               />
@@ -1541,7 +1581,6 @@ const validateBatchNumber = (value) => {
             )}
           </div>
         </div>
-
         {/* second row: Communication */}
         <div className="w-1/2">
           <div className="mb-4 rounded-xl bg-[#ece6f0] p-4">
@@ -1559,7 +1598,7 @@ const validateBatchNumber = (value) => {
                     e.target.value
                   )
                 }
-                className={`w-auto rounded border p-2 text-sm ${
+                className={`w-auto rounded border p-2 cursor-pointer text-sm ${
                   errors["sections.Communication.startDate"] ? "border-red-500" : ""
                 }`}
               />
@@ -1573,7 +1612,7 @@ const validateBatchNumber = (value) => {
                     e.target.value
                   )
                 }
-                className={`w-auto rounded border p-2 text-sm ${
+                className={`w-auto rounded border p-2 cursor-pointer text-sm ${
                   errors["sections.Communication.endDate"] ? "border-red-500" : ""
                 }`}
               />
@@ -1591,12 +1630,11 @@ const validateBatchNumber = (value) => {
           </div>
         </div>
       </div>
-
       {/* ───── Footer actions ───── */}
       <div className="flex justify-end gap-4">
         <button
-          onClick={() => !hasErrors && handleEditModelClode()}
-          className={`rounded-2xl px-4 py-3 ${
+          onClick={() => !hasErrors && handleEditModelClose()}
+          className={` cursor-pointer rounded-2xl px-4 py-3 ${
             hasErrors ? "bg-[#f1ecfb] text-gray-400" : "bg-[#e8def8] text-[#4a4459]"
           }`}
         >
@@ -1604,7 +1642,7 @@ const validateBatchNumber = (value) => {
         </button>
         <button
           onClick={handleSaveEdit}
-          className={`rounded-2xl px-4 py-3 text-white ${
+          className={` cursor-pointer rounded-2xl px-4 py-3 text-white ${
             hasErrors
               ? "cursor-not-allowed bg-[#b5a9d4]"
               : "bg-[#6750a4] hover:bg-[#56438d]"
@@ -1618,8 +1656,58 @@ const validateBatchNumber = (value) => {
   </div>
 )}
 
+{/* Edit Confirmation Modal */}
+{showEditConfirmationModal && editBatchData && (
+  <div 
+    className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+    onClick={() => setShowEditConfirmationModal(false)}
+  >
+    <div 
+      className="w-[500px] bg-[#F8FAFD] rounded-[10px] p-6"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-lg font-medium">Confirm Changes</h2>
+        <button
+          onClick={() => setShowEditConfirmationModal(false)}
+          className="cursor-pointer text-gray-500 hover:text-gray-700"
+        >
+          <RiCloseCircleLine size={20} />
+        </button>
+      </div>
+
+      <p className="mb-4 text-gray-700 text-sm">
+        Are you sure you want to update batch <strong className='text-m'>{editBatchData.batchNo}</strong>?
+      </p>
+
+      {/* Buttons */}
+      <div className="flex justify-end gap-4">
+        <button
+          onClick={() => setShowEditConfirmationModal(false)}
+          className="cursor-pointer bg-[#e8def8] text-[#4a4459] px-4 py-2.5 rounded-2xl text-sm font-medium"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={() => {
+            updateBatch(editBatchData.id, editBatchData);
+            setShowEditConfirmationModal(false);
+            handleEditModelClose();
+            toast.success("Batch updated successfully");
+          }}
+          className="cursor-pointer bg-[#6750A4] text-white px-4 py-2.5 rounded-2xl text-sm font-medium"
+        >
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
 
 <Toaster position="top-right" reverseOrder={false} />
     </div>
   );
 }
+
+
