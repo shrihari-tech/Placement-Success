@@ -1,0 +1,60 @@
+    {showModel && (
+        <div className="fixed inset-0 bg-black/30 z-50 flex justify-end"
+        onClick={handleclosemodel}
+        >
+          {/* Modal Container */}
+          <div className="bg-[#F8FAFD] w-full max-w-md h-full overflow-y-auto shadow-lg p-6 rounded-l-3xl"
+            onClick={(e) => e.stopPropagation()} 
+          >
+            {/* Title */}
+            <h2 className="text-lg font-semibold text-gray-800 mb-6">
+              {modelhead}
+            </h2>
+
+            {/* Stats Grid */}
+            <div className="grid grid-cols-2 gap-4">
+              {/* Box 1 */}
+              <div className="bg-white p-4 rounded-xl shadow-sm">
+                <p className="text-xs text-gray-500 mb-2">Completed batch count</p>
+                <p className="text-2xl font-semibold text-gray-800">52</p>
+              </div>
+
+              {/* Box 2 */}
+              <div className="bg-white p-4 rounded-xl shadow-sm">
+                <p className="text-xs text-gray-500 mb-2">Ongoing batch count</p>
+                <p className="text-2xl font-semibold text-gray-800">14</p>
+              </div>
+
+              {/* Box 3 */}
+              <div className="bg-white p-4 rounded-xl shadow-sm">
+                <p className="text-xs text-gray-500 mb-2">Completed Student count</p>
+                <p className="text-2xl font-semibold text-gray-800">1600</p>
+              </div>
+
+              {/* Box 4 */}
+              <div className="bg-white p-4 rounded-xl shadow-sm">
+                <p className="text-xs text-gray-500 mb-2">Ongoing Student count</p>
+                <p className="text-2xl font-semibold text-gray-800">230</p>
+              </div>
+
+              {/* Box 5 */}
+              <div className="bg-white p-4 rounded-xl shadow-sm">
+                <p className="text-xs text-gray-500 mb-2">Placement eligible count</p>
+                <p className="text-2xl font-semibold text-gray-800">30</p>
+              </div>
+
+              {/* Box 6 */}
+              <div className="bg-white p-4 rounded-xl shadow-sm">
+                <p className="text-xs text-gray-500 mb-2">Already placed count</p>
+                <p className="text-2xl font-semibold text-gray-800">600</p>
+              </div>
+
+              {/* Box 7 (Full width) */}
+              <div className="bg-white p-4 rounded-xl shadow-sm ">
+                <p className="text-xs text-gray-500 mb-2">Yet to be placed</p>
+                <p className="text-2xl font-semibold text-gray-800">120</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}

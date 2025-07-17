@@ -21,6 +21,64 @@ export const useDataContext = () => {
   }
   return context;
 };
+
+const batchStatsData = {
+  fullstack: {
+    completedBatches: 18,
+    ongoingBatches: 4,
+    completedStudents: 500,
+    ongoingStudents: 80,
+    placementEligible: 50,
+    alreadyPlaced: 320,
+    yetToPlace: 180,
+  },
+  data: {
+    completedBatches: 12,
+    ongoingBatches: 3,
+    completedStudents: 400,
+    ongoingStudents: 50,
+    placementEligible: 30,
+    alreadyPlaced: 260,
+    yetToPlace: 140,
+  },
+  banking: {
+    completedBatches: 8,
+    ongoingBatches: 2,
+    completedStudents: 300,
+    ongoingStudents: 40,
+    placementEligible: 20,
+    alreadyPlaced: 180,
+    yetToPlace: 120,
+  },
+  marketing: {
+    completedBatches: 5,
+    ongoingBatches: 1,
+    completedStudents: 200,
+    ongoingStudents: 20,
+    placementEligible: 10,
+    alreadyPlaced: 120,
+    yetToPlace: 80,
+  },
+  sap: {
+    completedBatches: 6,
+    ongoingBatches: 2,
+    completedStudents: 100,
+    ongoingStudents: 30,
+    placementEligible: 8,
+    alreadyPlaced: 60,
+    yetToPlace: 70,
+  },
+  devops: {
+    completedBatches: 3,
+    ongoingBatches: 2,
+    completedStudents: 100,
+    ongoingStudents: 10,
+    placementEligible: 5,
+    alreadyPlaced: 40,
+    yetToPlace: 70,
+  },
+};
+
   
 // Sample data arrays (used only as initial values)
 // 🗂️ Full‑stack batch seed data (template)
@@ -360,12 +418,20 @@ const updateBatch = (id, updatedFields) => {
     }
   };
 
+  const [selectedBatch, setSelectedBatch] = useState(null);
+
+  const getStatsByBatch = (batchKey) => batchStatsData[batchKey];
+
   return (
     <DataContext.Provider
       value={{ batchingvalue,setBatchingValue,loginUser,setLoginUser,firstLetterUser,batchHead,batchData,
-        addBatch,updateBatch,deleteBatch ,userName
+        addBatch,updateBatch,deleteBatch ,userName , selectedBatch,
+        setSelectedBatch,
+        getStatsByBatch,
+        batchStatsData,
       }}
     >
+      
       {children}
     </DataContext.Provider>
   );
