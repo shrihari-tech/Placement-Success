@@ -10,27 +10,38 @@ import { useDataContext } from '../context/dataContext';
 
 export default function HomePage() {
 
-  const { userName , batchData, getStatsByBatch } = useDataContext();
-  const [showModel ,setShowModal] = useState(false);
-  const [modelhead,setModelHead] = useState('');
-  //to assume live date
-
-   const [activeCard, setActiveCard] = useState(null);
-
+  const { userName ,  getStatsByBatch } = useDataContext();
+  const [activeCard, setActiveCard] = useState(null);
   const containerRef = useRef(null);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (containerRef.current && !containerRef.current.contains(event.target)) {
-        setActiveCard(null); // 👈 Close the active card
-      }
-    };
+useEffect(() => {
+  const handleClickOutside = (event) => {
+    // If no card is active, there's nothing to do
+    if (activeCard === null) return;
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+    // Check if the click was on an element marked as a card
+    const cardClicked = event.target.closest('[data-is-card="true"]');
+
+    if (containerRef.current && !containerRef.current.contains(event.target)) {
+      // Case 1: The click was completely outside the container, so close the card.
+      setActiveCard(null);
+    } else if (!cardClicked) {
+      // Case 2: The click was inside the container but NOT on a card (i.e., on the background).
+      setActiveCard(null);
+    }
+    // If the click was on a card, we do nothing and let `handleCardClick` manage it.
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, [activeCard]); // Dependency array is kept as is
+
+  const handleCardClick = (id) => {
+   setActiveCard(activeCard === id ? null : id);
+};
 
   const cards = [
     { id: 'fullstack', title: 'Full Stack Development', image:'/website-generic-svgrepo-com.svg' ,icon: '/computer.svg' },
@@ -342,22 +353,22 @@ export default function HomePage() {
 
       {/* Domain Section with FlipCards */}
 
-<div className="mt-10 " ref={containerRef}>
-  <div className="text-s text-gray-700 font-semibold mb-8 ms-[-15] flex flex-col"onChange={(e) => e.stopPropagation()}>
+<div className="mt-10 " ref={containerRef} >
+  <div className="text-s text-gray-700 font-semibold mb-8 ms-[-15] flex flex-col">
     <h1>Domain</h1>
   </div>
   <div className=" flex flex-row flex-wrap justify-between gap-4">
     {cards.map((card) => {
       const stats = getStatsByBatch(card.id) || {};
       return (
-        <div key={card.id} className={`transition-all duration-300`}>
+        <div key={card.id} 
+        className={`transition-all duration-300`}
+        data-is-card="true"
+        >
           <FlipCard
             id={card.id}
             isActive={activeCard === card.id}
-            onClick={(id) => {
-              setActiveCard(id === activeCard ? null : id);
-              getStatsByBatch(id);
-            }}
+            onClick={handleCardClick}
             frontContent={
               <div className="flex flex-col items-center h-full p-4 py-10">
   <div>
@@ -368,10 +379,9 @@ export default function HomePage() {
     {card.title}
   </span>
 </div>
-
-            }
-            backContent={
-  <div className="px-5 pb-8  text-xs">
+}
+  backContent={
+  <div className="px-5 pb-8  text-xs " >
   <p className="text-sm font-bold pb-3">{card.title}</p>
 
   <div className="grid grid-cols-2 gap-2">
@@ -404,8 +414,6 @@ export default function HomePage() {
     </div>
   </div>
 </div>
-
-
             }
           />
         </div>

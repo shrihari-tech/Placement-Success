@@ -775,7 +775,7 @@ const hasChanges = () => {
       };
 
     return (
-        <div className="flex min-h-screen mx-[-16] md:width-[750px]">
+        <div className="flex min-h-screen mx-[-16]">
             <Toaster position='top-right' />
 
 {/* Main model  */}
@@ -824,7 +824,7 @@ const hasChanges = () => {
 </div>
 
         <div className="bg-[#F4F3FF] px-6 py-4 rounded-xl">
-            <div className="flex flex-row gap-5 px-3 py-3">
+            <div className="flex flex-col md:flex-row md:justify-center gap-5 px-3 py-3">
                 <div className="relative">
                     <input
                         type="text"
@@ -955,7 +955,7 @@ const hasChanges = () => {
 </div>
 
                
-                <div className="flex gap-2 md:col-start-3 md:justify-end mr-[-220] ">
+                <div className="flex gap-2 md:justify-end">
                     <button
                         onClick={handleSearch}
                         className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-5 py-4 rounded-xl text-sm font-semibold"
