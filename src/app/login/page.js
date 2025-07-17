@@ -21,7 +21,7 @@ export default function Home() {
 
   const allowedDomains = ["gmail.com", "skac.ac.in"];
 
-  // Validate only the email field (for onChange)
+  // Validate only the email field (for onChange) 
   const validateEmailField = (value) => {
     if (!value.trim()) {
       setEmailError("");

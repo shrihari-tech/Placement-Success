@@ -46,9 +46,9 @@ export default function HomePage() {
   const dd = String(date.getDate()).padStart(2, '0');
   const yyyy = date.getFullYear();
   const formattedDate = `${mm}/${dd}/${yyyy}`;
-  const monthyear = `${mm}` - 1;
-  const currentmonth = `${mm}/${yyyy}`;
-  const premonth = `${monthyear}/${yyyy}`;
+  const premonth = (mm - 1 + 12) % 12;
+  const currentmonth = (mm % 12);
+  const month = ["Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const CustomDot = ({ cx, cy }) => {
   return (
     <g>
@@ -98,13 +98,13 @@ export default function HomePage() {
             </p>
         </div>
       {/* Main Content */}
-      <div className=" p-7 ms-[-30] mt-[-39]">
+      <div className=" p-7 ms-[-40] mt-[-39]">
         <div>
            {/* Live Count Section */}
         <h2 className="text-s text-gray-700 font-semibold mb-4">Live Count</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-9">
           {/* Card 1: Live Batch Count */}
-          <div className="bg-white rounded-3xl  flex items-center justify-between py-5 px-5 w-90">
+          <div className="bg-white rounded-3xl shadow-md flex items-center justify-between py-5 px-5 w-90">
             <div className="ps-2">
               <h3 className="text-4xl font-medium text-[#696969] mb-2">25</h3>
               <p className="text-[#AEAEAE] text-[13px]">{formattedDate}</p>
@@ -112,17 +112,17 @@ export default function HomePage() {
             </div>
             <div className="flex items-center justify-center w-auto h-auto">
               <Image
-                src="/Home_Batch.svg" // Replace with the actual path to your icon
+                src="/Live-home.svg" // Replace with the actual path to your icon
                 alt="Batch Icon"
-                className="mb-10"
-                width={70}
-                height={70}
+                className="mb-15"
+                width={56}
+                height={56}
               />
             </div>
           </div>
 
           {/* Card 2: Live Student Count */}
-          <div className="bg-white p-4 rounded-3xl  flex items-center justify-between py-5 px-5 w-90">
+          <div className="bg-white p-4 rounded-3xl shadow-md flex items-center justify-between py-5 px-5 w-90">
             <div className="ps-2">
               <h3 className="text-4xl font-medium text-[#696969] mb-2">1200</h3>
               <p className="text-[#AEAEAE] text-[13px]">{formattedDate}</p>
@@ -130,17 +130,17 @@ export default function HomePage() {
             </div>
             <div className="flex items-center justify-center w-auto h-auto ">
               <Image
-                src="/Home_Live.svg" 
+                src="/student-home.svg" 
                 alt="Student Icon"
-                className="mb-10"
-                width={70}
-                height={70}
+                className="mb-15"
+                width={56}
+                height={56}
               />
             </div>
           </div>
 
           {/* Card 3: Live Domain Count */}
-          <div className="bg-white p-4 rounded-3xl  flex items-center justify-between py-5 px-5 w-90">
+          <div className="bg-white p-4 rounded-3xl shadow-md flex items-center justify-between py-5 px-5 w-90">
             <div className="ps-2">
               <h3 className="text-4xl font-medium text-[#696969] mb-2">13</h3>
               <p className="text-[#AEAEAE] text-[13px]">{formattedDate}</p>
@@ -148,11 +148,11 @@ export default function HomePage() {
             </div>
             <div className="flex items-center justify-center w-auto h-auto">
               <Image
-                src="/Home_Domain.svg" 
+                src="/Domian-home.svg" 
                 alt="Domain Icon"
-                className="mb-10"
-                width={70}
-                height={70}
+                className="mb-15"
+                width={56}
+                height={56}
               />
             </div>
           </div>
@@ -248,7 +248,7 @@ export default function HomePage() {
                   height={16} 
                   alt="legendNode"
                 />
-                <span>{currentmonth}</span>
+                <span>{month[currentmonth]}</span>
               </div>
             </div>
 
@@ -337,7 +337,7 @@ export default function HomePage() {
                   height={16} 
                   alt="legendNode"
                 />
-                <span>{premonth}</span>
+                <span>{month[premonth]}</span>
               </div>
             </div>
           </div>

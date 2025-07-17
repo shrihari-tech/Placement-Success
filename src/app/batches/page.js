@@ -780,19 +780,8 @@ const hasChanges = () => {
 
 {/* Main model  */}
 <div className={`px-3 pt-20 flex-1 bg-[#F8FAFD] mb-[12] ${showModal || showDeleteModal ? 'pointer-events-none' : ''}`}>
-    <div className="fixed ms-[-10] top-0 left-70 border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 z-10">
+    <div className="fixed top-0 ms-[-19] border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 z-10">
         <h1 className="fixed pl-3 text-xl text-gray-800  font-semibold">{batchHead}</h1>
-        {/* <button
-            onClick={() => setShowModal(true)}
-            className="fixed flex p-2 right-5 bg-[#3f2fb4] hover:bg-[#3f2fb4d4] text-white text-sm font-bold px-2 py-2.5 rounded-lg shadow-sm">
-            <Image
-                src='/add.svg'
-                alt="SAP Icon"
-                width={18}
-                height={18}
-                className="mx-2"
-            /> Add Batch
-        </button> */}
     </div>
     <div className='p-3'>
          <div className='mt-[-20]'>
@@ -1704,8 +1693,8 @@ const hasChanges = () => {
   </div>
 )}
 
+{/* <Toaster position="top-right" reverseOrder={false} /> */}
 
-<Toaster position="top-right" reverseOrder={false} />
     </div>
   );
 }
