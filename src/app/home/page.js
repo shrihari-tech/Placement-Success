@@ -61,10 +61,7 @@ export default function HomePage() {
     </g>
   );
 };
- const handleclosemodel = () => {
-    setShowModal(false);
-    setModelHead('');
-  }
+
 
   return (
     <div className="container justify-center items-center mx-auto p-4">
@@ -98,13 +95,13 @@ export default function HomePage() {
             </p>
         </div>
       {/* Main Content */}
-      <div className=" p-7 ms-[-40] mt-[-39]">
+      <div className=" p-7 justify-center mt-[-39]">
         <div>
            {/* Live Count Section */}
-        <h2 className="text-s text-gray-700 font-semibold mb-4">Live Count</h2>
+        <h2 className="text-s text-gray-700 font-semibold mb-4 ms-[-15]">Live Count</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-9">
           {/* Card 1: Live Batch Count */}
-          <div className="bg-white rounded-3xl shadow-md flex items-center justify-between py-5 px-5 w-90">
+          <div className="bg-white rounded-3xl shadow-md flex items-center justify-between py-5 px-5 w-85">
             <div className="ps-2">
               <h3 className="text-4xl font-medium text-[#696969] mb-2">25</h3>
               <p className="text-[#AEAEAE] text-[13px]">{formattedDate}</p>
@@ -122,7 +119,7 @@ export default function HomePage() {
           </div>
 
           {/* Card 2: Live Student Count */}
-          <div className="bg-white p-4 rounded-3xl shadow-md flex items-center justify-between py-5 px-5 w-90">
+          <div className="bg-white p-4 rounded-3xl shadow-md flex items-center justify-between py-5 px-5 w-85">
             <div className="ps-2">
               <h3 className="text-4xl font-medium text-[#696969] mb-2">1200</h3>
               <p className="text-[#AEAEAE] text-[13px]">{formattedDate}</p>
@@ -140,7 +137,7 @@ export default function HomePage() {
           </div>
 
           {/* Card 3: Live Domain Count */}
-          <div className="bg-white p-4 rounded-3xl shadow-md flex items-center justify-between py-5 px-5 w-90">
+          <div className="bg-white p-4 rounded-3xl shadow-md flex items-center justify-between py-5 px-5 w-85">
             <div className="ps-2">
               <h3 className="text-4xl font-medium text-[#696969] mb-2">13</h3>
               <p className="text-[#AEAEAE] text-[13px]">{formattedDate}</p>
@@ -160,7 +157,7 @@ export default function HomePage() {
         </div>
         {/* Barchat code */}
         <div className="mt-10">
-          <h4 className="text-s text-gray-700 font-semibold">Placement projection</h4>
+          <h4 className="text-s text-gray-700 font-semibold ms-[-15]">Placement projection</h4>
 
           <div className="flex flex-col md:flex-row gap-6 mt-4">
             {/* Current month chart */}
@@ -346,10 +343,10 @@ export default function HomePage() {
       {/* Domain Section with FlipCards */}
 
 <div className="mt-10 " ref={containerRef}>
-  <div className="text-s text-gray-700 font-semibold mb-8 flex flex-col"onChange={(e) => e.stopPropagation()}>
+  <div className="text-s text-gray-700 font-semibold mb-8 ms-[-15] flex flex-col"onChange={(e) => e.stopPropagation()}>
     <h1>Domain</h1>
   </div>
-  <div className="ml-15 flex flex-row flex-wrap gap-4">
+  <div className=" flex flex-row flex-wrap justify-between gap-4">
     {cards.map((card) => {
       const stats = getStatsByBatch(card.id) || {};
       return (
