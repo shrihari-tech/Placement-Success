@@ -41,7 +41,7 @@ export default function NavBar() {
       setShowSubNav(false); // Close sub-nav when on other pages
     } else if (pathname === '/batches') {
       setActiveNavItem('batches');
-      setShowSubNav(true);    
+      setShowSubNav(false);    
           
     } else {
       // For any other page, close sub-nav
@@ -92,7 +92,7 @@ export default function NavBar() {
               >
                 <LuLayoutGrid size={20} />
               </Link>
-              <span className="text-xs font-semibold cursor-pointer text-[#46424c]"
+              <span className={`text-xs font-semibold cursor-pointer ${activeNavItem === 'home' ? 'text-[#9585bf]' : 'text-[#49454f]'}`}
                 onClick={() =>router.push('/home')}>Home</span>
             </div>
             <div 
@@ -106,7 +106,7 @@ export default function NavBar() {
               >
                 <MdOutlineGroups size={20} />
               </button>
-              <span className="text-xs font-semibold cursor-pointer text-[#46424c]">Batches</span>
+              <span className={`text-xs font-semibold cursor-pointer ${activeNavItem === 'batches' ? 'text-[#9585bf]' : 'text-[#49454f]'}`}>Batches</span>
             </div>
             <div className="flex flex-col items-center w-full mb-5" onClick={() =>router.push('/student')}>
               <Link 
@@ -116,7 +116,7 @@ export default function NavBar() {
               >
                 <RiGraduationCapLine size={20} />
               </Link>
-              <span className="text-xs font-semibold cursor-pointer text-[#49454F]"
+              <span className={`text-xs font-semibold cursor-pointer ${activeNavItem === 'student' ? 'text-[#9585bf]' : 'text-[#49454f]'}`}
               onClick={() => router.push('/student')}>Student</span>
             </div>
           </nav>
@@ -132,7 +132,7 @@ export default function NavBar() {
             >
               <MdOutlineNotifications size={20} />
             </button>
-            <span className="text-xs font-semibold cursor-pointer text-[#49454F] mb-2">Notification</span>
+            <span className="text-xs font-semibold cursor-pointer text-[#49454f] mb-2">Notification</span>
           </div>
           <div className="flex flex-col items-center w-full mb-5" onClick={() =>router.push('/seting')}>
             <Link 
@@ -144,7 +144,7 @@ export default function NavBar() {
             >
               <MdOutlineSettings size={20} />
             </Link>
-            <span className="text-xs font-semibold cursor-pointer text-[#49454F] mb-2"
+            <span className={`text-xs font-semibold cursor-pointer mb-2 ${activeNavItem === 'settings' ? 'text-[#9585bf]' : 'text-[#49454f]'}`}
             onClick={() =>router.push('/seting')}>Settings</span>
           </div>
         </div>

@@ -21,9 +21,7 @@ export const useDataContext = () => {
   }
   return context;
 };
-  
-// Sample data arrays (used only as initial values)
-// 🗂️ Full‑stack batch seed data (template)
+
 // ===== Full‑Stack =====
 export const fullstackInitial = [
   { id: 1, batchNo: "FS01", mode: "Online",  status: "Completed", startDate: "2024-01-01", endDate: "2024-06-30",
