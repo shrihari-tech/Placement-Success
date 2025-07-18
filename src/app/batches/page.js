@@ -865,7 +865,7 @@ useEffect(() => {
                 </div>
 
                 {/* ====== SEARCH SECTION ====== */}
-                <div id="search-container" className="bg-[#F4F3FF] px-6 py-4 rounded-xl" tabIndex={0}>
+                <div id="search-container" className="bg-[#F4F3FF] py-3 rounded-xl" tabIndex={0}>
                     <div className="flex flex-row justify-center flex-wrap gap-5 py-3">
                         {/* Search by Batch number */}
                         <div className="relative">

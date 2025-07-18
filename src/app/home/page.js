@@ -324,7 +324,7 @@ export default function HomePage() {
               <h1>Domain</h1>
             </div>
             <div className="flex justify-center">
-              <div className="grid grid-cols-1 sm:grid-cols-2 pr-4 gap-5 sm:px-1 xl:grid-cols-3 sm:gap-4">
+              <div className="grid grid-cols-1  sm:grid-cols-2 pr-4 gap-5 sm:px-1 xl:grid-cols-3 sm:gap-8">
                 {cards.map((card) => {
                   const stats = getStatsByBatch(card.id) || {};
                   return (
@@ -358,7 +358,7 @@ export default function HomePage() {
                               ].map((item, index) => (
                                 <div
                                   key={index}
-                                  className={`bg-gray-50 rounded-md shadow p-1 md:p-2 hover:bg-violet-50 transition ${
+                                  className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition ${
                                     item.colSpan ? 'col-span-2' : ''
                                   }`}
                                 >
