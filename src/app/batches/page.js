@@ -243,13 +243,14 @@ const handleSaveEdit = () => {
   }
 }, [batches]);
 
-  const toDDMMYYYY = (d) => {
-    const date = d instanceof Date ? d : new Date(d);
-    const dd = String(date.getDate()).padStart(2, "0");
-    const mm = String(date.getMonth() + 1).padStart(2, "0");
-    const yyyy = date.getFullYear();
-    return `${dd}-${mm}-${yyyy}`;
-  };
+const toDDMMYYYY = (d) => {
+  const date = d instanceof Date ? d : new Date(d);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = date.toLocaleString("en-US", { month: "short" }); // e.g., Jul
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+};
+
 
   const parseDate = (str) => {
     if (!str) return null;
@@ -393,24 +394,49 @@ const handleSaveEdit = () => {
 };
 
 const handleEditBatch = (batchId) => {
-  const batchToEdit = batches.find(batch => batch.id === batchId) || 
-                     filteredBatches.find(batch => batch.id === batchId);
-  
+  // Search in both batches and filteredBatches
+  const batchToEdit = [...batches, ...filteredBatches].find(batch => batch.id === batchId);
+
   if (batchToEdit) {
+    // Ensure dates are in correct format for the edit modal
+    const formatDateForEdit = (dateStr) => {
+      if (!dateStr) return '';
+      // If already in YYYY-MM-DD format, return as-is
+      if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
+      
+      // Convert from DD-MMM-YYYY to YYYY-MM-DD
+      const [dd, mmm, yyyy] = dateStr.split('-');
+      const monthMap = {
+        Jan: '01', Feb: '02', Mar: '03', Apr: '04', May: '05', Jun: '06',
+        Jul: '07', Aug: '08', Sep: '09', Oct: '10', Nov: '11', Dec: '12'
+      };
+      return `${yyyy}-${monthMap[mmm]}-${dd.padStart(2, '0')}`;
+    };
+
     const initialData = {
       ...batchToEdit,
       sections: {
-        Domain: batchToEdit.sections?.Domain || { startDate: '', endDate: '' },
-        Aptitude: batchToEdit.sections?.Aptitude || { startDate: '', endDate: '' },
-        Communication: batchToEdit.sections?.Communication || { startDate: '', endDate: '' }
+        Domain: {
+          startDate: formatDateForEdit(batchToEdit.sections?.Domain?.startDate),
+          endDate: formatDateForEdit(batchToEdit.sections?.Domain?.endDate)
+        },
+        Aptitude: {
+          startDate: formatDateForEdit(batchToEdit.sections?.Aptitude?.startDate),
+          endDate: formatDateForEdit(batchToEdit.sections?.Aptitude?.endDate)
+        },
+        Communication: {
+          startDate: formatDateForEdit(batchToEdit.sections?.Communication?.startDate),
+          endDate: formatDateForEdit(batchToEdit.sections?.Communication?.endDate)
+        }
       }
     };
-    
+
     setEditBatchData(initialData);
     setInitialEditBatchData(JSON.parse(JSON.stringify(initialData))); // Deep clone
     setShowEditModel(true);
   }
 };
+
 const hasChanges = () => {
   if (!editBatchData || !initialEditBatchData) return false;
   
@@ -830,9 +856,9 @@ useEffect(() => {
   </div>
 
 </div>
-
+{/* search section   */}
 <div id="search-container" className="bg-[#F4F3FF] px-6 py-4 rounded-xl" tabIndex={0}>
-    <div className="flex flex-row gap-5 px-3 py-3">
+    <div className="flex flex-row justify-center flex-wrap gap-5 py-3">
         <div className="relative">
             <input
                 type="text"
@@ -921,7 +947,7 @@ useEffect(() => {
             )}
         </div>
         
-        <div className="relative" ref={modeDropdownRef}>
+        <div className="relative">
             <input
                 type="text"
                 id="mode"
@@ -929,12 +955,6 @@ useEffect(() => {
                 placeholder=" "
                 value={mode === 'Off' ? '' : mode}
                 onClick={() => setShowModeDropdown(!showModeDropdown)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    handleSearch();
-                  }
-                }}
                 className="block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
             />
             <label
@@ -984,7 +1004,7 @@ useEffect(() => {
             )}
         </div>
 
-        <div className="flex gap-2 md:col-start-3 md:justify-end mr-[-220] ">
+        <div className="flex gap-2  md:justify-end">
             <button
                 onClick={handleSearch}
                 className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-5 py-4 rounded-xl text-sm font-semibold"
