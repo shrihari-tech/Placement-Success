@@ -1752,33 +1752,172 @@ const hasChanges = () => {
         </div>
 
         {/* Modal Content */}
+        {/*Basic info tab*/}
         {infoTab === 'Basic Info' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8 font-sans text-gray-800">
 
-            <div className="rounded-xl bg-[#ece6f0] p-4">
-              <h3 className="mb-2 border-b font-semibold text-lg">Batch No</h3>
-              <p>{selectedBatch.batchNo}</p>
-            </div>
+    {/* Batch No */}
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Batch No</h3>
+      <p className="text-base font-medium text-gray-600">{selectedBatch.batchNo}</p>
+    </div>
 
-            <div className="rounded-xl bg-[#ece6f0] p-4">
-              <h3 className="mb-2 border-b font-semibold text-lg">Status</h3>
-              <p>{selectedBatch?.status}</p>
-            </div>
+    {/* Status */}
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Status</h3>
+      <p className="text-base font-medium text-gray-600">{selectedBatch?.status}</p>
+    </div>
 
-            <div className="rounded-xl bg-[#ece6f0] p-4 md:col-span-2 md:mx-auto md:w-1/2">
-              <h3 className="mb-2 border-b font-semibold text-lg">Mode</h3>
-              <p>{selectedBatch?.mode}</p>
-            </div>
-          </div>
-        )}
+    {/* Mode */}
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md col-span-full mx-auto w-full sm:w-2/3 lg:w-1/2">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Mode</h3>
+      <p className="text-base font-medium text-gray-600">{selectedBatch?.mode}</p>
+    </div>
 
-        {/* Other Tabs Content Placeholder }
-        {infoTab !== 'Basic Info' && (
-          <div className="p-4 text-sm text-gray-600">Content for "{infoTab}" coming soon.</div>
-        )}
-        */}
+  </div>
+)}
+        {/* Batch Details tab*/ }
+        {infoTab === 'Batch Details' && (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 font-sans text-gray-800">
 
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Mode</h3>
+      <p className="text-base font-medium text-gray-600">{selectedBatch?.mode}</p>
+    </div>
+
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Session</h3>
+      <p className="text-base font-medium text-gray-600">Interview Session</p>
+    </div>
+
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md md:col-span-2 md:mx-auto md:w-1/2">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Student Count</h3>
+      <p className="text-base font-medium text-gray-600">40</p>
+    </div>
+
+  </div>
+)}
+
+     {/* Domain */}
+     {infoTab === 'Domain' && (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 font-sans text-gray-800">
+    
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Start & End Date</h3>
+      <p className="text-base font-medium text-gray-600">
+        {formatDate(selectedBatch.sections?.Domain?.startDate)}<br />
+        {formatDate(selectedBatch.sections?.Domain?.endDate)}
+      </p>
+    </div>
+
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Status</h3>
+      <p className="text-base font-medium text-gray-600">{selectedBatch?.status}</p>
+    </div>
+
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Batch Progress</h3>
+      <p className="text-base font-medium text-gray-600">IRC Completed</p>
+    </div>
+
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Trainer Name</h3>
+      <p className="text-base font-medium text-gray-600">Shri Hari</p>
+    </div>
+
+  </div>
+)}
+    {/* Aptitude */}
+    {infoTab === 'Aptitude' && (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 font-sans text-gray-800">
+    
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Start & End Date</h3>
+      <p className="text-base font-medium text-gray-600">
+        {formatDate(selectedBatch.sections?.Aptitude?.startDate)}<br />
+        {formatDate(selectedBatch.sections?.Aptitude?.endDate)}
+      </p>
+    </div>
+
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Status</h3>
+      <p className="text-base font-medium text-gray-600">{selectedBatch?.status}</p>
+    </div>
+
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Batch Progress</h3>
+      <p className="text-base font-medium text-gray-600">Capstone Project</p>
+    </div>
+
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Trainer Name</h3>
+      <p className="text-base font-medium text-gray-600">Shri Hari</p>
+    </div>
+
+  </div>
+
+    )}
+    {/* Communication */}
+    {infoTab === 'Communication' && (
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8 font-sans text-gray-800">
+      <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+        <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Start & End Date</h3>
+        <p className="text-base font-medium text-gray-600">
+          {formatDate(selectedBatch.sections?.Communication?.startDate)} <br /> 
+          {formatDate(selectedBatch.sections?.Communication?.endDate)}
+        </p>
+      </div>
+    
+      <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+        <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Status</h3>
+        <p className="text-base font-medium text-gray-600">{selectedBatch?.status}</p>
+      </div>
+    
+      <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+        <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Batch Progress</h3>
+        <p className="text-base font-medium text-gray-600">Initial Stage</p>
+      </div>
+    
+      <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md ">
+        <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Trainer Name</h3>
+        <p className="text-base font-medium text-gray-600">Shri Hari</p>
+      </div>
+    </div>
+    
+    )}
+
+    {/* Placement */}
+    {infoTab === 'Placement' && (
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 font-sans text-gray-800">
+<div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+  <h3 className="text-sm font-semibold  text-[#6b21a8] tracking-wide mb-1">Not Required</h3>
+  <p className="text-4xl font-bold text-gray-600">5</p>
+</div>
+
+<div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+  <h3 className="text-sm font-semibold  text-[#6b21a8] tracking-wide mb-1">Ready For Placement</h3>
+  <p className="text-4xl font-bold text-gray-600">4</p>
+</div>
+     
+<div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+  <h3 className="text-sm font-semibold  text-[#6b21a8] tracking-wide mb-1">KGM Placed</h3>
+  <p className="text-4xl font-bold text-gray-600">11</p>
+</div>
+
+<div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+  <h3 className="text-sm font-semibold  text-[#6b21a8] tracking-wide mb-1">Self Placed</h3>
+  <p className="text-4xl font-bold text-gray-600">4</p>
+</div>
+<div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+  <h3 className="text-sm font-semibold  text-[#6b21a8] tracking-wide mb-1">Yet to be Placed</h3>
+  <p className="text-4xl font-bold text-gray-600">5</p>
+</div>
+<div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+  <h3 className="text-sm font-semibold  text-[#6b21a8] tracking-wide mb-1">Success Rate</h3>
+  <p className="text-4xl font-bold text-gray-600">62.5%</p>
+</div>
+  </div>
+    )}
         {/* Close Button */}
         <div className="flex justify-end mt-6">
           <button
