@@ -8,7 +8,7 @@ export default function NavWrapper({ children }) {
   const showNavBar = showNavBarPaths.includes(pathname);
 
   // Set margin-left to 60 only for /batches, otherwise use default
-  const mainClass = "flex-1 p-4 ml-20";
+  const mainClass = "flex-1 p-4 md:ml-20";
   // if (showNavBar) {
   //   if (pathname === "/batches" || pathname === "/showbatches") {
   //     mainClass = "flex-1 p-4 ml-68";

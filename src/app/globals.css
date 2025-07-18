@@ -43,5 +43,36 @@ input:-webkit-autofill {
 .rotate-y-180 {
   transform: rotateY(180deg);
 }
+/* Ant Design DatePicker custom styles */
+.antd-datepicker-wrapper .ant-picker {
+  width: 100%;
+}
 
+.antd-datepicker-wrapper .ant-picker:hover {
+  border-color: #6750a4 !important;
+}
+
+.antd-datepicker-wrapper .ant-picker-focused {
+  border-color: #6750a4 !important;
+  box-shadow: 0 0 0 2px rgba(103, 80, 164, 0.1);
+}
+
+.antd-datepicker-wrapper .ant-picker-input > input {
+  color: #49454f;
+  font-size: 14px;
+}
+
+.antd-datepicker-wrapper .ant-picker-input > input::placeholder {
+  color: #49454f;
+}
+
+.antd-datepicker-wrapper .ant-picker-suffix {
+  color: #49454f;
+}
+
+.antd-error-text {
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+}
 
