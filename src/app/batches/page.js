@@ -1711,19 +1711,20 @@ useEffect(() => {
 
   </div>
 )}
-
      {/* Domain */}
      {infoTab === 'Domain' && (
   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 font-sans text-gray-800">
     
-    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Start & End Date</h3>
-      <p className="text-base font-medium text-gray-600">
-        {formatDate(selectedBatch.sections?.Domain?.startDate)}<br />
-        {formatDate(selectedBatch.sections?.Domain?.endDate)}
-      </p>
-    </div>
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md space-y-2">
+    <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Domain Dates</h3>
+  <p className="text-sm font-semibold text-[#6b21a8] tracking-wide">
+    Start - <span className="text-base font-medium text-gray-600">{formatDate(selectedBatch.sections?.Domain?.startDate)}</span>
+  </p>
 
+  <p className="text-sm font-semibold text-[#6b21a8] tracking-wide">
+    End - <span className="text-base font-medium text-gray-600">{formatDate(selectedBatch.sections?.Domain?.endDate)}</span>
+  </p>
+</div>
     <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
       <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Status</h3>
       <p className="text-base font-medium text-gray-600">{selectedBatch?.status}</p>
@@ -1738,20 +1739,32 @@ useEffect(() => {
       <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Trainer Name</h3>
       <p className="text-base font-medium text-gray-600">Shri Hari</p>
     </div>
-
+    <div className="w-full col-span-full bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+  <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-3">EPIC Data</h3>
+  <div className="flex flex-wrap justify-between gap-4 text-base font-medium text-gray-600">
+    <p><span className="text-[#6b21a8] font-bold">E</span>xcellent - 10</p>
+    <p><span className="text-[#6b21a8] font-bold">P</span>roficient - 10</p>
+    <p><span className="text-[#6b21a8] font-bold">I</span>deal - 10</p>
+    <p><span className="text-[#6b21a8] font-bold">C</span>apable - 10</p>
+  </div>
+</div>
   </div>
 )}
     {/* Aptitude */}
     {infoTab === 'Aptitude' && (
   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 font-sans text-gray-800">
     
-    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Start & End Date</h3>
-      <p className="text-base font-medium text-gray-600">
-        {formatDate(selectedBatch.sections?.Aptitude?.startDate)}<br />
-        {formatDate(selectedBatch.sections?.Aptitude?.endDate)}
-      </p>
-    </div>
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md space-y-2">
+    <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Apptitude Dates</h3>
+  <p className="text-sm font-semibold text-[#6b21a8] tracking-wide">
+    Start - <span className="text-base font-medium text-gray-600">{formatDate(selectedBatch.sections?.Aptitude?.startDate)}</span>
+  </p>
+
+  <p className="text-sm font-semibold text-[#6b21a8] tracking-wide">
+    End - <span className="text-base font-medium text-gray-600">{formatDate(selectedBatch.sections?.Aptitude?.endDate)}</span>
+  </p>
+</div>
+
 
     <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
       <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Status</h3>
@@ -1767,21 +1780,31 @@ useEffect(() => {
       <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Trainer Name</h3>
       <p className="text-base font-medium text-gray-600">Shri Hari</p>
     </div>
-
+    <div className="w-full col-span-full bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+  <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-3">EPIC Data</h3>
+  <div className="flex flex-wrap justify-between gap-4 text-base font-medium text-gray-600">
+    <p><span className="text-[#6b21a8] font-bold">E</span>xcellent - 10</p>
+    <p><span className="text-[#6b21a8] font-bold">P</span>roficient - 10</p>
+    <p><span className="text-[#6b21a8] font-bold">I</span>deal - 10</p>
+    <p><span className="text-[#6b21a8] font-bold">C</span>apable - 10</p>
+  </div>
+</div>
   </div>
 
     )}
     {/* Communication */}
     {infoTab === 'Communication' && (
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8 font-sans text-gray-800">
-      <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-        <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Start & End Date</h3>
-        <p className="text-base font-medium text-gray-600">
-          {formatDate(selectedBatch.sections?.Communication?.startDate)} <br /> 
-          {formatDate(selectedBatch.sections?.Communication?.endDate)}
-        </p>
-      </div>
-    
+      <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md space-y-2">
+    <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Communication Dates</h3>
+  <p className="text-sm font-semibold text-[#6b21a8] tracking-wide">
+    Start - <span className="text-base font-medium text-gray-600">{formatDate(selectedBatch.sections?.Communication?.startDate)}</span>
+  </p>
+
+  <p className="text-sm font-semibold text-[#6b21a8] tracking-wide">
+    End - <span className="text-base font-medium text-gray-600">{formatDate(selectedBatch.sections?.Communication?.endDate)}</span>
+  </p>
+</div>
       <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
         <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Status</h3>
         <p className="text-base font-medium text-gray-600">{selectedBatch?.status}</p>
@@ -1796,41 +1819,68 @@ useEffect(() => {
         <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Trainer Name</h3>
         <p className="text-base font-medium text-gray-600">Shri Hari</p>
       </div>
+      <div className="w-full col-span-full bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+  <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-3">EPIC Data</h3>
+  <div className="flex flex-wrap justify-between gap-4 text-base font-medium text-gray-600">
+    <p><span className="text-[#6b21a8] font-bold">E</span>xcellent - 10</p>
+    <p><span className="text-[#6b21a8] font-bold">P</span>roficient - 10</p>
+    <p><span className="text-[#6b21a8] font-bold">I</span>deal - 10</p>
+    <p><span className="text-[#6b21a8] font-bold">C</span>apable - 10</p>
+  </div>
+</div>
+
     </div>
-    
     )}
 
     {/* Placement */}
     {infoTab === 'Placement' && (
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 font-sans text-gray-800">
-<div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-  <h3 className="text-sm font-semibold  text-[#6b21a8] tracking-wide mb-1">Not Required</h3>
-  <p className="text-4xl font-bold text-gray-600">5</p>
-</div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 font-sans text-gray-800">
 
-<div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-  <h3 className="text-sm font-semibold  text-[#6b21a8] tracking-wide mb-1">Ready For Placement</h3>
-  <p className="text-4xl font-bold text-gray-600">4</p>
-</div>
-     
-<div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-  <h3 className="text-sm font-semibold  text-[#6b21a8] tracking-wide mb-1">KGM Placed</h3>
-  <p className="text-4xl font-bold text-gray-600">11</p>
-</div>
-
-<div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-  <h3 className="text-sm font-semibold  text-[#6b21a8] tracking-wide mb-1">Self Placed</h3>
-  <p className="text-4xl font-bold text-gray-600">4</p>
-</div>
-<div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-  <h3 className="text-sm font-semibold  text-[#6b21a8] tracking-wide mb-1">Yet to be Placed</h3>
-  <p className="text-4xl font-bold text-gray-600">5</p>
-</div>
-<div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-  <h3 className="text-sm font-semibold  text-[#6b21a8] tracking-wide mb-1">Success Rate</h3>
-  <p className="text-4xl font-bold text-gray-600">62.5%</p>
-</div>
+    {/* First 6 boxes */}
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Not Required</h3>
+      <p className="text-4xl font-bold text-gray-600">5</p>
+    </div>
+  
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Ready For Placement</h3>
+      <p className="text-4xl font-bold text-gray-600">4</p>
+    </div>
+  
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">KGM Placed</h3>
+      <p className="text-4xl font-bold text-gray-600">11</p>
+    </div>
+  
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Self Placed</h3>
+      <p className="text-4xl font-bold text-gray-600">4</p>
+    </div>
+  
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Yet to be Placed</h3>
+      <p className="text-4xl font-bold text-gray-600">5</p>
+    </div>
+  
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Success Rate</h3>
+      <p className="text-4xl font-bold text-gray-600">62.5%</p>
+    </div>
+    
+    <div className="lg:col-span-3 flex justify-center gap-6">
+  <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md flex-1 max-w-[300px]">
+    <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Not Eligible for Placement</h3>
+    <p className="text-4xl font-bold text-gray-600">5</p>
   </div>
+
+  <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md flex-1 max-w-[300px]">
+    <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Placement Successful Candidate</h3>
+    <p className="text-4xl font-bold text-gray-600">15</p>
+  </div>
+</div>
+
+  </div>
+ 
     )}
         {/* Close Button */}
         <div className="flex justify-end mt-6">
