@@ -784,7 +784,7 @@ const hasChanges = () => {
         <h1 className="fixed pl-3 text-xl text-gray-800  font-semibold">{batchHead}</h1>
     </div>
     <div className='p-3'>
-         <div className='mt-[-20]'>
+         <div className='mt-[-20] justify-end'>
             <button
             onClick={() => setShowModal(true)}
             className="absolute cursor-pointer z-1 flex p-2 right-5 bg-[#3f2fb4] hover:bg-[#3f2fb4d4] text-white text-sm font-bold px-2 py-2.5 rounded-lg shadow-sm">
@@ -799,7 +799,7 @@ const hasChanges = () => {
         </div>
 
         {/* parent row */}
-<div className="flex flex-col md:flex-row md:justify-between gap-4 mt-15 mb-6">
+<div className="flex flex-row w-auto  md:flex-row md:justify-between gap-4 mt-15 mb-6">
 
   {/* Ongoing */}
   <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px]
@@ -829,7 +829,7 @@ const hasChanges = () => {
                     <input
                         type="text"
                         id="batch-id"
-                        className={`block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                        className={`block px-4 pb-2 pt-4 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
                         placeholder=" "
                         value={searchTerm}
                     onKeyDown={handleKeyDown}  // Add this line
@@ -859,7 +859,7 @@ const hasChanges = () => {
     value={startDate}
     onKeyDown={handleKeyDown}
     onChange={(e) => handleSearchStartDateChange(e.target.value)}
-    className="cursor-pointer block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+    className="cursor-pointer block px-4 pb-2 pt-4 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
   />
   <label
     htmlFor="start-date"
@@ -880,7 +880,7 @@ const hasChanges = () => {
     value={endDate}
     onKeyDown={handleKeyDown}
     onChange={(e) => handleSearchEndDateChange(e.target.value)}
-    className="cursor-pointer block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+    className="cursor-pointer block px-4 pb-2 pt-4 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
   />
   <label
     htmlFor="end-date"
@@ -905,7 +905,7 @@ const hasChanges = () => {
     placeholder=" "
     value={mode === 'Off' ? '' : mode}
     onClick={() => setShowModeDropdown(!showModeDropdown)}
-    className="block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+    className="block px-4 pb-2 pt-4 w-[200px] text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
   />
   <label
     htmlFor="mode"

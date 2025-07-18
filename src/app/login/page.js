@@ -92,7 +92,7 @@ export default function Home() {
   return (
     <div className="container mx-auto flex items-center justify-center h-screen px-2 overflow-hidden">
       {/* Background Image at Top Left */}
-      <div className="fixed top-0 left-0 z-0 ">
+      <div className="fixed top-0 left-0 z-0">
         <Image
           src="/Background.png"
           alt="Background"
@@ -108,16 +108,16 @@ export default function Home() {
         </div>
       </div>
       {/* Logo Section */}
-      <div className="fixed top-6 right-6 flex items-center justify-center z-20">
+      <div className="fixed top-35 md:top-6 md:right-6  z-20 ">
         <Image
           src='/logo1.webp'
-          className="h-12 w-36 md:h-16 md:w-44"
+          className="h-15 w-40 md:h-16 md:w-44"
           alt="Logo"
           width={70}
           height={50}
         />
       </div>
-      <div className="flex flex-col md:flex-row items-center justify-center gap-8 py-10 px-8 md:px-16 bg-blur-saturation mt-[105] w-full max-w-4xl z-10 fixed">
+      <div className="flex flex-col md:flex-row items-center justify-center gap-8 px-2 md:px-16 bg-blur-saturation mt-[120] md:mt-[105] w-[80%] md:w-full max-w-4xl z-10 fixed">
         {/* Form Section */}
         <div className="flex flex-col items-start justify-start w-full max-w-md">
           <div className="mb-5">
@@ -145,14 +145,14 @@ export default function Home() {
                   validateEmailField(e.target.value);
                 }}
                 placeholder="Enter your email"
-                className={`peer w-full p-3 rounded-sm border ${emailError ? "border-red-500" : "border-gray-300"} text-black 
+                className={`peer ms-[-40] md:ms-[0] w-full p-3 rounded-sm border ${emailError ? "border-red-500" : "border-gray-300"} text-black 
                   focus:border-[#3f2fb4] focus:border-2 focus:outline-none transition-all duration-200 
                   placeholder-transparent`}
                 required
                     />
                     <label
                     htmlFor="email"
-                    className={`absolute left-3 bg-white px-1 transition-all
+                    className={`absolute left-3 bg-[#F8FAFD] px-1 transition-all
                       ${email ? "-top-2 text-sm text-[#3f2fb4]" : "top-3 text-base text-gray-400"}
                       peer-focus:-top-3 peer-focus:text-sm peer-focus:text-[#3f2fb4]`}
                     >
@@ -175,22 +175,22 @@ export default function Home() {
                   passwordValidate(e.target.value);
                 }}
                 placeholder="Password"
-                className={`peer w-full p-3 pr-10 rounded-sm border ${passwordError ? "border-red-500" : "border-gray-300"} text-black 
+                className={`peer ms-[-40] md:ms-[0] w-full p-3 pr-10 rounded-sm border ${passwordError ? "border-red-500" : "border-gray-300"} text-black 
                   focus:border-[#3f2fb4] focus:border-2 focus:outline-none transition-all duration-200 
                   placeholder-transparent`}
                 required
               />
               <label
                 htmlFor="password"
-                className={`absolute left-3 bg-white px-1 transition-all
-                  ${password ? "-top-2 text-sm text-[#3f2fb4]" : "top-3 text-base text-gray-400"}
+                className={`absolute md:left-3 right-50 bg-[#F8FAFD] px-1 transition-all
+                  ${password ? "-top-2 text-sm text-[#3f2fb4]" : "top-3  text-base text-gray-400"}
                   peer-focus:-top-3 peer-focus:text-sm peer-focus:text-[#3f2fb4]`}
               >
                 Password
               </label>
               {/* Eye Toggle */}
               <div
-                className="absolute right-3 top-4 text-xl text-gray-500 cursor-pointer"
+                className="absolute top-4 right-15 md:right-3 md:top-4 text-xl text-gray-500 cursor-pointer"
                 onClick={() => {
                   setShowPassword((prev) => !prev);
                   setTimeout(() => {
@@ -208,18 +208,18 @@ export default function Home() {
                 <p className="text-red-600 text-sm mt-1">{passwordError}</p>
               )}
             </div>
-
+              
             {/* Submit Button */}
             <button
             type="submit"
-            className={`w-full p-3 mt-6 cursor-pointer rounded-xl border-none ${email || password ? "bg-[#3f2fb4] text-white" : "bg-gray-300 text-gray-400"} font-bold 
+            className={`w-[80%] md:w-full ms-[-100] md:ms-[0] p-3 mt-6 cursor-pointer rounded-xl border-none ${email || password ? "bg-[#3f2fb4] text-white" : "bg-gray-300 text-gray-400"} font-bold 
                         hover:text-white transition-colors duration-300`}
             >
             Login
             </button>
 
             {/* password forget & account creating */}
-            <div className="mt-4 text-center space-y-2 w-full">
+            <div className="mt-4 text-center space-y-2 w-full ms-[-100] md:ms-[0]">
               <p className="text-sm text-gray-500 mt-2">
                 <Link href="/passwordreset" className="text-[#3f2fb4] hover:underline">Forgot Password?</Link>
               </p>

@@ -4,7 +4,6 @@ import NavBar from "../navBar/page";
 import Image from "next/image";
 import { useRef, useEffect } from "react";
 import FlipCard from "../flipcard/flipcard";
-// import { FaSearch } from "react-icons/fa"; //search Icons
 import { ComposedChart, Line, Area, XAxis, YAxis, CartesianGrid, LabelList, ResponsiveContainer } from 'recharts';
 import { useDataContext } from '../context/dataContext';
 
@@ -357,7 +356,7 @@ useEffect(() => {
   <div className="text-s text-gray-700 font-semibold mb-8 ms-[-15] flex flex-col">
     <h1>Domain</h1>
   </div>
-  <div className=" flex flex-row flex-wrap justify-between gap-4">
+  <div className=" flex flex-row flex-wrap justify-between gap-10">
     {cards.map((card) => {
       const stats = getStatsByBatch(card.id) || {};
       return (
@@ -370,7 +369,7 @@ useEffect(() => {
             isActive={activeCard === card.id}
             onClick={handleCardClick}
             frontContent={
-              <div className="flex flex-col items-center h-full p-4 py-10">
+              <div className="flex flex-col  items-center h-full p-4 py-10">
   <div>
     <Image className="py-5" src={card.image} alt={card.title} width={100} height={100} />
   </div>
