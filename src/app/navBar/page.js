@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { GiHamburgerMenu } from "react-icons/gi";
+import { FiChevronDown } from "react-icons/fi";
 import { LuLayoutGrid } from "react-icons/lu";
 import { MdOutlineGroups } from "react-icons/md";
 import { MdOutlineSettings } from "react-icons/md";
@@ -196,7 +197,7 @@ export default function NavBar() {
     onClick={handleBatchesClick}
   >
     <MdOutlineGroups size={20} className="mr-3" />
-    <span>Batches</span>
+    <span>Batches</span><FiChevronDown className="absolute right-8 " size={25} />
   </button>
   
   {showSubNav && (
