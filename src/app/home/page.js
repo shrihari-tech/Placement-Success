@@ -2,24 +2,64 @@
 import React, { useState } from "react";
 import NavBar from "../navBar/page";
 import Image from "next/image";
+import { useRef, useEffect } from "react";
+import FlipCard from "../flipcard/flipcard";
 // import { FaSearch } from "react-icons/fa"; //search Icons
 import { ComposedChart, Line, Area, XAxis, YAxis, CartesianGrid, LabelList, ResponsiveContainer } from 'recharts';
 import { useDataContext } from '../context/dataContext';
 
 export default function HomePage() {
 
-  const { userName } = useDataContext();
-  const [showModel ,setShowModal] = useState(false);
-  const [modelhead,setModelHead] = useState('');
-  //to assume live date
+  const { userName ,  getStatsByBatch } = useDataContext();
+  const [activeCard, setActiveCard] = useState(null);
+  const containerRef = useRef(null);
+
+useEffect(() => {
+  const handleClickOutside = (event) => {
+    // If no card is active, there's nothing to do
+    if (activeCard === null) return;
+
+    // Check if the click was on an element marked as a card
+    const cardClicked = event.target.closest('[data-is-card="true"]');
+
+    if (containerRef.current && !containerRef.current.contains(event.target)) {
+      // Case 1: The click was completely outside the container, so close the card.
+      setActiveCard(null);
+    } else if (!cardClicked) {
+      // Case 2: The click was inside the container but NOT on a card (i.e., on the background).
+      setActiveCard(null);
+    }
+    // If the click was on a card, we do nothing and let `handleCardClick` manage it.
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, [activeCard]); // Dependency array is kept as is
+
+  const handleCardClick = (id) => {
+   setActiveCard(activeCard === id ? null : id);
+};
+
+  const cards = [
+    { id: 'fullstack', title: 'Full Stack Development', image:'/website-generic-svgrepo-com.svg' ,icon: '/computer.svg' },
+    { id: 'data', title: 'Data Analytics & Science',image:'/data-trends-svgrepo-com.svg', icon: '/bar_chart_4_bars.svg' },
+    { id: 'banking', title: 'Banking & Financial Services',image:'/biometric_18491889.png', icon: '/account_balance.svg' },
+    { id: 'marketing', title: 'Digital Marketing',image:'/digital-marketing-promotion-advertising-svgrepo-com.svg', icon: '/ad.svg' },
+    { id: 'sap', title: 'SAP',image:'/sap-svgrepo-com.svg', icon: '/device_hub.svg' },
+    { id: 'devops', title: 'DevOps',image:'/7053234.jpg', icon: '/deployed_code_history.svg' }
+  ];
+
   const date = new Date();
   const mm = String(date.getMonth() + 1).padStart(2, '0');
   const dd = String(date.getDate()).padStart(2, '0');
   const yyyy = date.getFullYear();
   const formattedDate = `${mm}/${dd}/${yyyy}`;
-  const monthyear = `${mm}` - 1;
-  const currentmonth = `${mm}/${yyyy}`;
-  const premonth = `${monthyear}/${yyyy}`;
+  const premonth = (mm - 1 + 12) % 12;
+  const currentmonth = (mm % 12);
+  const month = ["Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const CustomDot = ({ cx, cy }) => {
   return (
     <g>
@@ -32,10 +72,7 @@ export default function HomePage() {
     </g>
   );
 };
- const handleclosemodel = () => {
-    setShowModal(false);
-    setModelHead('');
-  }
+
 
   return (
     <div className="container justify-center items-center mx-auto p-4">
@@ -69,13 +106,13 @@ export default function HomePage() {
             </p>
         </div>
       {/* Main Content */}
-      <div className=" p-7 ms-[-30] mt-[-39]">
+      <div className=" p-7 justify-center mt-[-39]">
         <div>
            {/* Live Count Section */}
-        <h2 className="text-s text-gray-700 font-semibold mb-4">Live Count</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <h2 className="text-s text-gray-700 font-semibold mb-4 ms-[-15]">Live Count</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-9">
           {/* Card 1: Live Batch Count */}
-          <div className="bg-white rounded-3xl  flex items-center justify-between py-5 px-5 w-90">
+          <div className="bg-white rounded-3xl shadow-md flex items-center justify-between py-5 px-5 w-85">
             <div className="ps-2">
               <h3 className="text-4xl font-medium text-[#696969] mb-2">25</h3>
               <p className="text-[#AEAEAE] text-[13px]">{formattedDate}</p>
@@ -83,17 +120,17 @@ export default function HomePage() {
             </div>
             <div className="flex items-center justify-center w-auto h-auto">
               <Image
-                src="/Home_Batch.svg" // Replace with the actual path to your icon
+                src="/Live-home.svg" // Replace with the actual path to your icon
                 alt="Batch Icon"
-                className="mb-10"
-                width={70}
-                height={70}
+                className="mb-15"
+                width={56}
+                height={56}
               />
             </div>
           </div>
 
           {/* Card 2: Live Student Count */}
-          <div className="bg-white p-4 rounded-3xl  flex items-center justify-between py-5 px-5 w-90">
+          <div className="bg-white p-4 rounded-3xl shadow-md flex items-center justify-between py-5 px-5 w-85">
             <div className="ps-2">
               <h3 className="text-4xl font-medium text-[#696969] mb-2">1200</h3>
               <p className="text-[#AEAEAE] text-[13px]">{formattedDate}</p>
@@ -101,17 +138,17 @@ export default function HomePage() {
             </div>
             <div className="flex items-center justify-center w-auto h-auto ">
               <Image
-                src="/Home_Live.svg" 
+                src="/student-home.svg" 
                 alt="Student Icon"
-                className="mb-10"
-                width={70}
-                height={70}
+                className="mb-15"
+                width={56}
+                height={56}
               />
             </div>
           </div>
 
           {/* Card 3: Live Domain Count */}
-          <div className="bg-white p-4 rounded-3xl  flex items-center justify-between py-5 px-5 w-90">
+          <div className="bg-white p-4 rounded-3xl shadow-md flex items-center justify-between py-5 px-5 w-85">
             <div className="ps-2">
               <h3 className="text-4xl font-medium text-[#696969] mb-2">13</h3>
               <p className="text-[#AEAEAE] text-[13px]">{formattedDate}</p>
@@ -119,11 +156,11 @@ export default function HomePage() {
             </div>
             <div className="flex items-center justify-center w-auto h-auto">
               <Image
-                src="/Home_Domain.svg" 
+                src="/Domian-home.svg" 
                 alt="Domain Icon"
-                className="mb-10"
-                width={70}
-                height={70}
+                className="mb-15"
+                width={56}
+                height={56}
               />
             </div>
           </div>
@@ -131,7 +168,7 @@ export default function HomePage() {
         </div>
         {/* Barchat code */}
         <div className="mt-10">
-          <h4 className="text-s text-gray-700 font-semibold">Placement projection</h4>
+          <h4 className="text-s text-gray-700 font-semibold ms-[-15]">Placement projection</h4>
 
           <div className="flex flex-col md:flex-row gap-6 mt-4">
             {/* Current month chart */}
@@ -219,7 +256,7 @@ export default function HomePage() {
                   height={16} 
                   alt="legendNode"
                 />
-                <span>{currentmonth}</span>
+                <span>{month[currentmonth]}</span>
               </div>
             </div>
 
@@ -308,158 +345,87 @@ export default function HomePage() {
                   height={16} 
                   alt="legendNode"
                 />
-                <span>{premonth}</span>
+                <span>{month[premonth]}</span>
               </div>
             </div>
           </div>
         </div>
-        {/* Domain */}
-        <div className="mt-10">
-          <div className="text-s text-gray-700 font-semibold mb-8 flex flex-col">
-            <h1>Domain</h1>
-          </div>
-          <div className="flex flex-row gap-3">
-            {/* full Stack */}
-            <button className="flex flex-row border-1 border-gray-500 text-sm font-semibold rounded-lg px-2 py-1 text-gray-700 cursor-pointer"
-            onClick={()=>{setShowModal(true)
-              setModelHead('Full Stack Development')
-            }}
-            >
-              <Image
-                src='/computer.svg'
-                alt="Fullstack"
-                width={15}
-                height={15}
-              /> <span className="px-2 pt-0.5 text-[#404040]">Full Stack Development</span>
-            </button>
-            {/* Data analytics */}
-             <button className="flex flex-row border-1 text-sm border-gray-500 font-semibold rounded-lg px-2 py-1 text-gray-700 cursor-pointer"
-             onClick={()=>{setShowModal(true)
-              setModelHead('Data Analytics & Science')
-             }}
-             >
-              <Image
-                src='/bar_chart_4_bars.svg'
-                alt="Fullstack"
-                width={15}
-                height={15}
-              />  <span className="px-2 pt-0.5">Data Analytics & Science</span>
-            </button>
-            {/* Banking & Financial Services */}
-             <button className="flex flex-row border-1 text-sm border-gray-500 font-semibold rounded-lg px-2 py-1 text-gray-700 cursor-pointer"
-             onClick={()=>{setShowModal(true)
-              setModelHead('Banking & Financial Services')
-             }}
-             >
-              <Image
-                src='/account_balance.svg'
-                alt="Fullstack"
-                width={15}
-                height={15}
-              />  <span className="px-2 pt-0.5">Banking & Financial Services</span>
-            </button>
-            {/* Digital Marketing */}
-             <button className="flex flex-row border-1 text-sm border-gray-500 font-semibold rounded-lg px-2 py-1 text-gray-700 cursor-pointer"
-             onClick={()=>{setShowModal(true)
-              setModelHead('Digital Marketing')
-             }}
-             >
-              <Image
-                src='/ad.svg'
-                alt="Fullstack"
-                width={15}
-                height={15}
-              />  <span className="px-2 pt-0.5">Digital Marketing</span>
-            </button>
-            {/* SAP */}
-             <button className="flex flex-row border-1 text-sm border-gray-500 font-semibold rounded-lg px-2 py-1  text-gray-700 cursor-pointer"
-              onClick={()=>{setShowModal(true)
-                setModelHead('SAP')
-              }}
-             >
-              <Image
-                src='/device_hub.svg'
-                alt="Fullstack"
-                width={15}
-                height={15}
-              />  <span className="px-2 pt-0.5">SAP</span>
-            </button>
-            {/* DevOps */}
-             <button className="flex flex-row border-1 text-sm border-gray-500 font-semibold rounded-lg px-2 py-1  text-gray-700 cursor-pointer"
-             onClick={()=>{setShowModal(true)
-              setModelHead('DevOps')
-             }}
-             >
-              <Image
-                src='/deployed_code_history.svg'
-                alt="Fullstack"
-                width={15}
-                height={15}
-              /> <span className="px-2 pt-0.5">DevOps</span>
-            </button>
-          </div>
-        </div> 
-      </div>
-      {showModel && (
-        <div className="fixed inset-0 bg-black/30 z-50 flex justify-end"
-        onClick={handleclosemodel}
+
+      {/* Domain Section with FlipCards */}
+
+<div className="mt-10 " ref={containerRef} >
+  <div className="text-s text-gray-700 font-semibold mb-8 ms-[-15] flex flex-col">
+    <h1>Domain</h1>
+  </div>
+  <div className=" flex flex-row flex-wrap justify-between gap-4">
+    {cards.map((card) => {
+      const stats = getStatsByBatch(card.id) || {};
+      return (
+        <div key={card.id} 
+        className={`transition-all duration-300`}
+        data-is-card="true"
         >
-          {/* Modal Container */}
-          <div className="bg-[#F8FAFD] w-full max-w-md h-full overflow-y-auto shadow-lg p-6 rounded-l-3xl"
-            onClick={(e) => e.stopPropagation()} 
-          >
-            {/* Title */}
-            <h2 className="text-lg font-semibold text-gray-800 mb-6">
-              {modelhead}
-            </h2>
+          <FlipCard
+            id={card.id}
+            isActive={activeCard === card.id}
+            onClick={handleCardClick}
+            frontContent={
+              <div className="flex flex-col items-center h-full p-4 py-10">
+  <div>
+    <Image className="py-5" src={card.image} alt={card.title} width={100} height={100} />
+  </div>
+  <span className="mt-2 text-sm font-semibold flex items-center gap-2">
+    {/* <Image src={card.icon} alt={card.title} width={20} height={20} /> */}
+    {card.title}
+  </span>
+</div>
+}
+  backContent={
+  <div className="px-5 pb-8  text-xs " >
+  <p className="text-sm font-bold pb-3">{card.title}</p>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-2 gap-4">
-              {/* Box 1 */}
-              <div className="bg-white p-4 rounded-xl shadow-sm">
-                <p className="text-xs text-gray-500 mb-2">Completed batch count</p>
-                <p className="text-2xl font-semibold text-gray-800">52</p>
-              </div>
+  <div className="grid grid-cols-2 gap-2">
+    <div className="bg-gray-50 rounded-md shadow p-2 hover:bg-violet-50 transition">
+      <span className="font-medium">Completed Batches:</span> {stats.completedBatches || 0}
+    </div>
 
-              {/* Box 2 */}
-              <div className="bg-white p-4 rounded-xl shadow-sm">
-                <p className="text-xs text-gray-500 mb-2">Ongoing batch count</p>
-                <p className="text-2xl font-semibold text-gray-800">14</p>
-              </div>
+    <div className="bg-gray-50 rounded-md shadow p-2 hover:bg-violet-50 transition">
+      <span className="font-medium">Ongoing Batches:</span> {stats.ongoingBatches || 0}
+    </div>
 
-              {/* Box 3 */}
-              <div className="bg-white p-4 rounded-xl shadow-sm">
-                <p className="text-xs text-gray-500 mb-2">Completed Student count</p>
-                <p className="text-2xl font-semibold text-gray-800">1600</p>
-              </div>
+    <div className="bg-gray-50 rounded-md shadow p-2 hover:bg-violet-50 transition">
+      <span className="font-medium">Completed Students:</span> {stats.completedStudents || 0}
+    </div>
 
-              {/* Box 4 */}
-              <div className="bg-white p-4 rounded-xl shadow-sm">
-                <p className="text-xs text-gray-500 mb-2">Ongoing Student count</p>
-                <p className="text-2xl font-semibold text-gray-800">230</p>
-              </div>
+    <div className="bg-gray-50 rounded-md shadow p-2 hover:bg-violet-50 transition">
+      <span className="font-medium">Ongoing Students:</span> {stats.ongoingStudents || 0}
+    </div>
 
-              {/* Box 5 */}
-              <div className="bg-white p-4 rounded-xl shadow-sm">
-                <p className="text-xs text-gray-500 mb-2">Placement eligible count</p>
-                <p className="text-2xl font-semibold text-gray-800">30</p>
-              </div>
+    <div className="bg-gray-50 rounded-md shadow p-2 hover:bg-violet-50 transition">
+      <span className="font-medium">Placement Eligible:</span> {stats.placementEligible || 0}
+    </div>
 
-              {/* Box 6 */}
-              <div className="bg-white p-4 rounded-xl shadow-sm">
-                <p className="text-xs text-gray-500 mb-2">Already placed count</p>
-                <p className="text-2xl font-semibold text-gray-800">600</p>
-              </div>
+    <div className="bg-gray-50 rounded-md shadow p-2 hover:bg-violet-50 transition">
+      <span className="font-medium">Already Placed:</span> {stats.alreadyPlaced || 0}
+    </div>
 
-              {/* Box 7 (Full width) */}
-              <div className="bg-white p-4 rounded-xl shadow-sm ">
-                <p className="text-xs text-gray-500 mb-2">Yet to be placed</p>
-                <p className="text-2xl font-semibold text-gray-800">120</p>
-              </div>
-            </div>
-          </div>
+    <div className="bg-gray-50 rounded-md shadow p-2 hover:bg-violet-50 transition col-span-2">
+      <span className="font-medium">Yet to Place:</span> {stats.yetToPlace || 0}
+    </div>
+  </div>
+</div>
+            }
+          />
         </div>
-      )}
+      );
+    })}
+  </div>
+</div>
+
+      </div>
+
+      
+  
     </div>
   );
 }

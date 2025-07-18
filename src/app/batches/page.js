@@ -784,24 +784,13 @@ const hasChanges = () => {
       };
 
     return (
-        <div className="flex min-h-screen mx-[-16] md:width-[750px]">
+        <div className="flex min-h-screen mx-[-16]">
             <Toaster position='top-right' />
 
 {/* Main model  */}
 <div className={`px-3 pt-20 flex-1 bg-[#F8FAFD] mb-[12] ${showModal || showDeleteModal ? 'pointer-events-none' : ''}`}>
-    <div className="fixed ms-[-10] top-0 left-70 border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 z-10">
+    <div className="fixed top-0 ms-[-19] border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 z-10">
         <h1 className="fixed pl-3 text-xl text-gray-800  font-semibold">{batchHead}</h1>
-        {/* <button
-            onClick={() => setShowModal(true)}
-            className="fixed flex p-2 right-5 bg-[#3f2fb4] hover:bg-[#3f2fb4d4] text-white text-sm font-bold px-2 py-2.5 rounded-lg shadow-sm">
-            <Image
-                src='/add.svg'
-                alt="SAP Icon"
-                width={18}
-                height={18}
-                className="mx-2"
-            /> Add Batch
-        </button> */}
     </div>
     <div className='p-3'>
          <div className='mt-[-20]'>
@@ -844,12 +833,12 @@ const hasChanges = () => {
 </div>
 
         <div className="bg-[#F4F3FF] px-6 py-4 rounded-xl">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-5 px-3 py-3">
+            <div className="flex flex-col md:flex-row md:justify-center gap-5 px-3 py-3">
                 <div className="relative">
                     <input
                         type="text"
                         id="batch-id"
-                        className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                        className={`block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
                         placeholder=" "
                         value={searchTerm}
                     onKeyDown={handleKeyDown}  // Add this line
@@ -858,7 +847,7 @@ const hasChanges = () => {
                     />
                     <label
                         htmlFor="batch-id"
-                        className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-3 scale-75 top-3.5 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750a4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#efeeff]"
+                        className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-3 scale-75 top-3.5 z-5 origin-[0] left-1 peer-focus:text-xs peer-focus:text-[#6750a4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#efeeff]"
                     >
                         Search by Batch number
                     </label>
@@ -879,14 +868,14 @@ const hasChanges = () => {
     value={startDate}
     onKeyDown={handleKeyDown}
     onChange={(e) => handleSearchStartDateChange(e.target.value)}
-    className="cursor-pointer block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+    className="cursor-pointer block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
   />
   <label
     htmlFor="start-date"
     className={`absolute px-3 pb-2 mt-1 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform z-5 origin-[0] left-4
       ${startDate
         ? 'top-2 -translate-y-3 scale-75 text-[#6750A4] font-medium '
-        : 'top-1/2 -translate-y-1/2 scale-100'}
+        : 'top-6 -translate-y-1/2 scale-100'}
       peer-focus:top-3.5 peer-focus:-translate-y-7 peer-focus:font-bold peer-focus:scale-75 peer-focus:text-[#6750A4]`}
   >
     Start date
@@ -900,14 +889,14 @@ const hasChanges = () => {
     value={endDate}
     onKeyDown={handleKeyDown}
     onChange={(e) => handleSearchEndDateChange(e.target.value)}
-    className="cursor-pointer block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+    className="cursor-pointer block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
   />
   <label
     htmlFor="end-date"
     className={`absolute px-3.5 pb-2 mt-1 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform z-5 origin-[0] left-4
       ${endDate
         ? 'top-2 -translate-y-3 scale-75 text-[#6750A4] font-medium'
-        : 'top-1/2 -translate-y-1/2 scale-100'}
+        : 'top-6 -translate-y-1/2 scale-100'}
       peer-focus:top-3.5 peer-focus:-translate-y-7 peer-focus:font-bold peer-focus:scale-75 peer-focus:text-[#6750A4]`}
   >
     End date
@@ -925,7 +914,7 @@ const hasChanges = () => {
     placeholder=" "
     value={mode === 'Off' ? '' : mode}
     onClick={() => setShowModeDropdown(!showModeDropdown)}
-    className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+    className="block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
   />
   <label
     htmlFor="mode"
@@ -975,7 +964,13 @@ const hasChanges = () => {
 </div>
 
                
-                <div className="flex gap-2 md:col-start-3 md:justify-end mr-[-220] md:pt-17">
+                <div className="flex gap-2 md:justify-end">
+                    <button
+                        onClick={handleSearch}
+                        className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-5 py-4 rounded-xl text-sm font-semibold"
+                    >
+                        Search
+                    </button>
                     <button
                         onClick={handleReset}
                         className="cursor-pointer bg-[#f1ecfb] hover:bg-[#E8DEF8] px-4 py-4 rounded-xl text-sm font-semibold text-gray-700 flex items-center gap-1"
@@ -987,12 +982,6 @@ const hasChanges = () => {
                             height={20}
                             className="object-contain"
                         /> Reset
-                    </button>
-                    <button
-                        onClick={handleSearch}
-                        className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-5 py-4 rounded-xl text-sm font-semibold"
-                    >
-                        Search
                     </button>
                 </div>
             </div>
@@ -1713,6 +1702,7 @@ const hasChanges = () => {
   </div>
 )}
 
+{/* <Toaster position="top-right" reverseOrder={false} /> */}
 
 {/*View Modal*/}
 {showViewModal && selectedBatch && (
