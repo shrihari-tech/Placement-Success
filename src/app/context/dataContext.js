@@ -84,204 +84,1491 @@ const batchStatsData = {
 // 🗂️ Full‑stack batch seed data (template)
 // ===== Full‑Stack =====
 export const fullstackInitial = [
-  { id: 1, batchNo: "FS01", mode: "Online",  status: "Completed", startDate: "2024-01-01", endDate: "2024-06-30",
-    sections: { Domain:{startDate:"2024-01-01",endDate:"2024-03-01"}, Aptitude:{startDate:"2024-03-02",endDate:"2024-05-01"}, Communication:{startDate:"2024-05-02",endDate:"2024-06-30"} } },
-  { id: 2, batchNo: "FS02", mode: "Offline", status: "Completed", startDate: "2024-02-01", endDate: "2024-07-31",
-    sections: { Domain:{startDate:"2024-02-01",endDate:"2024-04-01"}, Aptitude:{startDate:"2024-04-02",endDate:"2024-06-01"}, Communication:{startDate:"2024-06-02",endDate:"2024-07-31"} } },
-  { id: 3, batchNo: "FS03", mode: "Online",  status: "Completed", startDate: "2024-03-01", endDate: "2024-08-31",
-    sections: { Domain:{startDate:"2024-03-01",endDate:"2024-05-01"}, Aptitude:{startDate:"2024-05-02",endDate:"2024-07-01"}, Communication:{startDate:"2024-07-02",endDate:"2024-08-31"} } },
-  { id: 4, batchNo: "FS04", mode: "Offline", status: "Completed", startDate: "2024-04-01", endDate: "2024-09-30",
-    sections: { Domain:{startDate:"2024-04-01",endDate:"2024-06-01"}, Aptitude:{startDate:"2024-06-02",endDate:"2024-08-01"}, Communication:{startDate:"2024-08-02",endDate:"2024-09-30"} } },
-  { id: 5, batchNo: "FS05", mode: "Online",  status: "Completed", startDate: "2024-05-01", endDate: "2024-10-31",
-    sections: { Domain:{startDate:"2024-05-01",endDate:"2024-07-01"}, Aptitude:{startDate:"2024-07-02",endDate:"2024-09-01"}, Communication:{startDate:"2024-09-02",endDate:"2024-10-31"} } },
-  { id: 6, batchNo: "FS06", mode: "Offline", status: "Completed", startDate: "2024-06-01", endDate: "2024-11-30",
-    sections: { Domain:{startDate:"2024-06-01",endDate:"2024-08-01"}, Aptitude:{startDate:"2024-08-02",endDate:"2024-10-01"}, Communication:{startDate:"2024-10-02",endDate:"2024-11-30"} } },
-  { id: 7, batchNo: "FS07", mode: "Online",  status: "Completed", startDate: "2024-07-01", endDate: "2024-12-31",
-    sections: { Domain:{startDate:"2024-07-01",endDate:"2024-09-01"}, Aptitude:{startDate:"2024-09-02",endDate:"2024-11-01"}, Communication:{startDate:"2024-11-02",endDate:"2024-12-31"} } },
-  { id: 8, batchNo: "FS08", mode: "Offline", status: "Completed", startDate: "2024-08-01", endDate: "2025-01-31",
-    sections: { Domain:{startDate:"2024-08-01",endDate:"2024-10-01"}, Aptitude:{startDate:"2024-10-02",endDate:"2024-12-01"}, Communication:{startDate:"2024-12-02",endDate:"2025-01-31"} } },
-  { id: 9, batchNo: "FS09", mode: "Online",  status: "Completed", startDate: "2024-09-01", endDate: "2025-02-28",
-    sections: { Domain:{startDate:"2024-09-01",endDate:"2024-11-01"}, Aptitude:{startDate:"2024-11-02",endDate:"2025-01-01"}, Communication:{startDate:"2025-01-02",endDate:"2025-02-28"} } },
-  { id:10, batchNo: "FS10", mode: "Offline", status: "Ongoing",   startDate: "2024-10-01", endDate: "2025-03-31",
-    sections: { Domain:{startDate:"2024-10-01",endDate:"2024-12-01"}, Aptitude:{startDate:"2024-12-02",endDate:"2025-02-01"}, Communication:{startDate:"2025-02-02",endDate:"2025-03-31"} } }
+  {
+    id: 1,
+    batchNo: "FS01",
+    mode: "Online",
+    status: "Completed",
+    startDate: "2024-01-01",
+    endDate: "2024-06-30",
+    sections: {
+      Domain: { startDate: "2024-01-01", endDate: "2024-03-01" },
+      Aptitude: { startDate: "2024-03-02", endDate: "2024-05-01" },
+      Communication: { startDate: "2024-05-02", endDate: "2024-06-30" },
+    },
+    session: "FN",
+    studentsPlaced: 120,
+    pending: 40,
+    totalCount: 160,
+  },
+  {
+    id: 2,
+    batchNo: "FS02",
+    mode: "Offline",
+    status: "Completed",
+    startDate: "2024-02-01",
+    endDate: "2024-07-31",
+    sections: {
+      Domain: { startDate: "2024-02-01", endDate: "2024-04-01" },
+      Aptitude: { startDate: "2024-04-02", endDate: "2024-06-01" },
+      Communication: { startDate: "2024-06-02", endDate: "2024-07-31" },
+    },
+    session: "AN",
+    studentsPlaced: 85,
+    pending: 35,
+    totalCount: 120,
+  },
+  {
+    id: 3,
+    batchNo: "FS03",
+    mode: "Online",
+    status: "Completed",
+    startDate: "2024-03-01",
+    endDate: "2024-08-31",
+    sections: {
+      Domain: { startDate: "2024-03-01", endDate: "2024-05-01" },
+      Aptitude: { startDate: "2024-05-02", endDate: "2024-07-01" },
+      Communication: { startDate: "2024-07-02", endDate: "2024-08-31" },
+    },
+    session: "FN",
+    studentsPlaced: 100,
+    pending: 50,
+    totalCount: 150,
+  },
+  {
+    id: 4,
+    batchNo: "FS04",
+    mode: "Offline",
+    status: "Completed",
+    startDate: "2024-04-01",
+    endDate: "2024-09-30",
+    sections: {
+      Domain: { startDate: "2024-04-01", endDate: "2024-06-01" },
+      Aptitude: { startDate: "2024-06-02", endDate: "2024-08-01" },
+      Communication: { startDate: "2024-08-02", endDate: "2024-09-30" },
+    },
+    session: "AN",
+    studentsPlaced: 110,
+    pending: 45,
+    totalCount: 155,
+  },
+  {
+    id: 5,
+    batchNo: "FS05",
+    mode: "Online",
+    status: "Completed",
+    startDate: "2024-05-01",
+    endDate: "2024-10-31",
+    sections: {
+      Domain: { startDate: "2024-05-01", endDate: "2024-07-01" },
+      Aptitude: { startDate: "2024-07-02", endDate: "2024-09-01" },
+      Communication: { startDate: "2024-09-02", endDate: "2024-10-31" },
+    },
+    session: "FN",
+    studentsPlaced: 95,
+    pending: 25,
+    totalCount: 120,
+  },
+  {
+    id: 6,
+    batchNo: "FS06",
+    mode: "Offline",
+    status: "Completed",
+    startDate: "2024-06-01",
+    endDate: "2024-11-30",
+    sections: {
+      Domain: { startDate: "2024-06-01", endDate: "2024-08-01" },
+      Aptitude: { startDate: "2024-08-02", endDate: "2024-10-01" },
+      Communication: { startDate: "2024-10-02", endDate: "2024-11-30" },
+    },
+    session: "AN",
+    studentsPlaced: 70,
+    pending: 30,
+    totalCount: 100,
+  },
+  {
+    id: 7,
+    batchNo: "FS07",
+    mode: "Online",
+    status: "Completed",
+    startDate: "2024-07-01",
+    endDate: "2024-12-31",
+    sections: {
+      Domain: { startDate: "2024-07-01", endDate: "2024-09-01" },
+      Aptitude: { startDate: "2024-09-02", endDate: "2024-11-01" },
+      Communication: { startDate: "2024-11-02", endDate: "2024-12-31" },
+    },
+    session: "FN",
+    studentsPlaced: 140,
+    pending: 60,
+    totalCount: 200,
+  },
+  {
+    id: 8,
+    batchNo: "FS08",
+    mode: "Offline",
+    status: "Completed",
+    startDate: "2024-08-01",
+    endDate: "2025-01-31",
+    sections: {
+      Domain: { startDate: "2024-08-01", endDate: "2024-10-01" },
+      Aptitude: { startDate: "2024-10-02", endDate: "2024-12-01" },
+      Communication: { startDate: "2024-12-02", endDate: "2025-01-31" },
+    },
+    session: "AN",
+    studentsPlaced: 75,
+    pending: 25,
+    totalCount: 100,
+  },
+  {
+    id: 9,
+    batchNo: "FS09",
+    mode: "Online",
+    status: "Completed",
+    startDate: "2024-09-01",
+    endDate: "2025-02-28",
+    sections: {
+      Domain: { startDate: "2024-09-01", endDate: "2024-11-01" },
+      Aptitude: { startDate: "2024-11-02", endDate: "2025-01-01" },
+      Communication: { startDate: "2025-01-02", endDate: "2025-02-28" },
+    },
+    session: "FN",
+    studentsPlaced: 90,
+    pending: 30,
+    totalCount: 120,
+  },
+  {
+    id: 10,
+    batchNo: "FS10",
+    mode: "Offline",
+    status: "Ongoing",
+    startDate: "2024-10-01",
+    endDate: "2025-03-31",
+    sections: {
+      Domain: { startDate: "2024-10-01", endDate: "2024-12-01" },
+      Aptitude: { startDate: "2024-12-02", endDate: "2025-02-01" },
+      Communication: { startDate: "2025-02-02", endDate: "2025-03-31" },
+    },
+    session: "AN",
+    studentsPlaced: 55,
+    pending: 45,
+    totalCount: 100,
+  },
 ];
 
-// ===== Data‑Analytics =====
+
 export const dataanalyticsInitial = [
-  { id: 1, batchNo: "DA01", mode: "Online",  status: "Completed", startDate: "2024-01-01", endDate: "2024-06-30",
-    sections: { Domain:{startDate:"2024-01-01",endDate:"2024-03-01"}, Aptitude:{startDate:"2024-03-02",endDate:"2024-05-01"}, Communication:{startDate:"2024-05-02",endDate:"2024-06-30"} } },
-  { id: 2, batchNo: "DA02", mode: "Offline", status: "Completed", startDate: "2024-02-01", endDate: "2024-07-31",
-    sections: { Domain:{startDate:"2024-02-01",endDate:"2024-04-01"}, Aptitude:{startDate:"2024-04-02",endDate:"2024-06-01"}, Communication:{startDate:"2024-06-02",endDate:"2024-07-31"} } },
-  { id: 3, batchNo: "DA03", mode: "Online",  status: "Completed", startDate: "2024-03-01", endDate: "2024-08-31",
-    sections: { Domain:{startDate:"2024-03-01",endDate:"2024-05-01"}, Aptitude:{startDate:"2024-05-02",endDate:"2024-07-01"}, Communication:{startDate:"2024-07-02",endDate:"2024-08-31"} } },
-  { id: 4, batchNo: "DA04", mode: "Offline", status: "Completed", startDate: "2024-04-01", endDate: "2024-09-30",
-    sections: { Domain:{startDate:"2024-04-01",endDate:"2024-06-01"}, Aptitude:{startDate:"2024-06-02",endDate:"2024-08-01"}, Communication:{startDate:"2024-08-02",endDate:"2024-09-30"} } },
-  { id: 5, batchNo: "DA05", mode: "Online",  status: "Completed", startDate: "2024-05-01", endDate: "2024-10-31",
-    sections: { Domain:{startDate:"2024-05-01",endDate:"2024-07-01"}, Aptitude:{startDate:"2024-07-02",endDate:"2024-09-01"}, Communication:{startDate:"2024-09-02",endDate:"2024-10-31"} } },
-  { id: 6, batchNo: "DA06", mode: "Offline", status: "Completed", startDate: "2024-06-01", endDate: "2024-11-30",
-    sections: { Domain:{startDate:"2024-06-01",endDate:"2024-08-01"}, Aptitude:{startDate:"2024-08-02",endDate:"2024-10-01"}, Communication:{startDate:"2024-10-02",endDate:"2024-11-30"} } },
-  { id: 7, batchNo: "DA07", mode: "Online",  status: "Completed", startDate: "2024-07-01", endDate: "2024-12-31",
-    sections: { Domain:{startDate:"2024-07-01",endDate:"2024-09-01"}, Aptitude:{startDate:"2024-09-02",endDate:"2024-11-01"}, Communication:{startDate:"2024-11-02",endDate:"2024-12-31"} } },
-  { id: 8, batchNo: "DA08", mode: "Offline", status: "Completed", startDate: "2024-08-01", endDate: "2025-01-31",
-    sections: { Domain:{startDate:"2024-08-01",endDate:"2024-10-01"}, Aptitude:{startDate:"2024-10-02",endDate:"2024-12-01"}, Communication:{startDate:"2024-12-02",endDate:"2025-01-31"} } },
-  { id: 9, batchNo: "DA09", mode: "Online",  status: "Completed", startDate: "2024-09-01", endDate: "2025-02-28",
-    sections: { Domain:{startDate:"2024-09-01",endDate:"2024-11-01"}, Aptitude:{startDate:"2024-11-02",endDate:"2025-01-01"}, Communication:{startDate:"2025-01-02",endDate:"2025-02-28"} } },
-  { id:10, batchNo: "DA10", mode: "Offline", status: "Ongoing",   startDate: "2024-10-01", endDate: "2025-03-31",
-    sections: { Domain:{startDate:"2024-10-01",endDate:"2024-12-01"}, Aptitude:{startDate:"2024-12-02",endDate:"2025-02-01"}, Communication:{startDate:"2025-02-02",endDate:"2025-03-31"} } }
+  {
+    "id": 1,
+    "batchNo": "DA01",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-01-01",
+    "endDate": "2024-06-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 79,
+    "pending": 44,
+    "totalCount": 123
+  },
+  {
+    "id": 2,
+    "batchNo": "DA02",
+    "mode": "Offline",
+    "status": "Completed",
+    "startDate": "2024-02-01",
+    "endDate": "2024-07-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 42,
+    "pending": 16,
+    "totalCount": 58
+  },
+  {
+    "id": 3,
+    "batchNo": "DA03",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-03-01",
+    "endDate": "2024-08-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 46,
+    "pending": 10,
+    "totalCount": 56
+  },
+  {
+    "id": 4,
+    "batchNo": "DA04",
+    "mode": "Offline",
+    "status": "Completed",
+    "startDate": "2024-04-01",
+    "endDate": "2024-09-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 79,
+    "pending": 10,
+    "totalCount": 89
+  },
+  {
+    "id": 5,
+    "batchNo": "DA05",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-05-01",
+    "endDate": "2024-10-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 84,
+    "pending": 14,
+    "totalCount": 98
+  },
+  {
+    "id": 6,
+    "batchNo": "DA06",
+    "mode": "Offline",
+    "status": "Completed",
+    "startDate": "2024-06-01",
+    "endDate": "2024-11-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 71,
+    "pending": 43,
+    "totalCount": 114
+  },
+  {
+    "id": 7,
+    "batchNo": "DA07",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-07-01",
+    "endDate": "2024-12-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 73,
+    "pending": 28,
+    "totalCount": 101
+  },
+  {
+    "id": 8,
+    "batchNo": "DA08",
+    "mode": "Offline",
+    "status": "Completed",
+    "startDate": "2024-08-01",
+    "endDate": "2024-01-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 61,
+    "pending": 21,
+    "totalCount": 82
+  },
+  {
+    "id": 9,
+    "batchNo": "DA09",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-09-01",
+    "endDate": "2024-02-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 86,
+    "pending": 46,
+    "totalCount": 132
+  },
+  {
+    "id": 10,
+    "batchNo": "DA10",
+    "mode": "Offline",
+    "status": "Ongoing",
+    "startDate": "2024-10-01",
+    "endDate": "2024-03-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 68,
+    "pending": 24,
+    "totalCount": 92
+  }
 ];
 
-// ===== Banking =====
 export const bankingInitial = [
-  { id: 1, batchNo: "BK01", mode: "Offline", status: "Completed", startDate: "2024-01-01", endDate: "2024-06-30",
-    sections: { Domain:{startDate:"2024-01-01",endDate:"2024-03-01"}, Aptitude:{startDate:"2024-03-02",endDate:"2024-05-01"}, Communication:{startDate:"2024-05-02",endDate:"2024-06-30"} } },
-  { id: 2, batchNo: "BK02", mode: "Online",  status: "Completed", startDate: "2024-02-01", endDate: "2024-07-31",
-    sections: { Domain:{startDate:"2024-02-01",endDate:"2024-04-01"}, Aptitude:{startDate:"2024-04-02",endDate:"2024-06-01"}, Communication:{startDate:"2024-06-02",endDate:"2024-07-31"} } },
-  { id: 3, batchNo: "BK03", mode: "Offline", status: "Completed", startDate: "2024-03-01", endDate: "2024-08-31",
-    sections: { Domain:{startDate:"2024-03-01",endDate:"2024-05-01"}, Aptitude:{startDate:"2024-05-02",endDate:"2024-07-01"}, Communication:{startDate:"2024-07-02",endDate:"2024-08-31"} } },
-  { id: 4, batchNo: "BK04", mode: "Online",  status: "Completed", startDate: "2024-04-01", endDate: "2024-09-30",
-    sections: { Domain:{startDate:"2024-04-01",endDate:"2024-06-01"}, Aptitude:{startDate:"2024-06-02",endDate:"2024-08-01"}, Communication:{startDate:"2024-08-02",endDate:"2024-09-30"} } },
-  { id: 5, batchNo: "BK05", mode: "Offline", status: "Completed", startDate: "2024-05-01", endDate: "2024-10-31",
-    sections: { Domain:{startDate:"2024-05-01",endDate:"2024-07-01"}, Aptitude:{startDate:"2024-07-02",endDate:"2024-09-01"}, Communication:{startDate:"2024-09-02",endDate:"2024-10-31"} } },
-  { id: 6, batchNo: "BK06", mode: "Online",  status: "Completed", startDate: "2024-06-01", endDate: "2024-11-30",
-    sections: { Domain:{startDate:"2024-06-01",endDate:"2024-08-01"}, Aptitude:{startDate:"2024-08-02",endDate:"2024-10-01"}, Communication:{startDate:"2024-10-02",endDate:"2024-11-30"} } },
-  { id: 7, batchNo: "BK07", mode: "Offline", status: "Completed", startDate: "2024-07-01", endDate: "2024-12-31",
-    sections: { Domain:{startDate:"2024-07-01",endDate:"2024-09-01"}, Aptitude:{startDate:"2024-09-02",endDate:"2024-11-01"}, Communication:{startDate:"2024-11-02",endDate:"2024-12-31"} } },
-  { id: 8, batchNo: "BK08", mode: "Online",  status: "Completed", startDate: "2024-08-01", endDate: "2025-01-31",
-    sections: { Domain:{startDate:"2024-08-01",endDate:"2024-10-01"}, Aptitude:{startDate:"2024-10-02",endDate:"2024-12-01"}, Communication:{startDate:"2024-12-02",endDate:"2025-01-31"} } },
-  { id: 9, batchNo: "BK09", mode: "Offline", status: "Completed", startDate: "2024-09-01", endDate: "2025-02-28",
-    sections: { Domain:{startDate:"2024-09-01",endDate:"2024-11-01"}, Aptitude:{startDate:"2024-11-02",endDate:"2025-01-01"}, Communication:{startDate:"2025-01-02",endDate:"2025-02-28"} } },
-  { id:10, batchNo: "BK10", mode: "Online",  status: "Ongoing",   startDate: "2024-10-01", endDate: "2025-03-31",
-    sections: { Domain:{startDate:"2024-10-01",endDate:"2024-12-01"}, Aptitude:{startDate:"2024-12-02",endDate:"2025-02-01"}, Communication:{startDate:"2025-02-02",endDate:"2025-03-31"} } }
+  {
+    "id": 1,
+    "batchNo": "BK01",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-01-01",
+    "endDate": "2024-06-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 84,
+    "pending": 25,
+    "totalCount": 109
+  },
+  {
+    "id": 2,
+    "batchNo": "BK02",
+    "mode": "Offline",
+    "status": "Completed",
+    "startDate": "2024-02-01",
+    "endDate": "2024-07-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 100,
+    "pending": 34,
+    "totalCount": 134
+  },
+  {
+    "id": 3,
+    "batchNo": "BK03",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-03-01",
+    "endDate": "2024-08-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 34,
+    "pending": 35,
+    "totalCount": 69
+  },
+  {
+    "id": 4,
+    "batchNo": "BK04",
+    "mode": "Offline",
+    "status": "Completed",
+    "startDate": "2024-04-01",
+    "endDate": "2024-09-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 92,
+    "pending": 36,
+    "totalCount": 128
+  },
+  {
+    "id": 5,
+    "batchNo": "BK05",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-05-01",
+    "endDate": "2024-10-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 45,
+    "pending": 25,
+    "totalCount": 70
+  },
+  {
+    "id": 6,
+    "batchNo": "BK06",
+    "mode": "Offline",
+    "status": "Completed",
+    "startDate": "2024-06-01",
+    "endDate": "2024-11-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 36,
+    "pending": 34,
+    "totalCount": 70
+  },
+  {
+    "id": 7,
+    "batchNo": "BK07",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-07-01",
+    "endDate": "2024-12-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 50,
+    "pending": 42,
+    "totalCount": 92
+  },
+  {
+    "id": 8,
+    "batchNo": "BK08",
+    "mode": "Offline",
+    "status": "Completed",
+    "startDate": "2024-08-01",
+    "endDate": "2024-01-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 39,
+    "pending": 33,
+    "totalCount": 72
+  },
+  {
+    "id": 9,
+    "batchNo": "BK09",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-09-01",
+    "endDate": "2024-02-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 91,
+    "pending": 38,
+    "totalCount": 129
+  },
+  {
+    "id": 10,
+    "batchNo": "BK10",
+    "mode": "Offline",
+    "status": "Ongoing",
+    "startDate": "2024-10-01",
+    "endDate": "2024-03-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 99,
+    "pending": 13,
+    "totalCount": 112
+  }
 ];
 
-// ===== Digital‑Marketing =====
 export const marketingInitial = [
-  { id: 1, batchNo: "DM01", mode: "Online",  status: "Completed", startDate: "2024-01-01", endDate: "2024-06-30",
-    sections: { Domain:{startDate:"2024-01-01",endDate:"2024-03-01"}, Aptitude:{startDate:"2024-03-02",endDate:"2024-05-01"}, Communication:{startDate:"2024-05-02",endDate:"2024-06-30"} } },
-  { id: 2, batchNo: "DM02", mode: "Offline", status: "Completed", startDate: "2024-02-01", endDate: "2024-07-31",
-    sections: { Domain:{startDate:"2024-02-01",endDate:"2024-04-01"}, Aptitude:{startDate:"2024-04-02",endDate:"2024-06-01"}, Communication:{startDate:"2024-06-02",endDate:"2024-07-31"} } },
-  { id: 3, batchNo: "DM03", mode: "Online",  status: "Completed", startDate: "2024-03-01", endDate: "2024-08-31",
-    sections: { Domain:{startDate:"2024-03-01",endDate:"2024-05-01"}, Aptitude:{startDate:"2024-05-02",endDate:"2024-07-01"}, Communication:{startDate:"2024-07-02",endDate:"2024-08-31"} } },
-  { id: 4, batchNo: "DM04", mode: "Offline", status: "Completed", startDate: "2024-04-01", endDate: "2024-09-30",
-    sections: { Domain:{startDate:"2024-04-01",endDate:"2024-06-01"}, Aptitude:{startDate:"2024-06-02",endDate:"2024-08-01"}, Communication:{startDate:"2024-08-02",endDate:"2024-09-30"} } },
-  { id: 5, batchNo: "DM05", mode: "Online",  status: "Completed", startDate: "2024-05-01", endDate: "2024-10-31",
-    sections: { Domain:{startDate:"2024-05-01",endDate:"2024-07-01"}, Aptitude:{startDate:"2024-07-02",endDate:"2024-09-01"}, Communication:{startDate:"2024-09-02",endDate:"2024-10-31"} } },
-  { id: 6, batchNo: "DM06", mode: "Offline", status: "Completed", startDate: "2024-06-01", endDate: "2024-11-30",
-    sections: { Domain:{startDate:"2024-06-01",endDate:"2024-08-01"}, Aptitude:{startDate:"2024-08-02",endDate:"2024-10-01"}, Communication:{startDate:"2024-10-02",endDate:"2024-11-30"} } },
-  { id: 7, batchNo: "DM07", mode: "Online",  status: "Completed", startDate: "2024-07-01", endDate: "2024-12-31",
-    sections: { Domain:{startDate:"2024-07-01",endDate:"2024-09-01"}, Aptitude:{startDate:"2024-09-02",endDate:"2024-11-01"}, Communication:{startDate:"2024-11-02",endDate:"2024-12-31"} } },
-  { id: 8, batchNo: "DM08", mode: "Offline", status: "Completed", startDate: "2024-08-01", endDate: "2025-01-31",
-    sections: { Domain:{startDate:"2024-08-01",endDate:"2024-10-01"}, Aptitude:{startDate:"2024-10-02",endDate:"2024-12-01"}, Communication:{startDate:"2024-12-02",endDate:"2025-01-31"} } },
-  { id: 9, batchNo: "DM09", mode: "Online",  status: "Completed", startDate: "2024-09-01", endDate: "2025-02-28",
-    sections: { Domain:{startDate:"2024-09-01",endDate:"2024-11-01"}, Aptitude:{startDate:"2024-11-02",endDate:"2025-01-01"}, Communication:{startDate:"2025-01-02",endDate:"2025-02-28"} } },
-  { id:10, batchNo: "DM10", mode: "Offline", status: "Ongoing",   startDate: "2024-10-01", endDate: "2025-03-31",
-    sections: { Domain:{startDate:"2024-10-01",endDate:"2024-12-01"}, Aptitude:{startDate:"2024-12-02",endDate:"2025-02-01"}, Communication:{startDate:"2025-02-02",endDate:"2025-03-31"} } }
+  {
+    "id": 1,
+    "batchNo": "DM01",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-01-01",
+    "endDate": "2024-06-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 40,
+    "pending": 10,
+    "totalCount": 50
+  },
+  {
+    "id": 2,
+    "batchNo": "DM02",
+    "mode": "Offline",
+    "status": "Completed",
+    "startDate": "2024-02-01",
+    "endDate": "2024-07-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 94,
+    "pending": 14,
+    "totalCount": 108
+  },
+  {
+    "id": 3,
+    "batchNo": "DM03",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-03-01",
+    "endDate": "2024-08-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 76,
+    "pending": 18,
+    "totalCount": 94
+  },
+  {
+    "id": 4,
+    "batchNo": "DM04",
+    "mode": "Offline",
+    "status": "Completed",
+    "startDate": "2024-04-01",
+    "endDate": "2024-09-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 88,
+    "pending": 36,
+    "totalCount": 124
+  },
+  {
+    "id": 5,
+    "batchNo": "DM05",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-05-01",
+    "endDate": "2024-10-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 85,
+    "pending": 28,
+    "totalCount": 113
+  },
+  {
+    "id": 6,
+    "batchNo": "DM06",
+    "mode": "Offline",
+    "status": "Completed",
+    "startDate": "2024-06-01",
+    "endDate": "2024-11-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 90,
+    "pending": 14,
+    "totalCount": 104
+  },
+  {
+    "id": 7,
+    "batchNo": "DM07",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-07-01",
+    "endDate": "2024-12-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 68,
+    "pending": 42,
+    "totalCount": 110
+  },
+  {
+    "id": 8,
+    "batchNo": "DM08",
+    "mode": "Offline",
+    "status": "Completed",
+    "startDate": "2024-08-01",
+    "endDate": "2024-01-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 62,
+    "pending": 23,
+    "totalCount": 85
+  },
+  {
+    "id": 9,
+    "batchNo": "DM09",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-09-01",
+    "endDate": "2024-02-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 78,
+    "pending": 32,
+    "totalCount": 110
+  },
+  {
+    "id": 10,
+    "batchNo": "DM10",
+    "mode": "Offline",
+    "status": "Ongoing",
+    "startDate": "2024-10-01",
+    "endDate": "2024-03-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 40,
+    "pending": 48,
+    "totalCount": 88
+  }
 ];
 
-// ===== DevOps =====
 export const devopsInitial = [
-  { id: 1, batchNo: "DO01", mode: "Online",  status: "Completed", startDate: "2024-01-01", endDate: "2024-06-30",
-    sections: { Domain:{startDate:"2024-01-01",endDate:"2024-03-01"}, Aptitude:{startDate:"2024-03-02",endDate:"2024-05-01"}, Communication:{startDate:"2024-05-02",endDate:"2024-06-30"} } },
-  { id: 2, batchNo: "DO02", mode: "Offline", status: "Completed", startDate: "2024-02-01", endDate: "2024-07-31",
-    sections: { Domain:{startDate:"2024-02-01",endDate:"2024-04-01"}, Aptitude:{startDate:"2024-04-02",endDate:"2024-06-01"}, Communication:{startDate:"2024-06-02",endDate:"2024-07-31"} } },
-  { id: 3, batchNo: "DO03", mode: "Online",  status: "Completed", startDate: "2024-03-01", endDate: "2024-08-31",
-    sections: { Domain:{startDate:"2024-03-01",endDate:"2024-05-01"}, Aptitude:{startDate:"2024-05-02",endDate:"2024-07-01"}, Communication:{startDate:"2024-07-02",endDate:"2024-08-31"} } },
-  { id: 4, batchNo: "DO04", mode: "Offline", status: "Completed", startDate: "2024-04-01", endDate: "2024-09-30",
-    sections: { Domain:{startDate:"2024-04-01",endDate:"2024-06-01"}, Aptitude:{startDate:"2024-06-02",endDate:"2024-08-01"}, Communication:{startDate:"2024-08-02",endDate:"2024-09-30"} } },
-  { id: 5, batchNo: "DO05", mode: "Online",  status: "Completed", startDate: "2024-05-01", endDate: "2024-10-31",
-    sections: { Domain:{startDate:"2024-05-01",endDate:"2024-07-01"}, Aptitude:{startDate:"2024-07-02",endDate:"2024-09-01"}, Communication:{startDate:"2024-09-02",endDate:"2024-10-31"} } },
-  { id: 6, batchNo: "DO06", mode: "Offline", status: "Completed", startDate: "2024-06-01", endDate: "2024-11-30",
-    sections: { Domain:{startDate:"2024-06-01",endDate:"2024-08-01"}, Aptitude:{startDate:"2024-08-02",endDate:"2024-10-01"}, Communication:{startDate:"2024-10-02",endDate:"2024-11-30"} } },
-  { id: 7, batchNo: "DO07", mode: "Online",  status: "Completed", startDate: "2024-07-01", endDate: "2024-12-31",
-    sections: { Domain:{startDate:"2024-07-01",endDate:"2024-09-01"}, Aptitude:{startDate:"2024-09-02",endDate:"2024-11-01"}, Communication:{startDate:"2024-11-02",endDate:"2024-12-31"} } },
-  { id: 8, batchNo: "DO08", mode: "Offline", status: "Completed", startDate: "2024-08-01", endDate: "2025-01-31",
-    sections: { Domain:{startDate:"2024-08-01",endDate:"2024-10-01"}, Aptitude:{startDate:"2024-10-02",endDate:"2024-12-01"}, Communication:{startDate:"2024-12-02",endDate:"2025-01-31"} } },
-  { id: 9, batchNo: "DO09", mode: "Online",  status: "Completed", startDate: "2024-09-01", endDate: "2025-02-28",
-    sections: { Domain:{startDate:"2024-09-01",endDate:"2024-11-01"}, Aptitude:{startDate:"2024-11-02",endDate:"2025-01-01"}, Communication:{startDate:"2025-01-02",endDate:"2025-02-28"} } },
-  { id:10, batchNo: "DO10", mode: "Offline", status: "Ongoing",   startDate: "2024-10-01", endDate: "2025-03-31",
-    sections: { Domain:{startDate:"2024-10-01",endDate:"2024-12-01"}, Aptitude:{startDate:"2024-12-02",endDate:"2025-02-01"}, Communication:{startDate:"2025-02-02",endDate:"2025-03-31"} } }
+  {
+    "id": 1,
+    "batchNo": "DO01",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-01-01",
+    "endDate": "2024-06-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 34,
+    "pending": 47,
+    "totalCount": 81
+  },
+  {
+    "id": 2,
+    "batchNo": "DO02",
+    "mode": "Offline",
+    "status": "Completed",
+    "startDate": "2024-02-01",
+    "endDate": "2024-07-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 35,
+    "pending": 39,
+    "totalCount": 74
+  },
+  {
+    "id": 3,
+    "batchNo": "DO03",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-03-01",
+    "endDate": "2024-08-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 33,
+    "pending": 39,
+    "totalCount": 72
+  },
+  {
+    "id": 4,
+    "batchNo": "DO04",
+    "mode": "Offline",
+    "status": "Completed",
+    "startDate": "2024-04-01",
+    "endDate": "2024-09-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 100,
+    "pending": 46,
+    "totalCount": 146
+  },
+  {
+    "id": 5,
+    "batchNo": "DO05",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-05-01",
+    "endDate": "2024-10-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 43,
+    "pending": 14,
+    "totalCount": 57
+  },
+  {
+    "id": 6,
+    "batchNo": "DO06",
+    "mode": "Offline",
+    "status": "Completed",
+    "startDate": "2024-06-01",
+    "endDate": "2024-11-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 92,
+    "pending": 40,
+    "totalCount": 132
+  },
+  {
+    "id": 7,
+    "batchNo": "DO07",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-07-01",
+    "endDate": "2024-12-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 58,
+    "pending": 48,
+    "totalCount": 106
+  },
+  {
+    "id": 8,
+    "batchNo": "DO08",
+    "mode": "Offline",
+    "status": "Completed",
+    "startDate": "2024-08-01",
+    "endDate": "2024-01-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 64,
+    "pending": 35,
+    "totalCount": 99
+  },
+  {
+    "id": 9,
+    "batchNo": "DO09",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-09-01",
+    "endDate": "2024-02-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 52,
+    "pending": 15,
+    "totalCount": 67
+  },
+  {
+    "id": 10,
+    "batchNo": "DO10",
+    "mode": "Offline",
+    "status": "Ongoing",
+    "startDate": "2024-10-01",
+    "endDate": "2024-03-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 76,
+    "pending": 46,
+    "totalCount": 122
+  }
 ];
 
 export const sapInitial = [
   {
-    id: 1, batchNo: "SAP01", mode: "Offline", status: "Completed", startDate: "2024-01-10", endDate: "2024-06-30",
-    sections: {
-      Domain: { startDate: "2024-01-10", endDate: "2024-03-10" },
-      Aptitude: { startDate: "2024-03-11", endDate: "2024-05-10" },
-      Communication: { startDate: "2024-05-11", endDate: "2024-06-30" }
-    }
+    "id": 1,
+    "batchNo": "SAP01",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-01-01",
+    "endDate": "2024-06-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 79,
+    "pending": 18,
+    "totalCount": 97
   },
   {
-    id: 2, batchNo: "SAP02", mode: "Online", status: "Completed", startDate: "2024-02-01", endDate: "2024-07-31",
-    sections: {
-      Domain: { startDate: "2024-02-01", endDate: "2024-04-01" },
-      Aptitude: { startDate: "2024-04-02", endDate: "2024-06-01" },
-      Communication: { startDate: "2024-06-02", endDate: "2024-07-31" }
-    }
+    "id": 2,
+    "batchNo": "SAP02",
+    "mode": "Offline",
+    "status": "Completed",
+    "startDate": "2024-02-01",
+    "endDate": "2024-07-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 34,
+    "pending": 31,
+    "totalCount": 65
   },
   {
-    id: 3, batchNo: "SAP03", mode: "Offline", status: "Completed", startDate: "2024-03-01", endDate: "2024-08-31",
-    sections: {
-      Domain: { startDate: "2024-03-01", endDate: "2024-05-01" },
-      Aptitude: { startDate: "2024-05-02", endDate: "2024-07-01" },
-      Communication: { startDate: "2024-07-02", endDate: "2024-08-31" }
-    }
+    "id": 3,
+    "batchNo": "SAP03",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-03-01",
+    "endDate": "2024-08-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 64,
+    "pending": 35,
+    "totalCount": 99
   },
   {
-    id: 4, batchNo: "SAP04", mode: "Online", status: "Completed", startDate: "2024-04-01", endDate: "2024-09-30",
-    sections: {
-      Domain: { startDate: "2024-04-01", endDate: "2024-06-01" },
-      Aptitude: { startDate: "2024-06-02", endDate: "2024-08-01" },
-      Communication: { startDate: "2024-08-02", endDate: "2024-09-30" }
-    }
+    "id": 4,
+    "batchNo": "SAP04",
+    "mode": "Offline",
+    "status": "Completed",
+    "startDate": "2024-04-01",
+    "endDate": "2024-09-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 53,
+    "pending": 14,
+    "totalCount": 67
   },
   {
-    id: 5, batchNo: "SAP05", mode: "Offline", status: "Completed", startDate: "2024-05-01", endDate: "2024-10-31",
-    sections: {
-      Domain: { startDate: "2024-05-01", endDate: "2024-07-01" },
-      Aptitude: { startDate: "2024-07-02", endDate: "2024-09-01" },
-      Communication: { startDate: "2024-09-02", endDate: "2024-10-31" }
-    }
+    "id": 5,
+    "batchNo": "SAP05",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-05-01",
+    "endDate": "2024-10-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 40,
+    "pending": 42,
+    "totalCount": 82
   },
   {
-    id: 6, batchNo: "SAP06", mode: "Online", status: "Completed", startDate: "2024-06-01", endDate: "2024-11-30",
-    sections: {
-      Domain: { startDate: "2024-06-01", endDate: "2024-08-01" },
-      Aptitude: { startDate: "2024-08-02", endDate: "2024-10-01" },
-      Communication: { startDate: "2024-10-02", endDate: "2024-11-30" }
-    }
+    "id": 6,
+    "batchNo": "SAP06",
+    "mode": "Offline",
+    "status": "Completed",
+    "startDate": "2024-06-01",
+    "endDate": "2024-11-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 72,
+    "pending": 41,
+    "totalCount": 113
   },
   {
-    id: 7, batchNo: "SAP07", mode: "Offline", status: "Completed", startDate: "2024-07-01", endDate: "2024-12-31",
-    sections: {
-      Domain: { startDate: "2024-07-01", endDate: "2024-09-01" },
-      Aptitude: { startDate: "2024-09-02", endDate: "2024-11-01" },
-      Communication: { startDate: "2024-11-02", endDate: "2024-12-31" }
-    }
+    "id": 7,
+    "batchNo": "SAP07",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-07-01",
+    "endDate": "2024-12-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 63,
+    "pending": 43,
+    "totalCount": 106
   },
   {
-    id: 8, batchNo: "SAP08", mode: "Online", status: "Ongoing", startDate: "2024-08-01", endDate: "2025-01-31",
-    sections: {
-      Domain: { startDate: "2024-08-01", endDate: "2024-10-01" },
-      Aptitude: { startDate: "2024-10-02", endDate: "2024-12-01" },
-      Communication: { startDate: "2024-12-02", endDate: "2025-01-31" }
-    }
+    "id": 8,
+    "batchNo": "SAP08",
+    "mode": "Offline",
+    "status": "Completed",
+    "startDate": "2024-08-01",
+    "endDate": "2024-01-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 88,
+    "pending": 29,
+    "totalCount": 117
   },
   {
-    id: 9, batchNo: "SAP09", mode: "Offline", status: "Ongoing", startDate: "2024-09-01", endDate: "2025-02-28",
-    sections: {
-      Domain: { startDate: "2024-09-01", endDate: "2024-11-01" },
-      Aptitude: { startDate: "2024-11-02", endDate: "2025-01-01" },
-      Communication: { startDate: "2025-01-02", endDate: "2025-02-28" }
-    }
+    "id": 9,
+    "batchNo": "SAP09",
+    "mode": "Online",
+    "status": "Completed",
+    "startDate": "2024-09-01",
+    "endDate": "2024-02-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "AN",
+    "studentsPlaced": 43,
+    "pending": 26,
+    "totalCount": 69
   },
   {
-    id: 10, batchNo: "SAP10", mode: "Online", status: "Ongoing", startDate: "2024-10-01", endDate: "2025-03-31",
-    sections: {
-      Domain: { startDate: "2024-10-01", endDate: "2024-12-01" },
-      Aptitude: { startDate: "2024-12-02", endDate: "2025-02-01" },
-      Communication: { startDate: "2025-02-02", endDate: "2025-03-31" }
-    }
+    "id": 10,
+    "batchNo": "SAP10",
+    "mode": "Offline",
+    "status": "Ongoing",
+    "startDate": "2024-10-01",
+    "endDate": "2024-03-28",
+    "sections": {
+      "Domain": {
+        "startDate": "2024-01-01",
+        "endDate": "2024-03-01"
+      },
+      "Aptitude": {
+        "startDate": "2024-03-02",
+        "endDate": "2024-05-01"
+      },
+      "Communication": {
+        "startDate": "2024-05-02",
+        "endDate": "2024-06-30"
+      }
+    },
+    "session": "FN",
+    "studentsPlaced": 63,
+    "pending": 30,
+    "totalCount": 93
   }
 ];
 
