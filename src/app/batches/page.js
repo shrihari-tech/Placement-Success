@@ -7,11 +7,13 @@
   import { RiCloseCircleLine } from "react-icons/ri";
   import React, { useState, useEffect} from 'react';
   import { useDataContext } from '../context/dataContext';
-  import { useRef } from "react";
+  import { useRef,useCallback } from "react";
 
   // Inside your component
 
   export default function BatchModel() {
+    const searchContainerRef = useRef(null);
+
       const [batches, setBatches] = useState([]);
       const [filteredBatches, setFilteredBatches] = useState([]);
       const [activeTab, setActiveTab] = useState('Domain');
@@ -51,13 +53,6 @@ const [showEditConfirmationModal, setShowEditConfirmationModal] = useState(false
               Communication: ''
           }
       });
-
-const handleKeyDown = (e) => {
-  if (e.key === "Enter" && e.target.tagName === 'INPUT' && e.target.type !== 'text-readonly') {
-    e.preventDefault();
-    handleSearch();
-  }
-};
 
         const todayISO = new Date().toISOString().split("T")[0];
 
@@ -495,7 +490,8 @@ const hasChanges = () => {
           setDeleteError('');
       };
 
-    const handleSearch = () => {
+// First define handleSearch before any effects that use it
+const handleSearch = useCallback(() => {
   const hasSearchCriteria = searchTerm || (mode && mode !== 'Off') || startDate || endDate;
 
   if (!hasSearchCriteria) {
@@ -536,22 +532,19 @@ const hasChanges = () => {
         batch.sections?.Domain,
         batch.sections?.Aptitude,
         batch.sections?.Communication,
-      ].filter(Boolean); // Remove undefined/null sections
+      ].filter(Boolean);
 
-      // Check if any section matches the date condition
       return sectionDates.some(section => {
         const secStart = section.startDate ? new Date(section.startDate) : null;
         const secEnd = section.endDate ? new Date(section.endDate) : null;
 
         if (start && end) {
-          // Section overlaps with range [start, end]
           return secStart <= end && secEnd >= start;
         } else if (start) {
           return secEnd >= start;
         } else if (end) {
           return secStart <= end;
         }
-
         return true;
       });
     });
@@ -559,8 +552,23 @@ const hasChanges = () => {
 
   setFilteredBatches(results);
   setSearchInitiated(true);
-};
+}, [batches, endDate, mode, searchDateError, searchTerm, startDate]);
 
+// Then use it in your useEffect
+useEffect(() => {
+  const handleGlobalKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSearch();
+    }
+  };
+
+  window.addEventListener('keydown', handleGlobalKeyDown);
+
+  return () => {
+    window.removeEventListener('keydown', handleGlobalKeyDown);
+  };
+}, [handleSearch]);// Only need handleSearch in dependencies now
 
       const resetForm = () => {
           setNewBatch({
@@ -783,7 +791,7 @@ const hasChanges = () => {
     <div className="fixed top-0 ms-[-19] border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 z-10">
         <h1 className="fixed pl-3 text-xl text-gray-800  font-semibold">{batchHead}</h1>
     </div>
-    <div className='p-3'>
+    <div ref={searchContainerRef} className='p-3'>
          <div className='mt-[-20]'>
             <button
             onClick={() => setShowModal(true)}
@@ -823,160 +831,181 @@ const hasChanges = () => {
 
 </div>
 
-        <div className="bg-[#F4F3FF] px-6 py-4 rounded-xl">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-5 px-3 py-3">
-                <div className="relative">
-                    <input
-                        type="text"
-                        id="batch-id"
-                        className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
-                        placeholder=" "
-                        value={searchTerm}
-                    onKeyDown={handleKeyDown}  // Add this line
+<div id="search-container" className="bg-[#F4F3FF] px-6 py-4 rounded-xl" tabIndex={0}>
+    <div className="flex flex-row gap-5 px-3 py-3">
+        <div className="relative">
+            <input
+                type="text"
+                id="batch-id"
+                className={`block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                placeholder=" "
+                value={searchTerm}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleSearch();
+                  }
+                }}
+                onChange={(e) => { setSearchTerm(e.target.value); }}
+            />
+            <label
+                htmlFor="batch-id"
+                className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-3 scale-75 top-3.5 z-5 origin-[0] left-1 peer-focus:text-xs peer-focus:text-[#6750a4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#efeeff]"
+            >
+                Search by Batch number
+            </label>
+            {searchTerm && (
+                <button
+                    onClick={() => setSearchTerm('')}
+                    className="cursor-pointer absolute top-4 right-3 text-gray-500 hover:text-gray-00"
+                >
+                    <RiCloseCircleLine size={20} />
+                </button>
+            )}
+        </div>
+        
+        {/* Start Date Input */}
+        <div className="relative">
+            <input
+                id="start-date"
+                type="date"
+                value={startDate}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleSearch();
+                  }
+                }}
+                onChange={(e) => handleSearchStartDateChange(e.target.value)}
+                className="cursor-pointer block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+            />
+            <label
+                htmlFor="start-date"
+                className={`absolute px-3 pb-2 mt-1 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform z-5 origin-[0] left-4
+                ${startDate
+                    ? 'top-2 -translate-y-3 scale-75 text-[#6750A4] font-medium '
+                    : 'top-6 -translate-y-1/2 scale-100'}
+                peer-focus:top-3.5 peer-focus:-translate-y-7 peer-focus:font-bold peer-focus:scale-75 peer-focus:text-[#6750A4]`}
+            >
+                Start date
+            </label>
+        </div>
+        
+        {/* End Date Input */}
+        <div className="relative">
+            <input
+                id="end-date"
+                type="date"
+                value={endDate}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleSearch();
+                  }
+                }}
+                onChange={(e) => handleSearchEndDateChange(e.target.value)}
+                className="cursor-pointer block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+            />
+            <label
+                htmlFor="end-date"
+                className={`absolute px-3.5 pb-2 mt-1 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform z-5 origin-[0] left-4
+                ${endDate
+                    ? 'top-2 -translate-y-3 scale-75 text-[#6750A4] font-medium'
+                    : 'top-6 -translate-y-1/2 scale-100'}
+                peer-focus:top-3.5 peer-focus:-translate-y-7 peer-focus:font-bold peer-focus:scale-75 peer-focus:text-[#6750A4]`}
+            >
+                End date
+            </label>
+            {searchDateError && (
+                <p className="text-red-500 text-xs mt-1 px-2">{searchDateError}</p>
+            )}
+        </div>
+        
+        <div className="relative" ref={modeDropdownRef}>
+            <input
+                type="text"
+                id="mode"
+                readOnly
+                placeholder=" "
+                value={mode === 'Off' ? '' : mode}
+                onClick={() => setShowModeDropdown(!showModeDropdown)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleSearch();
+                  }
+                }}
+                className="block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+            />
+            <label
+                htmlFor="mode"
+                className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+            >
+                Mode
+            </label>
+            <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
 
-                        onChange={(e) => { setSearchTerm(e.target.value); }}
-                    />
-                    <label
-                        htmlFor="batch-id"
-                        className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-3 scale-75 top-3.5 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750a4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#efeeff]"
-                    >
-                        Search by Batch number
-                    </label>
-                    {searchTerm && (
-                        <button
-                            onClick={() => setSearchTerm('')}
-                            className="cursor-pointer absolute top-4 right-3 text-gray-500 hover:text-gray-00"
+            {mode && mode !== 'Off' && (
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setMode('Off');
+                        handleSearch();
+                    }}
+                    className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700"
+                >
+                    <RiCloseCircleLine size={20} />
+                </button>
+            )}
+
+            {showModeDropdown && (
+                <div className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md">
+                    {['Online', 'Offline'].map((item) => (
+                        <div
+                            key={item}
+                            tabIndex={0}
+                            className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                            onClick={() => {
+                                setMode(item);
+                                setShowModeDropdown(false);
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    setMode(item);
+                                    setShowModeDropdown(false);
+                                    handleSearch();
+                                }
+                            }}
                         >
-                            <RiCloseCircleLine size={20} />
-                        </button>
-                    )}
+                            {item}
+                        </div>
+                    ))}
                 </div>
-                {/* Start Date Input */}
-<div className="relative">
-  <input
-    id="start-date"
-    type="date"
-    value={startDate}
-    onKeyDown={handleKeyDown}
-    onChange={(e) => handleSearchStartDateChange(e.target.value)}
-    className="cursor-pointer block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
-  />
-  <label
-    htmlFor="start-date"
-    className={`absolute px-3 pb-2 mt-1 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform z-5 origin-[0] left-4
-      ${startDate
-        ? 'top-2 -translate-y-3 scale-75 text-[#6750A4] font-medium '
-        : 'top-1/2 -translate-y-1/2 scale-100'}
-      peer-focus:top-3.5 peer-focus:-translate-y-7 peer-focus:font-bold peer-focus:scale-75 peer-focus:text-[#6750A4]`}
-  >
-    Start date
-  </label>
-</div>
-               {/* End Date Input */}
-<div className="relative">
-  <input
-    id="end-date"
-    type="date"
-    value={endDate}
-    onKeyDown={handleKeyDown}
-    onChange={(e) => handleSearchEndDateChange(e.target.value)}
-    className="cursor-pointer block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
-  />
-  <label
-    htmlFor="end-date"
-    className={`absolute px-3.5 pb-2 mt-1 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform z-5 origin-[0] left-4
-      ${endDate
-        ? 'top-2 -translate-y-3 scale-75 text-[#6750A4] font-medium'
-        : 'top-1/2 -translate-y-1/2 scale-100'}
-      peer-focus:top-3.5 peer-focus:-translate-y-7 peer-focus:font-bold peer-focus:scale-75 peer-focus:text-[#6750A4]`}
-  >
-    End date
-  </label>
-
-  {searchDateError && (
-    <p className="text-red-500 text-xs mt-1 px-2">{searchDateError}</p>
-  )}
-</div>
-                <div className="relative" ref={modeDropdownRef} onKeyDown={handleKeyDown}>
-  <input
-    type="text"
-    id="mode"
-    readOnly
-    placeholder=" "
-    value={mode === 'Off' ? '' : mode}
-    onClick={() => setShowModeDropdown(!showModeDropdown)}
-    className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
-  />
-  <label
-    htmlFor="mode"
-    className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
-  >
-    Mode
-  </label>
-  <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
-
-  {mode && mode !== 'Off' && (
-    <button
-      onClick={(e) => {
-        e.stopPropagation();
-        setMode('Off');
-        handleSearch(); // Optional: Trigger search on clear
-      }}
-      className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700"
-    >
-      <RiCloseCircleLine size={20} />
-    </button>
-  )}
-
-  {showModeDropdown && (
-    <div className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md">
-      {['Online', 'Offline'].map((item) => (
-        <div
-          key={item}
-          tabIndex={0} // Makes it focusable with keyboard
-          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-          onClick={() => {
-            setMode(item);
-            setShowModeDropdown(false);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              setMode(item);
-              setShowModeDropdown(false);
-              handleSearch();
-            }
-          }}
-        >
-          {item}
+            )}
         </div>
-      ))}
+
+        <div className="flex gap-2 md:col-start-3 md:justify-end mr-[-220] ">
+            <button
+                onClick={handleSearch}
+                className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-5 py-4 rounded-xl text-sm font-semibold"
+            >
+                Search
+            </button>
+            <button
+                onClick={handleReset}
+                className="cursor-pointer bg-[#f1ecfb] hover:bg-[#E8DEF8] px-4 py-4 rounded-xl text-sm font-semibold text-gray-700 flex items-center gap-1"
+            >
+                <Image
+                    src='/reset.svg'
+                    alt="SAP Icon"
+                    width={20}
+                    height={20}
+                    className="object-contain"
+                /> Reset
+            </button>
+        </div>
     </div>
-  )}
 </div>
-
-               
-                <div className="flex gap-2 md:col-start-3 md:justify-end mr-[-220] md:pt-17">
-                    <button
-                        onClick={handleReset}
-                        className="cursor-pointer bg-[#f1ecfb] hover:bg-[#E8DEF8] px-4 py-4 rounded-xl text-sm font-semibold text-gray-700 flex items-center gap-1"
-                    >
-                        <Image
-                            src='/reset.svg'
-                            alt="SAP Icon"
-                            width={20}
-                            height={20}
-                            className="object-contain"
-                        /> Reset
-                    </button>
-                    <button
-                        onClick={handleSearch}
-                        className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-5 py-4 rounded-xl text-sm font-semibold"
-                    >
-                        Search
-                    </button>
-                </div>
-            </div>
-        </div>
 
         {searchInitiated && (
             <div  className="bg-white rounded-2xl shadow-sm mt-6 w-full">
@@ -1208,7 +1237,7 @@ const hasChanges = () => {
             ? 'top-3 -translate-y-3 scale-75 text-[#6750A4] font-medium'
             : 'top-1/2 -translate-y-1/2 scale-100'
         }
-        peer-focus:top-3.5 peer-focus:-translate-y-6 peer-focus:font-bold peer-focus:scale-75 peer-focus:text-[#6750A4]`}
+        peer-focus:top-3.5 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-bold peer-focus:text-[#6750A4]`}
     >
       Start date
     </label>
@@ -1470,8 +1499,7 @@ const hasChanges = () => {
             ${editBatchData.batchNo
               ? "top-[-10px] text-xs text-[#6750a4]"
               : "top-3.5 text-sm text-gray-400"}
-            peer-focus:top-[-10px] peer-focus:text-xs peer-focus:text-[#6750a4]
-          `}
+            peer-focus:top-[-10px] peer-focus:text-xs peer-focus:text-[#6750a4]`}
         >
           Batch name
         </label>
@@ -1698,5 +1726,6 @@ const hasChanges = () => {
     </div>
   );
 }
+
 
 
