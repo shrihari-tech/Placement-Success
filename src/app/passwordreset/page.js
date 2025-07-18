@@ -88,8 +88,9 @@ export default function ResetPassword() {
       <Toaster position="top-right" />
 
       {/* Logo */}
-      <div className="fixed top-6 right-6 z-10">
-        <Image src="/logo1.webp" className="h-12 w-36" alt="Logo" width={70} height={50} />
+      <div className="fixed top-35 md:top-6 md:right-6  z-20 ">
+        <Image src="/logo1.webp" className="h-20 w-40 md:h-16 md:w-44" 
+        alt="Logo" width={70} height={50} />
       </div>
 
       {/* Form */}

@@ -818,7 +818,8 @@ useEffect(() => {
       };
 
     return (
-<div className="flex min-h-screen mt-16 md:mt-1">            <Toaster position='top-right' />
+        <div className="flex min-h-screen mx-[-16] md:width-[750px]">
+            <Toaster position='top-right' />
 
 {/* Main model  */}
         <div className={`px-3 pt-20 flex-1 bg-[#F8FAFD] mb-12 ${showModal || showDeleteModal ? 'pointer-events-none' : ''}`}>
@@ -843,157 +844,292 @@ useEffect(() => {
                     </button>
                 </div>
 
-                {/* ====== STATS CARDS ====== */}
-                <div className="grid grid-cols-1 md:grid-cols-2 md:justify-between gap-4 mt-16 mb-6">
-                    {/* Ongoing */}
-                    <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
-                        <div className="absolute left-6 top-6 text-gray-700 text-4xl font-bold leading-10">{ongoingCount}</div>
-                        <div className="absolute left-6 top-[84px] text-xl text-gray-700 font-normal leading-7">Ongoing&nbsp;Count</div>
-                        <div className="absolute right-4.5 top-6 w-12 h-9 flex items-center justify-center">
-                            <Image src="/onging count.png" alt="Ongoing Icon" width={30} height={30} className="w-10 h-10" />
-                        </div>
-                    </div>
-                    {/* Completed */}
-                    <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
-                        <div className="absolute left-6 top-6 text-4xl text-gray-700 font-bold leading-10">{completedCount}</div>
-                        <div className="absolute left-6 top-[84px] text-xl text-gray-700 font-normal leading-7">Completed&nbsp;Count</div>
-                        <div className="absolute right-4.5 top-6 w-12 h-9 flex items-center justify-center">
-                            <Image src="/completed count.png" alt="Completed Icon" width={30} height={35} className="w-10 h-10" />
-                        </div>
-                    </div>
-                </div>
+        {/* parent row */}
+<div className="flex flex-col md:flex-row md:justify-between gap-4 mt-15 mb-6">
 
-                {/* ====== SEARCH SECTION ====== */}
-                <div id="search-container" className="bg-[#F4F3FF] px-6 py-4 rounded-xl" tabIndex={0}>
-                    <div className="flex flex-row justify-center flex-wrap gap-5 py-3">
-                        {/* Search by Batch number */}
-                        <div className="relative">
-                            <input
-                                type="text"
-                                id="batch-id"
-                                className={`block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
-                                placeholder=" "
-                                value={searchTerm}
-                                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleSearch(); } }}
-                                onChange={(e) => { setSearchTerm(e.target.value); }}
-                            />
-                            <label htmlFor="batch-id" className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-3 scale-75 top-3.5 z-5 origin-[0] left-1 peer-focus:text-xs peer-focus:text-[#6750a4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#efeeff]">
-                                Search by Batch number
-                            </label>
-                            {searchTerm && (
-                                <button onClick={() => setSearchTerm('')} className="cursor-pointer absolute top-4 right-3 text-gray-500 hover:text-gray-00">
-                                    <RiCloseCircleLine size={20} />
-                                </button>
-                            )}
-                        </div>
-                        
-                        {/* Start Date Input */}
-                        <div className="relative">
-                            <input id="start-date" type="date" value={startDate} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleSearch(); } }} onChange={(e) => handleSearchStartDateChange(e.target.value)} className="cursor-pointer block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer" />
-                            <label htmlFor="start-date" className={`absolute px-3 pb-2 mt-1 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform z-5 origin-[0] left-4 ${startDate ? 'top-2 -translate-y-3 scale-75 text-[#6750A4] font-medium ' : 'top-6 -translate-y-1/2 scale-100'} peer-focus:top-3.5 peer-focus:-translate-y-7 peer-focus:font-bold peer-focus:scale-75 peer-focus:text-[#6750A4]`}>
-                                Start date
-                            </label>
-                        </div>
-                        
-                        {/* End Date Input */}
-                        <div className="relative">
-                            <input id="end-date" type="date" value={endDate} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleSearch(); } }} onChange={(e) => handleSearchEndDateChange(e.target.value)} className="cursor-pointer block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer" />
-                            <label htmlFor="end-date" className={`absolute px-3.5 pb-2 mt-1 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform z-5 origin-[0] left-4 ${endDate ? 'top-2 -translate-y-3 scale-75 text-[#6750A4] font-medium' : 'top-6 -translate-y-1/2 scale-100'} peer-focus:top-3.5 peer-focus:-translate-y-7 peer-focus:font-bold peer-focus:scale-75 peer-focus:text-[#6750A4]`}>
-                                End date
-                            </label>
-                            {searchDateError && <p className="text-red-500 text-xs mt-1 px-2">{searchDateError}</p>}
-                        </div>
-                        
-                        {/* Mode Dropdown */}
-                        <div className="relative">
-                            <input type="text" id="mode" readOnly placeholder=" " value={mode === 'Off' ? '' : mode} onClick={() => setShowModeDropdown(!showModeDropdown)} className="block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer" />
-                            <label htmlFor="mode" className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6">
-                                Mode
-                            </label>
-                            <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
-                            {mode && mode !== 'Off' && (
-                                <button onClick={(e) => { e.stopPropagation(); setMode('Off'); handleSearch(); }} className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700">
-                                    <RiCloseCircleLine size={20} />
-                                </button>
-                            )}
-                            {showModeDropdown && (
-                                <div className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md">
-                                    {['Online', 'Offline'].map((item) => (
-                                        <div key={item} tabIndex={0} className="px-4 py-2 cursor-pointer hover:bg-gray-100" onClick={() => { setMode(item); setShowModeDropdown(false); }} onKeyDown={(e) => { if (e.key === "Enter") { setMode(item); setShowModeDropdown(false); handleSearch(); } }}>
-                                            {item}
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                        
-                        {/* Search and Reset Buttons */}
-                        <div className="flex gap-2 md:justify-end">
-                            <button onClick={handleSearch} className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-5 py-4 rounded-xl text-sm font-semibold">
-                                Search
-                            </button>
-                            <button onClick={handleReset} className="cursor-pointer bg-[#f1ecfb] hover:bg-[#E8DEF8] px-4 py-4 rounded-xl text-sm font-semibold text-gray-700 flex items-center gap-1">
-                                <Image src='/reset.svg' alt="Reset Icon" width={20} height={20} className="object-contain" />
-                                Reset
-                            </button>
-                        </div>
-                    </div>
-                </div>
+  {/* Ongoing */}
+  <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px]
+                  shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
+    <div className="absolute left-6 top-6 text-gray-700 text-4xl font-bold leading-10">{ongoingCount}</div>
+    <div className="absolute left-6 top-[84px] text-xl text-gray-700 font-normal leading-7">Ongoing&nbsp;Count</div>
+    <div className="absolute right-4.5 top-6 w-12 h-9 flex items-center justify-center">
+      <Image src="/onging count.png" alt="Ongoing Icon" width={30} height={30} className="w-10 h-10" />
+    </div>
+  </div>
 
-                {/* ====== TABLE SECTION - CORRECTED STRUCTURE ====== */}
-                {searchInitiated && (
-                    <div className="bg-white rounded-2xl shadow-sm mt-6 w-full overflow-x-hidden">
-                        {/* This div is the key: It creates the horizontal scroll context for the table */}
-                        <div className="w-full max-w-full overflow-hidden">
-                            <table className="min-w-full divide-y divide-gray-200">
-                                <thead className="bg-gray-50">
-                                    <tr>
-                                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">S.No</th>
-                                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Batch No</th>
-                                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
-                                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Session</th>
-                                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Total Students</th>                                        
-                                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Placed Students</th>
-                                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Yet to be placed</th>
-                                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Mode</th>
-                                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
-                                    {filteredBatches.map((batch, index) => (
-                                        <tr key={batch.id} className="hover:bg-[#e1cfff] hover:text-[#4005a0]">
-                                            <td className="px-4 text-gray-700 text-center py-3 text-sm whitespace-nowrap">{index + 1}</td>
-                                            <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">{batch.batchNo}</td>
-                                            <td className="px-4 py-3 text-center text-sm whitespace-nowrap">
-                                                {new Date(batch.sections?.Domain?.endDate) < new Date() &&
-                                                new Date(batch.sections?.Aptitude?.endDate) < new Date() &&
-                                                new Date(batch.sections?.Communication?.endDate) < new Date() ? (
-                                                    <Image src="/com.svg" alt="Completed" width={70} height={50} className="w-20 h-7" />
-                                                ) : (
-                                                    <Image src="/going.svg" alt="Ongoing" width={70} height={50} className="w-20 h-7" />
-                                                )}
-                                            </td>
-                                            <td className="px-4 py-3 text-xs text-center whitespace-nowrap ">{batch.session}</td>
-                                            <td className="px-4 py-3 text-xs text-center whitespace-nowrap ">{batch.totalCount}</td>
-                                            <td className="px-4 py-3 text-xs text-center whitespace-nowrap ">{batch.studentsPlaced}</td>
-                                            <td className="px-4 py-3 text-xs text-center whitespace-nowrap ">{batch.pending}</td>
-                                            <td className="px-4 py-3 text-gray-700 text-center text-sm whitespace-nowrap">{batch.mode}</td>
-                                            <td className="px-4 py-3 text-sm text-center whitespace-nowrap">
-                                                <div className="flex gap-1">
-                                                    <button onClick={() => handleAction('view', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded"><FiEye className="h-4 w-4" /></button>
-                                                    <button onClick={() => handleAction('edit', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded"><FiEdit className="h-4 w-4" /></button>
-                                                    <button onClick={() => handleAction('delete', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded text-black"><FiTrash2 className="h-4 w-4" /></button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                )}
-            </div>
+  {/* Completed */}
+  <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px]
+                  shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
+    <div className="absolute left-6 top-6 text-4xl text-gray-700 font-bold leading-10">{completedCount}</div>
+    <div className="absolute left-6 top-[84px] text-xl text-gray-700 font-normal leading-7">Completed&nbsp;Count</div>
+    <div className="absolute right-4.5 top-6 w-12 h-9 flex items-center justify-center">
+      <Image src="/completed count.png" alt="Completed Icon" width={30} height={35} className="w-10 h-10" />
+    </div>
+  </div>
+
+</div>
+{/* search section   */}
+<div id="search-container" className="bg-[#F4F3FF] px-6 py-4 rounded-xl" tabIndex={0}>
+    <div className="flex flex-row justify-center flex-wrap gap-5 py-3">
+        <div className="relative">
+            <input
+                type="text"
+                id="batch-id"
+                className={`block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                placeholder=" "
+                value={searchTerm}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleSearch();
+                  }
+                }}
+                onChange={(e) => { setSearchTerm(e.target.value); }}
+            />
+            <label
+                htmlFor="batch-id"
+                className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-3 scale-75 top-3.5 z-5 origin-[0] left-1 peer-focus:text-xs peer-focus:text-[#6750a4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#efeeff]"
+            >
+                Search by Batch number
+            </label>
+            {searchTerm && (
+                <button
+                    onClick={() => setSearchTerm('')}
+                    className="cursor-pointer absolute top-4 right-3 text-gray-500 hover:text-gray-00"
+                >
+                    <RiCloseCircleLine size={20} />
+                </button>
+            )}
         </div>
+        
+        {/* Start Date Input */}
+        <div className="relative">
+            <input
+                id="start-date"
+                type="date"
+                value={startDate}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleSearch();
+                  }
+                }}
+                onChange={(e) => handleSearchStartDateChange(e.target.value)}
+                className="cursor-pointer block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+            />
+            <label
+                htmlFor="start-date"
+                className={`absolute px-3 pb-2 mt-1 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform z-5 origin-[0] left-4
+                ${startDate
+                    ? 'top-2 -translate-y-3 scale-75 text-[#6750A4] font-medium '
+                    : 'top-6 -translate-y-1/2 scale-100'}
+                peer-focus:top-3.5 peer-focus:-translate-y-7 peer-focus:font-bold peer-focus:scale-75 peer-focus:text-[#6750A4]`}
+            >
+                Start date
+            </label>
+        </div>
+        
+        {/* End Date Input */}
+        <div className="relative">
+            <input
+                id="end-date"
+                type="date"
+                value={endDate}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleSearch();
+                  }
+                }}
+                onChange={(e) => handleSearchEndDateChange(e.target.value)}
+                className="cursor-pointer block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+            />
+            <label
+                htmlFor="end-date"
+                className={`absolute px-3.5 pb-2 mt-1 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform z-5 origin-[0] left-4
+                ${endDate
+                    ? 'top-2 -translate-y-3 scale-75 text-[#6750A4] font-medium'
+                    : 'top-6 -translate-y-1/2 scale-100'}
+                peer-focus:top-3.5 peer-focus:-translate-y-7 peer-focus:font-bold peer-focus:scale-75 peer-focus:text-[#6750A4]`}
+            >
+                End date
+            </label>
+            {searchDateError && (
+                <p className="text-red-500 text-xs mt-1 px-2">{searchDateError}</p>
+            )}
+        </div>
+        
+        <div className="relative">
+            <input
+                type="text"
+                id="mode"
+                readOnly
+                placeholder=" "
+                value={mode === 'Off' ? '' : mode}
+                onClick={() => setShowModeDropdown(!showModeDropdown)}
+                className="block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+            />
+            <label
+                htmlFor="mode"
+                className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+            >
+                Mode
+            </label>
+            <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
+
+            {mode && mode !== 'Off' && (
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setMode('Off');
+                        handleSearch();
+                    }}
+                    className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700"
+                >
+                    <RiCloseCircleLine size={20} />
+                </button>
+            )}
+
+            {showModeDropdown && (
+                <div className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md">
+                    {['Online', 'Offline'].map((item) => (
+                        <div
+                            key={item}
+                            tabIndex={0}
+                            className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                            onClick={() => {
+                                setMode(item);
+                                setShowModeDropdown(false);
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    setMode(item);
+                                    setShowModeDropdown(false);
+                                    handleSearch();
+                                }
+                            }}
+                        >
+                            {item}
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+
+        <div className="flex gap-2  md:justify-end">
+            <button
+                onClick={handleSearch}
+                className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-5 py-4 rounded-xl text-sm font-semibold"
+            >
+                Search
+            </button>
+            <button
+                onClick={handleReset}
+                className="cursor-pointer bg-[#f1ecfb] hover:bg-[#E8DEF8] px-4 py-4 rounded-xl text-sm font-semibold text-gray-700 flex items-center gap-1"
+            >
+                <Image
+                    src='/reset.svg'
+                    alt="SAP Icon"
+                    width={20}
+                    height={20}
+                    className="object-contain"
+                /> Reset
+            </button>
+        </div>
+    </div>
+</div>
+
+        {searchInitiated && (
+            <div  className="bg-white rounded-2xl shadow-sm mt-6 w-full">
+                <div className="w-full overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">S.No</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Batch No</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                {/* <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Overall&nbsp;Start</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Overall&nbsp;End</th> */}
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Domain</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aptitude</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Communication</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mode</th>
+                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+  {filteredBatches.map((batch, index) => (
+    <tr key={batch.id} className="hover:bg-[#e1cfff] hover:text-[#4005a0]">
+      <td className="px-4 text-gray-700 py-3 text-sm whitespace-nowrap">{index + 1}</td>
+
+      {/* Batch No */}
+      <td className="px-4 py-3 text-gray-700 text-sm whitespace-nowrap">{batch.batchNo}</td>
+
+      {/* Status */}
+      <td className="px-4 py-3 text-sm whitespace-nowrap">
+{new Date(batch.sections?.Domain?.endDate) < new Date() &&
+ new Date(batch.sections?.Aptitude?.endDate) < new Date() &&
+ new Date(batch.sections?.Communication?.endDate) < new Date() ? (
+  <Image
+    src="/com.svg"
+    alt="Completed"
+    width={70}
+    height={50}
+    className="w-20 h-7"
+  />
+) : (
+  <Image
+    src="/going.svg"
+    alt="Ongoing"
+    width={70}
+    height={50}
+    className="w-20 h-7"
+  />
+)}
+      </td>
+
+      {/* Domain dates */}
+      <td className="px-4 py-3 text-xs whitespace-nowrap w-44">
+        {formatDate(batch.sections?.Domain?.startDate)} – {formatDate(batch.sections?.Domain?.endDate)}
+      </td>
+
+      {/* Aptitude dates */}
+      <td className="px-4 py-3 text-xs whitespace-nowrap w-44">
+        {formatDate(batch.sections?.Aptitude?.startDate)} – {formatDate(batch.sections?.Aptitude?.endDate)}
+      </td>
+
+      {/* Communication dates */}
+      <td className="px-4 py-3 text-xs whitespace-nowrap w-44">
+        {formatDate(batch.sections?.Communication?.startDate)} – {formatDate(batch.sections?.Communication?.endDate)}
+      </td>
+
+      {/* Mode */}
+      <td className="px-4 py-3 text-gray-700 text-sm whitespace-nowrap">{batch.mode}</td>
+
+      {/* Actions */}
+      <td className="px-4 py-3 text-sm whitespace-nowrap">
+        <div className="flex gap-1">
+          <button onClick={() => handleAction('view', batch.id)} className=" cursor-pointer p-1 hover:bg-gray-100 rounded">
+            <FiEye className="h-4 w-4" />
+          </button>
+          <button onClick={() => handleAction('edit', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded">
+            <FiEdit className="h-4 w-4" />
+          </button>
+          <button onClick={() => handleAction('delete', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded text-black">
+            <FiTrash2 className="h-4 w-4" />
+          </button>
+        </div>
+      </td>
+    </tr>
+  ))}
+</tbody>
+
+                    </table>
+                </div>
+            </div>
+        )}
+    </div>
+</div>
 
 {/* addNewBatch model */}
 {showModal && (
@@ -1712,19 +1848,20 @@ useEffect(() => {
 
   </div>
 )}
-
      {/* Domain */}
      {infoTab === 'Domain' && (
   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 font-sans text-gray-800">
     
-    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Start & End Date</h3>
-      <p className="text-base font-medium text-gray-600">
-        {formatDate(selectedBatch.sections?.Domain?.startDate)}<br />
-        {formatDate(selectedBatch.sections?.Domain?.endDate)}
-      </p>
-    </div>
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md space-y-2">
+    <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Domain Dates</h3>
+  <p className="text-sm font-semibold text-[#6b21a8] tracking-wide">
+    Start - <span className="text-base font-medium text-gray-600">{formatDate(selectedBatch.sections?.Domain?.startDate)}</span>
+  </p>
 
+  <p className="text-sm font-semibold text-[#6b21a8] tracking-wide">
+    End - <span className="text-base font-medium text-gray-600">{formatDate(selectedBatch.sections?.Domain?.endDate)}</span>
+  </p>
+</div>
     <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
       <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Status</h3>
       <p className="text-base font-medium text-gray-600">{selectedBatch?.status}</p>
@@ -1739,20 +1876,32 @@ useEffect(() => {
       <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Trainer Name</h3>
       <p className="text-base font-medium text-gray-600">Shri Hari</p>
     </div>
-
+    <div className="w-full col-span-full bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+  <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-3">EPIC Data</h3>
+  <div className="flex flex-wrap justify-between gap-4 text-base font-medium text-gray-600">
+    <p><span className="text-[#6b21a8] font-bold">E</span>xcellent - 10</p>
+    <p><span className="text-[#6b21a8] font-bold">P</span>roficient - 10</p>
+    <p><span className="text-[#6b21a8] font-bold">I</span>deal - 10</p>
+    <p><span className="text-[#6b21a8] font-bold">C</span>apable - 10</p>
+  </div>
+</div>
   </div>
 )}
     {/* Aptitude */}
     {infoTab === 'Aptitude' && (
   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 font-sans text-gray-800">
     
-    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Start & End Date</h3>
-      <p className="text-base font-medium text-gray-600">
-        {formatDate(selectedBatch.sections?.Aptitude?.startDate)}<br />
-        {formatDate(selectedBatch.sections?.Aptitude?.endDate)}
-      </p>
-    </div>
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md space-y-2">
+    <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Apptitude Dates</h3>
+  <p className="text-sm font-semibold text-[#6b21a8] tracking-wide">
+    Start - <span className="text-base font-medium text-gray-600">{formatDate(selectedBatch.sections?.Aptitude?.startDate)}</span>
+  </p>
+
+  <p className="text-sm font-semibold text-[#6b21a8] tracking-wide">
+    End - <span className="text-base font-medium text-gray-600">{formatDate(selectedBatch.sections?.Aptitude?.endDate)}</span>
+  </p>
+</div>
+
 
     <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
       <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Status</h3>
@@ -1768,21 +1917,31 @@ useEffect(() => {
       <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Trainer Name</h3>
       <p className="text-base font-medium text-gray-600">Shri Hari</p>
     </div>
-
+    <div className="w-full col-span-full bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+  <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-3">EPIC Data</h3>
+  <div className="flex flex-wrap justify-between gap-4 text-base font-medium text-gray-600">
+    <p><span className="text-[#6b21a8] font-bold">E</span>xcellent - 10</p>
+    <p><span className="text-[#6b21a8] font-bold">P</span>roficient - 10</p>
+    <p><span className="text-[#6b21a8] font-bold">I</span>deal - 10</p>
+    <p><span className="text-[#6b21a8] font-bold">C</span>apable - 10</p>
+  </div>
+</div>
   </div>
 
     )}
     {/* Communication */}
     {infoTab === 'Communication' && (
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8 font-sans text-gray-800">
-      <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-        <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Start & End Date</h3>
-        <p className="text-base font-medium text-gray-600">
-          {formatDate(selectedBatch.sections?.Communication?.startDate)} <br /> 
-          {formatDate(selectedBatch.sections?.Communication?.endDate)}
-        </p>
-      </div>
-    
+      <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md space-y-2">
+    <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Communication Dates</h3>
+  <p className="text-sm font-semibold text-[#6b21a8] tracking-wide">
+    Start - <span className="text-base font-medium text-gray-600">{formatDate(selectedBatch.sections?.Communication?.startDate)}</span>
+  </p>
+
+  <p className="text-sm font-semibold text-[#6b21a8] tracking-wide">
+    End - <span className="text-base font-medium text-gray-600">{formatDate(selectedBatch.sections?.Communication?.endDate)}</span>
+  </p>
+</div>
       <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
         <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Status</h3>
         <p className="text-base font-medium text-gray-600">{selectedBatch?.status}</p>
@@ -1797,41 +1956,68 @@ useEffect(() => {
         <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Trainer Name</h3>
         <p className="text-base font-medium text-gray-600">Shri Hari</p>
       </div>
+      <div className="w-full col-span-full bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+  <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-3">EPIC Data</h3>
+  <div className="flex flex-wrap justify-between gap-4 text-base font-medium text-gray-600">
+    <p><span className="text-[#6b21a8] font-bold">E</span>xcellent - 10</p>
+    <p><span className="text-[#6b21a8] font-bold">P</span>roficient - 10</p>
+    <p><span className="text-[#6b21a8] font-bold">I</span>deal - 10</p>
+    <p><span className="text-[#6b21a8] font-bold">C</span>apable - 10</p>
+  </div>
+</div>
+
     </div>
-    
     )}
 
     {/* Placement */}
     {infoTab === 'Placement' && (
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 font-sans text-gray-800">
-<div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-  <h3 className="text-sm font-semibold  text-[#6b21a8] tracking-wide mb-1">Not Required</h3>
-  <p className="text-4xl font-bold text-gray-600">5</p>
-</div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 font-sans text-gray-800">
 
-<div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-  <h3 className="text-sm font-semibold  text-[#6b21a8] tracking-wide mb-1">Ready For Placement</h3>
-  <p className="text-4xl font-bold text-gray-600">4</p>
-</div>
-     
-<div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-  <h3 className="text-sm font-semibold  text-[#6b21a8] tracking-wide mb-1">KGM Placed</h3>
-  <p className="text-4xl font-bold text-gray-600">11</p>
-</div>
-
-<div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-  <h3 className="text-sm font-semibold  text-[#6b21a8] tracking-wide mb-1">Self Placed</h3>
-  <p className="text-4xl font-bold text-gray-600">4</p>
-</div>
-<div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-  <h3 className="text-sm font-semibold  text-[#6b21a8] tracking-wide mb-1">Yet to be Placed</h3>
-  <p className="text-4xl font-bold text-gray-600">5</p>
-</div>
-<div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-  <h3 className="text-sm font-semibold  text-[#6b21a8] tracking-wide mb-1">Success Rate</h3>
-  <p className="text-4xl font-bold text-gray-600">62.5%</p>
-</div>
+    {/* First 6 boxes */}
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Not Required</h3>
+      <p className="text-4xl font-bold text-gray-600">5</p>
+    </div>
+  
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Ready For Placement</h3>
+      <p className="text-4xl font-bold text-gray-600">4</p>
+    </div>
+  
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">KGM Placed</h3>
+      <p className="text-4xl font-bold text-gray-600">11</p>
+    </div>
+  
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Self Placed</h3>
+      <p className="text-4xl font-bold text-gray-600">4</p>
+    </div>
+  
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Yet to be Placed</h3>
+      <p className="text-4xl font-bold text-gray-600">5</p>
+    </div>
+  
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Success Rate</h3>
+      <p className="text-4xl font-bold text-gray-600">62.5%</p>
+    </div>
+    
+    <div className="lg:col-span-3 flex justify-center gap-6">
+  <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md flex-1 max-w-[300px]">
+    <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Not Eligible for Placement</h3>
+    <p className="text-4xl font-bold text-gray-600">5</p>
   </div>
+
+  <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md flex-1 max-w-[300px]">
+    <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Placement Successful Candidate</h3>
+    <p className="text-4xl font-bold text-gray-600">15</p>
+  </div>
+</div>
+
+  </div>
+ 
     )}
         {/* Close Button */}
         <div className="flex justify-end mt-6">

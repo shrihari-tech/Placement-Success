@@ -92,7 +92,7 @@ export default function Home() {
   return (
     <div className="container mx-auto flex items-center justify-center h-screen px-2 overflow-hidden">
       {/* Background Image at Top Left */}
-      <div className="fixed top-0 left-0 z-0 ">
+      <div className="fixed top-0 left-0 z-0">
         <Image
           src="/Background.png"
           alt="Background"
@@ -108,10 +108,10 @@ export default function Home() {
         </div>
       </div>
       {/* Logo Section */}
-      <div className="fixed top-6 right-6 flex items-center justify-center z-20">
+      <div className="fixed top-35 md:top-6 md:right-6 z-20 ">
         <Image
           src='/logo1.webp'
-          className="h-12 w-36 md:h-16 md:w-44"
+          className="h-20 w-40 md:h-16 md:w-44"
           alt="Logo"
           width={70}
           height={50}
@@ -152,7 +152,7 @@ export default function Home() {
                     />
                     <label
                     htmlFor="email"
-                    className={`absolute left-3 bg-white px-1 transition-all
+                    className={`absolute left-3 bg-[#F8FAFD] px-1 transition-all
                       ${email ? "-top-2 text-sm text-[#3f2fb4]" : "top-3 text-base text-gray-400"}
                       peer-focus:-top-3 peer-focus:text-sm peer-focus:text-[#3f2fb4]`}
                     >
@@ -182,7 +182,7 @@ export default function Home() {
               />
               <label
                 htmlFor="password"
-                className={`absolute left-3 bg-white px-1 transition-all
+                className={`absolute left-3 bg-[#F8FAFD] px-1 transition-all
                   ${password ? "-top-2 text-sm text-[#3f2fb4]" : "top-3 text-base text-gray-400"}
                   peer-focus:-top-3 peer-focus:text-sm peer-focus:text-[#3f2fb4]`}
               >
