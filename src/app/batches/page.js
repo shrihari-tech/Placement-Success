@@ -308,7 +308,7 @@ const toDDMMYYYY = (d) => {
       }, [batchData]);
 
       useEffect(() => {
-          if (showModal || showDeleteModal) {
+          if (showModal || showDeleteModal || showViewModal || showEditModal) {
               document.body.style.overflow = 'hidden';
           } else {
               document.body.style.overflow = 'auto';
@@ -316,7 +316,7 @@ const toDDMMYYYY = (d) => {
           return () => {
               document.body.style.overflow = 'auto';
           };
-      }, [showModal, showDeleteModal]);
+      }, [showModal, showDeleteModal , showViewModal, showEditModal]);
 
       const validateSearchDates = (start, end) => {
           if (start && end) {
@@ -814,6 +814,7 @@ useEffect(() => {
               }
 
               return updatedBatch;
+              
           });
       };
 
@@ -1775,7 +1776,7 @@ useEffect(() => {
       {/* Tabs */}
       <div className="w-full">
         {/* Tab Buttons */}
-        <div className="flex justify-between bg-[#F8FAFD] rounded-t-md relative">
+        <div className=" flex justify-between bg-[#F8FAFD] rounded-t-md relative">
           {['Basic Info', 'Batch Details', 'Domain', 'Aptitude', 'Communication', 'Placement'].map((tab) => (
             <button
               key={tab}
