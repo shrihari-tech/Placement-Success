@@ -40,9 +40,6 @@ export default function NavBar() {
   };
 }, [mobileMenuOpen]);
 
-
-
-
   useEffect(() => {
     const storedSubNav = localStorage.getItem('activeSubNav');
     if (storedSubNav) {
