@@ -32,6 +32,10 @@ const [showEditConfirmationModal, setShowEditConfirmationModal] = useState(false
 
       const [showEditModal , setShowEditModel] = useState(false);
       const [editBatchData, setEditBatchData] = useState(null);
+      const [showViewModal, setShowViewModal] = useState(false);
+      const [infoTab, setInfoTab] = useState('Basic Info');
+      const [selectedBatch, setSelectedBatch] = useState(null);
+
       const [errors, setErrors] = useState({}); 
         const [hasErrors, setHasErrors] = useState(false);
   const [initialEditBatchData, setInitialEditBatchData] = useState(null);   
@@ -390,7 +394,12 @@ const toDDMMYYYY = (d) => {
     handleEditBatch(batchId);
     setShowEditModel(true);
   }
-  setShowActions(null);
+  else if (action === 'view') {
+    const batch = batches.find(b => b.id === batchId);
+    setSelectedBatch(batch);
+    setShowViewModal(true);
+    setShowActions(null);
+  }
 };
 
 const handleEditBatch = (batchId) => {
@@ -1743,9 +1752,241 @@ useEffect(() => {
 
 {/* <Toaster position="top-right" reverseOrder={false} /> */}
 
+{/*View Modal*/}
+{showViewModal && selectedBatch && (
+  <div
+    className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+    onClick={() => setShowViewModal(false)}
+  >
+    <div
+      className="w-[650px] bg-[#F8FAFD] rounded-[10px] p-6"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-lg font-medium">Batch Details</h2>
+        <button
+          onClick={() => setShowViewModal(false)}
+          className="cursor-pointer text-gray-500 hover:text-gray-700"
+        >
+          <RiCloseCircleLine size={20} />
+        </button>
+      </div>
+
+      {/* Tabs */}
+      <div className="w-full">
+        {/* Tab Buttons */}
+        <div className="flex justify-between bg-[#F8FAFD] rounded-t-md relative">
+          {['Basic Info', 'Batch Details', 'Domain', 'Aptitude', 'Communication', 'Placement'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setInfoTab(tab)}
+              className={`cursor-pointer flex-1 py-2 text-xs sm:text-sm font-medium transition duration-300 ${
+                infoTab === tab ? 'text-[#6750A4]' : 'text-gray-700'
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+          {/* Active Tab Underline */}
+          <div
+            className="absolute bottom-0 h-[3px] bg-[#6750A4] transition-all duration-300"
+            style={{
+              width: `${100 / 6}%`,
+              transform: `translateX(${
+                ['Basic Info', 'Batch Details', 'Domain', 'Aptitude', 'Communication', 'Placement'].indexOf(infoTab) * 100
+              }%)`,
+            }}
+          />
+        </div>
+
+        {/* Modal Content */}
+        {/*Basic info tab*/}
+        {infoTab === 'Basic Info' && (
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8 font-sans text-gray-800">
+
+    {/* Batch No */}
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Batch No</h3>
+      <p className="text-base font-medium text-gray-600">{selectedBatch.batchNo}</p>
+    </div>
+
+    {/* Status */}
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Status</h3>
+      <p className="text-base font-medium text-gray-600">{selectedBatch?.status}</p>
+    </div>
+
+    {/* Mode */}
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md col-span-full mx-auto w-full sm:w-2/3 lg:w-1/2">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Mode</h3>
+      <p className="text-base font-medium text-gray-600">{selectedBatch?.mode}</p>
+    </div>
+
+  </div>
+)}
+        {/* Batch Details tab*/ }
+        {infoTab === 'Batch Details' && (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 font-sans text-gray-800">
+
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Mode</h3>
+      <p className="text-base font-medium text-gray-600">{selectedBatch?.mode}</p>
+    </div>
+
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Session</h3>
+      <p className="text-base font-medium text-gray-600">Interview Session</p>
+    </div>
+
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md md:col-span-2 md:mx-auto md:w-1/2">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Student Count</h3>
+      <p className="text-base font-medium text-gray-600">40</p>
+    </div>
+
+  </div>
+)}
+
+     {/* Domain */}
+     {infoTab === 'Domain' && (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 font-sans text-gray-800">
+    
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Start & End Date</h3>
+      <p className="text-base font-medium text-gray-600">
+        {formatDate(selectedBatch.sections?.Domain?.startDate)}<br />
+        {formatDate(selectedBatch.sections?.Domain?.endDate)}
+      </p>
+    </div>
+
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Status</h3>
+      <p className="text-base font-medium text-gray-600">{selectedBatch?.status}</p>
+    </div>
+
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Batch Progress</h3>
+      <p className="text-base font-medium text-gray-600">IRC Completed</p>
+    </div>
+
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Trainer Name</h3>
+      <p className="text-base font-medium text-gray-600">Shri Hari</p>
+    </div>
+
+  </div>
+)}
+    {/* Aptitude */}
+    {infoTab === 'Aptitude' && (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 font-sans text-gray-800">
+    
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Start & End Date</h3>
+      <p className="text-base font-medium text-gray-600">
+        {formatDate(selectedBatch.sections?.Aptitude?.startDate)}<br />
+        {formatDate(selectedBatch.sections?.Aptitude?.endDate)}
+      </p>
+    </div>
+
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Status</h3>
+      <p className="text-base font-medium text-gray-600">{selectedBatch?.status}</p>
+    </div>
+
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Batch Progress</h3>
+      <p className="text-base font-medium text-gray-600">Capstone Project</p>
+    </div>
+
+    <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+      <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Trainer Name</h3>
+      <p className="text-base font-medium text-gray-600">Shri Hari</p>
+    </div>
+
+  </div>
+
+    )}
+    {/* Communication */}
+    {infoTab === 'Communication' && (
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8 font-sans text-gray-800">
+      <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+        <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Start & End Date</h3>
+        <p className="text-base font-medium text-gray-600">
+          {formatDate(selectedBatch.sections?.Communication?.startDate)} <br /> 
+          {formatDate(selectedBatch.sections?.Communication?.endDate)}
+        </p>
+      </div>
+    
+      <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+        <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Status</h3>
+        <p className="text-base font-medium text-gray-600">{selectedBatch?.status}</p>
+      </div>
+    
+      <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+        <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Batch Progress</h3>
+        <p className="text-base font-medium text-gray-600">Initial Stage</p>
+      </div>
+    
+      <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md ">
+        <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Trainer Name</h3>
+        <p className="text-base font-medium text-gray-600">Shri Hari</p>
+      </div>
+    </div>
+    
+    )}
+
+    {/* Placement */}
+    {infoTab === 'Placement' && (
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 font-sans text-gray-800">
+<div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+  <h3 className="text-sm font-semibold  text-[#6b21a8] tracking-wide mb-1">Not Required</h3>
+  <p className="text-4xl font-bold text-gray-600">5</p>
+</div>
+
+<div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+  <h3 className="text-sm font-semibold  text-[#6b21a8] tracking-wide mb-1">Ready For Placement</h3>
+  <p className="text-4xl font-bold text-gray-600">4</p>
+</div>
+     
+<div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+  <h3 className="text-sm font-semibold  text-[#6b21a8] tracking-wide mb-1">KGM Placed</h3>
+  <p className="text-4xl font-bold text-gray-600">11</p>
+</div>
+
+<div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+  <h3 className="text-sm font-semibold  text-[#6b21a8] tracking-wide mb-1">Self Placed</h3>
+  <p className="text-4xl font-bold text-gray-600">4</p>
+</div>
+<div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+  <h3 className="text-sm font-semibold  text-[#6b21a8] tracking-wide mb-1">Yet to be Placed</h3>
+  <p className="text-4xl font-bold text-gray-600">5</p>
+</div>
+<div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+  <h3 className="text-sm font-semibold  text-[#6b21a8] tracking-wide mb-1">Success Rate</h3>
+  <p className="text-4xl font-bold text-gray-600">62.5%</p>
+</div>
+  </div>
+    )}
+        {/* Close Button */}
+        <div className="flex justify-end mt-6">
+          <button
+            onClick={() => setShowViewModal(false)}
+            className="cursor-pointer bg-[#6750A4] text-white px-4 py-2.5 rounded-2xl text-sm font-medium"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+
+
+
+<Toaster position="top-right" reverseOrder={false} />
     </div>
   );
+
 }
 
-
-
+  
