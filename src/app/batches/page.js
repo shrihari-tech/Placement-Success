@@ -823,24 +823,27 @@ useEffect(() => {
             <Toaster position='top-right' />
 
 {/* Main model  */}
-<div className={`px-3 pt-20 flex-1 bg-[#F8FAFD] mb-[12] ${showModal || showDeleteModal ? 'pointer-events-none' : ''}`}>
-    <div className="fixed top-0 ms-[-19] border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 z-10">
-        <h1 className="fixed pl-3 text-xl text-gray-800  font-semibold">{batchHead}</h1>
-    </div>
-    <div ref={searchContainerRef} className='p-3'>
-         <div className='mt-[-20]'>
-            <button
-            onClick={() => setShowModal(true)}
-            className="absolute cursor-pointer z-1 flex p-2 right-5 bg-[#3f2fb4] hover:bg-[#3f2fb4d4] text-white text-sm font-bold px-2 py-2.5 rounded-lg shadow-sm">
-            <Image
-                src='/add.svg'
-                alt="SAP Icon"
-                width={18}
-                height={18}
-                className="mx-2"
-            /> Add Batch
-        </button>
-        </div>
+        <div className={`px-3 pt-20 flex-1 bg-[#F8FAFD] mb-12 ${showModal || showDeleteModal ? 'pointer-events-none' : ''}`}>
+            {/* ====== HEADER ====== */}
+            <div className="fixed top-15 md:top-0 ms-[-19px] border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 z-20">
+                <h1 className="fixed pl-3 text-xl text-gray-800 font-semibold">{batchHead}</h1>
+            </div>
+
+            <div ref={searchContainerRef} className='p-3'>
+                {/* ====== ADD BATCH BUTTON ====== */}
+                <div className='mt-[-20px] z-0'>
+                    <button
+                        onClick={() => setShowModal(true)}
+                        className="absolute cursor-pointer z-10 flex p-2 right-5 bg-[#3f2fb4] hover:bg-[#3f2fb4d4] text-white text-sm font-bold px-2 py-2.5 rounded-lg shadow-sm">
+                        <Image
+                            src='/add.svg'
+                            alt="Add Icon"
+                            width={18}
+                            height={18}
+                            className="mx-2"
+                        /> Add Batch
+                    </button>
+                </div>
 
         {/* parent row */}
 <div className="flex flex-col md:flex-row md:justify-between gap-4 mt-15 mb-6">
@@ -2030,10 +2033,6 @@ useEffect(() => {
     </div>
   </div>
 )}
-
-
-
-
 <Toaster position="top-right" reverseOrder={false} />
     </div>
   );
