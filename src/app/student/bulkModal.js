@@ -11,8 +11,17 @@ export default function BulkModal() {
   const [error, setError] = useState("");
   const fileInputRef = useRef(null);
 
-  const requiredFields = [
-    
+{/*Fields Names*/}
+
+  const headerFieldsToIgnore = [
+    "BASIC ESSENTIAL DETAILS",
+    "10TH & 12TH DETAILS",
+    "UG DETAILS",
+    "PG DETAILS",
+    "Languages Known"
+  ];
+
+  const requiredDataFields = [
     "BATCH NAME",
     "STUDENT FULL NAME (AS PER DOCUMENTS)",
     "Booking ID",
@@ -52,25 +61,72 @@ export default function BulkModal() {
     "WILLING TO RELOCATE (FOR PLACEMENT ASSISTANCE)",
     "LANGUAGES KNOWN (TO WRITE)",
     "LANGUAGES KNOWN (TO READ)",
-    "LANGUAGES KNOWN (TO SPEAK)",
+    "LANGUAGES KNOWN (TO SPEAK)"
   ];
 
-  const handleOpenModal = () => {
-    setIsOpen(true);
-    setFile(null);
-    setUploadSuccess(false);
-    setError("");
+  {/*Validation*/}
+
+  const validateExcelHeaders = (jsonData, setError, setFile) => {
+    if (!jsonData || jsonData.length < 2) {
+      setError("Wrong template! Check the template below!");
+      setFile(null);
+      return false;
+    }
+
+    const headerRow1 = jsonData[0].map((h) => (h || "").toString().trim());
+    const unknownRow1Fields = headerRow1.filter(
+      (field) => field !== "" && !headerFieldsToIgnore.includes(field)
+    );
+
+    if (unknownRow1Fields.length > 0) {
+      setError(`Wrong template! Check the template below!`);
+      setFile(null);
+      return false;
+    }
+
+    const headerRow2 = jsonData[1].map((h) => (h || "").toString().trim());
+
+    const missingFields = requiredDataFields.filter(
+      (field) => !headerRow2.includes(field)
+    );
+
+    const extraFields = headerRow2.filter(
+      (field) => !requiredDataFields.includes(field)
+    );
+
+    if (missingFields.length > 0) {
+      setError(`Wrong template! Check the template below!`);
+      setFile(null);
+      return false;
+    }
+
+    if (extraFields.length > 0) {
+      setError(`Wrong template! Check the template below!`);
+      setFile(null);
+      return false;
+    }
+
+    return true;
   };
 
-  const handleCloseModal = () => {
-    setIsOpen(false);
+  const handleFileUpload = (file) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: "array" });
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+      const valid = validateExcelHeaders(jsonData, setError, setFile);
+      if (valid) {
+        setFile(file);
+      }
+    };
+    reader.readAsArrayBuffer(file);
   };
 
-  const handleBoxClick = () => {
-    fileInputRef.current.click();
-  };
-
-  const handleFileChange = async (e) => {
+  const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     setError("");
 
@@ -81,33 +137,7 @@ export default function BulkModal() {
         return;
       }
 
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const data = new Uint8Array(event.target.result);
-        const workbook = XLSX.read(data, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-
-        const headers = jsonData[0].map((h) =>
-          h ? h.toString().trim() : ""
-        );
-
-        const missingFields = requiredFields.filter(
-          (field) => !headers.includes(field)
-        );
-
-        if (missingFields.length > 0) {
-          setError("Wrong template!! Check the template given below.");
-          setFile(null);
-          return;
-        }
-
-        setFile(selectedFile);
-        setUploadSuccess(false);
-      };
-
-      reader.readAsArrayBuffer(selectedFile);
+      handleFileUpload(selectedFile);
     }
   };
 
@@ -122,6 +152,21 @@ export default function BulkModal() {
     setTimeout(() => {
       setUploadSuccess(true);
     }, 1000);
+  };
+
+  const handleOpenModal = () => {
+    setIsOpen(true);
+    setFile(null);
+    setUploadSuccess(false);
+    setError("");
+  };
+
+  const handleCloseModal = () => {
+    setIsOpen(false);
+  };
+
+  const handleBoxClick = () => {
+    fileInputRef.current.click();
   };
 
   return (

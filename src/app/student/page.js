@@ -1,6 +1,5 @@
-"use client";
-
-import { useState, useEffect, useCallback ,useRef } from 'react';
+'use client';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useDataContext } from '../context/dataContext';
 import { FiEye, FiEdit, FiTrash2, FiChevronDown } from 'react-icons/fi';
 import { RiCloseCircleLine } from "react-icons/ri";
@@ -9,7 +8,7 @@ import Image from 'next/image';
 import BulkModal from "./bulkModal";
 
 export default function DomainManagement() {
-  const { domains, batches, students , batchHead ,batchesNames} = useDataContext();
+  const { batches, studentData, batchHead, batchesNames } = useDataContext();
   const [activeTab, setActiveTab] = useState('Student Data');
   const [selectedDomain, setSelectedDomain] = useState('');
   const [selectedBatch, setSelectedBatch] = useState('');
@@ -21,46 +20,30 @@ export default function DomainManagement() {
   const [showStudentModal, setShowStudentModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
 
-const domainRef = useRef(null);
-// const batchRef = useRef(null);
-const statusRef = useRef(null);
-const placementRef = useRef(null);
+  const domainRef = useRef(null);
+  const statusRef = useRef(null);
+  const placementRef = useRef(null);
 
-useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (
-      domainRef.current && !domainRef.current.contains(event.target)
-    ) {
-      document.getElementById("domain-dropdown")?.classList.add("hidden");
-    }
-
-    if (
-      batchRef.current && !batchRef.current.contains(event.target)
-    ) {
-      document.getElementById("batch-dropdown")?.classList.add("hidden");
-    }
-
-    if (
-      statusRef.current && !statusRef.current.contains(event.target)
-    ) {
-      document.getElementById("status-dropdown")?.classList.add("hidden");
-    }
-
-    if (
-      placementRef.current && !placementRef.current.contains(event.target)
-    ) {
-      document.getElementById("placement-dropdown")?.classList.add("hidden");
-    }
-  };
-
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
-  };
-}, []);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (domainRef.current && !domainRef.current.contains(event.target)) {
+        document.getElementById("domain-dropdown")?.classList.add("hidden");
+      }
+      if (statusRef.current && !statusRef.current.contains(event.target)) {
+        document.getElementById("status-dropdown")?.classList.add("hidden");
+      }
+      if (placementRef.current && !placementRef.current.contains(event.target)) {
+        document.getElementById("placement-dropdown")?.classList.add("hidden");
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // Filter batches based on selected domain
-  const domainBatches = selectedDomain 
+  const domainBatches = selectedDomain
     ? batches.filter(batch => batch.domain === selectedDomain)
     : [];
 
@@ -81,29 +64,23 @@ useEffect(() => {
       toast.error('Please select a domain first');
       return;
     }
-
-    let results = students.filter(student => student.domain === selectedDomain);
-
+    let results = studentData.filter(student => student.domain === selectedDomain);
     if (selectedBatch) {
       results = results.filter(student => student.batch === selectedBatch);
     }
-
     if (selectedStatus) {
       results = results.filter(student => student.status === selectedStatus);
     }
-
     if (selectedPlacement) {
       results = results.filter(student => student.placement === selectedPlacement);
     }
-
     if (selectedPerformance) {
       results = results.filter(student => student.performance === selectedPerformance);
     }
-
     setFilteredStudents(results);
     setSearchInitiated(true);
     toast.success(`${results.length} students found`);
-  }, [selectedDomain, selectedBatch, selectedStatus, selectedPlacement, selectedPerformance, students]);
+  }, [selectedDomain, selectedBatch, selectedStatus, selectedPlacement, selectedPerformance, studentData]);
 
   // Handle view student action
   const handleViewStudent = (student) => {
@@ -123,7 +100,7 @@ useEffect(() => {
 
   // Performance badge color
   const getPerformanceBadgeColor = (performance) => {
-    switch(performance) {
+    switch (performance) {
       case 'Excellent': return 'bg-purple-100 text-purple-800';
       case 'Proficient': return 'bg-blue-100 text-blue-800';
       case 'Ideal': return 'bg-green-100 text-green-800';
@@ -135,17 +112,15 @@ useEffect(() => {
   return (
     <div className="flex min-h-screen mt-16 md:mt-1">
       <Toaster position="top-right" />
-      
+
       {/* Main content */}
       <div className={`px-3 pt-20 flex-1 bg-[#F8FAFD] mb-12 ${showStudentModal ? 'pointer-events-none' : ''}`}>
-        
         {/* Header with domain name */}
         <div className="fixed top-15 md:top-0 ms-[-19px] border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 z-20">
           <h1 className="fixed pl-3 text-xl text-gray-800 font-semibold">
             Domain Management - {batchHead || 'Select a Domain'}
           </h1>
         </div>
-
         {/* Tabs */}
         <div className="mt-16 mb-6">
           <div className="flex bg-[#ECE6F0] rounded-xl p-1 mb-4 relative">
@@ -156,17 +131,17 @@ useEffect(() => {
                   activeTab === 'Student Data'
                     ? 'left-1 w-[calc(25%-0.5rem)]'
                     : activeTab === 'Scores'
-                    ? 'left-[calc(25%+0.25rem)] w-[calc(25%-0.5rem)]'
-                    : activeTab === 'Opportunities'
-                    ? 'left-[calc(50%+0.25rem)] w-[calc(25%-0.5rem)]'
-                    : 'left-[calc(75%+0.25rem)] w-[calc(25%-0.5rem)]'
+                      ? 'left-[calc(25%+0.25rem)] w-[calc(25%-0.5rem)]'
+                      : activeTab === 'Opportunities'
+                        ? 'left-[calc(50%+0.25rem)] w-[calc(25%-0.5rem)]'
+                        : 'left-[calc(75%+0.25rem)] w-[calc(25%-0.5rem)]'
                 }`}
             />
             {['Student Data', 'Scores', 'Opportunities', 'Batches'].map((tab) => (
               <span
                 key={tab}
                 className={`flex-1 items-center text-gray-800 text-center py-2 text-xs font-semibold select-none cursor-pointer relative z-10
-                  ${activeTab === tab ? 'text-indigo-600' : 'text-black'}`}
+                  ${activeTab === tab ? 'text-indigo-600' : 'text-black'} `}
                 onClick={() => setActiveTab(tab)}
               >
                 {tab}
@@ -174,12 +149,10 @@ useEffect(() => {
             ))}
           </div>
         </div>
-
         {/* Search Section */}
         {activeTab === 'Student Data' && (
           <div id="search-container" className="bg-[#F4F3FF] py-3 rounded-xl" tabIndex={0}>
             <div className="flex flex-row justify-center flex-wrap gap-5 py-3">
-              
               {/* Domain Dropdown */}
               <div className="relative" ref={domainRef}>
                 <input
@@ -208,7 +181,7 @@ useEffect(() => {
                 )}
                 <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
                 <div id="domain-dropdown" className="absolute z-10 w-full bg-[#f3edf7] border border-gray-300 rounded-md shadow-md hidden">
-                  {batchesNames.map((domain) => (
+                  {batchesNames && batchesNames.map((domain) => (
                     <div
                       key={domain}
                       tabIndex={0}
@@ -224,7 +197,6 @@ useEffect(() => {
                   ))}
                 </div>
               </div>
-
               {/* Batch Dropdown (only visible when domain is selected) */}
               {selectedDomain && (
                 <div className="relative">
@@ -269,7 +241,6 @@ useEffect(() => {
                   </div>
                 </div>
               )}
-
               {/* Status Dropdown */}
               <div className="relative" ref={statusRef}>
                 <input
@@ -312,7 +283,6 @@ useEffect(() => {
                   ))}
                 </div>
               </div>
-
               {/* Placement Dropdown */}
               <div className="relative" ref={placementRef}>
                 <input
@@ -355,7 +325,7 @@ useEffect(() => {
                   ))}
                 </div>
               </div>
-              
+
               {/* Search and Reset Buttons */}
               <div className="flex gap-2 md:justify-end">
                 <button
@@ -371,12 +341,11 @@ useEffect(() => {
                   <Image src='/reset.svg' alt="Reset Icon" width={20} height={20} className="object-contain" />
                   Reset
                 </button>
-                <BulkModal/>
+                <BulkModal />
               </div>
             </div>
           </div>
         )}
-
         {/* Results Table (only visible after search) */}
         {searchInitiated && (
           <div className="bg-white rounded-2xl shadow-sm mt-6 w-full overflow-x-auto">
@@ -467,7 +436,6 @@ useEffect(() => {
             </table>
           </div>
         )}
-
         {/* Other Tabs Content */}
         {activeTab === 'Scores' && (
           <div className="bg-white rounded-2xl shadow-sm mt-6 p-6">
@@ -475,14 +443,12 @@ useEffect(() => {
             <p className="text-gray-600">This section will display student scores and performance metrics.</p>
           </div>
         )}
-
         {activeTab === 'Opportunities' && (
           <div className="bg-white rounded-2xl shadow-sm mt-6 p-6">
             <h2 className="text-lg font-semibold text-gray-800 mb-4">Opportunities Content</h2>
             <p className="text-gray-600">This section will display job opportunities and placement information.</p>
           </div>
         )}
-
         {activeTab === 'Batches' && (
           <div className="bg-white rounded-2xl shadow-sm mt-6 p-6">
             <h2 className="text-lg font-semibold text-gray-800 mb-4">Batches Content</h2>
@@ -490,7 +456,6 @@ useEffect(() => {
           </div>
         )}
       </div>
-
       {/* Student Detail Modal */}
       {showStudentModal && selectedStudent && (
         <div
@@ -510,7 +475,6 @@ useEffect(() => {
                 <RiCloseCircleLine size={20} />
               </button>
             </div>
-
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8 font-sans text-gray-800">
               {/* Basic Info */}
               <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
@@ -525,7 +489,6 @@ useEffect(() => {
                   <span className="font-bold">Phone:</span> {selectedStudent.phone}
                 </p>
               </div>
-
               {/* Academic Info */}
               <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
                 <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Academic Information</h3>
@@ -539,7 +502,6 @@ useEffect(() => {
                   <span className="font-bold">Status:</span> {selectedStudent.status}
                 </p>
               </div>
-
               {/* IDs */}
               <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
                 <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Identification</h3>
@@ -553,12 +515,11 @@ useEffect(() => {
                   <span className="font-bold">Student ID:</span> {selectedStudent.id}
                 </p>
               </div>
-
               {/* Performance Info */}
               <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
                 <h3 className="text-sm font-semibold text-[#6b21a8] tracking-wide mb-1">Performance Information</h3>
                 <p className="text-base font-medium text-gray-600 mb-2">
-                  <span className="font-bold">Status:</span> 
+                  <span className="font-bold">Status:</span>
                   <span className={`ml-2 ${getPerformanceBadgeColor(selectedStudent.performance)} px-2.5 py-0.5 rounded`}>
                     {selectedStudent.performance}
                   </span>
@@ -568,7 +529,6 @@ useEffect(() => {
                 </p>
               </div>
             </div>
-
             {/* Close Button */}
             <div className="flex justify-end mt-6">
               <button
@@ -581,7 +541,6 @@ useEffect(() => {
           </div>
         </div>
       )}
-    
     </div>
   );
 }
