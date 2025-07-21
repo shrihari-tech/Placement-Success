@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect , useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -12,6 +12,7 @@ import { MdOutlineNotifications } from "react-icons/md";
 import { RiGraduationCapLine } from "react-icons/ri";
 import { usePathname, useRouter } from 'next/navigation';
 import { useDataContext } from '../context/dataContext';
+import { TbLogout2 } from "react-icons/tb";
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -23,7 +24,26 @@ export default function NavBar() {
   const [isBatchesHovered, setIsBatchesHovered] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
+<<<<<<< HEAD
   const { setBatchingValue, firstLetterUser , setStudentBatchSelect } = useDataContext();
+=======
+  const { setBatchingValue, firstLetterUser } = useDataContext();
+    
+  const mobileMenuRef = useRef(null);
+
+  useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (mobileMenuOpen && mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
+      setMobileMenuOpen(false);
+    }
+  };
+
+  document.addEventListener('mousedown', handleClickOutside);
+  return () => {
+    document.removeEventListener('mousedown', handleClickOutside);
+  };
+}, [mobileMenuOpen]);
+>>>>>>> 69f68c00190609674838b3b8d9590e43a1dfa826
 
   useEffect(() => {
     const storedSubNav = localStorage.getItem('activeSubNav');
@@ -194,12 +214,24 @@ export default function NavBar() {
             <span className={`text-xs font-semibold cursor-pointer mb-2 ${activeNavItem === 'settings' ? 'text-[#9585bf]' : 'text-[#49454f]'}`}
             onClick={() => router.push('/seting')}>Settings</span>
           </div>
+          <div className="flex flex-col items-center w-full mb-5">
+            <Link
+              href="/"
+              className={`flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl transition-colors
+                hover:bg-[#e0ccff]
+                `}
+            >
+              <TbLogout2 size={20} />
+            </Link>
+            <span className={`text-xs font-semibold cursor-pointer mb-2`}
+            onClick={() => router.push('/')}>Logout</span>
+          </div>
         </div>
       </aside>
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden fixed top-16 left-0 w-full bg-[#eaddff] z-30 p-4 shadow-lg">
+        <div ref={mobileMenuRef} className="md:hidden fixed top-16 left-0 w-full bg-[#eaddff] z-30 p-4 shadow-lg">
           <div className="flex flex-col space-y-4">
             <Link
               href="/home"
@@ -394,6 +426,13 @@ export default function NavBar() {
             >
               <MdOutlineSettings size={20} className="mr-3" />
               <span>Settings</span>
+            </Link>
+            <Link
+              href="/"
+              className={`flex items-center px-4 py-2 rounded-lg '}`}
+            >
+              <TbLogout2 size={20} className="mr-3" />
+              <span>Logout</span>
             </Link>
           </div>
         </div>
