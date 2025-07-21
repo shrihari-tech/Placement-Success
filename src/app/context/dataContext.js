@@ -166,92 +166,7 @@ export const fullstackInitial = [
     studentsPlaced: 95,
     pending: 25,
     totalCount: 120,
-  },
-  {
-    id: 6,
-    batchNo: "FS06",
-    mode: "Offline",
-    status: "Completed",
-    startDate: "2024-06-01",
-    endDate: "2024-11-30",
-    sections: {
-      Domain: { startDate: "2024-06-01", endDate: "2024-08-01" },
-      Aptitude: { startDate: "2024-08-02", endDate: "2024-10-01" },
-      Communication: { startDate: "2024-10-02", endDate: "2024-11-30" },
-    },
-    session: "AN",
-    studentsPlaced: 70,
-    pending: 30,
-    totalCount: 100,
-  },
-  {
-    id: 7,
-    batchNo: "FS07",
-    mode: "Online",
-    status: "Completed",
-    startDate: "2024-07-01",
-    endDate: "2024-12-31",
-    sections: {
-      Domain: { startDate: "2024-07-01", endDate: "2024-09-01" },
-      Aptitude: { startDate: "2024-09-02", endDate: "2024-11-01" },
-      Communication: { startDate: "2024-11-02", endDate: "2024-12-31" },
-    },
-    session: "FN",
-    studentsPlaced: 140,
-    pending: 60,
-    totalCount: 200,
-  },
-  {
-    id: 8,
-    batchNo: "FS08",
-    mode: "Offline",
-    status: "Completed",
-    startDate: "2024-08-01",
-    endDate: "2025-01-31",
-    sections: {
-      Domain: { startDate: "2024-08-01", endDate: "2024-10-01" },
-      Aptitude: { startDate: "2024-10-02", endDate: "2024-12-01" },
-      Communication: { startDate: "2024-12-02", endDate: "2025-01-31" },
-    },
-    session: "AN",
-    studentsPlaced: 75,
-    pending: 25,
-    totalCount: 100,
-  },
-  {
-    id: 9,
-    batchNo: "FS09",
-    mode: "Online",
-    status: "Completed",
-    startDate: "2024-09-01",
-    endDate: "2025-02-28",
-    sections: {
-      Domain: { startDate: "2024-09-01", endDate: "2024-11-01" },
-      Aptitude: { startDate: "2024-11-02", endDate: "2025-01-01" },
-      Communication: { startDate: "2025-01-02", endDate: "2025-02-28" },
-    },
-    session: "FN",
-    studentsPlaced: 90,
-    pending: 30,
-    totalCount: 120,
-  },
-  {
-    id: 10,
-    batchNo: "FS10",
-    mode: "Offline",
-    status: "Ongoing",
-    startDate: "2024-10-01",
-    endDate: "2025-03-31",
-    sections: {
-      Domain: { startDate: "2024-10-01", endDate: "2024-12-01" },
-      Aptitude: { startDate: "2024-12-02", endDate: "2025-02-01" },
-      Communication: { startDate: "2025-02-02", endDate: "2025-03-31" },
-    },
-    session: "AN",
-    studentsPlaced: 55,
-    pending: 45,
-    totalCount: 100,
-  },
+  }
 ];
 
 
@@ -385,136 +300,6 @@ export const dataanalyticsInitial = [
     "studentsPlaced": 84,
     "pending": 14,
     "totalCount": 98
-  },
-  {
-    "id": 6,
-    "batchNo": "DA06",
-    "mode": "Offline",
-    "status": "Completed",
-    "startDate": "2024-06-01",
-    "endDate": "2024-11-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "FN",
-    "studentsPlaced": 71,
-    "pending": 43,
-    "totalCount": 114
-  },
-  {
-    "id": 7,
-    "batchNo": "DA07",
-    "mode": "Online",
-    "status": "Completed",
-    "startDate": "2024-07-01",
-    "endDate": "2024-12-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "FN",
-    "studentsPlaced": 73,
-    "pending": 28,
-    "totalCount": 101
-  },
-  {
-    "id": 8,
-    "batchNo": "DA08",
-    "mode": "Offline",
-    "status": "Completed",
-    "startDate": "2024-08-01",
-    "endDate": "2024-01-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "FN",
-    "studentsPlaced": 61,
-    "pending": 21,
-    "totalCount": 82
-  },
-  {
-    "id": 9,
-    "batchNo": "DA09",
-    "mode": "Online",
-    "status": "Completed",
-    "startDate": "2024-09-01",
-    "endDate": "2024-02-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "FN",
-    "studentsPlaced": 86,
-    "pending": 46,
-    "totalCount": 132
-  },
-  {
-    "id": 10,
-    "batchNo": "DA10",
-    "mode": "Offline",
-    "status": "Ongoing",
-    "startDate": "2024-10-01",
-    "endDate": "2024-03-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "AN",
-    "studentsPlaced": 68,
-    "pending": 24,
-    "totalCount": 92
   }
 ];
 
@@ -648,136 +433,6 @@ export const bankingInitial = [
     "studentsPlaced": 45,
     "pending": 25,
     "totalCount": 70
-  },
-  {
-    "id": 6,
-    "batchNo": "BK06",
-    "mode": "Offline",
-    "status": "Completed",
-    "startDate": "2024-06-01",
-    "endDate": "2024-11-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "FN",
-    "studentsPlaced": 36,
-    "pending": 34,
-    "totalCount": 70
-  },
-  {
-    "id": 7,
-    "batchNo": "BK07",
-    "mode": "Online",
-    "status": "Completed",
-    "startDate": "2024-07-01",
-    "endDate": "2024-12-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "AN",
-    "studentsPlaced": 50,
-    "pending": 42,
-    "totalCount": 92
-  },
-  {
-    "id": 8,
-    "batchNo": "BK08",
-    "mode": "Offline",
-    "status": "Completed",
-    "startDate": "2024-08-01",
-    "endDate": "2024-01-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "FN",
-    "studentsPlaced": 39,
-    "pending": 33,
-    "totalCount": 72
-  },
-  {
-    "id": 9,
-    "batchNo": "BK09",
-    "mode": "Online",
-    "status": "Completed",
-    "startDate": "2024-09-01",
-    "endDate": "2024-02-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "AN",
-    "studentsPlaced": 91,
-    "pending": 38,
-    "totalCount": 129
-  },
-  {
-    "id": 10,
-    "batchNo": "BK10",
-    "mode": "Offline",
-    "status": "Ongoing",
-    "startDate": "2024-10-01",
-    "endDate": "2024-03-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "AN",
-    "studentsPlaced": 99,
-    "pending": 13,
-    "totalCount": 112
   }
 ];
 
@@ -911,136 +566,6 @@ export const marketingInitial = [
     "studentsPlaced": 85,
     "pending": 28,
     "totalCount": 113
-  },
-  {
-    "id": 6,
-    "batchNo": "DM06",
-    "mode": "Offline",
-    "status": "Completed",
-    "startDate": "2024-06-01",
-    "endDate": "2024-11-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "AN",
-    "studentsPlaced": 90,
-    "pending": 14,
-    "totalCount": 104
-  },
-  {
-    "id": 7,
-    "batchNo": "DM07",
-    "mode": "Online",
-    "status": "Completed",
-    "startDate": "2024-07-01",
-    "endDate": "2024-12-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "AN",
-    "studentsPlaced": 68,
-    "pending": 42,
-    "totalCount": 110
-  },
-  {
-    "id": 8,
-    "batchNo": "DM08",
-    "mode": "Offline",
-    "status": "Completed",
-    "startDate": "2024-08-01",
-    "endDate": "2024-01-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "AN",
-    "studentsPlaced": 62,
-    "pending": 23,
-    "totalCount": 85
-  },
-  {
-    "id": 9,
-    "batchNo": "DM09",
-    "mode": "Online",
-    "status": "Completed",
-    "startDate": "2024-09-01",
-    "endDate": "2024-02-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "FN",
-    "studentsPlaced": 78,
-    "pending": 32,
-    "totalCount": 110
-  },
-  {
-    "id": 10,
-    "batchNo": "DM10",
-    "mode": "Offline",
-    "status": "Ongoing",
-    "startDate": "2024-10-01",
-    "endDate": "2024-03-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "AN",
-    "studentsPlaced": 40,
-    "pending": 48,
-    "totalCount": 88
   }
 ];
 
@@ -1174,136 +699,6 @@ export const devopsInitial = [
     "studentsPlaced": 43,
     "pending": 14,
     "totalCount": 57
-  },
-  {
-    "id": 6,
-    "batchNo": "DO06",
-    "mode": "Offline",
-    "status": "Completed",
-    "startDate": "2024-06-01",
-    "endDate": "2024-11-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "AN",
-    "studentsPlaced": 92,
-    "pending": 40,
-    "totalCount": 132
-  },
-  {
-    "id": 7,
-    "batchNo": "DO07",
-    "mode": "Online",
-    "status": "Completed",
-    "startDate": "2024-07-01",
-    "endDate": "2024-12-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "AN",
-    "studentsPlaced": 58,
-    "pending": 48,
-    "totalCount": 106
-  },
-  {
-    "id": 8,
-    "batchNo": "DO08",
-    "mode": "Offline",
-    "status": "Completed",
-    "startDate": "2024-08-01",
-    "endDate": "2024-01-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "FN",
-    "studentsPlaced": 64,
-    "pending": 35,
-    "totalCount": 99
-  },
-  {
-    "id": 9,
-    "batchNo": "DO09",
-    "mode": "Online",
-    "status": "Completed",
-    "startDate": "2024-09-01",
-    "endDate": "2024-02-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "AN",
-    "studentsPlaced": 52,
-    "pending": 15,
-    "totalCount": 67
-  },
-  {
-    "id": 10,
-    "batchNo": "DO10",
-    "mode": "Offline",
-    "status": "Ongoing",
-    "startDate": "2024-10-01",
-    "endDate": "2024-03-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "AN",
-    "studentsPlaced": 76,
-    "pending": 46,
-    "totalCount": 122
   }
 ];
 
@@ -1437,136 +832,6 @@ export const sapInitial = [
     "studentsPlaced": 40,
     "pending": 42,
     "totalCount": 82
-  },
-  {
-    "id": 6,
-    "batchNo": "SAP06",
-    "mode": "Offline",
-    "status": "Completed",
-    "startDate": "2024-06-01",
-    "endDate": "2024-11-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "AN",
-    "studentsPlaced": 72,
-    "pending": 41,
-    "totalCount": 113
-  },
-  {
-    "id": 7,
-    "batchNo": "SAP07",
-    "mode": "Online",
-    "status": "Completed",
-    "startDate": "2024-07-01",
-    "endDate": "2024-12-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "AN",
-    "studentsPlaced": 63,
-    "pending": 43,
-    "totalCount": 106
-  },
-  {
-    "id": 8,
-    "batchNo": "SAP08",
-    "mode": "Offline",
-    "status": "Completed",
-    "startDate": "2024-08-01",
-    "endDate": "2024-01-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "AN",
-    "studentsPlaced": 88,
-    "pending": 29,
-    "totalCount": 117
-  },
-  {
-    "id": 9,
-    "batchNo": "SAP09",
-    "mode": "Online",
-    "status": "Completed",
-    "startDate": "2024-09-01",
-    "endDate": "2024-02-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "AN",
-    "studentsPlaced": 43,
-    "pending": 26,
-    "totalCount": 69
-  },
-  {
-    "id": 10,
-    "batchNo": "SAP10",
-    "mode": "Offline",
-    "status": "Ongoing",
-    "startDate": "2024-10-01",
-    "endDate": "2024-03-28",
-    "sections": {
-      "Domain": {
-        "startDate": "2024-01-01",
-        "endDate": "2024-03-01"
-      },
-      "Aptitude": {
-        "startDate": "2024-03-02",
-        "endDate": "2024-05-01"
-      },
-      "Communication": {
-        "startDate": "2024-05-02",
-        "endDate": "2024-06-30"
-      }
-    },
-    "session": "FN",
-    "studentsPlaced": 63,
-    "pending": 30,
-    "totalCount": 93
   }
 ];
 
@@ -1577,6 +842,7 @@ const DataProvider = ({ children }) => {
   const [batchingvalue, setBatchingValue] = useState(""); // selected domain
   const [studentBatchSelect , setStudentBatchSelect] = useState("") //Select student Domain
   const [loginUser, setLoginUser] = useState(""); // logged-in user
+  const [batchesNames , setBatchesNames] = useState([]); // name of batches in current domain
   const [batchHead, setBatchHead] = useState(""); // domain title for UI
   const [batchData, setBatchData] = useState([]); // currently active batch data
 
@@ -1591,7 +857,7 @@ const DataProvider = ({ children }) => {
   const userName =  loginUser.split("@")[0];
   const firstLetterUser = loginUser?.charAt(0).toUpperCase() || "";
 
-  // 🔄 Update batchData and batchHead when batchingvalue changes
+  // Update batchData and batchHead when batchingvalue changes
   useEffect(() => {
     switch (batchingvalue) {
       case "fullstack":
@@ -1625,37 +891,37 @@ const DataProvider = ({ children }) => {
   }, [batchingvalue,fullstackData,dataanalyticsData,bankingData,marketingData,sapData,devopsData,]);
 
     // 🔄 Update studentData and studentHead when batchingvalue changes
- useEffect(() => {
+useEffect(() => {
     switch (studentBatchSelect) {
       case "fullstack":
         setBatchHead("Full Stack Development");
-        // setBatchData(fullstackData);
+        setBatchesNames(fullstackData.map(batch => batch.batchNo));
         break;
       case "dataanalytics":
         setBatchHead("Data Analytics & Science");
-        // setBatchData(dataanalyticsData);
+        setBatchesNames(dataanalyticsData.map(batch => batch.batchNo));
         break;
       case "banking":
         setBatchHead("Banking & Financial Services");
-        // setBatchData(bankingData);
+        setBatchesNames(bankingData.map(batch => batch.batchNo));
         break;
       case "marketing":
         setBatchHead("Digital Marketing");
-        // setBatchData(marketingData);
+        setBatchesNames(marketingData.map(batch => batch.batchNo));
         break;
       case "sap":
         setBatchHead("SAP");
-        // setBatchData(sapData);
+        setBatchesNames(sapData.map(batch => batch.batchNo));
         break;
       case "devops":
         setBatchHead("DevOps");
-        // setBatchData(devopsData);
+        setBatchesNames(devopsData.map(batch => batch.batchNo));
         break;
       default:
         setBatchHead("");
-        // setBatchData([]);
+        setBatchesNames([]);
     }
-  }, []);
+  },[studentBatchSelect]);
 
   // 🔧 Add a new batch to current domain
   const addBatch = (newBatch) => {
@@ -1744,12 +1010,9 @@ const updateBatch = (id, updatedFields) => {
 
   return (
     <DataContext.Provider
-      value={{ batchingvalue,setBatchingValue,setStudentBatchSelect,loginUser,setLoginUser,firstLetterUser,batchHead,batchData,
-        addBatch,updateBatch,deleteBatch ,userName , selectedBatch,
-        setSelectedBatch,getStatsByBatch,batchStatsData 
+      value={{ batchingvalue,setBatchingValue,setStudentBatchSelect,loginUser,setLoginUser,firstLetterUser,batchHead,batchData,addBatch,updateBatch,deleteBatch ,userName , selectedBatch,setSelectedBatch,getStatsByBatch,batchStatsData,batchesNames
       }}
-    >
-      
+    >  
       {children}
     </DataContext.Provider>
   );

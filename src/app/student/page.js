@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback ,useRef } from 'react';
 import { useDataContext } from '../context/dataContext';
 import { FiEye, FiEdit, FiTrash2, FiChevronDown } from 'react-icons/fi';
 import { RiCloseCircleLine } from "react-icons/ri";
@@ -9,7 +9,7 @@ import Image from 'next/image';
 import BulkModal from "./bulkModal";
 
 export default function DomainManagement() {
-  const { studentData , domains, batches, students, performanceStatuses , batchHead} = useDataContext();
+  const { domains, batches, students , batchHead ,batchesNames} = useDataContext();
   const [activeTab, setActiveTab] = useState('Student Data');
   const [selectedDomain, setSelectedDomain] = useState('');
   const [selectedBatch, setSelectedBatch] = useState('');
@@ -20,6 +20,44 @@ export default function DomainManagement() {
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [showStudentModal, setShowStudentModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
+
+const domainRef = useRef(null);
+// const batchRef = useRef(null);
+const statusRef = useRef(null);
+const placementRef = useRef(null);
+
+useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (
+      domainRef.current && !domainRef.current.contains(event.target)
+    ) {
+      document.getElementById("domain-dropdown")?.classList.add("hidden");
+    }
+
+    if (
+      batchRef.current && !batchRef.current.contains(event.target)
+    ) {
+      document.getElementById("batch-dropdown")?.classList.add("hidden");
+    }
+
+    if (
+      statusRef.current && !statusRef.current.contains(event.target)
+    ) {
+      document.getElementById("status-dropdown")?.classList.add("hidden");
+    }
+
+    if (
+      placementRef.current && !placementRef.current.contains(event.target)
+    ) {
+      document.getElementById("placement-dropdown")?.classList.add("hidden");
+    }
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
 
   // Filter batches based on selected domain
   const domainBatches = selectedDomain 
@@ -143,7 +181,7 @@ export default function DomainManagement() {
             <div className="flex flex-row justify-center flex-wrap gap-5 py-3">
               
               {/* Domain Dropdown */}
-              <div className="relative">
+              <div className="relative" ref={domainRef}>
                 <input
                   type="text"
                   id="domain-select"
@@ -170,7 +208,7 @@ export default function DomainManagement() {
                 )}
                 <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
                 <div id="domain-dropdown" className="absolute z-10 w-full bg-[#f3edf7] border border-gray-300 rounded-md shadow-md hidden">
-                  {domains.map((domain) => (
+                  {batchesNames.map((domain) => (
                     <div
                       key={domain}
                       tabIndex={0}
@@ -233,7 +271,7 @@ export default function DomainManagement() {
               )}
 
               {/* Status Dropdown */}
-              <div className="relative">
+              <div className="relative" ref={statusRef}>
                 <input
                   type="text"
                   id="status-select"
@@ -276,7 +314,7 @@ export default function DomainManagement() {
               </div>
 
               {/* Placement Dropdown */}
-              <div className="relative">
+              <div className="relative" ref={placementRef}>
                 <input
                   type="text"
                   id="placement-select"
