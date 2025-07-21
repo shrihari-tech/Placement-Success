@@ -9,7 +9,7 @@ import Image from 'next/image';
 import BulkModal from "./bulkModal";
 
 export default function DomainManagement() {
-  const { studentData , domains, batches, students, performanceStatuses , batchHead} = useDataContext();
+  const { batches, students , batchHead , batchesNames , studentData} = useDataContext();
   const [activeTab, setActiveTab] = useState('Student Data');
   const [selectedDomain, setSelectedDomain] = useState('');
   const [selectedBatch, setSelectedBatch] = useState('');
@@ -170,7 +170,7 @@ export default function DomainManagement() {
                 )}
                 <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
                 <div id="domain-dropdown" className="absolute z-10 w-full bg-[#f3edf7] border border-gray-300 rounded-md shadow-md hidden">
-                  {/* {domains.map((domain) => (
+                  {batchesNames.map((domain) => (
                     <div
                       key={domain}
                       tabIndex={0}
@@ -183,7 +183,7 @@ export default function DomainManagement() {
                     >
                       {domain}
                     </div>
-                  ))} */}
+                  ))}
                 </div>
               </div>
 
