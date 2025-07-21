@@ -308,7 +308,7 @@ const toDDMMYYYY = (d) => {
       }, [batchData]);
 
       useEffect(() => {
-          if (showModal || showDeleteModal) {
+          if (showModal || showDeleteModal || showViewModal || showEditModal ) {
               document.body.style.overflow = 'hidden';
           } else {
               document.body.style.overflow = 'auto';
@@ -316,7 +316,7 @@ const toDDMMYYYY = (d) => {
           return () => {
               document.body.style.overflow = 'auto';
           };
-      }, [showModal, showDeleteModal]);
+      }, [showModal, showDeleteModal, showViewModal,showEditModal]);
 
       const validateSearchDates = (start, end) => {
           if (start && end) {
