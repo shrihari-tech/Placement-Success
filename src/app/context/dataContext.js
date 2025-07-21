@@ -80,8 +80,6 @@ const batchStatsData = {
 };
 
   
-// Sample data arrays (used only as initial values)
-// 🗂️ Full‑stack batch seed data (template)
 // ===== Full‑Stack =====
 export const fullstackInitial = [
   {
@@ -1577,6 +1575,7 @@ export const sapInitial = [
 // ➤ Provider Component
 const DataProvider = ({ children }) => {
   const [batchingvalue, setBatchingValue] = useState(""); // selected domain
+  const [studentBatchSelect , setStudentBatchSelect] = useState("") //Select student Domain
   const [loginUser, setLoginUser] = useState(""); // logged-in user
   const [batchHead, setBatchHead] = useState(""); // domain title for UI
   const [batchData, setBatchData] = useState([]); // currently active batch data
@@ -1624,6 +1623,39 @@ const DataProvider = ({ children }) => {
         setBatchData([]);
     }
   }, [batchingvalue,fullstackData,dataanalyticsData,bankingData,marketingData,sapData,devopsData,]);
+
+    // 🔄 Update studentData and studentHead when batchingvalue changes
+ useEffect(() => {
+    switch (studentBatchSelect) {
+      case "fullstack":
+        setBatchHead("Full Stack Development");
+        // setBatchData(fullstackData);
+        break;
+      case "dataanalytics":
+        setBatchHead("Data Analytics & Science");
+        // setBatchData(dataanalyticsData);
+        break;
+      case "banking":
+        setBatchHead("Banking & Financial Services");
+        // setBatchData(bankingData);
+        break;
+      case "marketing":
+        setBatchHead("Digital Marketing");
+        // setBatchData(marketingData);
+        break;
+      case "sap":
+        setBatchHead("SAP");
+        // setBatchData(sapData);
+        break;
+      case "devops":
+        setBatchHead("DevOps");
+        // setBatchData(devopsData);
+        break;
+      default:
+        setBatchHead("");
+        // setBatchData([]);
+    }
+  }, []);
 
   // 🔧 Add a new batch to current domain
   const addBatch = (newBatch) => {
@@ -1705,17 +1737,16 @@ const updateBatch = (id, updatedFields) => {
     }
   };
 
+
   const [selectedBatch, setSelectedBatch] = useState(null);
 
   const getStatsByBatch = (batchKey) => batchStatsData[batchKey];
 
   return (
     <DataContext.Provider
-      value={{ batchingvalue,setBatchingValue,loginUser,setLoginUser,firstLetterUser,batchHead,batchData,
+      value={{ batchingvalue,setBatchingValue,setStudentBatchSelect,loginUser,setLoginUser,firstLetterUser,batchHead,batchData,
         addBatch,updateBatch,deleteBatch ,userName , selectedBatch,
-        setSelectedBatch,
-        getStatsByBatch,
-        batchStatsData,
+        setSelectedBatch,getStatsByBatch,batchStatsData 
       }}
     >
       

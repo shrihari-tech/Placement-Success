@@ -8,7 +8,7 @@ import { Toaster, toast } from 'sonner';
 import Image from 'next/image';
 
 export default function DomainManagement() {
-  const { domains, batches, students, performanceStatuses } = useDataContext();
+  const { studentData , domains, batches, students, performanceStatuses , batchHead} = useDataContext();
   const [activeTab, setActiveTab] = useState('Student Data');
   const [selectedDomain, setSelectedDomain] = useState('');
   const [selectedBatch, setSelectedBatch] = useState('');
@@ -103,7 +103,7 @@ export default function DomainManagement() {
         {/* Header with domain name */}
         <div className="fixed top-15 md:top-0 ms-[-19px] border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 z-20">
           <h1 className="fixed pl-3 text-xl text-gray-800 font-semibold">
-            Domain Management - {selectedDomain || 'Select a Domain'}
+            Domain Management - {batchHead || 'Select a Domain'}
           </h1>
         </div>
 
@@ -318,48 +318,7 @@ export default function DomainManagement() {
               </div>
 
               {/* Performance Dropdown */}
-              <div className="relative">
-                <input
-                  type="text"
-                  id="performance-select"
-                  className={`block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer`}
-                  placeholder=" "
-                  readOnly
-                  value={selectedPerformance}
-                  onClick={() => document.getElementById('performance-dropdown').classList.toggle('hidden')}
-                />
-                <label htmlFor="performance-select" className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6">
-                  Performance
-                </label>
-                {selectedPerformance && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedPerformance('');
-                    }}
-                    className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700"
-                  >
-                    <RiCloseCircleLine size={20} />
-                  </button>
-                )}
-                <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
-                <div id="performance-dropdown" className="absolute z-10 w-full bg-[#f3edf7] border border-gray-300 rounded-md shadow-md hidden">
-                  {/* {performanceStatuses.map((performance) => (
-                    <div
-                      key={performance}
-                      tabIndex={0}
-                      className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                      onClick={() => {
-                        setSelectedPerformance(performance);
-                        document.getElementById('performance-dropdown').classList.add('hidden');
-                      }}
-                    >
-                      {performance}
-                    </div>
-                  ))} */}
-                </div>
-              </div>
-
+              
               {/* Search and Reset Buttons */}
               <div className="flex gap-2 md:justify-end">
                 <button
