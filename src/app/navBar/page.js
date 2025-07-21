@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect , useRef } from 'react';
+import React, { useState, useEffect  } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -20,25 +20,11 @@ export default function NavBar() {
   const [showSubNav, setShowSubNav] = useState(false);
   const [activeSubNav, setActiveSubNav] = useState('');
   const [activeNavItem, setActiveNavItem] = useState('');
+  const [whatHoverSubNav, setWhatHoverSubNav] = useState("");
   const [isBatchesHovered, setIsBatchesHovered] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
-  const { setBatchingValue, firstLetterUser } = useDataContext();
-    
-  const mobileMenuRef = useRef(null);
-
-  useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (mobileMenuOpen && mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
-      setMobileMenuOpen(false);
-    }
-  };
-
-  document.addEventListener('mousedown', handleClickOutside);
-  return () => {
-    document.removeEventListener('mousedown', handleClickOutside);
-  };
-}, [mobileMenuOpen]);
+  const { setBatchingValue, firstLetterUser , setStudentBatchSelect } = useDataContext();
 
   useEffect(() => {
     const storedSubNav = localStorage.getItem('activeSubNav');
@@ -82,6 +68,14 @@ export default function NavBar() {
     router.push('/batches');
     setMobileMenuOpen(false);
   };
+
+  const handleStudentSubNav = (subNavItem) => {
+    setStudentBatchSelect(subNavItem);
+    setActiveSubNav(subNavItem);
+    localStorage.setItem('activeSubNav', subNavItem);
+    router.push('/student');
+    setMobileMenuOpen(false);
+  }
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -141,8 +135,13 @@ export default function NavBar() {
 
             <div
               className="flex flex-col items-center w-full mb-5"
-              onMouseEnter={() => setIsBatchesHovered(true)}
-              onMouseLeave={() => setIsBatchesHovered(false)}
+              onMouseEnter={() => {setIsBatchesHovered(true)
+                setWhatHoverSubNav("batches")
+              }}
+              onMouseLeave={() => {
+                setIsBatchesHovered(false)
+                
+              }}
             >
               <button
                 className={`flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl transition-colors ${activeNavItem === 'batches' ? 'bg-[#6750A4] text-white' : 'text-black hover:bg-[#e0ccff] hover:text-black'}`}
@@ -152,16 +151,21 @@ export default function NavBar() {
               <span className={`text-xs font-semibold cursor-pointer ${activeNavItem === 'batches' ? 'text-[#9585bf]' : 'text-[#49454f]'}`}>Batches</span>
             </div>
 
-            <div className="flex flex-col items-center w-full mb-5" onClick={() => router.push('/student')}>
-              <Link
-                href="/student"
+            <div className="flex flex-col items-center w-full mb-5" 
+              onMouseEnter={() => {setIsBatchesHovered(true)
+                setWhatHoverSubNav("student")
+              }}
+              onMouseLeave={() => {setIsBatchesHovered(false)
+              }}
+              >
+              <button
                 className={`flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl transition-colors ${activeNavItem === 'student' ? 'bg-[#6750A4] text-white' : 'text-black hover:bg-[#e0ccff] hover:text-black'}`}
                 onClick={() => handleNavItemClick('student')}
               >
                 <RiGraduationCapLine size={20} />
-              </Link>
+              </button>
               <span className={`text-xs font-semibold cursor-pointer ${activeNavItem === 'student' ? 'text-[#9585bf]' : 'text-[#49454f]'}`}
-              onClick={() => router.push('/student')}>Student</span>
+              >Student</span>
             </div>
           </nav>
         </div>
@@ -234,9 +238,14 @@ export default function NavBar() {
       <button
         className={`flex items-center px-4 py-2 rounded-lg text-sm ${activeSubNav === 'fullstack' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
         onClick={(e) => {
-          e.preventDefault();
-          handleSubNavClick('fullstack');
-        }}
+        e.preventDefault();
+        const subNavKey = 'fullstack';
+        handleSubNavClick(subNavKey);
+        if (whatHoverSubNav === 'student') {
+          handleStudentSubNav(subNavKey);
+        }
+      }}
+
       >
         <Image
           src='/computer.svg'
@@ -253,8 +262,15 @@ export default function NavBar() {
         className={`flex items-center px-4 py-2 rounded-lg text-sm ${activeSubNav === 'dataanalytics' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
         onClick={(e) => {
           e.preventDefault();
-          handleSubNavClick('dataanalytics');
+          const subNavKey = 'dataanalytics';
+          if(whatHoverSubNav === 'batches') {
+            handleSubNavClick(subNavKey);
+          }
+         else if (whatHoverSubNav === 'student') {
+            handleStudentSubNav(subNavKey);
+          }
         }}
+
       >
         <Image
           src='/bar_chart_4_bars.svg'
@@ -271,7 +287,13 @@ export default function NavBar() {
         className={`flex items-center px-4 py-2 rounded-lg text-sm ${activeSubNav === 'banking' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
         onClick={(e) => {
           e.preventDefault();
-          handleSubNavClick('banking');
+          const subNavKey = 'banking';
+          if(whatHoverSubNav === 'batches') {
+            handleSubNavClick(subNavKey);
+          }
+         else if (whatHoverSubNav === 'student') {
+            handleStudentSubNav(subNavKey);
+          }
         }}
       >
         <Image
@@ -289,7 +311,13 @@ export default function NavBar() {
         className={`flex items-center px-4 py-2 rounded-lg text-sm ${activeSubNav === 'marketing' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
         onClick={(e) => {
           e.preventDefault();
-          handleSubNavClick('marketing');
+          const subNavKey = 'marketing';
+           if(whatHoverSubNav === 'batches') {
+            handleSubNavClick(subNavKey);
+          }
+         else if (whatHoverSubNav === 'student') {
+            handleStudentSubNav(subNavKey);
+          }
         }}
       >
         <Image
@@ -305,10 +333,16 @@ export default function NavBar() {
       {/* SAP */}
       <button
         className={`flex items-center px-4 py-2 rounded-lg text-sm ${activeSubNav === 'sap' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
-        onClick={(e) => {
-          e.preventDefault();
-          handleSubNavClick('sap');
-        }}
+       onClick={(e) => {
+        e.preventDefault();
+        const subNavKey = 'sap';
+        if(whatHoverSubNav === 'batches') {
+            handleSubNavClick(subNavKey);
+          }
+         else if (whatHoverSubNav === 'student') {
+            handleStudentSubNav(subNavKey);
+          }
+      }}
       >
         <Image
           src='/device_hub.svg'
@@ -323,10 +357,16 @@ export default function NavBar() {
       {/* DevOps */}
       <button
         className={`flex items-center px-4 py-2 rounded-lg text-sm ${activeSubNav === 'devops' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
-        onClick={(e) => {
-          e.preventDefault();
-          handleSubNavClick('devops');
-        }}
+       onClick={(e) => {
+        e.preventDefault();
+        const subNavKey = 'devops';
+         if(whatHoverSubNav === 'batches') {
+            handleSubNavClick(subNavKey);
+          }
+         else if (whatHoverSubNav === 'student') {
+            handleStudentSubNav(subNavKey);
+          }
+      }}
       >
         <Image
           src='/deployed_code_history.svg'
@@ -393,7 +433,13 @@ export default function NavBar() {
       className={`cursor-pointer flex items-center mx-2 ps-1 pe-9 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'fullstack' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
       onClick={(e) => {
         e.preventDefault();
-        handleSubNavClick('fullstack');
+        const subNavKey = 'fullstack';
+        if(whatHoverSubNav === 'batches') {
+            handleSubNavClick(subNavKey);
+          }
+         else if (whatHoverSubNav === 'student') {
+            handleStudentSubNav(subNavKey);
+          }
       }}
     >
       <Image
@@ -415,7 +461,13 @@ export default function NavBar() {
       className={`cursor-pointer flex items-center mx-2 ps-1 pe-7 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'dataanalytics' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
       onClick={(e) => {
         e.preventDefault();
-        handleSubNavClick('dataanalytics');
+        const subNavKey = 'dataanalytics';
+         if(whatHoverSubNav === 'batches') {
+            handleSubNavClick(subNavKey);
+          }
+         else if (whatHoverSubNav === 'student') {
+            handleStudentSubNav(subNavKey);
+          }
       }}
     >
       <Image
@@ -435,9 +487,15 @@ export default function NavBar() {
   <div className="flex flex-col items-start mt-2">
     <button
       className={`cursor-pointer flex items-center mx-2 ps-1 pe-2 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'banking' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
-      onClick={(e) => {
+     onClick={(e) => {
         e.preventDefault();
-        handleSubNavClick('banking');
+        const subNavKey = 'banking';
+        if(whatHoverSubNav === 'batches') {
+            handleSubNavClick(subNavKey);
+          }
+         else if (whatHoverSubNav === 'student') {
+            handleStudentSubNav(subNavKey);
+          }
       }}
     >
       <Image
@@ -457,9 +515,15 @@ export default function NavBar() {
   <div className="flex flex-col items-start mt-2">
     <button
       className={`cursor-pointer flex items-center mx-2 ps-1 pe-17 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'marketing' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
-      onClick={(e) => {
+     onClick={(e) => {
         e.preventDefault();
-        handleSubNavClick('marketing');
+        const subNavKey = 'marketing';
+        if(whatHoverSubNav === 'batches') {
+            handleSubNavClick(subNavKey);
+          }
+         else if (whatHoverSubNav === 'student') {
+            handleStudentSubNav(subNavKey);
+          }
       }}
     >
       <Image
@@ -479,9 +543,15 @@ export default function NavBar() {
   <div className="flex flex-col items-start mt-2">
     <button
       className={`cursor-pointer flex items-center mx-2 ps-1 pe-30 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'sap' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
-      onClick={(e) => {
+     onClick={(e) => {
         e.preventDefault();
-        handleSubNavClick('sap');
+        const subNavKey = 'sap';
+        if(whatHoverSubNav === 'batches') {
+            handleSubNavClick(subNavKey);
+          }
+         else if (whatHoverSubNav === 'student') {
+            handleStudentSubNav(subNavKey);
+          }
       }}
     >
       <Image
@@ -501,9 +571,15 @@ export default function NavBar() {
   <div className="flex flex-col items-start mt-2">
     <button
       className={`cursor-pointer flex items-center mx-2 ps-1 pe-27 py-2 rounded-md transition-colors font-semibold gap-2 ${activeSubNav === 'devops' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
-      onClick={(e) => {
+    onClick={(e) => {
         e.preventDefault();
-        handleSubNavClick('devops');
+        const subNavKey = 'devops';
+        if(whatHoverSubNav === 'batches') {
+            handleSubNavClick(subNavKey);
+          }
+         else if (whatHoverSubNav === 'student') {
+            handleStudentSubNav(subNavKey);
+          }
       }}
     >
       <Image
