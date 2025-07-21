@@ -12,8 +12,10 @@ export default function StudentPage() {
     <div className="container mx-auto p-4">
       <NavBar />
       <div className="fixed top-15 md:top-0 ms-[-19px] border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 z-20">
-                <h1 className="fixed pl-3 text-xl text-gray-800 font-semibold">{batchHead}</h1>
-            </div>
+          <h1 className="fixed pl-3 text-xl text-gray-800 font-semibold">
+            Domain Management - {batchHead || 'Select a Domain'}
+          </h1>
+        </div>
     </div>
   );
 }

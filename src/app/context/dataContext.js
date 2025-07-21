@@ -1655,7 +1655,7 @@ const DataProvider = ({ children }) => {
         setBatchHead("");
         // setBatchData([]);
     }
-  }, []);
+  },[studentBatchSelect]);
 
   // 🔧 Add a new batch to current domain
   const addBatch = (newBatch) => {
@@ -1743,9 +1743,7 @@ const updateBatch = (id, updatedFields) => {
 
   return (
     <DataContext.Provider
-      value={{ batchingvalue,setBatchingValue,setStudentBatchSelect,loginUser,setLoginUser,firstLetterUser,batchHead,batchData,
-        addBatch,updateBatch,deleteBatch ,userName , selectedBatch,
-        setSelectedBatch,getStatsByBatch,batchStatsData
+      value={{ batchingvalue,setBatchingValue,setStudentBatchSelect,loginUser,setLoginUser,firstLetterUser,batchHead,batchData,addBatch,updateBatch,deleteBatch ,userName , selectedBatch,setSelectedBatch,getStatsByBatch,batchStatsData
       }}
     >
       
