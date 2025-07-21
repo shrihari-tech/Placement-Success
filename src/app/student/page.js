@@ -6,6 +6,7 @@ import { FiEye, FiEdit, FiTrash2, FiChevronDown } from 'react-icons/fi';
 import { RiCloseCircleLine } from "react-icons/ri";
 import { Toaster, toast } from 'sonner';
 import Image from 'next/image';
+import BulkModal from "./bulkModal";
 
 export default function DomainManagement() {
   const { studentData , domains, batches, students, performanceStatuses , batchHead} = useDataContext();
@@ -316,8 +317,6 @@ export default function DomainManagement() {
                   ))}
                 </div>
               </div>
-
-              {/* Performance Dropdown */}
               
               {/* Search and Reset Buttons */}
               <div className="flex gap-2 md:justify-end">
@@ -329,11 +328,12 @@ export default function DomainManagement() {
                 </button>
                 <button
                   onClick={handleReset}
-                  className="cursor-pointer bg-[#f1ecfb] hover:bg-[#E8DEF8] px-4 py-4 rounded-xl text-sm font-semibold text-gray-700 flex items-center gap-1"
+                  className="cursor-pointer bg-[#f1ecfb] hover:bg-[#E8DEF8] px-5 py-4 rounded-xl text-sm font-semibold text-gray-700 flex items-center gap-1"
                 >
                   <Image src='/reset.svg' alt="Reset Icon" width={20} height={20} className="object-contain" />
                   Reset
                 </button>
+                <BulkModal/>
               </div>
             </div>
           </div>
@@ -543,6 +543,7 @@ export default function DomainManagement() {
           </div>
         </div>
       )}
+    
     </div>
   );
 }
