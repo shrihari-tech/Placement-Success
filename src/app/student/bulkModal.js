@@ -173,7 +173,7 @@ export default function BulkModal() {
     <div>
       <button
         onClick={handleOpenModal}
-        className="bg-[#6750A4] text-white px-4 py-2 rounded hover:bg-[#553b95]"
+        className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-5 py-4 rounded-xl text-sm font-semibold"
       >
         Bulk Add
       </button>
