@@ -1737,6 +1737,7 @@ const updateBatch = (id, updatedFields) => {
     }
   };
 
+
   const [selectedBatch, setSelectedBatch] = useState(null);
 
   const getStatsByBatch = (batchKey) => batchStatsData[batchKey];
@@ -1745,8 +1746,7 @@ const updateBatch = (id, updatedFields) => {
     <DataContext.Provider
       value={{ batchingvalue,setBatchingValue,setStudentBatchSelect,loginUser,setLoginUser,firstLetterUser,batchHead,batchData,addBatch,updateBatch,deleteBatch ,userName , selectedBatch,setSelectedBatch,getStatsByBatch,batchStatsData
       }}
-    >
-      
+    >  
       {children}
     </DataContext.Provider>
   );
