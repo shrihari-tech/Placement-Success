@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect , useRef } from 'react';
+import React, { useState, useEffect  } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -24,26 +24,7 @@ export default function NavBar() {
   const [isBatchesHovered, setIsBatchesHovered] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
-<<<<<<< HEAD
   const { setBatchingValue, firstLetterUser , setStudentBatchSelect } = useDataContext();
-=======
-  const { setBatchingValue, firstLetterUser } = useDataContext();
-    
-  const mobileMenuRef = useRef(null);
-
-  useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (mobileMenuOpen && mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
-      setMobileMenuOpen(false);
-    }
-  };
-
-  document.addEventListener('mousedown', handleClickOutside);
-  return () => {
-    document.removeEventListener('mousedown', handleClickOutside);
-  };
-}, [mobileMenuOpen]);
->>>>>>> 69f68c00190609674838b3b8d9590e43a1dfa826
 
   useEffect(() => {
     const storedSubNav = localStorage.getItem('activeSubNav');
