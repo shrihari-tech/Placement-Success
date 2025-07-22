@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 
 export default function EditStudentModal({ student, onClose, onSave }) {
   const { studentData, updateStudent } = useDataContext();
+  const [EditDiscarddModel , setEditDiscarddModel] = useState(false);
   const [editingStudent, setEditingStudent] = useState(student);
   const [initialStudent] = useState(student);
   const [showBatchDropdown, setShowBatchDropdown] = useState(false);
@@ -75,10 +76,10 @@ export default function EditStudentModal({ student, onClose, onSave }) {
     setErrors(newErrors);
   };
 
-  const batchesNames = useMemo(() => {
+ const batchesNames = useMemo(() => {
     return [...new Set(studentData.map(s => s.batch))];
   }, [studentData]);
-
+  
   const handleEpicStatusChange = (value) => {
     handleChange("epicStatus", value);
     setShowEpicDropdown(false);
@@ -94,6 +95,12 @@ export default function EditStudentModal({ student, onClose, onSave }) {
       setShowConfirmModal(true);
     } else {
       toast.error("Please fix all errors before saving");
+    }
+  };
+
+  const handleDiscard = () => {
+    if(changesMade){
+      setEditDiscarddModel(true);
     }
   };
 
@@ -121,7 +128,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
           {/* Header */}
           <div className="mb-8 flex items-center justify-between">
             <h2 className="text-sm font-bold">Edit Student</h2>
-            <button onClick={onClose} className="text-gray-500 hover:text-gray-700 cursor-pointer">
+            <button onClick={ () => {onClose(); handleDiscard();}} className="text-gray-500 hover:text-gray-700 cursor-pointer">
               <RiCloseCircleLine size={20} />
             </button>
           </div>
@@ -145,7 +152,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
               {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
               {editingStudent.name && (
                 <button onClick={() => clearField("name")} className="cursor-pointer absolute top-2 right-3 text-gray-500 hover:text-gray-700">
-                  <RiCloseCircleLine size={20} />
+                  <RiCloseCircleLine size={20}/>
                 </button>
               )}
             </div>
@@ -194,39 +201,38 @@ export default function EditStudentModal({ student, onClose, onSave }) {
               )}
             </div>
             {/* Batch Dropdown */}
-            <div className="relative mb-4">
-              <input
-                type="text"
-                id="batch"
-                placeholder=" "
-                value={editingStudent.batch}
-                onChange={(e) => {
-                  handleChange("batch", e.target.value);
-                  setShowBatchDropdown(true);
-                }}
-                onFocus={() => setShowBatchDropdown(true)}
-                className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
-                autoComplete="off"
-              />
-              <label
-                htmlFor="batch"
-                className={`absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 ${editingStudent.batch ? 'top-[-10px]' : 'top-3.5'}`}
-              >
-                Batch
-              </label>
-              <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
-              {showBatchDropdown && (
-                <div
-                  className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto"
-                  ref={batchDropdownRef}
-                >
-                  {batchesNames
-                    .filter(batch =>
-                      batch?.toLowerCase().includes(editingStudent.batch?.toLowerCase())
-                    )
-                    .slice(0, 5)
-                    .map((batch) => (
-                      <div
+                  <div className="relative mb-4" ref={batchDropdownRef}>
+                    <input
+                    type="text"
+                    id="batch"
+                    placeholder=" "
+                    value={editingStudent.batch}
+                    onChange={(e) => {
+                      handleChange("batch", e.target.value);
+                      setShowBatchDropdown(true);
+                    }}
+                    onFocus={() => setShowBatchDropdown(true)}
+                    className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+                    autoComplete="off"
+                    />
+                    <label
+                    htmlFor="batch"
+                    className={`absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 ${editingStudent.batch ? 'top-[-10px]' : 'top-3.5'}`}
+                    >
+                    Batch
+                    </label>
+                    <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
+                    {showBatchDropdown && (
+                    <div
+                      className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto"
+                    >
+                      {batchesNames
+                      .filter(batch =>
+                        batch?.toLowerCase().includes(editingStudent.batch?.toLowerCase())
+                      )
+                      .slice(0, 5)
+                      .map((batch) => (
+                        <div
                         key={batch}
                         tabIndex={0}
                         className="px-4 py-2 cursor-pointer hover:bg-gray-100"
@@ -236,29 +242,29 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                         }}
                         onKeyDown={(e) => {
                           if (e.key === "Enter") {
-                            handleChange("batch", batch);
-                            setShowBatchDropdown(false);
+                          handleChange("batch", batch);
+                          setShowBatchDropdown(false);
                           }
                         }}
-                      >
+                        >
                         {batch}
-                      </div>
-                    ))}
-                  {/* If no matches, show a message */}
-                  {batchesNames.filter(batch =>
-                    batch?.toLowerCase().includes(editingStudent.batch?.toLowerCase())
-                  ).length === 0 && (
-                    <div className="px-4 py-2 text-gray-400">No batches found</div>
-                  )}
-                </div>
-              )}
-              {editingStudent.batch && (
-                <button onClick={() => clearField("batch")} className="cursor-pointer absolute top-2 right-8 text-gray-500 hover:text-gray-700">
-                  <RiCloseCircleLine size={20} />
-                </button>
-              )}
-            </div>
-            {/* EPIC Status Dropdown */}
+                        </div>
+                      ))}
+                      {/* If no matches, show a message */}
+                      {batchesNames.filter(batch =>
+                      batch?.toLowerCase().includes(editingStudent.batch?.toLowerCase())
+                      ).length === 0 && (
+                      <div className="px-4 py-2 text-gray-400">No batches found</div>
+                      )}
+                    </div>
+                    )}
+                    {editingStudent.batch && (
+                    <button onClick={() => clearField("batch")} className="cursor-pointer absolute top-2 right-8 text-gray-500 hover:text-gray-700">
+                      <RiCloseCircleLine size={20} />
+                    </button>
+                    )}
+                  </div>
+                  {/* EPIC Status Dropdown */}
             <div className="relative mb-4">
               <input
                 type="text"
@@ -354,6 +360,30 @@ export default function EditStudentModal({ student, onClose, onSave }) {
       </div>
       {/* Confirm Modal */}
       {showConfirmModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onClick={() => setShowConfirmModal(false)}>
+          <div className="w-[500px] bg-[#F8FAFD] rounded-[10px] p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-lg font-medium">Confirm Changes</h2>
+              <button onClick={() => setShowConfirmModal(false)} className="cursor-pointer text-gray-500 hover:text-gray-700">
+                <RiCloseCircleLine size={20} />
+              </button>
+            </div>
+            <p className="mb-4 text-gray-700 text-sm">
+              Are you sure you want to update student <strong className='text-m'>{editingStudent.name}</strong>?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button onClick={() => setShowConfirmModal(false)} className="cursor-pointer bg-[#e8def8] text-[#4a4459] px-4 py-2.5 rounded-2xl text-sm font-medium">
+                Cancel
+              </button>
+              <button onClick={handleConfirmSave} className="cursor-pointer bg-[#6750a4] text-white px-4 py-2.5 rounded-2xl text-sm font-medium">
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Discard confirm model  */}
+      {EditDiscarddModel && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onClick={() => setShowConfirmModal(false)}>
           <div className="w-[500px] bg-[#F8FAFD] rounded-[10px] p-6" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">

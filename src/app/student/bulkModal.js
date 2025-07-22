@@ -216,18 +216,20 @@ export default function BulkModal() {
         return;
       }
      // Add valid data to the specific domain
-const newStudents = validData.map((student) => ({
-  name: student["STUDENT FULL NAME (AS PER DOCUMENTS)"],
-  email: student["EMAIL ADDRESS"],
-  bookingId: student["Booking ID"],
-  epicStatus: "",
-  placement: "",
-  batch: batchName,
-  phone: student["CONTACT NUMBER (10 digit)"] || "",
-  mode: student["MODE OF STUDY"] || "",
-}));
+validData.forEach((student) => {
+  const newStudent = {
+    name: student["STUDENT FULL NAME (AS PER DOCUMENTS)"],
+    email: student["EMAIL ADDRESS"],
+    bookingId: student["Booking ID"],
+    epicStatus: "",
+    placement: "",
+    batch: batchName,
+    phone: student["CONTACT NUMBER (10 digit)"] || "",
+    mode: student["MODE OF STUDY"] || "",
+  };
 
-addMultipleStudents(newStudents);
+  addMultipleStudents(newStudent);
+});
 
 
 
@@ -241,6 +243,7 @@ addMultipleStudents(newStudents);
 
     reader.readAsArrayBuffer(file);
   };
+  
 
   const handleOpenModal = () => {
     setIsOpen(true);
