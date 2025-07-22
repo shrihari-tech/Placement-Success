@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Toaster, toast } from 'sonner';
 import { RiCloseCircleLine } from "react-icons/ri";
 import { useDataContext } from '../context/dataContext';
+import BulkModal from './bulkModal';
 import EditStudentModal from './EditStudentModal';
 
 export default function StudentDataPage() {
@@ -152,9 +153,9 @@ handleSearch();
               activeTab === 'Student Data'
                 ? 'left-1 w-[calc(25%-0.5rem)]'
                 : activeTab === 'Scores'
-                ? 'left-[calc(25%+0.25rem)] w-[calc(25%-0.5rem)]'
+                ? 'left-[calc(25%+0.25rem)] md:left-[calc(25%+0.25rem)] w-[calc(25%-0.8rem)] md:w-[calc(25%-0.5rem)]'
                 : activeTab === 'Opportunities'
-                ? 'left-[calc(50%+0.25rem)] w-[calc(25%-0.5rem)]'
+                ? 'left-[calc(50%-0.5rem)] md:left-[calc(50%-0.25rem)] w-[calc(25%+0.7rem)] md:w-[calc(25%-0.5rem)]'
                 : 'left-[calc(75%+0.25rem)] w-[calc(25%-0.5rem)]'
             }`}
           />
@@ -317,6 +318,7 @@ handleSearch();
                 <Image src='/reset.svg' alt="Reset Icon" width={20} height={20} className="object-contain" />
                 Reset
               </button>
+              <BulkModal/>
             </div>
           </div>
         </div>
