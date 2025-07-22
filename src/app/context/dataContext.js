@@ -1406,44 +1406,47 @@ useEffect(() => {
   }, [studentBatchSelect, fullstackStudent, dataanalyticsStudent, bankingStudent, marketingStudent, sapStudent, devopsStudent]);
 
 
- const deleteStudent = (bookingId) => {
+const deleteStudent = (bookingId) => {
   const removeFromList = (list) => list.filter((item) => item.bookingId !== bookingId);
-
-  let updatedList = [];
+  let updatedDomainList = [];
 
   switch (batchingvalue) {
     case "fullstack":
-      updatedList = removeFromList(fullstackStudent);
-      setFullstackStudent(updatedList);
+      updatedDomainList = removeFromList(fullstackStudent);
+      setFullstackStudent(updatedDomainList);
       break;
     case "dataanalytics":
-      updatedList = removeFromList(dataanalyticsStudent);
-      setDataanalyticsStudent(updatedList);
+      updatedDomainList = removeFromList(dataanalyticsStudent);
+      setDataanalyticsStudent(updatedDomainList);
       break;
     case "banking":
-      updatedList = removeFromList(bankingStudent);
-      setBankingStudent(updatedList);
+      updatedDomainList = removeFromList(bankingStudent);
+      setBankingStudent(updatedDomainList);
       break;
     case "marketing":
-      updatedList = removeFromList(marketingStudent);
-      setMarketingStudent(updatedList);
+      updatedDomainList = removeFromList(marketingStudent);
+      setMarketingStudent(updatedDomainList);
       break;
     case "sap":
-      updatedList = removeFromList(sapStudent);
-      setSapStudent(updatedList);
+      updatedDomainList = removeFromList(sapStudent);
+      setSapStudent(updatedDomainList);
       break;
     case "devops":
-      updatedList = removeFromList(devopsStudent);
-      setDevopsStudent(updatedList);
+      updatedDomainList = removeFromList(devopsStudent);
+      setDevopsStudent(updatedDomainList);
       break;
     default:
       return;
   }
 
-  // This is the key fix: update the global studentData too
-  setStudentData(updatedList);
+  // 🔁 Now update studentData only for the current domain
+  setStudentData(prev =>
+    prev.filter(student =>
+      // Keep all students except the one being deleted
+      !(student.bookingId === bookingId && student.domain === batchingvalue)
+    )
+  );
 };
-
 
   // 🔧 Add a new batch to current domain
   const addBatch = (newBatch) => {

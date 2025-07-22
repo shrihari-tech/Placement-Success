@@ -34,10 +34,6 @@ export default function StudentDataPage() {
 }, [studentData]);
 
 
-  useEffect(() => {
-    setFilteredStudents(studentData);
-  }, [studentData]);
-
   const handleSearch = useCallback(() => {
     let results = studentData;
 
@@ -68,7 +64,12 @@ export default function StudentDataPage() {
 
     setFilteredStudents(results);
     setSearchInitiated(true);
+    handleSearch();
   }, [studentData, selectedBatch, selectedStatus, selectedPlacement, batchData]);
+
+  // useEffect(() => {
+  //   handleSearch();
+  // }, [studentData, selectedBatch, selectedStatus, selectedPlacement, batchData]);
 
   const handleReset = () => {
     setSelectedBatch('');
@@ -109,25 +110,32 @@ export default function StudentDataPage() {
     setEditingStudent(student);
   };
 
-  const handleDeleteStudent = (bookingId) => {
-    if (!deleteConfirmationInput) {
+  const handleDeleteStudent = () => {
+    if (!deleteConfirmationInput.trim()) {
       setDeleteError('Please enter the booking ID to confirm deletion');
       return;
     }
-    if (!deletingStudent || deleteConfirmationInput !== deletingStudent.bookingId) {
+
+    if (!deletingStudent || deleteConfirmationInput.trim() !== deletingStudent.bookingId) {
       setDeleteError('Booking ID does not match. Please enter the exact booking ID.');
       return;
     }
-    deleteStudent(deletingStudent.bookingId);
-setShowDeleteModal(false);
-setDeleteConfirmationInput('');
-setDeleteError('');
-setDeletingStudent(null);
-toast.success("Student deleted successfully");
-// Refresh studentData from context and reapply filters
-handleSearch();
 
+    // Delete the student from the correct domain and update studentData globally
+    deleteStudent(deletingStudent.bookingId);
+
+    // Reset modal states
+    setShowDeleteModal(false);
+    setDeleteConfirmationInput('');
+    setDeleteError('');
+    setDeletingStudent(null);
+
+    toast.success("Student deleted successfully");
+
+    // 🔄 Reapply filters to refresh the displayed list (if any filters were applied)
+    handleSearch();
   };
+
 
   const handleCloseDeleteModal = () => {
     setShowDeleteModal(false);
@@ -174,47 +182,61 @@ handleSearch();
         <div id="search-container" className="bg-[#F4F3FF] py-3 rounded-xl" tabIndex={0}>
           <div className="flex flex-row justify-center flex-wrap gap-5 py-3">
             {/* Batch Dropdown */}
-            <div className="relative">
+            <div className="relative" ref={batchDropdownRef}>
               <input
                 type="text"
                 id="batch-select"
-                readOnly
                 placeholder=" "
-                value={selectedBatch || ''}
+                value={selectedBatch}
+                onChange={e => {
+                  setSelectedBatch(e.target.value);
+                  setShowBatchDropdown(true);
+                }}
                 onClick={() => setShowBatchDropdown(!showBatchDropdown)}
                 className="block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+                autoComplete="off"
               />
               <label htmlFor="batch-select" className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6">
                 Batch
               </label>
               <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
               {selectedBatch && (
-                <button onClick={(e) => { e.stopPropagation(); setSelectedBatch(''); setShowBatchDropdown(false); handleSearch(); }} className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700">
+                <button onClick={e => { e.stopPropagation(); setSelectedBatch(''); setShowBatchDropdown(false); }} className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700">
                   <RiCloseCircleLine size={20} />
                 </button>
               )}
               {showBatchDropdown && (
-                <div className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md" ref={batchDropdownRef}>
+                <div
+                  className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md"
+                  style={{
+                    maxHeight: batchesNames.length > 5 ? '200px' : 'auto',
+                    overflowY: batchesNames.length > 5 ? 'auto' : 'visible'
+                  }}
+                >
                   <div
                     key=""
                     tabIndex={0}
                     className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                     onClick={() => { setSelectedBatch(''); setShowBatchDropdown(false); }}
-                    onKeyDown={(e) => { if (e.key === "Enter") { setSelectedBatch(''); setShowBatchDropdown(false); handleSearch(); } }}
+                    onKeyDown={e => { if (e.key === "Enter") { setSelectedBatch(''); setShowBatchDropdown(false); handleSearch(); } }}
                   >
-                    Select Batch
                   </div>
-                  {batchesNames.map(batchName => (
-                    <div
-                      key={batchName}
-                      tabIndex={0}
-                      className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                      onClick={() => { setSelectedBatch(batchName); setShowBatchDropdown(false); }}
-                      onKeyDown={(e) => { if (e.key === "Enter") { setSelectedBatch(batchName); setShowBatchDropdown(false); handleSearch(); } }}
-                    >
-                      {batchName}
-                    </div>
-                  ))}
+                  {batchesNames
+                    .filter(batchName =>
+                      !selectedBatch ||
+                      batchName.toLowerCase().includes(selectedBatch.toLowerCase())
+                    )
+                    .map(batchName => (
+                      <div
+                        key={batchName}
+                        tabIndex={0}
+                        className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                        onClick={() => { setSelectedBatch(batchName); setShowBatchDropdown(false); }}
+                        onKeyDown={e => { if (e.key === "Enter") { setSelectedBatch(batchName); setShowBatchDropdown(false); handleSearch(); } }}
+                      >
+                        {batchName}
+                      </div>
+                    ))}
                 </div>
               )}
             </div>
@@ -235,7 +257,7 @@ handleSearch();
               </label>
               <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
               {selectedStatus && (
-                <button onClick={(e) => { e.stopPropagation(); setSelectedStatus(''); setShowStatusDropdown(false); handleSearch(); }} className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700">
+                <button onClick={(e) => { e.stopPropagation(); setSelectedStatus(''); setShowStatusDropdown(false); }} className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700">
                   <RiCloseCircleLine size={20} />
                 </button>
               )}
@@ -248,7 +270,6 @@ handleSearch();
                     onClick={() => { setSelectedStatus(''); setShowStatusDropdown(false); }}
                     onKeyDown={(e) => { if (e.key === "Enter") { setSelectedStatus(''); setShowStatusDropdown(false); handleSearch(); } }}
                   >
-                    Select Status
                   </div>
                   {['Completed', 'Ongoing'].map(statusOption => (
                     <div
@@ -291,9 +312,8 @@ handleSearch();
                     tabIndex={0}
                     className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                     onClick={() => { setSelectedPlacement(''); setShowPlacementDropdown(false); }}
-                    onKeyDown={(e) => { if (e.key === "Enter") { setSelectedPlacement(''); setShowPlacementDropdown(false); handleSearch(); } }}
+                    onKeyDown={(e) => { if (e.key === "Enter") { setSelectedPlacement(''); setShowPlacementDropdown(false);} }}
                   >
-                    Select Placement
                   </div>
                   {['Placed', 'Yet to Place', 'Not Placed', 'Not Interested'].map(placementOption => (
                     <div
@@ -347,8 +367,9 @@ handleSearch();
                       <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">{student.bookingId}</td>
                       <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">{student.epicStatus}</td>
                       <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">{student.placement}</td>
-                      <td className="px-4 py-3 text-sm text-center whitespace-nowrap">
-                        <div className="flex gap-1">
+                      <td className="px-4 py-3 text-sm whitespace-nowrap">
+                        <div className="flex gap-1 items-center justify-center">
+                          <button className='p-1 hover:bg-gray-100 rounded cursor-pointer'><FiEye className="h-4 w-4" /></button>
                           <button onClick={() => handleEditStudent(student)} className="cursor-pointer p-1 hover:bg-gray-100 rounded"><FiEdit className="h-4 w-4" /></button>
                           <button onClick={() => { setShowDeleteModal(true); setDeletingStudent(student); setDeleteConfirmationInput(''); setDeleteError(''); }} className="cursor-pointer p-1 hover:bg-gray-100 rounded text-black"><FiTrash2 className="h-4 w-4" /></button>
                         </div>
@@ -393,7 +414,10 @@ handleSearch();
               <button onClick={handleCloseDeleteModal} className="cursor-pointer bg-[#e8def8] text-[#4a4459] px-4 py-2.5 rounded-2xl text-sm font-medium">
                 Cancel
               </button>
-              <button onClick={ handleDeleteStudent} className="cursor-pointer bg-[#6750a4] text-white px-4 py-2.5 rounded-2xl text-sm font-medium">
+              <button
+                onClick={handleDeleteStudent}
+                className="cursor-pointer bg-[#6750a4] text-white px-4 py-2.5 rounded-2xl text-sm font-medium"
+              >
                 Delete
               </button>
             </div>
