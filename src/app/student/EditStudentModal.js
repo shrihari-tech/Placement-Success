@@ -134,7 +134,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                 type="text"
                 value={editingStudent.name}
                 onChange={(e) => handleChange("name", e.target.value)}
-                className={`peer w-full rounded border-2 p-2.5 pr-10 text-sm ${errors.name ? 'border-red-500' : 'border-gray-500'} transition-all focus:border-[#6750A4] focus:outline-none`}
+                className={`peer w-full rounded border-2 px-4 pb-2 pt-5  text-sm ${errors.name ? 'border-red-500' : 'border-gray-500'} transition-all focus:border-[#6750A4] focus:outline-none`}
               />
               <label
                 htmlFor="name"
@@ -144,7 +144,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
               </label>
               {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
               {editingStudent.name && (
-                <button onClick={() => clearField("name")} className="cursor-pointer absolute top-2 right-3 text-gray-500 hover:text-gray-700">
+                <button onClick={() => clearField("name")} className="cursor-pointer absolute top-4.5 right-3 text-gray-500 hover:text-gray-700">
                   <RiCloseCircleLine size={20} />
                 </button>
               )}
@@ -156,17 +156,17 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                 type="email"
                 value={editingStudent.email}
                 onChange={(e) => handleChange("email", e.target.value)}
-                className={`peer w-full rounded border-2 p-2.5 pr-10 text-sm ${errors.email ? 'border-red-500' : 'border-gray-500'} transition-all focus:border-[#6750A4] focus:outline-none`}
+                className={`peer w-full rounded border-2 px-4 pb-2 pt-5  text-sm ${errors.email ? 'border-red-500' : 'border-gray-500'} transition-all focus:border-[#6750A4] focus:outline-none`}
               />
               <label
                 htmlFor="email"
-              className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+              className="absolute px-2 text-sm text-gray-500 duration-300 bg-white transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
               >
                 Email
               </label>
               {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
               {editingStudent.email && (
-                <button onClick={() => clearField("email")} className="cursor-pointer absolute top-2 right-3 text-gray-500 hover:text-gray-700">
+                <button onClick={() => clearField("email")} className="cursor-pointer absolute top-4.5 right-3 text-gray-500 hover:text-gray-700">
                   <RiCloseCircleLine size={20} />
                 </button>
               )}
@@ -178,17 +178,17 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                 type="text"
                 value={editingStudent.bookingId}
                 onChange={(e) => handleChange("bookingId", e.target.value)}
-                className={`peer w-full rounded border-2 p-2.5 pr-10 text-sm ${errors.bookingId ? 'border-red-500' : 'border-gray-500'} transition-all focus:border-[#6750A4] focus:outline-none`}
+                className={`peer w-full rounded border-2 px-4 pb-2 pt-5 text-sm ${errors.bookingId ? 'border-red-500' : 'border-gray-500'} transition-all focus:border-[#6750A4] focus:outline-none`}
               />
               <label
                 htmlFor="bookingId"
-                              className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+                              className="absolute px-2 text-sm text-gray-500 duration-300 bg-white transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
               >
                 Booking ID
               </label>
               {errors.bookingId && <p className="mt-1 text-xs text-red-500">{errors.bookingId}</p>}
               {editingStudent.bookingId && (
-                <button onClick={() => clearField("bookingId")} className="cursor-pointer absolute top-2 right-3 text-gray-500 hover:text-gray-700">
+                <button onClick={() => clearField("bookingId")} className="cursor-pointer absolute top-4.5 right-3 text-gray-500 hover:text-gray-700">
                   <RiCloseCircleLine size={20} />
                 </button>
               )}
@@ -205,12 +205,13 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                   setShowBatchDropdown(true);
                 }}
                 onFocus={() => setShowBatchDropdown(true)}
-                className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+                className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
                 autoComplete="off"
               />
               <label
                 htmlFor="batch"
-                className={`absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 ${editingStudent.batch ? 'top-[-10px]' : 'top-3.5'}`}
+                className={`absolute px-2 text-sm text-gray-500 duration-300 bg-white transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 
+                  `}
               >
                 Batch
               </label>
@@ -253,7 +254,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                 </div>
               )}
               {editingStudent.batch && (
-                <button onClick={() => clearField("batch")} className="cursor-pointer absolute top-2 right-8 text-gray-500 hover:text-gray-700">
+                <button onClick={() => clearField("batch")} className="cursor-pointer absolute top-4.5 right-8 text-gray-500 hover:text-gray-700">
                   <RiCloseCircleLine size={20} />
                 </button>
               )}
@@ -267,11 +268,11 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                 placeholder=" "
                 value={editingStudent.epicStatus}
                 onClick={() => setShowEpicDropdown(!showEpicDropdown)}
-                className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+                className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
               />
               <label
                 htmlFor="epic-status"
-              className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+              className="absolute px-2 text-sm text-gray-500 duration-300 bg-white transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
               >
                 EPIC Status
               </label>
@@ -292,7 +293,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                 </div>
               )}
               {editingStudent.epicStatus && (
-                <button onClick={() => clearField("epicStatus")} className="cursor-pointer absolute top-2 right-8 text-gray-500 hover:text-gray-700">
+                <button onClick={() => clearField("epicStatus")} className="cursor-pointer absolute top-4.5 right-8 text-gray-500 hover:text-gray-700">
                   <RiCloseCircleLine size={20} />
                 </button>
               )}
@@ -306,11 +307,11 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                 placeholder=" "
                 value={editingStudent.placement}
                 onClick={() => setShowPlacementDropdown(!showPlacementDropdown)}
-                className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+                className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
               />
               <label
                 htmlFor="placement"
-              className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+              className="absolute px-2 text-sm text-gray-500 duration-300 bg-white transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
               >
                 Placement
               </label>
@@ -331,7 +332,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                 </div>
               )}
               {editingStudent.placement && (
-                <button onClick={() => clearField("placement")} className="cursor-pointer absolute top-2 right-8 text-gray-500 hover:text-gray-700">
+                <button onClick={() => clearField("placement")} className="cursor-pointer absolute top-4.5 right-8 text-gray-500 hover:text-gray-700">
                   <RiCloseCircleLine size={20} />
                 </button>
               )}

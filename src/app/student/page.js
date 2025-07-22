@@ -31,11 +31,9 @@ export default function StudentDataPage() {
   const searchContainerRef = useRef(null);
 
 
-
   const batchesNames = useMemo(() => {
   return [...new Set(studentData.map(s => s.batch))];
 }, [studentData]);
-
 
   const handleSearch = useCallback(() => {
     let results = studentData;
@@ -67,12 +65,18 @@ export default function StudentDataPage() {
 
     setFilteredStudents(results);
     setSearchInitiated(true);
-    handleSearch();
   }, [studentData, selectedBatch, selectedStatus, selectedPlacement, batchData]);
 
-  // useEffect(() => {
-  //   handleSearch();
-  // }, [studentData, selectedBatch, selectedStatus, selectedPlacement, batchData]);
+  const isInitialMount = useRef(true);
+    useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+    } else {
+      if (searchInitiated) {
+        handleSearch();
+      }
+    }
+  }, [studentData]);
 
   const handleReset = () => {
     setSelectedBatch('');
@@ -138,7 +142,6 @@ export default function StudentDataPage() {
     // 🔄 Reapply filters to refresh the displayed list (if any filters were applied)
     handleSearch();
   };
-
 
   const handleCloseDeleteModal = () => {
     setShowDeleteModal(false);
@@ -371,8 +374,8 @@ export default function StudentDataPage() {
                     <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Name</th>
                     <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Email</th>
                     <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Booking ID</th>
-                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Epic Status</th>
-                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Placement</th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Phone No.</th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Mode of Study</th>
                     <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
                   </tr>
                 </thead>
@@ -383,8 +386,8 @@ export default function StudentDataPage() {
                       <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">{student.name}</td>
                       <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">{student.email}</td>
                       <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">{student.bookingId}</td>
-                      <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">{student.epicStatus}</td>
-                      <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">{student.placement}</td>
+                      <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">{student.phone}</td>
+                      <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">{student.mode}</td>
                       <td className="px-4 py-3 text-sm whitespace-nowrap">
                         <div className="flex gap-1 items-center justify-center">
                           <button className='p-1 hover:bg-gray-100 rounded cursor-pointer'><FiEye className="h-4 w-4" /></button>
@@ -453,3 +456,4 @@ export default function StudentDataPage() {
     </div>
   );
 }
+
