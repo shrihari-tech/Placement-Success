@@ -216,20 +216,19 @@ export default function BulkModal() {
         return;
       }
      // Add valid data to the specific domain
-validData.forEach((student) => {
-  const newStudent = {
-    name: student["STUDENT FULL NAME (AS PER DOCUMENTS)"],
-    email: student["EMAIL ADDRESS"],
-    bookingId: student["Booking ID"],
-    epicStatus: "",
-    placement: "",
-    batch: batchName,
-    phone: student["CONTACT NUMBER (10 digit)"] || "",
-    mode: student["MODE OF STUDY"] || "",
-  };
+const newStudentsArray = validData.map((student) => ({
+  name: student["STUDENT FULL NAME (AS PER DOCUMENTS)"],
+  email: student["EMAIL ADDRESS"],
+  bookingId: student["Booking ID"],
+  epicStatus: "",
+  placement: "",
+  batch: batchName,
+  phone: student["CONTACT NUMBER (10 digit)"] || "",
+  mode: student["MODE OF STUDY"] || "",
+}));
 
-  addMultipleStudents(newStudent);
-});
+addMultipleStudents(newStudentsArray);
+
 
 
 
@@ -327,12 +326,11 @@ validData.forEach((student) => {
                   <input
                     type="text"
                     id="batch-name"
-                    placeholder="Enter Batch Name (e.g., DA01)"
                     value={batchName}
                     onChange={(e) => setBatchName(e.target.value)}
-                    className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+                    className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
                   />
-                  <label htmlFor="batch-name" className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6">
+                  <label htmlFor="batch-name" className="absolute px-2 text-m text-gray-500 duration-300 bg-white transform -translate-y-4 scale-75 top-7 z-5 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-9">
                     Batch Name
                   </label>
                   {batchName && (
