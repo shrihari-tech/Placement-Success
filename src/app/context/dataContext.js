@@ -1408,9 +1408,7 @@ useEffect(() => {
 
  const deleteStudent = (bookingId) => {
   const removeFromList = (list) => list.filter((item) => item.bookingId !== bookingId);
-
   let updatedList = [];
-
   switch (batchingvalue) {
     case "fullstack":
       updatedList = removeFromList(fullstackStudent);
@@ -1435,9 +1433,7 @@ useEffect(() => {
     case "devops":
       updatedList = removeFromList(devopsStudent);
       setDevopsStudent(updatedList);
-      break;
-    default:
-      return;
+      break
   }
 
   // This is the key fix: update the global studentData too
@@ -1501,10 +1497,11 @@ const updateBatch = (id, updatedFields) => {
 
 // Update an existing student by bookingId in current domain
  const updateStudent = (bookingId, updatedFields) => {
+  const batch = studentData.find(s => s.bookingId === bookingId)?.batch;
     const updateList = (list) =>
       list.map((item) => (item.bookingId === bookingId ? { ...item, ...updatedFields } : item));
 
-    switch (batchingvalue) {
+    switch (batch) {
       case "fullstack":
         setFullstackStudent(updateList(fullstackStudent));
         break;
@@ -1524,6 +1521,9 @@ const updateBatch = (id, updatedFields) => {
         setDevopsStudent(updateList(devopsStudent));
         break;
     }
+     setStudentData(prev => prev.map(item => 
+    item.bookingId === bookingId ? { ...item, ...updatedFields } : item
+  ));
   };
 
 

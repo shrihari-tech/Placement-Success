@@ -332,7 +332,7 @@ handleSearch();
               <button onClick={handleSearch} className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-5 py-4 rounded-xl text-sm font-semibold">
                 Search
               </button>
-              <button onClick={handleReset} className="cursor-pointer bg-[#f1ecfb] hover:bg-[#E8DEF8] px-4 py-4 rounded-xl text-sm font-semibold text-gray-700 flex items-center gap-1">
+              <button onClick={handleReset} className="cursor-pointer bg-[#E8DEF8] hover:bg-[#d1c3ea] px-4 py-4 rounded-xl text-sm font-semibold text-gray-700 flex items-center gap-1">
                 <Image src='/reset.svg' alt="Reset Icon" width={20} height={20} className="object-contain" />
                 Reset
               </button>
