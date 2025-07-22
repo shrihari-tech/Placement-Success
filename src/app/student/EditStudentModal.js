@@ -51,6 +51,17 @@ export default function EditStudentModal({ student, onClose, onSave }) {
   const validateField = (field, value) => {
     let newErrors = { ...errors };
     switch (field) {
+      case 'name':
+        if (!value) {
+          newErrors.name = 'Name is required';
+        } else if (value.length < 3) {
+          newErrors.name = 'Name must be at least 3 characters';
+        } else if (value.length > 50) {
+          newErrors.name = 'Name must be less than 50 characters';  
+        } else {
+          delete newErrors.name;
+        }
+        break;
       case 'email':
         if (!value) {
           newErrors.email = 'Email is required';
@@ -67,6 +78,13 @@ export default function EditStudentModal({ student, onClose, onSave }) {
           newErrors.bookingId = 'Booking ID already exists';
         } else {
           delete newErrors.bookingId;
+        }
+        break;
+        case 'batch':
+        if (!value) {
+          newErrors.batch = 'batch is required';
+        } else {
+          delete newErrors.batch;
         }
         break;
       default:
@@ -134,7 +152,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                 type="text"
                 value={editingStudent.name}
                 onChange={(e) => handleChange("name", e.target.value)}
-                className={`peer w-full rounded border-2 px-4 pb-2 pt-5  text-sm ${errors.name ? 'border-red-500' : 'border-gray-500'} transition-all focus:border-[#6750A4] focus:outline-none`}
+                className={`peer w-full rounded border-2 px-4 pb-2 pt-5  text-sm ${errors.name ? 'border-red-500' : 'border-gray-400'} transition-all focus:border-[#6750A4] focus:outline-none`}
               />
               <label
                 htmlFor="name"
@@ -144,7 +162,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
               </label>
               {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
               {editingStudent.name && (
-                <button onClick={() => clearField("name")} className="cursor-pointer absolute top-4.5 right-3 text-gray-500 hover:text-gray-700">
+                <button onClick={() => clearField("name")} className="cursor-pointer absolute top-4.5 right-3 text-gray-400 hover:text-gray-700">
                   <RiCloseCircleLine size={20} />
                 </button>
               )}
@@ -156,7 +174,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                 type="email"
                 value={editingStudent.email}
                 onChange={(e) => handleChange("email", e.target.value)}
-                className={`peer w-full rounded border-2 px-4 pb-2 pt-5  text-sm ${errors.email ? 'border-red-500' : 'border-gray-500'} transition-all focus:border-[#6750A4] focus:outline-none`}
+                className={`peer w-full rounded border-2 px-4 pb-2 pt-5  text-sm ${errors.email ? 'border-red-500' : 'border-gray-400'} transition-all focus:border-[#6750A4] focus:outline-none`}
               />
               <label
                 htmlFor="email"
@@ -178,7 +196,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                 type="text"
                 value={editingStudent.bookingId}
                 onChange={(e) => handleChange("bookingId", e.target.value)}
-                className={`peer w-full rounded border-2 px-4 pb-2 pt-5 text-sm ${errors.bookingId ? 'border-red-500' : 'border-gray-500'} transition-all focus:border-[#6750A4] focus:outline-none`}
+                className={`peer w-full rounded border-2 px-4 pb-2 pt-5 text-sm ${errors.bookingId ? 'border-red-500' : 'border-gray-400'} transition-all focus:border-[#6750A4] focus:outline-none`}
               />
               <label
                 htmlFor="bookingId"
@@ -205,8 +223,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                   setShowBatchDropdown(true);
                 }}
                 onFocus={() => setShowBatchDropdown(true)}
-                className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
-                autoComplete="off"
+                className={`peer w-full rounded border-2 px-4 pb-2 pt-5 text-sm ${errors.batch ? 'border-red-500' : 'border-gray-400'} transition-all focus:border-[#6750A4] focus:outline-none`}
               />
               <label
                 htmlFor="batch"
@@ -215,6 +232,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
               >
                 Batch
               </label>
+              {errors.batch && <p className="mt-1 text-xs text-red-500">{errors.batch}</p>}
               <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
               {showBatchDropdown && (
                 <div
@@ -253,11 +271,11 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                   )}
                 </div>
               )}
-              {editingStudent.batch && (
+              {/* {editingStudent.batch && (
                 <button onClick={() => clearField("batch")} className="cursor-pointer absolute top-4.5 right-8 text-gray-500 hover:text-gray-700">
                   <RiCloseCircleLine size={20} />
                 </button>
-              )}
+              )} */}
             </div>
             {/* EPIC Status Dropdown */}
             <div className="relative mb-4">
@@ -292,11 +310,11 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                   ))}
                 </div>
               )}
-              {editingStudent.epicStatus && (
+              {/* {editingStudent.epicStatus && (
                 <button onClick={() => clearField("epicStatus")} className="cursor-pointer absolute top-4.5 right-8 text-gray-500 hover:text-gray-700">
                   <RiCloseCircleLine size={20} />
                 </button>
-              )}
+              )} */}
             </div>
             {/* Placement Dropdown */}
             <div className="relative mb-4">
@@ -315,6 +333,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
               >
                 Placement
               </label>
+              
               <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
               {showPlacementDropdown && (
                 <div className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md" ref={placementDropdownRef}>
@@ -331,11 +350,11 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                   ))}
                 </div>
               )}
-              {editingStudent.placement && (
+              {/* {editingStudent.placement && (
                 <button onClick={() => clearField("placement")} className="cursor-pointer absolute top-4.5 right-8 text-gray-500 hover:text-gray-700">
                   <RiCloseCircleLine size={20} />
                 </button>
-              )}
+              )} */}
             </div>
           </div>
           {/* Footer Actions */}
