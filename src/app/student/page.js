@@ -178,7 +178,6 @@ export default function StudentDataPage() {
           };
       }, [editingStudent, showDeleteModal]);
   
-
   return (
     <div className="flex min-h-screen mt-16 md:mt-1">
       <Toaster position='top-right' />

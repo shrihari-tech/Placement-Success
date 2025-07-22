@@ -23,7 +23,7 @@ export default function BulkModal() {
     "PG DETAILS",
     "Languages Known",
   ];
-
+  
   const requiredDataFields = [
     "BATCH NAME",
     "STUDENT FULL NAME (AS PER DOCUMENTS)",
