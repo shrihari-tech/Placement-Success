@@ -1067,7 +1067,6 @@ const DataProvider = ({ children }) => {
     }
   }, [batchingvalue,fullstackData,dataanalyticsData,bankingData,marketingData,sapData,devopsData,]);
 
-
   const addMultipleStudents = (newStudents) => {
   const updateList = (list) => [...list, ...newStudents];
   switch (batchingvalue) {

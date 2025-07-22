@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef, useCallback,useMemo } from 'react';
-import { FiEye, FiEdit, FiTrash2, FiMoreVertical, FiCalendar, FiChevronDown } from 'react-icons/fi';
+import { FiEye, FiEdit, FiTrash2, FiChevronDown } from 'react-icons/fi';
 import Image from 'next/image';
 import { Toaster, toast } from 'sonner';
 import { RiCloseCircleLine } from "react-icons/ri";
@@ -9,7 +9,7 @@ import BulkModal from './bulkModal';
 import EditStudentModal from './EditStudentModal';
 
 export default function StudentDataPage() {
-  const { studentData, batchHead, batchData, updateStudent, deleteStudent } = useDataContext();
+  const { studentData, batchHead, batchData, deleteStudent } = useDataContext();
   const [activeTab, setActiveTab] = useState('Student Data');
   const [searchInitiated, setSearchInitiated] = useState(false);
   const [selectedBatch, setSelectedBatch] = useState('');
@@ -37,8 +37,10 @@ export default function StudentDataPage() {
 
   const handleSearch = useCallback(() => {
     let results = studentData;
-
-    // Filter by batch
+    if(selectedBatch === '' && selectedStatus === '' && selectedPlacement === ''){
+      toast.error("Please select at least one filter option to search");
+      return;
+    } ;
     if (selectedBatch) {
       results = results.filter(student => student.batch === selectedBatch);
     }

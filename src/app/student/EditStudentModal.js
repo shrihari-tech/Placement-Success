@@ -93,9 +93,9 @@ export default function EditStudentModal({ student, onClose, onSave }) {
     setErrors(newErrors);
   };
 
-  const batchesNames = useMemo(() => {
-    return [...new Set(studentData.map(s => s.batch))];
-  }, [studentData]);
+    const batchesNames = useMemo(() => {
+      return [...new Set(studentData.map(s => s.batch))];
+    }, [studentData]);
 
   const handleEpicStatusChange = (value) => {
     handleChange("epicStatus", value);
