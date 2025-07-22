@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect  } from 'react';
+import React, { useState, useEffect ,useRef  } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -23,7 +23,9 @@ export default function NavBar() {
   const [whatHoverSubNav, setWhatHoverSubNav] = useState("");
   const [isBatchesHovered, setIsBatchesHovered] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileSubNav, setMobileSubNav] = useState(false);
   
+   const mobileMenuRef = useRef(null)
   const { setBatchingValue, firstLetterUser , setStudentBatchSelect } = useDataContext();
 
   useEffect(() => {
@@ -31,6 +33,7 @@ export default function NavBar() {
     if (storedSubNav) {
       setActiveSubNav(storedSubNav);
       setBatchingValue(storedSubNav);
+      setStudentBatchSelect(storedSubNav);
     }
 
     if (pathname === '/home') {
@@ -54,6 +57,20 @@ export default function NavBar() {
     if (performance.getEntriesByType("navigation")[0]?.type === "reload") {
       localStorage.setItem('activeSubNav', '');
     }
+  }, []);
+  
+  // Close mobile menu when clicking outside of it
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   const handleNavItemClick = (navItem) => {
@@ -81,11 +98,18 @@ export default function NavBar() {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
-  const handleBatchesClick = () => {
-    if (window.innerWidth < 768) {
-      setShowSubNav(!showSubNav);
-    }
-  };
+ const handleBatchesClick = () => {
+  if (window.innerWidth < 768) {
+    setShowSubNav((prev) => !prev); // Toggle the showSubNav state
+  }
+};
+
+const handleStudentClick = () => {
+  if (window.innerWidth < 768) {
+    setMobileSubNav((prev) => !prev); // Toggle the showSubNav state
+  }
+};
+
 
   return (
     <>
@@ -224,171 +248,331 @@ export default function NavBar() {
             </Link>
 
           <div className="flex flex-col">
-  <button
-    className={`flex items-center px-4 py-2 rounded-lg ${activeNavItem === 'batches' ? 'bg-[#6750A4] text-white' : 'text-black hover:bg-[#e0ccff]'}`}
-    onClick={handleBatchesClick}
-  >
-    <MdOutlineGroups size={20} className="mr-3" />
-    <span>Batches</span><FiChevronDown className="absolute right-8 " size={25} />
-  </button>
-  
-  {showSubNav && (
-    <div className="pl-8 mt-2 space-y-2">
-      {/* Full Stack Development */}
-      <button
-        className={`flex items-center px-4 py-2 rounded-lg text-sm ${activeSubNav === 'fullstack' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
-        onClick={(e) => {
-        e.preventDefault();
-        const subNavKey = 'fullstack';
-        handleSubNavClick(subNavKey);
-        if (whatHoverSubNav === 'student') {
-          handleStudentSubNav(subNavKey);
-        }
-      }}
-
-      >
-        <Image
-          src='/computer.svg'
-          alt="Computer Icon"
-          width={15}
-          height={15}
-          className="mr-3"
-        />
-        Full Stack Development
-      </button>
-
-      {/* Data Analytics & Science */}
-      <button
-        className={`flex items-center px-4 py-2 rounded-lg text-sm ${activeSubNav === 'dataanalytics' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
-        onClick={(e) => {
-          e.preventDefault();
-          const subNavKey = 'dataanalytics';
-          if(whatHoverSubNav === 'batches') {
-            handleSubNavClick(subNavKey);
-          }
-         else if (whatHoverSubNav === 'student') {
-            handleStudentSubNav(subNavKey);
-          }
-        }}
-
-      >
-        <Image
-          src='/bar_chart_4_bars.svg'
-          alt="Data Analytics Icon"
-          width={15}
-          height={15}
-          className="mr-3"
-        />
-        Data Analytics & Science
-      </button>
-
-      {/* Banking & Financial Services */}
-      <button
-        className={`flex items-center px-4 py-2 rounded-lg text-sm ${activeSubNav === 'banking' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
-        onClick={(e) => {
-          e.preventDefault();
-          const subNavKey = 'banking';
-          if(whatHoverSubNav === 'batches') {
-            handleSubNavClick(subNavKey);
-          }
-         else if (whatHoverSubNav === 'student') {
-            handleStudentSubNav(subNavKey);
-          }
-        }}
-      >
-        <Image
-          src='/account_balance.svg'
-          alt="Banking Icon"
-          width={15}
-          height={15}
-          className="mr-3"
-        />
-        Banking & Financial Services
-      </button>
-
-      {/* Digital Marketing */}
-      <button
-        className={`flex items-center px-4 py-2 rounded-lg text-sm ${activeSubNav === 'marketing' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
-        onClick={(e) => {
-          e.preventDefault();
-          const subNavKey = 'marketing';
-           if(whatHoverSubNav === 'batches') {
-            handleSubNavClick(subNavKey);
-          }
-         else if (whatHoverSubNav === 'student') {
-            handleStudentSubNav(subNavKey);
-          }
-        }}
-      >
-        <Image
-          src='/ad.svg'
-          alt="Marketing Icon"
-          width={15}
-          height={15}
-          className="mr-3"
-        />
-        Digital Marketing
-      </button>
-
-      {/* SAP */}
-      <button
-        className={`flex items-center px-4 py-2 rounded-lg text-sm ${activeSubNav === 'sap' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
-       onClick={(e) => {
-        e.preventDefault();
-        const subNavKey = 'sap';
-        if(whatHoverSubNav === 'batches') {
-            handleSubNavClick(subNavKey);
-          }
-         else if (whatHoverSubNav === 'student') {
-            handleStudentSubNav(subNavKey);
-          }
-      }}
-      >
-        <Image
-          src='/device_hub.svg'
-          alt="SAP Icon"
-          width={15}
-          height={15}
-          className="mr-3"
-        />
-        SAP
-      </button>
-
-      {/* DevOps */}
-      <button
-        className={`flex items-center px-4 py-2 rounded-lg text-sm ${activeSubNav === 'devops' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
-       onClick={(e) => {
-        e.preventDefault();
-        const subNavKey = 'devops';
-         if(whatHoverSubNav === 'batches') {
-            handleSubNavClick(subNavKey);
-          }
-         else if (whatHoverSubNav === 'student') {
-            handleStudentSubNav(subNavKey);
-          }
-      }}
-      >
-        <Image
-          src='/deployed_code_history.svg'
-          alt="DevOps Icon"
-          width={15}
-          height={15}
-          className="mr-3"
-        />
-        DevOps
-      </button>
-    </div>
-  )}
-</div>
-
-            <Link
-              href="/student"
-              className={`flex items-center px-4 py-2 rounded-lg ${activeNavItem === 'student' ? 'bg-[#6750A4] text-white' : 'text-black hover:bg-[#e0ccff]'}`}
-              onClick={() => handleNavItemClick('student')}
+            <button
+              className={`flex items-center px-4 py-2 rounded-lg ${activeNavItem === 'batches' ? 'bg-[#6750A4] text-white' : 'text-black hover:bg-[#e0ccff]'}`}
+              onClick={handleBatchesClick}
             >
-              <RiGraduationCapLine size={20} className="mr-3" />
-              <span>Student</span>
-            </Link>
+              <MdOutlineGroups size={20} className="mr-3" />
+              <span>Batches</span><FiChevronDown className="absolute right-8 " size={25} />
+            </button>
+            
+            {showSubNav && (
+              <div className="pl-8 mt-2 space-y-2">
+                {/* Full Stack Development */}
+                <button
+                  className={`flex items-center px-4 py-2 rounded-lg text-sm ${activeSubNav === 'fullstack' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
+                  onClick={(e) => {
+                  e.preventDefault();
+                  const subNavKey = 'fullstack';
+                  handleSubNavClick(subNavKey);
+                  // if (whatHoverSubNav === 'student') {
+                  //   handleStudentSubNav(subNavKey);
+                  // }
+                }}
+
+                >
+                  <Image
+                    src='/computer.svg'
+                    alt="Computer Icon"
+                    width={15}
+                    height={15}
+                    className="mr-3"
+                  />
+                  Full Stack Development
+                </button>
+
+                {/* Data Analytics & Science */}
+                <button
+                  className={`flex items-center px-4 py-2 rounded-lg text-sm ${activeSubNav === 'dataanalytics' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const subNavKey = 'dataanalytics';
+                    handleSubNavClick(subNavKey);
+                  //   if(whatHoverSubNav === 'batches') {
+                  //     handleSubNavClick(subNavKey);
+                  //   }
+                  // else if (whatHoverSubNav === 'student') {
+                  //     handleStudentSubNav(subNavKey);
+                  //   }
+                  }}
+
+                >
+                  <Image
+                    src='/bar_chart_4_bars.svg'
+                    alt="Data Analytics Icon"
+                    width={15}
+                    height={15}
+                    className="mr-3"
+                  />
+                  Data Analytics & Science
+                </button>
+
+                {/* Banking & Financial Services */}
+                <button
+                  className={`flex items-center px-4 py-2 rounded-lg text-sm ${activeSubNav === 'banking' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const subNavKey = 'banking';
+                     handleSubNavClick(subNavKey);
+                  //   if(whatHoverSubNav === 'batches') {
+                  //     handleSubNavClick(subNavKey);
+                  //   }
+                  // else if (whatHoverSubNav === 'student') {
+                  //     handleStudentSubNav(subNavKey);
+                  //   }
+                  }}
+                >
+                  <Image
+                    src='/account_balance.svg'
+                    alt="Banking Icon"
+                    width={15}
+                    height={15}
+                    className="mr-3"
+                  />
+                  Banking & Financial Services
+                </button>
+
+                {/* Digital Marketing */}
+                <button
+                  className={`flex items-center px-4 py-2 rounded-lg text-sm ${activeSubNav === 'marketing' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const subNavKey = 'marketing';
+                     handleSubNavClick(subNavKey);
+                  //   if(whatHoverSubNav === 'batches') {
+                  //     handleSubNavClick(subNavKey);
+                  //   }
+                  // else if (whatHoverSubNav === 'student') {
+                  //     handleStudentSubNav(subNavKey);
+                  //   }
+                  }}
+                >
+                  <Image
+                    src='/ad.svg'
+                    alt="Marketing Icon"
+                    width={15}
+                    height={15}
+                    className="mr-3"
+                  />
+                  Digital Marketing
+                </button>
+
+                {/* SAP */}
+                <button
+                  className={`flex items-center px-4 py-2 rounded-lg text-sm ${activeSubNav === 'sap' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  const subNavKey = 'sap';
+                  handleSubNavClick(subNavKey);
+                  // if(whatHoverSubNav === 'batches') {
+                  //     handleSubNavClick(subNavKey);
+                  //   }
+                  // else if (whatHoverSubNav === 'student') {
+                  //     handleStudentSubNav(subNavKey);
+                  //   }
+                }}
+                >
+                  <Image
+                    src='/device_hub.svg'
+                    alt="SAP Icon"
+                    width={15}
+                    height={15}
+                    className="mr-3"
+                  />
+                  SAP
+                </button>
+
+                {/* DevOps */}
+                <button
+                  className={`flex items-center px-4 py-2 rounded-lg text-sm ${activeSubNav === 'devops' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  const subNavKey = 'devops';
+                   handleSubNavClick(subNavKey);
+                  // if(whatHoverSubNav === 'batches') {
+                  //     handleSubNavClick(subNavKey);
+                  //   }
+                  // else if (whatHoverSubNav === 'student') {
+                  //     handleStudentSubNav(subNavKey);
+                  //   }
+                }}
+                >
+                  <Image
+                    src='/deployed_code_history.svg'
+                    alt="DevOps Icon"
+                    width={15}
+                    height={15}
+                    className="mr-3"
+                  />
+                  DevOps
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-col">
+            <button
+              className={`flex items-center px-4 py-2 rounded-lg ${activeNavItem === 'student' ? 'bg-[#6750A4] text-white' : 'text-black hover:bg-[#e0ccff]'}`}
+              onClick={handleStudentClick}
+            >
+              <MdOutlineGroups size={20} className="mr-3" />
+              <span>Student</span><FiChevronDown className="absolute right-8 " size={25} />
+            </button>
+            
+            {mobileSubNav && (
+              <div className="pl-8 mt-2 space-y-2">
+                {/* Full Stack Development */}
+                <button
+                  className={`flex items-center px-4 py-2 rounded-lg text-sm ${activeSubNav === 'fullstack' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
+                  onClick={(e) => {
+                  e.preventDefault();
+                  const subNavKey = 'fullstack';
+                   handleStudentSubNav(subNavKey);
+                  // handleSubNavClick(subNavKey);
+                  // if (whatHoverSubNav === 'student') {
+                  //   handleStudentSubNav(subNavKey);
+                  // }
+                }}
+
+                >
+                  <Image
+                    src='/computer.svg'
+                    alt="Computer Icon"
+                    width={15}
+                    height={15}
+                    className="mr-3"
+                  />
+                  Full Stack Development
+                </button>
+
+                {/* Data Analytics & Science */}
+                <button
+                  className={`flex items-center px-4 py-2 rounded-lg text-sm ${activeSubNav === 'dataanalytics' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const subNavKey = 'dataanalytics';
+                    handleStudentSubNav(subNavKey);
+                  //   if(whatHoverSubNav === 'batches') {
+                  //     handleSubNavClick(subNavKey);
+                  //   }
+                  // else if (whatHoverSubNav === 'student') {
+                  //     handleStudentSubNav(subNavKey);
+                  //   }
+                  }}
+
+                >
+                  <Image
+                    src='/bar_chart_4_bars.svg'
+                    alt="Data Analytics Icon"
+                    width={15}
+                    height={15}
+                    className="mr-3"
+                  />
+                  Data Analytics & Science
+                </button>
+
+                {/* Banking & Financial Services */}
+                <button
+                  className={`flex items-center px-4 py-2 rounded-lg text-sm ${activeSubNav === 'banking' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const subNavKey = 'banking';
+                    handleStudentSubNav(subNavKey);
+                  //   if(whatHoverSubNav === 'batches') {
+                  //     handleSubNavClick(subNavKey);
+                  //   }
+                  // else if (whatHoverSubNav === 'student') {
+                  //     handleStudentSubNav(subNavKey);
+                  //   }
+                  }}
+                >
+                  <Image
+                    src='/account_balance.svg'
+                    alt="Banking Icon"
+                    width={15}
+                    height={15}
+                    className="mr-3"
+                  />
+                  Banking & Financial Services
+                </button>
+
+                {/* Digital Marketing */}
+                <button
+                  className={`flex items-center px-4 py-2 rounded-lg text-sm ${activeSubNav === 'marketing' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const subNavKey = 'marketing';
+                    handleStudentSubNav(subNavKey);
+                  //   if(whatHoverSubNav === 'batches') {
+                  //     handleSubNavClick(subNavKey);
+                  //   }
+                  // else if (whatHoverSubNav === 'student') {
+                  //     handleStudentSubNav(subNavKey);
+                  //   }
+                  }}
+                >
+                  <Image
+                    src='/ad.svg'
+                    alt="Marketing Icon"
+                    width={15}
+                    height={15}
+                    className="mr-3"
+                  />
+                  Digital Marketing
+                </button>
+
+                {/* SAP */}
+                <button
+                  className={`flex items-center px-4 py-2 rounded-lg text-sm ${activeSubNav === 'sap' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  const subNavKey = 'sap';
+                   handleStudentSubNav(subNavKey);
+                  // if(whatHoverSubNav === 'batches') {
+                  //     handleSubNavClick(subNavKey);
+                  //   }
+                  // else if (whatHoverSubNav === 'student') {
+                  //     handleStudentSubNav(subNavKey);
+                  //   }
+                }}
+                >
+                  <Image
+                    src='/device_hub.svg'
+                    alt="SAP Icon"
+                    width={15}
+                    height={15}
+                    className="mr-3"
+                  />
+                  SAP
+                </button>
+
+                {/* DevOps */}
+                <button
+                  className={`flex items-center px-4 py-2 rounded-lg text-sm ${activeSubNav === 'devops' ? 'bg-[#E8DEF8] text-black' : 'text-black hover:bg-[#E8DEF8]'}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  const subNavKey = 'devops';
+                  handleStudentSubNav(subNavKey);
+                  // if(whatHoverSubNav === 'batches') {
+                  //     handleSubNavClick(subNavKey);
+                  //   }
+                  // else if (whatHoverSubNav === 'student') {
+                  //     handleStudentSubNav(subNavKey);
+                  //   }
+                }}
+                >
+                  <Image
+                    src='/deployed_code_history.svg'
+                    alt="DevOps Icon"
+                    width={15}
+                    height={15}
+                    className="mr-3"
+                  />
+                  DevOps
+                </button>
+              </div>
+            )}
+          </div>
 
             <button
               className="flex items-center px-4 py-2 rounded-lg text-black hover:bg-[#e0ccff]"
