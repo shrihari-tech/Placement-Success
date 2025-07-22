@@ -1504,10 +1504,11 @@ const updateBatch = (id, updatedFields) => {
 
 // Update an existing student by bookingId in current domain
  const updateStudent = (bookingId, updatedFields) => {
+  const batch = studentData.find(s => s.bookingId === bookingId)?.batch;
     const updateList = (list) =>
       list.map((item) => (item.bookingId === bookingId ? { ...item, ...updatedFields } : item));
 
-    switch (batchingvalue) {
+    switch (batch) {
       case "fullstack":
         setFullstackStudent(updateList(fullstackStudent));
         break;
@@ -1527,6 +1528,9 @@ const updateBatch = (id, updatedFields) => {
         setDevopsStudent(updateList(devopsStudent));
         break;
     }
+     setStudentData(prev => prev.map(item => 
+    item.bookingId === bookingId ? { ...item, ...updatedFields } : item
+  ));
   };
 
 

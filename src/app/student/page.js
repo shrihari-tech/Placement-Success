@@ -28,6 +28,9 @@ export default function StudentDataPage() {
   const batchDropdownRef = useRef(null);
   const statusDropdownRef = useRef(null);
   const placementDropdownRef = useRef(null);
+  const searchContainerRef = useRef(null);
+
+
 
   const batchesNames = useMemo(() => {
   return [...new Set(studentData.map(s => s.batch))];
@@ -144,10 +147,25 @@ export default function StudentDataPage() {
     setDeletingStudent(null);
   };
 
+    useEffect(() => {
+  const handleGlobalKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSearch();
+    }
+  };
+  
+  window.addEventListener('keydown', handleGlobalKeyDown);
+  
+  return () => {
+    window.removeEventListener('keydown', handleGlobalKeyDown);
+  };
+  }, [handleSearch]);
+
   return (
     <div className="flex min-h-screen mt-16 md:mt-1">
       <Toaster position='top-right' />
-      <div className={`px-3 pt-20 flex-1 bg-[#F8FAFD] mb-12`}>
+      <div className={`px-3 pt-20 flex-1 bg-[#F8FAFD] mb-12`} ref={searchContainerRef} >
         {/* ====== HEADER ====== */}
         <div className="fixed top-15 md:top-0 ms-[-19px] border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 z-20">
           <h1 className="fixed pl-3 text-xl text-gray-800 font-semibold">{batchHead}</h1>
@@ -334,7 +352,7 @@ export default function StudentDataPage() {
               <button onClick={handleSearch} className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-5 py-4 rounded-xl text-sm font-semibold">
                 Search
               </button>
-              <button onClick={handleReset} className="cursor-pointer bg-[#f1ecfb] hover:bg-[#E8DEF8] px-4 py-4 rounded-xl text-sm font-semibold text-gray-700 flex items-center gap-1">
+              <button onClick={handleReset} className="cursor-pointer bg-[#E8DEF8] hover:bg-[#d1c3ea] px-4 py-4 rounded-xl text-sm font-semibold text-gray-700 flex items-center gap-1">
                 <Image src='/reset.svg' alt="Reset Icon" width={20} height={20} className="object-contain" />
                 Reset
               </button>

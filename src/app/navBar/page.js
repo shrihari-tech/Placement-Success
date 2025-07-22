@@ -33,6 +33,7 @@ export default function NavBar() {
     if (storedSubNav) {
       setActiveSubNav(storedSubNav);
       setBatchingValue(storedSubNav);
+      setStudentBatchSelect(storedSubNav);
     }
 
     if (pathname === '/home') {
