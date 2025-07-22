@@ -1004,8 +1004,6 @@ export const devopsStudentData = [
   { sno: 5, name: "Manikandan V", email: "manikandan05@gmail.com", bookingId: "DV05-005", epicStatus: "Excellent", placement: "Placed", batch: "DV05", phone: "9789012025", mode: "Online" }
 ];
 
-
-
 // ➤ Provider Component
 const DataProvider = ({ children }) => {
   const [batchingvalue, setBatchingValue] = useState(""); // selected domain
@@ -1068,6 +1066,32 @@ const DataProvider = ({ children }) => {
         setBatchData([]);
     }
   }, [batchingvalue,fullstackData,dataanalyticsData,bankingData,marketingData,sapData,devopsData,]);
+
+
+  const addMultipleStudents = (newStudents) => {
+  const updateList = (list) => [...list, ...newStudents];
+  switch (batchingvalue) {
+    case "fullstack":
+      setFullstackStudent(updateList(fullstackStudent));
+      break;
+    case "dataanalytics":
+      setDataanalyticsStudent(updateList(dataanalyticsStudent));
+      break;
+    case "banking":
+      setBankingStudent(updateList(bankingStudent));
+      break;
+    case "marketing":
+      setMarketingStudent(updateList(marketingStudent));
+      break;
+    case "sap":
+      setSapStudent(updateList(sapStudent));
+      break;
+    case "devops":
+      setDevopsStudent(updateList(devopsStudent));
+      break;
+  }
+  setStudentData(updateList(studentData));
+};
 
     // 🔄 Update studentData and studentHead when batchingvalue changes
 useEffect(() => {
@@ -1304,6 +1328,31 @@ const updateBatch = (id, updatedFields) => {
     }
   };
 
+   const addStudent = (newStudent) => {
+    const updateList = (list) => [...list, newStudent];
+    switch (batchingvalue) {
+      case "fullstack":
+        setFullstackStudent(updateList(fullstackStudent));
+        break;
+      case "dataanalytics":
+        setDataanalyticsStudent(updateList(dataanalyticsStudent));
+        break;
+      case "banking":
+        setBankingStudent(updateList(bankingStudent));
+        break;
+      case "marketing":
+        setMarketingStudent(updateList(marketingStudent));
+        break;
+      case "sap":
+        setSapStudent(updateList(sapStudent));
+        break;
+      case "devops":
+        setDevopsStudent(updateList(devopsStudent));
+        break;
+    }
+    setStudentData(updateList(studentData));
+  };
+
 
   const [selectedBatch, setSelectedBatch] = useState(null);
 
@@ -1311,7 +1360,7 @@ const updateBatch = (id, updatedFields) => {
 
   return (
     <DataContext.Provider
-      value={{ batchingvalue,setBatchingValue,setStudentBatchSelect,loginUser,setLoginUser,firstLetterUser,batchHead,batchData,addBatch,updateBatch,deleteBatch ,userName , selectedBatch,setSelectedBatch,getStatsByBatch,batchStatsData,batchesNames,studentData,deleteStudent,updateStudent
+      value={{ batchingvalue,setBatchingValue,setStudentBatchSelect,loginUser,setLoginUser,firstLetterUser,batchHead,batchData,addBatch,updateBatch,deleteBatch ,userName , selectedBatch,setSelectedBatch,getStatsByBatch,batchStatsData,batchesNames,studentData,deleteStudent,updateStudent,addStudent,addMultipleStudents
       }}
     >  
       {children}

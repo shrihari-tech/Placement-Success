@@ -67,7 +67,6 @@ export default function StudentDataPage() {
 
     setFilteredStudents(results);
     setSearchInitiated(true);
-    handleSearch();
   }, [studentData, selectedBatch, selectedStatus, selectedPlacement, batchData]);
 
   // useEffect(() => {
