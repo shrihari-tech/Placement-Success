@@ -19,6 +19,29 @@ const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
 
   if (!isOpen || !selectedStudent) return null;
 
+  const getDomainNameFromBatch = (batchNo) => {
+    if (!batchNo) return "N/A";
+
+    const prefix = batchNo.substring(0, 2).toUpperCase();
+
+    switch (prefix) {
+      case "FS":
+        return "Full Stack Development";
+      case "DA":
+        return "Data Analytics & Science";
+      case "BK":
+        return "Banking & Financial Services";
+      case "MK":
+        return "Digital Marketing";
+      case "DV":
+        return "DevOps";
+      case "SA":
+        return "SAP";
+      default:
+        return "Unknown";
+    }
+  };
+
   return (
     <div
       className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
@@ -58,11 +81,13 @@ const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
               </div>
               <div>
                 <span className="font-semibold text-[#6750A4]">Domain:</span>{" "}
-                <span className="text-gray-700">Domain</span>
+                <span className="text-gray-700">
+                  {getDomainNameFromBatch(selectedStudent?.batch)}
+                </span>
               </div>
               <div>
                 <span className="font-semibold text-[#6750A4]">Mode:</span>{" "}
-                <span className="text-gray-700">Online</span>
+                <span className="text-gray-700">{selectedStudent.mode}</span>
               </div>
             </div>
 
@@ -74,7 +99,7 @@ const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
               </div>
               <div>
                 <span className="font-semibold text-[#6750A4]">Phone:</span>{" "}
-                <span className="text-gray-700">1234567890 </span>
+                <span className="text-gray-700">{selectedStudent.phone} </span>
               </div>
             </div>
           </div>
