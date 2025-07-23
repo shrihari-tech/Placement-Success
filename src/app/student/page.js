@@ -8,6 +8,7 @@ import { useDataContext } from "../context/dataContext";
 import BulkModal from "./bulkModal";
 import EditStudentModal from "./EditStudentModal";
 import ViewStudentModal from "./ViewStudentModal";
+import Scores from './scores';
 
 export default function StudentDataPage() {
   const { studentData, batchHead, batchData, deleteStudent } = useDataContext();
@@ -231,12 +232,10 @@ export default function StudentDataPage() {
             )
           )}
         </div>
-        {/* ====== SEARCH SECTION ====== */}
-        <div
-          id="search-container"
-          className="bg-[#F4F3FF] py-3 rounded-xl"
-          tabIndex={0}
-        >
+        {activeTab === 'Student Data' ? (
+          <div className="mb-4">
+            {/* ====== SEARCH SECTION ====== */}
+        <div id="search-container" className="bg-[#F4F3FF] py-3 rounded-xl" tabIndex={0}>
           <div className="flex flex-row justify-center flex-wrap gap-5 py-3">
             {/* Batch Dropdown */}
             <div className="relative" ref={batchDropdownRef}>
@@ -576,6 +575,9 @@ export default function StudentDataPage() {
             </div>
           </div>
         )}
+          </div>) : 
+          activeTab === 'Scores' ? ( <Scores />) :
+          <div className='flex items-center justify-center mt-50'><p className='text-gray-700'>The {activeTab} page is under Development</p></div>}
       </div>
       {/*View Student Modal*/}
       {selectedStudent && (
