@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useCallback,useMemo } from 'react';
 import { FiEye, FiEdit, FiTrash2, FiChevronDown } from 'react-icons/fi';
 import Image from 'next/image';
 import { Toaster, toast } from 'sonner';
+import Opportunity from './oppotunities'
 import { RiCloseCircleLine } from "react-icons/ri";
 import { useDataContext } from "../context/dataContext";
 import BulkModal from "./bulkModal";
@@ -574,7 +575,7 @@ export default function StudentDataPage() {
             </div>
           </div>
         )}
-          </div>) : <div className='flex items-center justify-center mt-50'><p className='text-gray-700'>The {activeTab} page is under Development</p></div>}
+          </div>) : activeTab === 'Opportunities' ? <Opportunity/> : <div className='flex items-center justify-center mt-50'><p className='text-gray-700'>The {activeTab} page is under Development</p></div>}
       </div>
       {/*View Student Modal*/}
       {selectedStudent && (

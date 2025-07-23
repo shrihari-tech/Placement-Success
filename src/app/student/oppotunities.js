@@ -1,0 +1,790 @@
+"use client";
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { FiEye, FiEdit, FiTrash2, FiChevronDown, FiPlus } from 'react-icons/fi'; // Added FiPlus
+import Image from 'next/image';
+import { Toaster, toast } from 'sonner';
+import { RiCloseCircleLine } from "react-icons/ri";
+import { useDataContext } from "../context/dataContext";
+import EditStudentModal from "./EditStudentModal";
+import ViewStudentModal from "./ViewStudentModal";
+
+export default function StudentDataPage() {
+  const { studentData, batchHead, batchData, deleteStudent } = useDataContext();
+  const [searchInitiated, setSearchInitiated] = useState(false);
+  const [selectedBatch, setSelectedBatch] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const [selectedPlacement, setSelectedPlacement] = useState("");
+  const [filteredStudents, setFilteredStudents] = useState(studentData);
+  const [showBatchDropdown, setShowBatchDropdown] = useState(false);
+  const [showStatusDropdown, setShowStatusDropdown] = useState(false);
+  const [showPlacementDropdown, setShowPlacementDropdown] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteConfirmationInput, setDeleteConfirmationInput] = useState("");
+  const [deleteError, setDeleteError] = useState("");
+  const [editingStudent, setEditingStudent] = useState(null);
+  const [deletingStudent, setDeletingStudent] = useState(null);
+
+  // --- New State for Assign Modal ---
+  const [showAssignModal, setShowAssignModal] = useState(false);
+  const [assignFormData, setAssignFormData] = useState({
+    companyName: '',
+    driveDate: '',
+    driveRole: '',
+    package: '',
+    selectedBatch: ''
+  });
+  const [assignErrors, setAssignErrors] = useState({});
+  const [isAssignFormDirty, setIsAssignFormDirty] = useState(false); // Track changes
+  const [showDiscardConfirm, setShowDiscardConfirm] = useState(false); // Confirm discard
+
+  // --- New State for Student Selection Modal ---
+  const [showStudentSelectModal, setShowStudentSelectModal] = useState(false);
+  const [opportunityDetails, setOpportunityDetails] = useState(null); // Store details from Assign form
+  const [filteredBatchStudents, setFilteredBatchStudents] = useState([]); // Students for the selected batch
+  const [selectedStudents, setSelectedStudents] = useState([]); // Track selected students
+
+  const batchDropdownRef = useRef(null);
+  const statusDropdownRef = useRef(null);
+  const placementDropdownRef = useRef(null);
+  const searchContainerRef = useRef(null);
+
+  const batchesNames = useMemo(() => {
+    return [...new Set(studentData.map(s => s.batch))];
+  }, [studentData]);
+
+  // --- New: Filter students for Student Select Modal based on opportunity batch ---
+  useEffect(() => {
+    if (opportunityDetails?.selectedBatch) {
+        const studentsInBatch = studentData.filter(student => student.batch === opportunityDetails.selectedBatch);
+        setFilteredBatchStudents(studentsInBatch);
+        setSelectedStudents([]); // Reset selection when batch changes
+    } else {
+        setFilteredBatchStudents([]);
+        setSelectedStudents([]);
+    }
+  }, [opportunityDetails, studentData]);
+
+  const handleSearch = useCallback(() => {
+    let results = studentData;
+    if (selectedBatch === '' && selectedStatus === '' && selectedPlacement === '') {
+      toast.error("Please select at least one filter option to search");
+      return;
+    };
+    if (selectedBatch) {
+      results = results.filter((student) => student.batch === selectedBatch);
+    }
+    // Filter by status
+    if (selectedStatus) {
+      results = results.filter((student) => {
+        const batch = batchData.find(
+          (batch) => batch.batchNo === student.batch
+        );
+        if (!batch) return false;
+        const isCompleted =
+          new Date(batch.sections?.Domain?.endDate) < new Date() &&
+          new Date(batch.sections?.Aptitude?.endDate) < new Date() &&
+          new Date(batch.sections?.Communication?.endDate) < new Date();
+        return selectedStatus === "Completed" ? isCompleted : !isCompleted;
+      });
+    }
+    // Filter by placement
+    if (selectedPlacement) {
+      results = results.filter(
+        (student) => student.placement === selectedPlacement
+      );
+    }
+    setFilteredStudents(results);
+    setSearchInitiated(true);
+  }, [studentData, selectedBatch, selectedStatus, selectedPlacement, batchData]);
+
+  const isInitialMount = useRef(true);
+
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+    } else {
+      if (searchInitiated) {
+        handleSearch();
+      }
+    }
+  }, [studentData]); // Added handleSearch to dependency, but it's memoized
+
+  const handleReset = () => {
+    setSelectedBatch("");
+    setSelectedStatus("");
+    setSelectedPlacement("");
+    setFilteredStudents(studentData);
+    setSearchInitiated(false);
+  };
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        batchDropdownRef.current &&
+        !batchDropdownRef.current.contains(event.target)
+      ) {
+        setShowBatchDropdown(false);
+      }
+      if (
+        statusDropdownRef.current &&
+        !statusDropdownRef.current.contains(event.target)
+      ) {
+        setShowStatusDropdown(false);
+      }
+      if (
+        placementDropdownRef.current &&
+        !placementDropdownRef.current.contains(event.target)
+      ) {
+        setShowPlacementDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleEditStudent = (student) => {
+    setEditingStudent(student);
+  };
+
+  const handleDeleteStudent = () => {
+    if (!deleteConfirmationInput.trim()) {
+      setDeleteError("Please enter the booking ID to confirm deletion");
+      return;
+    }
+    if (
+      !deletingStudent ||
+      deleteConfirmationInput.trim() !== deletingStudent.bookingId
+    ) {
+      setDeleteError(
+        "Booking ID does not match. Please enter the exact booking ID."
+      );
+      return;
+    }
+    // Delete the student from the correct domain and update studentData globally
+    deleteStudent(deletingStudent.bookingId);
+    // Reset modal states
+    setShowDeleteModal(false);
+    setDeleteConfirmationInput("");
+    setDeleteError("");
+    setDeletingStudent(null);
+    toast.success("Student deleted successfully");
+    //  🔄  Reapply filters to refresh the displayed list (if any filters were applied)
+    handleSearch();
+  };
+
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+    setDeleteConfirmationInput("");
+    setDeleteError("");
+    setDeletingStudent(null);
+  };
+
+  useEffect(() => {
+    const handleGlobalKeyDown = (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleSearch();
+      }
+    };
+    window.addEventListener("keydown", handleGlobalKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleGlobalKeyDown);
+    };
+  }, [handleSearch]);
+
+  useEffect(() => {
+    if (editingStudent || showDeleteModal || showAssignModal || showStudentSelectModal) { // Added new modals
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [editingStudent, showDeleteModal, showAssignModal, showStudentSelectModal]); // Added new modals
+
+  // --- New: Handle Assign Modal Open ---
+  const handleOpenAssignModal = () => {
+    setShowAssignModal(true);
+    // Reset form and errors when opening
+    setAssignFormData({
+      companyName: '',
+      driveDate: '',
+      driveRole: '',
+      package: '',
+      selectedBatch: selectedBatch || '' // Pre-fill with current search batch if any
+    });
+    setAssignErrors({});
+    setIsAssignFormDirty(false);
+    setShowDiscardConfirm(false);
+  };
+
+  // --- New: Handle Assign Form Input Changes ---
+  const handleAssignFormChange = (e) => {
+    const { id, value } = e.target;
+    setAssignFormData(prev => ({ ...prev, [id]: value }));
+    // Clear error for the field being edited
+    if (assignErrors[id]) {
+        setAssignErrors(prev => ({ ...prev, [id]: '' }));
+    }
+    setIsAssignFormDirty(true); // Mark form as dirty
+  };
+
+  // --- New: Handle Assign Form Submission ---
+  const handleAssignFormSubmit = (e) => {
+    e.preventDefault();
+    const errors = {};
+    let isValid = true;
+
+    // Validation
+    if (!assignFormData.companyName.trim()) {
+        errors.companyName = "Company Name is required.";
+        isValid = false;
+    }
+    if (!assignFormData.driveDate) { // Date is required
+         errors.driveDate = "Drive Date is required.";
+         isValid = false;
+    }
+    if (!assignFormData.driveRole.trim()) {
+        errors.driveRole = "Drive Role is required.";
+        isValid = false;
+    }
+    if (!assignFormData.package.trim()) {
+        errors.package = "Package is required.";
+        isValid = false;
+    }
+    if (!assignFormData.selectedBatch) {
+        errors.selectedBatch = "Please select a batch.";
+        isValid = false;
+    }
+
+    if (!isValid) {
+        setAssignErrors(errors);
+        toast.error("Please fix the errors in the form.");
+        return;
+    }
+
+    // If valid, store the opportunity details and open the student selection modal
+    setOpportunityDetails(assignFormData);
+    setShowStudentSelectModal(true);
+    setShowAssignModal(false); // Close the assign modal
+    // Reset Assign form state
+    // setIsAssignFormDirty(false); // Keep dirty state if needed for re-open logic
+    // setAssignErrors({}); // Errors cleared on submit success
+  };
+
+  // --- New: Handle Closing Assign Modal with Discard Confirmation ---
+  const handleCloseAssignModal = () => {
+    if (isAssignFormDirty) {
+        setShowDiscardConfirm(true); // Show confirmation if form is dirty
+    } else {
+        setShowAssignModal(false); // Close directly if no changes
+        setIsAssignFormDirty(false);
+        setAssignErrors({});
+    }
+  };
+
+  // --- New: Confirm Discard in Assign Modal ---
+  const confirmDiscardAssign = () => {
+    setShowAssignModal(false);
+    setShowDiscardConfirm(false);
+    setIsAssignFormDirty(false);
+    setAssignErrors({});
+  };
+
+  // --- New: Cancel Discard in Assign Modal ---
+  const cancelDiscardAssign = () => {
+    setShowDiscardConfirm(false);
+    // Stay in the Assign modal
+  };
+
+  // --- New: Handle Student Selection Checkbox ---
+  const handleStudentSelect = (bookingId) => {
+    setSelectedStudents(prevSelected => {
+        if (prevSelected.includes(bookingId)) {
+            return prevSelected.filter(id => id !== bookingId);
+        } else {
+            return [...prevSelected, bookingId];
+        }
+    });
+  };
+
+  // --- New: Handle Saving Selected Students ---
+  const handleSaveSelectedStudents = () => {
+    if (selectedStudents.length === 0) {
+        toast.error("Please select at least one student.");
+        return;
+    }
+
+    console.log("Selected Students for Opportunity:", selectedStudents);
+    console.log("Opportunity Details:", opportunityDetails);
+    toast.success(`${selectedStudents.length} student(s) assigned successfully!`);
+    setShowStudentSelectModal(false);
+    setSelectedStudents([]); // Clear selection
+    setOpportunityDetails(null); // Clear opportunity details
+    // You might want to refresh data or update UI here
+  };
+
+  // --- New: Handle Closing Student Select Modal ---
+  const handleCloseStudentSelectModal = () => {
+    setShowStudentSelectModal(false);
+    setSelectedStudents([]); // Clear selection on close
+    setOpportunityDetails(null); // Clear opportunity details
+  };
+
+  return (
+    <div className="flex min-h-screen mt-16 md:mt-1">
+      <Toaster position="top-right" />
+      <div
+        className={`px-3 pt-20 flex-1 bg-[#F8FAFD] mb-12`}
+        ref={searchContainerRef}
+      >
+        {/* ====== HEADER ====== */}
+        <div className="fixed top-15 md:top-0 ms-[-19px] border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 z-20">
+          <h1 className="fixed pl-3 text-xl text-gray-800 font-semibold">
+            {batchHead}
+          </h1>
+        </div>
+
+        <div><button
+                    onClick={handleOpenAssignModal}
+                    className="cursor-pointer bg-[#6750A4] hover:bg-[#5a4a8f] text-white px-4 py-4 rounded-xl text-sm font-semibold flex items-center gap-1"
+                  >
+                    <FiPlus /> Assign {/* Using FiPlus for the icon */}
+                  </button></div>
+
+        {/* --- New Assign Modal --- */}
+        {showAssignModal && (
+          <div
+            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
+            onClick={handleCloseAssignModal} // Close on backdrop click
+          >
+            <div
+              className="w-full max-w-md bg-[#F8FAFD] rounded-[10px] p-6 animate-fade-in-up" // Added animation class (define in CSS)
+              onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-medium">Assign Opportunity</h2>
+                <button
+                  onClick={handleCloseAssignModal}
+                  className="cursor-pointer text-gray-500 hover:text-gray-700"
+                >
+                  <RiCloseCircleLine size={20} />
+                </button>
+              </div>
+              <form onSubmit={handleAssignFormSubmit}>
+                {/* Company Name */}
+                <div className="relative mb-4">
+                  <input
+                    type="text"
+                    id="companyName"
+                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${assignErrors.companyName ? 'border-red-500' : 'border-gray-400'} appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                    placeholder=" "
+                    value={assignFormData.companyName}
+                    onChange={handleAssignFormChange}
+                    required
+                  />
+                  <label
+                    htmlFor="companyName"
+                    className={`absolute px-2 text-sm ${assignErrors.companyName ? 'text-red-500' : 'text-gray-500'} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                  >
+                    Company Name *
+                  </label>
+                  {assignErrors.companyName && <p className="text-red-500 text-xs mt-1">{assignErrors.companyName}</p>}
+                </div>
+
+                 {/* Drive Date */}
+                 <div className="relative mb-4">
+                  <input
+                    type="date" // Changed to date type
+                    id="driveDate"
+                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${assignErrors.driveDate ? 'border-red-500' : 'border-gray-400'} appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                    placeholder=" " // Date input doesn't typically use placeholder text like this
+                    value={assignFormData.driveDate}
+                    onChange={handleAssignFormChange}
+                    required
+                  />
+                  <label
+                    htmlFor="driveDate"
+                    className={`absolute px-2 text-sm ${assignErrors.driveDate ? 'text-red-500' : 'text-gray-500'} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                  >
+                    Drive Date *
+                  </label>
+                  {assignErrors.driveDate && <p className="text-red-500 text-xs mt-1">{assignErrors.driveDate}</p>}
+                </div>
+
+                {/* Drive Role */}
+                <div className="relative mb-4">
+                  <input
+                    type="text"
+                    id="driveRole"
+                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${assignErrors.driveRole ? 'border-red-500' : 'border-gray-400'} appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                    placeholder=" "
+                    value={assignFormData.driveRole}
+                    onChange={handleAssignFormChange}
+                    required
+                  />
+                  <label
+                    htmlFor="driveRole"
+                    className={`absolute px-2 text-sm ${assignErrors.driveRole ? 'text-red-500' : 'text-gray-500'} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                  >
+                    Drive Role *
+                  </label>
+                  {assignErrors.driveRole && <p className="text-red-500 text-xs mt-1">{assignErrors.driveRole}</p>}
+                </div>
+
+                {/* Package */}
+                <div className="relative mb-4">
+                  <input
+                    type="text" // Can be text or number depending on format (e.g., "5 LPA")
+                    id="package"
+                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${assignErrors.package ? 'border-red-500' : 'border-gray-400'} appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                    placeholder=" "
+                    value={assignFormData.package}
+                    onChange={handleAssignFormChange}
+                    required
+                  />
+                  <label
+                    htmlFor="package"
+                    className={`absolute px-2 text-sm ${assignErrors.package ? 'text-red-500' : 'text-gray-500'} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                  >
+                    Package *
+                  </label>
+                  {assignErrors.package && <p className="text-red-500 text-xs mt-1">{assignErrors.package}</p>}
+                </div>
+
+                {/* Custom Batch Dropdown for Assign Modal */}
+                <div className="relative mb-6" ref={batchDropdownRef}>
+                    <input
+                        type="text"
+                        id="selectedBatch"
+                        placeholder=" "
+                        value={assignFormData.selectedBatch}
+                        onChange={(e) => {
+                            setAssignFormData(prev => ({ ...prev, selectedBatch: e.target.value }));
+                            setShowBatchDropdown(true);
+                            // Clear error for batch field
+                            if (assignErrors.selectedBatch) {
+                                setAssignErrors(prev => ({ ...prev, selectedBatch: '' }));
+                            }
+                            setIsAssignFormDirty(true);
+                        }}
+                        onClick={() => setShowBatchDropdown(!showBatchDropdown)}
+                        className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 ${assignErrors.selectedBatch ? 'border-red-500' : 'border-gray-400'} appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer`}
+                        autoComplete="off"
+                        required
+                    />
+                    <label
+                        htmlFor="selectedBatch"
+                        className={`absolute px-2 text-sm ${assignErrors.selectedBatch ? 'text-red-500' : 'text-gray-500'} duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                    >
+                        Select Batch *
+                    </label>
+                    <FiChevronDown
+                        className="absolute top-5 right-3 text-gray-500 pointer-events-none"
+                        size={16}
+                    />
+                    {assignFormData.selectedBatch && (
+                        <button
+                            type="button"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setAssignFormData(prev => ({ ...prev, selectedBatch: "" }));
+                                setShowBatchDropdown(false);
+                                setIsAssignFormDirty(true);
+                            }}
+                            className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700"
+                            tabIndex={-1}
+                        >
+                            <RiCloseCircleLine size={20} />
+                        </button>
+                    )}
+                    {showBatchDropdown && (
+                        <div
+                            className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md"
+                            style={{
+                                maxHeight: batchesNames.length > 5 ? "200px" : "auto",
+                                overflowY: batchesNames.length > 5 ? "auto" : "visible",
+                            }}
+                        >
+                            {batchesNames
+                                .filter(
+                                    (batchName) =>
+                                        !assignFormData.selectedBatch ||
+                                        batchName
+                                            .toLowerCase()
+                                            .includes(assignFormData.selectedBatch.toLowerCase())
+                                )
+                                .map((batchName) => (
+                                    <div
+                                        key={batchName}
+                                        tabIndex={0}
+                                        className={`px-4 py-2 cursor-pointer hover:bg-[#e8def8] flex items-center gap-2`}
+                                        style={{
+                                            color: assignFormData.selectedBatch === batchName ? "#6750A4" : "#4a4459",
+                                            backgroundColor: assignFormData.selectedBatch === batchName ? "#e8def8" : "transparent"
+                                        }}
+                                        onClick={() => {
+                                            setAssignFormData(prev => ({ ...prev, selectedBatch: batchName }));
+                                            setShowBatchDropdown(false);
+                                            setIsAssignFormDirty(true);
+                                            // Clear error for batch field
+                                            if (assignErrors.selectedBatch) {
+                                                setAssignErrors(prev => ({ ...prev, selectedBatch: '' }));
+                                            }
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (e.key === "Enter") {
+                                                setAssignFormData(prev => ({ ...prev, selectedBatch: batchName }));
+                                                setShowBatchDropdown(false);
+                                                setIsAssignFormDirty(true);
+                                                if (assignErrors.selectedBatch) {
+                                                    setAssignErrors(prev => ({ ...prev, selectedBatch: '' }));
+                                                }
+                                            }
+                                        }}
+                                    >
+                                        {/* You can show extra info here if needed */}
+                                        {batchName}
+                                    </div>
+                                ))}
+                            {batchesNames.length === 0 && (
+                                <div className="px-4 py-2 text-gray-500">No batches found</div>
+                            )}
+                        </div>
+                    )}
+                    {assignErrors.selectedBatch && <p className="text-red-500 text-xs mt-1">{assignErrors.selectedBatch}</p>}
+                </div>
+                <div className="flex justify-end gap-3">
+                  <button
+                    type="button" // Important: type="button" to prevent form submission
+                    onClick={handleCloseAssignModal}
+                    className="cursor-pointer bg-[#e8def8] text-[#4a4459] px-4 py-2 rounded-xl text-sm font-medium"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit" // Submit button
+                    className="cursor-pointer bg-[#6750a4] text-white px-4 py-2 rounded-xl text-sm font-medium"
+                  >
+                    Save
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* --- New Discard Confirmation Modal for Assign --- */}
+        {showDiscardConfirm && (
+          <div
+            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
+            onClick={cancelDiscardAssign} // Clicking backdrop cancels
+          >
+            <div
+              className="w-full max-w-sm bg-white rounded-lg p-6 shadow-lg"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 className="font-medium text-gray-800 mb-2">Discard Changes?</h3>
+              <p className="text-sm text-gray-600 mb-4">You have unsaved changes. Are you sure you want to discard them?</p>
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={cancelDiscardAssign}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded hover:bg-gray-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDiscardAssign}
+                  className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded hover:bg-red-700"
+                >
+                  Discard
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* --- New Student Selection Modal --- */}
+        {showStudentSelectModal && opportunityDetails && (
+             <div
+             className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
+             onClick={handleCloseStudentSelectModal} // Close on backdrop click
+           >
+             <div
+               className="w-full max-w-4xl bg-[#F8FAFD] rounded-[10px] p-6 animate-fade-in-up" // Added animation class
+               onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
+             >
+               <div className="flex justify-between items-center mb-4">
+                 <h2 className="text-lg font-medium">Select Students for Opportunity</h2>
+                 <button
+                   onClick={handleCloseStudentSelectModal}
+                   className="cursor-pointer text-gray-500 hover:text-gray-700"
+                 >
+                   <RiCloseCircleLine size={20} />
+                 </button>
+               </div>
+
+               {/* Display Opportunity Details */}
+               <div className="mb-4 p-3 bg-[#ECE6F0] rounded">
+                 <p className="text-sm"><span className="font-semibold">Company:</span> {opportunityDetails.companyName}</p>
+                 <p className="text-sm"><span className="font-semibold">Date:</span> {opportunityDetails.driveDate}</p>
+                 <p className="text-sm"><span className="font-semibold">Role:</span> {opportunityDetails.driveRole}</p>
+                 <p className="text-sm"><span className="font-semibold">Package:</span> {opportunityDetails.package}</p>
+                 <p className="text-sm"><span className="font-semibold">Batch:</span> {opportunityDetails.selectedBatch}</p>
+               </div>
+
+               {/* Student Table */}
+               <div className="bg-white rounded-lg shadow overflow-hidden">
+                 <div className="overflow-x-auto max-h-[60vh]"> {/* Add max height and overflow for scrolling */}
+                   <table className="min-w-full divide-y divide-gray-200">
+                     <thead className="bg-gray-50 sticky top-0 z-10"> {/* Sticky header */}
+                       <tr>
+                         <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">S.No</th>
+                         <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Name</th> {/* New Column */}
+                         <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">E-mail</th>
+                         <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Phone</th>
+                         <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Epic Status</th>
+                         <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Attendance</th> {/* Replace with actual field */}
+                         <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Select Student(s)</th> {/* Replace with actual field */}
+                       </tr>
+                     </thead>
+                     <tbody className="bg-white divide-y divide-gray-200">
+                       {filteredBatchStudents.length > 0 ? (
+                         filteredBatchStudents.map((student, index) => (
+                           <tr key={student.bookingId} className="hover:bg-gray-50">
+                             <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{index + 1}</td>
+                             <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{student.name}</td>
+                             <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{student.email}</td>
+                             <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{student.phone}</td>
+                             <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">
+                                    {student.epicStatus}
+                             </td>
+                             <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">
+                                                                {student.attendance}%
+                             </td>
+                             <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">
+                               <input
+                                 type="checkbox"
+                                 checked={selectedStudents.includes(student.bookingId)}
+                                 onChange={() => handleStudentSelect(student.bookingId)}
+                                 className="h-4 w-4 text-[#6750A4] border-gray-300 rounded focus:ring-[#6750A4]"
+                               />
+                             </td>
+                           </tr>
+                         ))
+                       ) : (
+                         <tr>
+                           <td colSpan="7" className="px-4 py-6 text-center text-sm text-gray-500">
+                             No students found for the selected batch.
+                           </td>
+                         </tr>
+                       )}
+                     </tbody>
+                   </table>
+                 </div>
+               </div>
+
+               {/* Buttons */}
+               <div className="flex justify-end gap-3 mt-4">
+                 <button
+                   onClick={handleCloseStudentSelectModal}
+                   className="cursor-pointer bg-[#e8def8] text-[#4a4459] px-4 py-2 rounded-xl text-sm font-medium"
+                 >
+                   Cancel
+                 </button>
+                 <button
+                   onClick={handleSaveSelectedStudents}
+                   className="cursor-pointer bg-[#6750a4] text-white px-4 py-2 rounded-xl text-sm font-medium"
+                   disabled={selectedStudents.length === 0} // Disable if no students selected
+                 >
+                   Save Selected ({selectedStudents.length})
+                 </button>
+               </div>
+             </div>
+           </div>
+        )}
+
+      </div>
+      {/*View Student Modal*/}
+      {selectedStudent && (
+        <ViewStudentModal
+          isOpen={showViewModal}
+          onClose={() => setShowViewModal(false)}
+          selectedStudent={selectedStudent}
+        />
+      )}
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div
+          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+          onClick={handleCloseDeleteModal}
+        >
+          <div
+            className="w-[500px] bg-[#F8FAFD] rounded-[10px] p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-lg font-medium">Delete Student</h2>
+              <button
+                onClick={handleCloseDeleteModal}
+                className="cursor-pointer text-gray-500 hover:text-gray-700"
+              >
+                <RiCloseCircleLine size={20} />
+              </button>
+            </div>
+            {/* Confirmation Input */}
+            <div className="relative mb-6">
+              <input
+                type="text"
+                id="delete-confirmation"
+                className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+                placeholder=" "
+                value={deleteConfirmationInput}
+                onChange={(e) => setDeleteConfirmationInput(e.target.value)}
+                required
+              />
+              <label
+                htmlFor="delete-confirmation"
+                className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+              >
+                Booking ID
+              </label>
+            </div>
+            {/* Error Message */}
+            {deleteError && (
+              <p className="text-red-500 text-sm mb-4"> {deleteError} </p>
+            )}
+            {/* Buttons */}
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={handleCloseDeleteModal}
+                className="cursor-pointer bg-[#e8def8] text-[#4a4459] px-4 py-2.5 rounded-2xl text-sm font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteStudent}
+                className="cursor-pointer bg-[#6750a4] text-white px-4 py-2.5 rounded-2xl text-sm font-medium"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Edit Student Modal */}
+      {editingStudent && (
+        <EditStudentModal
+          student={editingStudent}
+          onClose={() => setEditingStudent(null)}
+          onSave={handleSearch} // Re-run search after edit if needed
+        />
+      )}
+    </div>
+  );
+}
