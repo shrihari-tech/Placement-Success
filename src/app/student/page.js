@@ -1,15 +1,8 @@
 "use client";
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import {
-  FiEye,
-  FiEdit,
-  FiTrash2,
-  FiMoreVertical,
-  FiCalendar,
-  FiChevronDown,
-} from "react-icons/fi";
-import Image from "next/image";
-import { Toaster, toast } from "sonner";
+import { useState, useEffect, useRef, useCallback,useMemo } from 'react';
+import { FiEye, FiEdit, FiTrash2, FiChevronDown } from 'react-icons/fi';
+import Image from 'next/image';
+import { Toaster, toast } from 'sonner';
 import { RiCloseCircleLine } from "react-icons/ri";
 import { useDataContext } from "../context/dataContext";
 import BulkModal from "./bulkModal";
@@ -17,9 +10,8 @@ import EditStudentModal from "./EditStudentModal";
 import ViewStudentModal from "./ViewStudentModal";
 
 export default function StudentDataPage() {
-  const { studentData, batchHead, batchData, updateStudent, deleteStudent } =
-    useDataContext();
-  const [activeTab, setActiveTab] = useState("Student Data");
+  const { studentData, batchHead, batchData, deleteStudent } = useDataContext();
+  const [activeTab, setActiveTab] = useState('Student Data');
   const [searchInitiated, setSearchInitiated] = useState(false);
   const [selectedBatch, setSelectedBatch] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
@@ -41,14 +33,17 @@ export default function StudentDataPage() {
   const placementDropdownRef = useRef(null);
   const searchContainerRef = useRef(null);
 
+
   const batchesNames = useMemo(() => {
-    return [...new Set(studentData.map((s) => s.batch))];
-  }, [studentData]);
+  return [...new Set(studentData.map(s => s.batch))];
+}, [studentData]);
 
   const handleSearch = useCallback(() => {
     let results = studentData;
-
-    // Filter by batch
+    if(selectedBatch === '' && selectedStatus === '' && selectedPlacement === ''){
+      toast.error("Please select at least one filter option to search");
+      return;
+    } ;
     if (selectedBatch) {
       results = results.filter((student) => student.batch === selectedBatch);
     }
@@ -79,18 +74,18 @@ export default function StudentDataPage() {
 
     setFilteredStudents(results);
     setSearchInitiated(true);
-    handleSearch();
-  }, [
-    studentData,
-    selectedBatch,
-    selectedStatus,
-    selectedPlacement,
-    batchData,
-  ]);
+  }, [studentData, selectedBatch, selectedStatus, selectedPlacement, batchData]);
 
-  // useEffect(() => {
-  //   handleSearch();
-  // }, [studentData, selectedBatch, selectedStatus, selectedPlacement, batchData]);
+  const isInitialMount = useRef(true);
+    useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+    } else {
+      if (searchInitiated) {
+        handleSearch();
+      }
+    }
+  }, [studentData]);
 
   const handleReset = () => {
     setSelectedBatch("");
@@ -184,6 +179,17 @@ export default function StudentDataPage() {
     };
   }, [handleSearch]);
 
+      useEffect(() => {
+          if (editingStudent || showDeleteModal ) {
+              document.body.style.overflow = 'hidden';
+          } else {
+              document.body.style.overflow = 'auto';
+          }
+          return () => {
+              document.body.style.overflow = 'auto';
+          };
+      }, [editingStudent, showDeleteModal]);
+  
   return (
     <div className="flex min-h-screen mt-16 md:mt-1">
       <Toaster position="top-right" />
@@ -515,53 +521,24 @@ export default function StudentDataPage() {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
-                      S.No
-                    </th>
-                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
-                      Name
-                    </th>
-                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
-                      Email
-                    </th>
-                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
-                      Booking ID
-                    </th>
-                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
-                      Epic Status
-                    </th>
-                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
-                      Placement
-                    </th>
-                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
-                      Actions
-                    </th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">S.No</th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Name</th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Email</th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Booking ID</th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Phone No.</th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Mode of Study</th>
+                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredStudents.map((student, index) => (
-                    <tr
-                      key={student.bookingId}
-                      className="hover:bg-[#e1cfff] hover:text-[#4005a0]"
-                    >
-                      <td className="px-4 text-gray-700 text-center py-3 text-sm whitespace-nowrap">
-                        {index + 1}
-                      </td>
-                      <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">
-                        {student.name}
-                      </td>
-                      <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">
-                        {student.email}
-                      </td>
-                      <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">
-                        {student.bookingId}
-                      </td>
-                      <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">
-                        {student.epicStatus}
-                      </td>
-                      <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">
-                        {student.placement}
-                      </td>
+                    <tr key={student.bookingId} className="hover:bg-[#e1cfff] hover:text-[#4005a0]">
+                      <td className="px-4 text-gray-700 text-center py-3 text-sm whitespace-nowrap">{index + 1}</td>
+                      <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">{student.name}</td>
+                      <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">{student.email}</td>
+                      <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">{student.bookingId}</td>
+                      <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">{student.phone}</td>
+                      <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">{student.mode}</td>
                       <td className="px-4 py-3 text-sm whitespace-nowrap">
                         <div className="flex gap-1 items-center justify-center">
                           <button
