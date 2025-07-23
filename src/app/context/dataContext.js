@@ -79,6 +79,12 @@ const batchStatsData = {
   },
 };
 
+const fullstackOpportunitiesInitial = [];
+const dataanalyticsOpportunitiesInitial = [];
+const marketingOpportunitiesInitial = [];
+const digitalmarketingOpportunitiesInitial = [];
+const sapOpportunitiesInitial = [];
+const devopsOpportunitiesInitial = [];
   
 // ===== Full‑Stack =====
 export const fullstackInitial = [
@@ -1035,6 +1041,13 @@ const DataProvider = ({ children }) => {
   const [ sapStudent , setSapStudent ] = useState(sapStudentData);
   const [ devopsStudent , setDevopsStudent ] = useState(devopsStudentData);
 
+  // ➤ Domain-wise individual opportunities data
+  const [fullstackOpportunities, setFullstackOpportunities] = useState(fullstackOpportunitiesInitial);
+  const [dataanalyticsOpportunities, setDataanalyticsOpportunities] = useState(dataanalyticsOpportunitiesInitial);
+  const [marketingOpportunities, setMarketingOpportunities] = useState(marketingOpportunitiesInitial);
+  const [digitalmarketingOpportunities, setDigitalmarketingOpportunities] = useState(digitalmarketingOpportunitiesInitial);
+  const [sapOpportunities, setSapOpportunities] = useState(sapOpportunitiesInitial);
+  const [devopsOpportunities, setDevopsOpportunities] = useState(devopsOpportunitiesInitial);
 
   const userName =  loginUser.split("@")[0];
   const firstLetterUser = loginUser?.charAt(0).toUpperCase() || "";
@@ -1305,6 +1318,56 @@ const updateBatch = (id, updatedFields) => {
   ));
   };
 
+const addOpportunity = (opportunity) => {
+    if (!batchingvalue) {
+      console.error("Domain is not set. Cannot add opportunity.");
+      toast.error("Please select a domain before adding an opportunity.");
+      return;
+    }
+    // Add domain based on current batchingvalue (domain)
+    const opportunityWithDomain = {
+      ...opportunity,
+      domain: batchingvalue
+    };
+    switch (batchingvalue) {
+      case "fullstack":
+        setFullstackOpportunities((prev) => [...prev, opportunityWithDomain]);
+        break;
+      case "dataanalytics":
+        setDataanalyticsOpportunities((prev) => [...prev, opportunityWithDomain]);
+        break;
+      case "marketing":
+        setMarketingOpportunities((prev) => [...prev, opportunityWithDomain]);
+        break;
+      case "sap":
+        setSapOpportunities((prev) => [...prev, opportunityWithDomain]);
+        break;
+      case "devops":
+        setDevopsOpportunities((prev) => [...prev, opportunityWithDomain]);
+        break;
+      default:
+        console.error("Unknown domain:", batchingvalue);
+        toast.error("Unknown domain. Please select a valid domain.");
+    }
+  };
+
+//  ➧  Fetch opportunities for the current domain
+ const getOpportunitiesByDomain = (domain) => {
+    switch (domain) {
+      case "fullstack":
+        return fullstackOpportunities;
+      case "dataanalytics":
+        return dataanalyticsOpportunities;
+      case "marketing":
+        return marketingOpportunities;
+      case "sap":
+        return sapOpportunities;
+      case "devops":
+        return devopsOpportunities;
+      default:
+        return [];
+    }
+  };
 
   // 🔧 Delete a batch by ID from current domain
   const deleteBatch = (id) => {
@@ -1364,7 +1427,7 @@ const updateBatch = (id, updatedFields) => {
 
   return (
     <DataContext.Provider
-      value={{ batchingvalue,setBatchingValue,setStudentBatchSelect,loginUser,setLoginUser,firstLetterUser,batchHead,batchData,addBatch,updateBatch,deleteBatch ,userName , selectedBatch,setSelectedBatch,getStatsByBatch,batchStatsData,batchesNames,studentData,deleteStudent,updateStudent,addStudent,addMultipleStudents
+      value={{ batchingvalue,setBatchingValue,setStudentBatchSelect,loginUser,setLoginUser,firstLetterUser,batchHead,batchData,addBatch,updateBatch,deleteBatch ,userName , selectedBatch,setSelectedBatch,getStatsByBatch,batchStatsData,batchesNames,studentData,deleteStudent,updateStudent,addStudent,addMultipleStudents,addOpportunity,getOpportunitiesByDomain
       }}
     >  
       {children}

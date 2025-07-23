@@ -596,7 +596,7 @@ export default function StudentDataPage() {
             className="w-[500px] bg-[#F8FAFD] rounded-[10px] p-6"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-between items-center">
               <h2 className="text-lg font-medium">Delete Student</h2>
               <button
                 onClick={handleCloseDeleteModal}
@@ -604,6 +604,9 @@ export default function StudentDataPage() {
               >
                 <RiCloseCircleLine size={20} />
               </button>
+            </div>
+            <div>
+              <p className='py-5'>Enter the exact Booking Id of the student <span className='font-bold'>{deletingStudent.bookingId}</span> to delete.</p>
             </div>
             {/* Confirmation Input */}
             <div className="relative mb-6">
