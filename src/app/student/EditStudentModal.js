@@ -373,7 +373,7 @@ const batchesNames = useMemo(() => {
           </div>
           {/* Footer Actions */}
           <div className="flex justify-end gap-4 mt-8">
-            <button onClick={handleCancel} className="cursor-pointer rounded-2xl px-4 py-3 bg-[#f1ecfb] text-gray-400 hover:bg-[#e8def8] hover:text-[#4a4459]">
+            <button onClick={handleDiscard} className="cursor-pointer rounded-2xl px-4 py-3 bg-[#f1ecfb] text-gray-400 hover:bg-[#e8def8] hover:text-[#4a4459]">
               Cancel
             </button>
             <button 
@@ -416,7 +416,7 @@ const batchesNames = useMemo(() => {
           <div className="w-[500px] bg-[#F8FAFD] rounded-[10px] p-6" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg font-medium">Confirm Changes</h2>
-              <button onClick={() => setShowConfirmModal(false)} className="cursor-pointer text-gray-500 hover:text-gray-700">
+              <button onClick={() => setEditDiscarddModel(false)} className="cursor-pointer text-gray-500 hover:text-gray-700">
                 <RiCloseCircleLine size={20} />
               </button>
             </div>

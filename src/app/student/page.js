@@ -212,7 +212,9 @@ export default function StudentDataPage() {
             </span>
           ))}
         </div>
-        {/* ====== SEARCH SECTION ====== */}
+        {activeTab === 'Student Data' ? (
+          <div className="mb-4">
+            {/* ====== SEARCH SECTION ====== */}
         <div id="search-container" className="bg-[#F4F3FF] py-3 rounded-xl" tabIndex={0}>
           <div className="flex flex-row justify-center flex-wrap gap-5 py-3">
             {/* Batch Dropdown */}
@@ -415,6 +417,7 @@ export default function StudentDataPage() {
             </div>
           </div>
         )}
+          </div>) : <div className='flex items-center justify-center mt-50'><p className='text-gray-700'>The {activeTab} page is under Development</p></div>}
       </div>
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
