@@ -74,7 +74,7 @@ const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
               </div>
               <div>
                 <span className="font-semibold text-[#6750A4]">Phone:</span>{" "}
-                <span className="text-gray-700">1234567890 </span>
+                <span className="text-gray-700">{selectedStudent.phone} </span>
               </div>
             </div>
           </div>
