@@ -481,7 +481,7 @@ export default function StudentDataPage() {
                         "Placed",
                         "Yet to Place",
                         "Not Placed",
-                        "Not Interested",
+                        "Not Required",
                       ].map((placementOption) => (
                         <div
                           key={placementOption}
@@ -626,7 +626,7 @@ export default function StudentDataPage() {
           <BatchChange />
         ) : activeTab === "Opportunities" ? (
           <Opportunity />
-        ) : <Scores />}
+        ) : <Scores/>}
       </div>
       {/*View Student Modal*/}
       {selectedStudent && (
