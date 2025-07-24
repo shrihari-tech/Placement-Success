@@ -652,7 +652,7 @@ export default function StudentDataPage() {
             className="w-[500px] bg-[#F8FAFD] rounded-[10px] p-6"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-between items-center">
               <h2 className="text-lg font-medium">Delete Student</h2>
               <button
                 onClick={handleCloseDeleteModal}

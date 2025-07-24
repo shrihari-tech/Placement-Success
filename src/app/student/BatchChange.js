@@ -364,7 +364,7 @@ const BatchChange = () => {
               </label>
               <input
                 type="file"
-                accept="image/*"
+                accept="image/"
                 onChange={(e) => setAttachment(e.target.files[0])}
                 className="cursor-pointer block w-full text-sm text-gray-700 border border-gray-300 rounded px-3 py-2 file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#E8DEF8] file:text-[#6750A4] hover:file:bg-[#d1c3ea]"
               />
