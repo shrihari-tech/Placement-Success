@@ -176,20 +176,21 @@ export default function StudentDataPage() {
     setDeletingStudent(null);
   };
 
-  useEffect(() => {
-    const handleGlobalKeyDown = (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
+useEffect(() => {
+  const handleGlobalKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (activeTab === "Student Data") {
         handleSearch();
       }
-    };
+    }
+  };
 
-    window.addEventListener("keydown", handleGlobalKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleGlobalKeyDown);
-    };
-  }, [handleSearch]);
+  window.addEventListener("keydown", handleGlobalKeyDown);
+  return () => {
+    window.removeEventListener("keydown", handleGlobalKeyDown);
+  };
+}, [handleSearch, activeTab]);
 
   useEffect(() => {
     if (editingStudent || showDeleteModal) {
