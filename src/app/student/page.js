@@ -1,9 +1,9 @@
 "use client";
-import { useState, useEffect, useRef, useCallback,useMemo } from 'react';
-import { FiEye, FiEdit, FiTrash2, FiChevronDown } from 'react-icons/fi';
-import Image from 'next/image';
-import { Toaster, toast } from 'sonner';
-import Opportunity from './oppotunities'
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { FiEye, FiEdit, FiTrash2, FiChevronDown } from "react-icons/fi";
+import Image from "next/image";
+import { Toaster, toast } from "sonner";
+import Opportunity from "./oppotunities";
 import { RiCloseCircleLine } from "react-icons/ri";
 import { useDataContext } from "../context/dataContext";
 import BulkModal from "./bulkModal";
@@ -652,7 +652,7 @@ export default function StudentDataPage() {
             className="w-[500px] bg-[#F8FAFD] rounded-[10px] p-6"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg font-medium">Delete Student</h2>
               <button
                 onClick={handleCloseDeleteModal}
@@ -662,7 +662,11 @@ export default function StudentDataPage() {
               </button>
             </div>
             <div>
-              <p className='py-5'>Enter the exact Booking Id of the student <span className='font-bold'>{deletingStudent.bookingId}</span> to delete.</p>
+              <p className="py-5">
+                Enter the exact Booking Id of the student{" "}
+                <span className="font-bold">{deletingStudent.bookingId}</span>{" "}
+                to delete.
+              </p>
             </div>
             {/* Confirmation Input */}
             <div className="relative mb-6">
