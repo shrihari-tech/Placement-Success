@@ -399,7 +399,7 @@ const BatchChange = () => {
       )}
       {showTable && filteredStudents.length === 0 && (
         <div className="text-center py-4 text-gray-500">
-          No students found in batch "{fromBatch}".
+          No students found in batch &quot{fromBatch}&quot.
         </div>
       )}
     </div>
