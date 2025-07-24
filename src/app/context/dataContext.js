@@ -2958,6 +2958,8 @@ const DataProvider = ({ children }) => {
         updateStudent,
         addStudent,
         addMultipleStudents,
+        addOpportunity,
+        getOpportunitiesByDomain,
         allbatchName,
         allStudentData,
       }}
