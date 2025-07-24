@@ -86,6 +86,12 @@ const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
                 </span>
               </div>
               <div>
+                <span className="font-semibold text-[#6750A4]">Placement:</span>{" "}
+                <span className="text-gray-700">
+                  {selectedStudent.placement}
+                </span>
+              </div>
+              <div>
                 <span className="font-semibold text-[#6750A4]">Mode:</span>{" "}
                 <span className="text-gray-700">{selectedStudent.mode}</span>
               </div>

@@ -4,33 +4,22 @@ import { FiEye, FiEdit, FiTrash2, FiChevronDown, FiPlus } from "react-icons/fi";
 import { Toaster, toast } from "sonner";
 import { RiCloseCircleLine } from "react-icons/ri";
 import { useDataContext } from "../context/dataContext";
-import EditStudentModal from "./EditStudentModal";
-import ViewStudentModal from "./ViewStudentModal";
 
 export default function StudentDataPage() {
   const {
     studentData,
     batchHead,
-    batchData,
-    deleteStudent,
     addOpportunity,
     batchingvalue,
-    setBatchingValue,
     getOpportunitiesByDomain,
   } = useDataContext();
   const [searchInitiated, setSearchInitiated] = useState(false);
   const [selectedBatch, setSelectedBatch] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("");
-  const [selectedPlacement, setSelectedPlacement] = useState("");
-  const [filteredStudents, setFilteredStudents] = useState(studentData);
   const [showBatchDropdown, setShowBatchDropdown] = useState(false);
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
   const [showPlacementDropdown, setShowPlacementDropdown] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleteConfirmationInput, setDeleteConfirmationInput] = useState("");
-  const [deleteError, setDeleteError] = useState("");
   const [editingStudent, setEditingStudent] = useState(null);
-  const [deletingStudent, setDeletingStudent] = useState(null);
   // --- New State for Assign Modal ---
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [assignFormData, setAssignFormData] = useState({
@@ -45,6 +34,7 @@ export default function StudentDataPage() {
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);  // Confirm discard
   // --- New State for Student Selection Modal ---
   const [showStudentSelectModal, setShowStudentSelectModal] = useState(false);
+  const [studentSelectModelDiscard,setStudentSelectModelDiscard] = useState(false);
   const [opportunityDetails, setOpportunityDetails] = useState(null);  // Store details from Assign form
   const [filteredBatchStudents, setFilteredBatchStudents] = useState([]);  // Students for the selected batch
   const [selectedStudents, setSelectedStudents] = useState([]);  // Track selected students
@@ -71,36 +61,9 @@ export default function StudentDataPage() {
     }
   }, [opportunityDetails, studentData]);
 
-  const handleSearch = useCallback(() => {
-    let results = studentData;
-    if (selectedBatch === "" && selectedStatus === "" && selectedPlacement === "") {
-      toast.error("Please select at least one filter option to search");
-      return;
-    }
-    if (selectedBatch) {
-      results = results.filter((student) => student.batch === selectedBatch);
-    }
-    // Filter by status
-    if (selectedStatus) {
-      results = results.filter((student) => {
-        const batch = batchData.find(
-          (batch) => batch.batchNo === student.batch
-        );
-        if (!batch) return false;
-        const isCompleted =
-          new Date(batch.sections?.Domain?.endDate) < new Date() &&
-          new Date(batch.sections?.Aptitude?.endDate) < new Date() &&
-          new Date(batch.sections?.Communication?.endDate) < new Date();
-        return selectedStatus === "Completed" ? isCompleted : !isCompleted;
-      });
-    }
-    // Filter by placement
-    if (selectedPlacement) {
-      results = results.filter((student) => student.placement === selectedPlacement);
-    }
-    setFilteredStudents(results);
-    setSearchInitiated(true);
-  }, [studentData, selectedBatch, selectedStatus, selectedPlacement, batchData]);
+  const batchesNames = useMemo(() => {
+  return [...new Set(studentData.map(s => s.batch))];
+}, [studentData]);
 
   const isInitialMount = useRef(true);
   useEffect(() => {
@@ -111,15 +74,7 @@ export default function StudentDataPage() {
         handleSearch();
       }
     }
-  }, [studentData]);  // Added handleSearch to dependency, but it's memoized
-
-  const handleReset = () => {
-    setSelectedBatch("");
-    setSelectedStatus("");
-    setSelectedPlacement("");
-    setFilteredStudents(studentData);
-    setSearchInitiated(false);
-  };
+  }, [studentData]);  // Added handleSearch to dependency
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -147,41 +102,6 @@ export default function StudentDataPage() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  const handleEditStudent = (student) => {
-    setEditingStudent(student);
-  };
-
-  const handleDeleteStudent = () => {
-    if (!deleteConfirmationInput.trim()) {
-      setDeleteError("Please enter the booking ID to confirm deletion");
-      return;
-    }
-    if (
-      !deletingStudent ||
-      deleteConfirmationInput.trim() !== deletingStudent.bookingId
-    ) {
-      setDeleteError("Booking ID does not match. Please enter the exact booking ID.");
-      return;
-    }
-    // Delete the student from the correct domain and update studentData globally
-    deleteStudent(deletingStudent.bookingId);
-    // Reset modal states
-    setShowDeleteModal(false);
-    setDeleteConfirmationInput("");
-    setDeleteError("");
-    setDeletingStudent(null);
-    toast.success("Student deleted successfully");
-    // Refresh the displayed list (if any filters were applied)
-    handleSearch();
-  };
-
-  const handleCloseDeleteModal = () => {
-    setShowDeleteModal(false);
-    setDeleteConfirmationInput("");
-    setDeleteError("");
-    setDeletingStudent(null);
-  };
 
   useEffect(() => {
     if (
@@ -222,6 +142,13 @@ export default function StudentDataPage() {
     const { id, value } = e.target;
     setAssignFormData((prev) => ({ ...prev, [id]: value }));
     // Clear error for the field being edited
+  if (id === "driveDate") {
+  const today = new Date().toISOString().split("T")[0];
+  if (value < today) {
+    setAssignErrors(prev => ({ ...prev, driveDate: "The drive date cannot be earlier than today." }));
+    return; // Prevent updating the value
+  }
+}
     if (assignErrors[id]) {
       setAssignErrors((prev) => ({ ...prev, [id]: "" }));
     }
@@ -240,6 +167,11 @@ export default function StudentDataPage() {
     }
     if (!assignFormData.driveDate) {
       errors.driveDate = "Drive Date is required.";
+      isValid = false;
+    }
+    const today = new Date().toISOString().split("T")[0];
+    if (assignFormData.driveDate < today) {
+      errors.driveDate = "The drive date cannot be earlier than today.";
       isValid = false;
     }
     if (!assignFormData.driveRole.trim()) {
@@ -262,7 +194,7 @@ export default function StudentDataPage() {
     // If valid, store the opportunity details and open the student selection modal
     setOpportunityDetails(assignFormData);
     setShowStudentSelectModal(true);
-    setShowAssignModal(false);  // Close the assign modal
+    // setShowAssignModal(false);  // Close the assign modal
   };
 
   // --- New: Handle Closing Assign Modal with Discard Confirmation ---
@@ -310,13 +242,26 @@ export default function StudentDataPage() {
     }
   };
 
+  const selectedStudentDiscard = () => {
+    if (selectedStudents.length === 0) {
+      setShowStudentSelectModal(false);
+      return;
+    }
+    if (selectedStudents.length > 0) {
+    setStudentSelectModelDiscard(true);
+    return;
+  }
+  
+
+  }
+
   // --- New: Handle Saving Selected Students ---
 const handleSaveSelectedStudents = () => {
   if (selectedStudents.length === 0) {
     toast.error("Please select at least one student.");
     return;
   }
-
+  
   let domainKey = batchingvalue;
   if (!domainKey && opportunityDetails?.selectedBatch) {
     domainKey = opportunityDetails.selectedBatch;
@@ -336,10 +281,12 @@ const handleSaveSelectedStudents = () => {
   };
 
   addOpportunity(opportunity);
-  toast.success(`${selectedStudents.length} student(s) assigned successfully!`);
+  setShowAssignModal(false);
   setShowStudentSelectModal(false);
   setSelectedStudents([]);
   setOpportunityDetails(null);
+  toast.success(`${selectedStudents.length} student(s) assigned successfully!`);
+
 };
 
   // --- New: Handle Closing Student Select Modal ---
@@ -361,9 +308,7 @@ const handleSaveSelectedStudents = () => {
     setViewOpportunityDetails(null);
   };
 
-  const batchesNames = useMemo(() => {
-    return [...new Set(studentData.map((s) => s.batch))];
-  }, [studentData]);
+
 
   const getFilteredBatches = () => {
     if (batchHead === "Full Stack Development") {
@@ -384,17 +329,18 @@ const handleSaveSelectedStudents = () => {
           </h1>
         </div>
         <div >
-        <div className="flex gap-4 flex-col md:flex-row mt-10 w-full">
+        <div className="flex gap-4 flex-col md:flex-row mt-[-40px] md:mt-10 w-full">
         {getOpportunitiesByDomain(batchingvalue)
           ?.filter(opportunity => opportunity.createdDomain === batchHead) // Only show cards for current domain
           ?.length > 0 ? (
           getOpportunitiesByDomain(batchingvalue)
             .filter(opportunity => opportunity.createdDomain === batchHead) // Only show cards for current domain
             .map((opportunity, index) => (
-              <div key={index} className="bg-white rounded-lg shadow p-6 mb-4">
-                <h2 className="text-lg font-medium mb-2">Opportunity {index + 1}</h2>
+              <div key={index} className="bg-white rounded-lg shadow p-8 mb-4">
+                {/* <h2 className="text-lg font-medium mb-2">Opportunity {index + 1}</h2> */}
                 <div className="mb-2">
-                  <span className="font-semibold">Company:</span> {opportunity.companyName}
+                  <h2 className="text-lg font-medium mb-2">{opportunity.companyName}</h2>
+                  {/* <span className="font-semibold">Company:</span> {opportunity.companyName} */}
                 </div>
                 <div className="mb-2">
                   <span className="font-semibold">Drive Date:</span> {opportunity.driveDate}
@@ -432,8 +378,7 @@ const handleSaveSelectedStudents = () => {
         <div>
           <button
             onClick={handleOpenAssignModal}
-            className="absolute top-45 right-10 cursor-pointer bg-[#6750A4] hover:bg-[#5a4a8f] text-white px-4 py-4 rounded-xl text-sm font-semibold flex items-center gap-1"
-          >
+            className="absolute top-60 md:top-45 right-10 cursor-pointer bg-[#6750A4] hover:bg-[#5a4a8f] text-white px-4 py-4 rounded-xl text-sm font-semibold flex items-center gap-1">
             <FiPlus /> Assign
           </button>
         </div>
@@ -468,7 +413,6 @@ const handleSaveSelectedStudents = () => {
                     placeholder=" "
                     value={assignFormData.companyName}
                     onChange={handleAssignFormChange}
-                    required
                   />
                   <label
                     htmlFor="companyName"
@@ -476,7 +420,7 @@ const handleSaveSelectedStudents = () => {
                       assignErrors.companyName ? "text-red-500" : "text-gray-500"
                     }  duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                   >
-                    Company Name *
+                    Company Name
                   </label>
                   {assignErrors.companyName && (
                     <p className="text-red-500 text-xs mt-1">{assignErrors.companyName}</p>
@@ -490,10 +434,9 @@ const handleSaveSelectedStudents = () => {
                     className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2  ${
                       assignErrors.driveDate ? "border-red-500" : "border-gray-400"
                     }  appearance-none focus:outline-none focus:border-[#6750A4] peer`}
-                    placeholder=" "   // Date input doesn't typically use placeholder text like this
+                    placeholder=" "   
                     value={assignFormData.driveDate}
                     onChange={handleAssignFormChange}
-                    required
                   />
                   <label
                     htmlFor="driveDate"
@@ -501,7 +444,7 @@ const handleSaveSelectedStudents = () => {
                       assignErrors.driveDate ? "text-red-500" : "text-gray-500"
                     }  duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                   >
-                    Drive Date *
+                    Drive Date 
                   </label>
                   {assignErrors.driveDate && (
                     <p className="text-red-500 text-xs mt-1">{assignErrors.driveDate}</p>
@@ -518,7 +461,7 @@ const handleSaveSelectedStudents = () => {
                     placeholder=" "
                     value={assignFormData.driveRole}
                     onChange={handleAssignFormChange}
-                    required
+                    
                   />
                   <label
                     htmlFor="driveRole"
@@ -526,7 +469,7 @@ const handleSaveSelectedStudents = () => {
                       assignErrors.driveRole ? "text-red-500" : "text-gray-500"
                     }  duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                   >
-                    Drive Role *
+                    Drive Role 
                   </label>
                   {assignErrors.driveRole && (
                     <p className="text-red-500 text-xs mt-1">{assignErrors.driveRole}</p>
@@ -543,7 +486,6 @@ const handleSaveSelectedStudents = () => {
                     placeholder=" "
                     value={assignFormData.package}
                     onChange={handleAssignFormChange}
-                    required
                   />
                   <label
                     htmlFor="package"
@@ -551,7 +493,7 @@ const handleSaveSelectedStudents = () => {
                       assignErrors.package ? "text-red-500" : "text-gray-500"
                     }  duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                   >
-                    Package *
+                    Package 
                   </label>
                   {assignErrors.package && (
                     <p className="text-red-500 text-xs mt-1">{assignErrors.package}</p>
@@ -577,19 +519,18 @@ const handleSaveSelectedStudents = () => {
                       setIsAssignFormDirty(true);
                     }}
                     onClick={() => setShowBatchDropdown(!showBatchDropdown)}
-                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2  ${
+                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2  ${
                       assignErrors.selectedBatch ? "border-red-500" : "border-gray-400"
                     }  appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer`}
                     autoComplete="off"
-                    required
                   />
                   <label
                     htmlFor="selectedBatch"
                     className={`absolute px-2 text-sm  ${
                       assignErrors.selectedBatch ? "text-red-500" : "text-gray-500"
-                    }  duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                    }  duration-300 bg-[#F8FAFD] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                   >
-                    Select Batch *
+                    Select Batch 
                   </label>
                   <FiChevronDown
                     className="absolute top-5 right-3 text-gray-500 pointer-events-none"
@@ -618,7 +559,7 @@ const handleSaveSelectedStudents = () => {
                         overflowY: batchesNames.length > 5 ? "auto" : "visible",
                       }}
                     >
-                      {getFilteredBatches()
+                      {batchesNames
                         .filter(
                           (batchName) =>
                             !assignFormData.selectedBatch ||
@@ -697,13 +638,225 @@ const handleSaveSelectedStudents = () => {
                     type="submit"   // Submit button
                     className="cursor-pointer bg-[#6750a4] text-white px-4 py-2 rounded-xl text-sm font-medium"
                   >
-                    Save
+                    Assign
                   </button>
                 </div>
               </form>
             </div>
           </div>
+        )}        
+        {/* --- New Student Selection Modal --- */}
+        { showStudentSelectModal && opportunityDetails && (
+          <div
+            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
+            onClick={selectedStudentDiscard}   // Close on backdrop click
+          >
+            <div
+              className="w-full max-w-4xl bg-[#F8FAFD] rounded-[10px] p-6 animate-fade-in-up"   // Added animation class
+              onClick={(e) => e.stopPropagation()}   // Prevent closing when clicking inside modal
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-medium">Select Students for Opportunity</h2>
+                <button
+                  onClick={selectedStudentDiscard}
+                  className="cursor-pointer text-gray-500 hover:text-gray-700"
+                >
+                  <RiCloseCircleLine size={20} />
+                </button>
+              </div>
+              { /* Display Opportunity Details */ }
+              <div className="flex justify-evenly flex-wrap gap-2 items-center mb-4 p-3 bg-[#ECE6F0] rounded">
+                <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
+                  <p className="text-sm p-1">
+                    <span className="font-semibold">Company:</span> {opportunityDetails.companyName}
+                  </p>
+                </div>
+                <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
+                  <p className="text-sm p-1">
+                    <span className="font-semibold">Date:</span> {opportunityDetails.driveDate}
+                  </p>
+                </div>
+                <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
+                  <p className="text-sm p-1">
+                    <span className="font-semibold">Role:</span> {opportunityDetails.driveRole}
+                  </p>
+                </div>
+                <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
+                  <p className="text-sm p-1">
+                    <span className="font-semibold">Package:</span> {opportunityDetails.package}
+                  </p>
+                </div>
+                <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
+                  <p className="text-sm p-1">
+                    <span className="font-semibold">Batch:</span> {opportunityDetails.selectedBatch}
+                  </p>
+                </div>
+              </div>
+              { /* Student Table */ }
+              <div className="bg-white rounded-lg shadow overflow-hidden">
+                <div className="overflow-x-auto max-h-[60vh]">   { /* Add max height and overflow for scrolling */ }
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50 sticky top-0 z-10">
+                      <tr>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">S.No</th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Name</th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">E-mail</th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Phone</th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Epic Status</th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Attendance</th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Select Student(s) <button  onClick={handleSelectAllStudents}
+                        className="cursor-pointer bg-[#e8def8] text-[#4a4459] px-2 py-1 rounded-xl text-sm font-medium"
+                      >
+                        Select All
+                      </button></th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      { filteredBatchStudents.length > 0 ? (
+                        filteredBatchStudents.map((student, index) => (
+                          <tr key={student.bookingId} className="hover:bg-gray-50">
+                            <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{index + 1}</td>
+                            <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{student.name}</td>
+                            <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{student.email}</td>
+                            <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{student.phone}</td>
+                            <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{student.epicStatus}</td>
+                            <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{student.attendance}%</td>
+                            <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">
+                              <input
+                                type="checkbox"
+                                checked={selectedStudents.includes(student.bookingId)}
+                                onChange={() => handleStudentSelect(student.bookingId)}
+                                className="h-4 w-4 text-[#6750A4] border-gray-300 rounded focus:ring-[#6750A4]"
+                              />
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="7" className="px-4 py-6 text-center text-sm text-gray-500">
+                            No students found for the selected batch.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              { /* Buttons */ }
+              <div className="flex justify-end gap-3 mt-4">
+                <button
+                  onClick={selectedStudentDiscard}
+                  className="cursor-pointer bg-[#e8def8] text-[#4a4459] px-4 py-2 rounded-xl text-sm font-medium"
+                >Back
+                </button>
+                {/* <button
+                  onClick={handleSelectAllStudents}
+                  className="cursor-pointer bg-[#e8def8] text-[#4a4459] px-4 py-2 rounded-xl text-sm font-medium"
+                >
+                  Select All
+                </button> */}
+                <button
+                  onClick={handleSaveSelectedStudents}
+                  className="cursor-pointer bg-[#6750a4] text-white px-4 py-2 rounded-xl text-sm font-medium"
+                  disabled={selectedStudents.length === 0}   // Disable if no students selected
+                >
+                  Save Selected ({selectedStudents.length})
+                </button>
+              </div>
+            </div>
+          </div>
         )}
+        { /* --- New View Modal --- */ }
+        { showViewModal && viewOpportunityDetails && (
+          <div
+            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
+            onClick={handleCloseViewModal}   // Close on backdrop click
+          >
+            <div
+              className="w-full max-w-4xl bg-[#F8FAFD] rounded-[10px] p-6 animate-fade-in-up"   // Added animation class
+              onClick={(e) => e.stopPropagation()}   // Prevent closing when clicking inside modal
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-medium">Opportunity Details</h2>
+                <button
+                  onClick={handleCloseViewModal}
+                  className="cursor-pointer text-gray-500 hover:text-gray-700"
+                >
+                  <RiCloseCircleLine size={20} />
+                </button>
+              </div>
+              { /* Display Opportunity Details */ }
+              <div className="flex justify-evenly gap-2 md:gap-1 flex-wrap items-center mb-4 p-3 bg-[#ECE6F0] rounded">
+                <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
+                  <p className="text-sm p-1">
+                    <span className="font-semibold">Company:</span> {viewOpportunityDetails.companyName}
+                  </p>
+                </div>
+                <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
+                  <p className="text-sm p-1">
+                    <span className="font-semibold">Date:</span> {viewOpportunityDetails.driveDate}
+                  </p>
+                </div>
+                <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
+                  <p className="text-sm p-1">
+                    <span className="font-semibold">Role:</span> {viewOpportunityDetails.driveRole}
+                  </p>
+                </div>
+                <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
+                  <p className="text-sm p-1">
+                    <span className="font-semibold">Package:</span> {viewOpportunityDetails.package}
+                  </p>
+                </div>
+                <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
+                  <p className="text-sm p-1">
+                    <span className="font-semibold">Batch:</span> {viewOpportunityDetails.selectedBatch}
+                  </p>
+                </div>
+              </div>
+              { /* Student Table */ }
+              <div className="bg-white rounded-lg shadow overflow-hidden">
+                <div className="overflow-x-auto max-h-[60vh]">   { /* Add max height and overflow for scrolling */ }
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50 sticky top-0 z-10">
+                      <tr>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">S.No</th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Name</th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Email ID</th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Phone No</th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Epic Status</th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Attendance</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      { Array.isArray(viewOpportunityDetails.selectedStudents) && viewOpportunityDetails.selectedStudents.length > 0 ? (
+                        viewOpportunityDetails.selectedStudents.slice(0, 8).map((bookingId, index) => {
+                          const student = studentData.find(s => s.bookingId === bookingId);
+                          if (!student) return null; // Skip if student not found
+                          return (
+                            <tr key={bookingId} className="hover:bg-gray-50">
+                              <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{index + 1}</td>
+                              <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{student.name}</td>
+                              <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{student.email}</td>
+                              <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{student.phone}</td>
+                              <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{student.epicStatus}</td>
+                              <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{student.attendance}%</td>
+                            </tr>
+                          );
+                        })
+                      ) : (
+                        <tr>
+                          <td colSpan="6" className="px-4 py-6 text-center text-sm text-gray-500">
+                            No students assigned to this opportunity.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}  
         {/* --- New Discard Confirmation Modal for Assign --- */}
         {showDiscardConfirm && (
           <div
@@ -727,7 +880,7 @@ const handleSaveSelectedStudents = () => {
                 </button>
                 <button
                   onClick={confirmDiscardAssign}
-                  className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded hover:bg-red-700"
+                  className="px-4 py-2 text-sm font-medium text-white bg-[#6750A4] rounded hover:bg-red-700"
                 >
                   Discard
                 </button>
@@ -735,216 +888,37 @@ const handleSaveSelectedStudents = () => {
             </div>
           </div>
         )}
-        {/* --- New Student Selection Modal --- */}
-{ showStudentSelectModal && opportunityDetails && (
-  <div
-    className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
-    onClick={handleCloseStudentSelectModal}   // Close on backdrop click
-  >
-    <div
-      className="w-full max-w-4xl bg-[#F8FAFD] rounded-[10px] p-6 animate-fade-in-up"   // Added animation class
-      onClick={(e) => e.stopPropagation()}   // Prevent closing when clicking inside modal
-    >
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-medium">Select Students for Opportunity</h2>
-        <button
-          onClick={handleCloseStudentSelectModal}
-          className="cursor-pointer text-gray-500 hover:text-gray-700"
-        >
-          <RiCloseCircleLine size={20} />
-        </button>
-      </div>
-      { /* Display Opportunity Details */ }
-      <div className="flex justify-evenly items-center mb-4 p-3 bg-[#ECE6F0] rounded">
-        <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
-          <p className="text-sm p-1">
-            <span className="font-semibold">Company:</span> {opportunityDetails.companyName}
-          </p>
-        </div>
-        <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
-          <p className="text-sm p-1">
-            <span className="font-semibold">Date:</span> {opportunityDetails.driveDate}
-          </p>
-        </div>
-        <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
-          <p className="text-sm p-1">
-            <span className="font-semibold">Role:</span> {opportunityDetails.driveRole}
-          </p>
-        </div>
-        <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
-          <p className="text-sm p-1">
-            <span className="font-semibold">Package:</span> {opportunityDetails.package}
-          </p>
-        </div>
-        <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
-          <p className="text-sm p-1">
-            <span className="font-semibold">Batch:</span> {opportunityDetails.selectedBatch}
-          </p>
-        </div>
-      </div>
-      { /* Student Table */ }
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="overflow-x-auto max-h-[60vh]">   { /* Add max height and overflow for scrolling */ }
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50 sticky top-0 z-10">
-              <tr>
-                <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">S.No</th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Name</th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">E-mail</th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Phone</th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Epic Status</th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Attendance</th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Select Student(s)</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              { filteredBatchStudents.length > 0 ? (
-                filteredBatchStudents.map((student, index) => (
-                  <tr key={student.bookingId} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{index + 1}</td>
-                    <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{student.name}</td>
-                    <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{student.email}</td>
-                    <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{student.phone}</td>
-                    <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{student.epicStatus}</td>
-                    <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{student.attendance}%</td>
-                    <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">
-                      <input
-                        type="checkbox"
-                        checked={selectedStudents.includes(student.bookingId)}
-                        onChange={() => handleStudentSelect(student.bookingId)}
-                        className="h-4 w-4 text-[#6750A4] border-gray-300 rounded focus:ring-[#6750A4]"
-                      />
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="7" className="px-4 py-6 text-center text-sm text-gray-500">
-                    No students found for the selected batch.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      { /* Buttons */ }
-      <div className="flex justify-end gap-3 mt-4">
-        <button
-          onClick={handleCloseStudentSelectModal}
-          className="cursor-pointer bg-[#e8def8] text-[#4a4459] px-4 py-2 rounded-xl text-sm font-medium"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={handleSelectAllStudents}
-          className="cursor-pointer bg-[#e8def8] text-[#4a4459] px-4 py-2 rounded-xl text-sm font-medium"
-        >
-          Select All
-        </button>
-        <button
-          onClick={handleSaveSelectedStudents}
-          className="cursor-pointer bg-[#6750a4] text-white px-4 py-2 rounded-xl text-sm font-medium"
-          disabled={selectedStudents.length === 0}   // Disable if no students selected
-        >
-          Save Selected ({selectedStudents.length})
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
-{ /* --- New View Modal --- */ }
-{ showViewModal && viewOpportunityDetails && (
-  <div
-    className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
-    onClick={handleCloseViewModal}   // Close on backdrop click
-  >
-    <div
-      className="w-full max-w-4xl bg-[#F8FAFD] rounded-[10px] p-6 animate-fade-in-up"   // Added animation class
-      onClick={(e) => e.stopPropagation()}   // Prevent closing when clicking inside modal
-    >
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-medium">Opportunity Details</h2>
-        <button
-          onClick={handleCloseViewModal}
-          className="cursor-pointer text-gray-500 hover:text-gray-700"
-        >
-          <RiCloseCircleLine size={20} />
-        </button>
-      </div>
-      { /* Display Opportunity Details */ }
-      <div className="flex justify-evenly items-center mb-4 p-3 bg-[#ECE6F0] rounded">
-        <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
-          <p className="text-sm p-1">
-            <span className="font-semibold">Company:</span> {viewOpportunityDetails.companyName}
-          </p>
-        </div>
-        <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
-          <p className="text-sm p-1">
-            <span className="font-semibold">Date:</span> {viewOpportunityDetails.driveDate}
-          </p>
-        </div>
-        <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
-          <p className="text-sm p-1">
-            <span className="font-semibold">Role:</span> {viewOpportunityDetails.driveRole}
-          </p>
-        </div>
-        <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
-          <p className="text-sm p-1">
-            <span className="font-semibold">Package:</span> {viewOpportunityDetails.package}
-          </p>
-        </div>
-        <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
-          <p className="text-sm p-1">
-            <span className="font-semibold">Batch:</span> {viewOpportunityDetails.selectedBatch}
-          </p>
-        </div>
-      </div>
-      { /* Student Table */ }
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="overflow-x-auto max-h-[60vh]">   { /* Add max height and overflow for scrolling */ }
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50 sticky top-0 z-10">
-              <tr>
-                <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">S.No</th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Name</th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Email ID</th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Phone No</th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Epic Status</th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Attendance</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              { Array.isArray(viewOpportunityDetails.selectedStudents) && viewOpportunityDetails.selectedStudents.length > 0 ? (
-                viewOpportunityDetails.selectedStudents.slice(0, 8).map((bookingId, index) => {
-                  const student = studentData.find(s => s.bookingId === bookingId);
-                  if (!student) return null; // Skip if student not found
-                  return (
-                    <tr key={bookingId} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{index + 1}</td>
-                      <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{student.name}</td>
-                      <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{student.email}</td>
-                      <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{student.phone}</td>
-                      <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{student.epicStatus}</td>
-                      <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">{student.attendance}%</td>
-                    </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td colSpan="6" className="px-4 py-6 text-center text-sm text-gray-500">
-                    No students assigned to this opportunity.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-)}     
+        {/* --- New Discard Confirmation Modal for Assign --- */}
+        {studentSelectModelDiscard && (
+          <div
+            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
+            onClick={(e) => {setStudentSelectModelDiscard(false); e.stopPropagation()}}   // Clicking backdrop cancels
+          >
+            <div
+              className="w-full max-w-sm bg-white rounded-lg p-6 shadow-lg"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 className="font-medium text-gray-800 mb-2">Discard Changes?</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                You have unsaved changes. Are you sure you want to discard them?
+              </p>
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={() => {setStudentSelectModelDiscard(false);}}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded hover:bg-gray-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {setShowStudentSelectModal(false); setStudentSelectModelDiscard(false); setSelectedStudents([]);}}
+                  className="px-4 py-2 text-sm font-medium text-white bg-[#6750A4] rounded hover:bg-red-700"
+                >
+                  Discard
+                </button>
+              </div>
+            </div>
+          </div>
+        )}   
       </div>
     </div>
   );
