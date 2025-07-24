@@ -6,20 +6,32 @@ import { useDataContext } from '../context/dataContext';
 import { toast } from 'sonner';
 
 export default function EditStudentModal({ student, onClose, onSave }) {
-  const { studentData, updateStudent } = useDataContext();
-  const [EditDiscarddModel , setEditDiscarddModel] = useState(false);
-  const [editingStudent, setEditingStudent] = useState(student);
-  const [initialStudent] = useState(student);
-  const [showBatchDropdown, setShowBatchDropdown] = useState(false);
-  const [showEpicDropdown, setShowEpicDropdown] = useState(false);
-  const [showPlacementDropdown, setShowPlacementDropdown] = useState(false);
+  const { studentData, updateStudent, batchesNames } = useDataContext();
+  const [EditDiscarddModel, setEditDiscarddModel] = useState(false);
+  const [editingStudent, setEditingStudent] = useState({
+    ...student,
+    mode: typeof student.mode === 'string' && student.mode ? student.mode : 'Online',
+    batch: typeof student.batch === 'string' && student.batch ? student.batch : (batchesNames.length > 0 ? batchesNames[0] : '')
+  });
+
+  const initialStudent = useMemo(() => ({
+    ...student,
+    mode: typeof student.mode === 'string' && student.mode ? student.mode : 'Online',
+    batch: typeof student.batch === 'string' && student.batch ? student.batch : (batchesNames.length > 0 ? batchesNames[0] : '')
+  }), [student, batchesNames]);
+
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [errors, setErrors] = useState({});
+  const [showPhoneInput, setShowPhoneInput] = useState(false);
+  const [showModeDropdown, setShowModeDropdown] = useState(false);
+  const [showBatchDropdown, setShowBatchDropdown] = useState(false);
+  const [showEpicStatusDropdown, setShowEpicStatusDropdown] = useState(false);
+  const [showPlacementDropdown, setShowPlacementDropdown] = useState(false);
 
   const batchDropdownRef = useRef(null);
   const epicDropdownRef = useRef(null);
   const placementDropdownRef = useRef(null);
-
+  const modeDropdownRef = useRef(null);
 
   // Check for changes
   const changesMade = JSON.stringify(editingStudent) !== JSON.stringify(initialStudent);
@@ -30,101 +42,119 @@ export default function EditStudentModal({ student, onClose, onSave }) {
         setShowBatchDropdown(false);
       }
       if (epicDropdownRef.current && !epicDropdownRef.current.contains(event.target)) {
-        setShowEpicDropdown(false);
+        setShowEpicStatusDropdown(false);
       }
       if (placementDropdownRef.current && !placementDropdownRef.current.contains(event.target)) {
         setShowPlacementDropdown(false);
       }
+      if (modeDropdownRef.current && !modeDropdownRef.current.contains(event.target)) {
+        setShowModeDropdown(false);
+      }
     }
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
+  const validateFields = () => {
+    let tempErrors = {};
+    // Name
+    if (!editingStudent.name || !editingStudent.name.trim()) tempErrors.name = "Name is required";
+    // Email
+    if (!editingStudent.email || !editingStudent.email.trim()) {
+      tempErrors.email = "Email is required";
+    } else if (!/^\S+@\S+\.\S+$/.test(editingStudent.email)) {
+      tempErrors.email = "Email is invalid";
+    }
+    // Phone
+    if (!editingStudent.phone || !editingStudent.phone.trim()) {
+      tempErrors.phone = "Phone is required";
+    } else if (!/^\d{10}$/.test(editingStudent.phone)) {
+      tempErrors.phone = "Phone must be 10 digits";
+    }
+    // Batch
+    if (!editingStudent.batch || !editingStudent.batch.trim()) tempErrors.batch = "Batch is required";
+    // EPIC Status
+    if (!editingStudent.epicStatus || !editingStudent.epicStatus.trim()) tempErrors.epicStatus = "EPIC Status is required";
+    // Placement
+    if (!editingStudent.placement || !editingStudent.placement.trim()) tempErrors.placement = "Placement Status is required";
+    // Mode
+    if (!editingStudent.mode || !editingStudent.mode.trim()) tempErrors.mode = "Mode of Study is required";
+
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
   const handleChange = (field, value) => {
-    setEditingStudent(prev => ({
-      ...prev,
-      [field]: value
-    }));
-    validateField(field, value);
+    setEditingStudent(prev => ({ ...prev, [field]: value }));
+    // Live validation for the field
+    setErrors(prev => {
+      const newErrors = { ...prev };
+      // Name
+      if (field === 'name') {
+        if (!value || !value.trim()) newErrors.name = "Name is required";
+        else delete newErrors.name;
+      }
+      // Email
+      if (field === 'email') {
+        if (!value || !value.trim()) newErrors.email = "Email is required";
+        else if (!/^\S+@\S+\.\S+$/.test(value)) newErrors.email = "Email is invalid";
+        else delete newErrors.email;
+      }
+      // Phone
+      if (field === 'phone') {
+        if (!value || !value.trim()) newErrors.phone = "Phone is required";
+        else if (!/^\d{10}$/.test(value)) newErrors.phone = "Phone must be 10 digits";
+        else delete newErrors.phone;
+      }
+      // Batch
+      if (field === 'batch') {
+        if (!value || !value.trim()) newErrors.batch = "Batch is required";
+        else delete newErrors.batch;
+      }
+      // EPIC Status
+      if (field === 'epicStatus') {
+        if (!value || !value.trim()) newErrors.epicStatus = "EPIC Status is required";
+        else delete newErrors.epicStatus;
+      }
+      // Placement
+      if (field === 'placement') {
+        if (!value || !value.trim()) newErrors.placement = "Placement Status is required";
+        else delete newErrors.placement;
+      }
+      // Mode
+      if (field === 'mode') {
+        if (!value || !value.trim()) newErrors.mode = "Mode of Study is required";
+        else delete newErrors.mode;
+      }
+      // If all errors are gone, clear all
+      if (Object.keys(newErrors).length === 0) return {};
+      return newErrors;
+    });
   };
 
-  const validateField = (field, value) => {
-    let newErrors = { ...errors };
-    switch (field) {
-      case 'name':
-        if (!value) {
-          newErrors.name = 'Name is required';
-        } else if (value.length < 3) {
-          newErrors.name = 'Name must be at least 3 characters';
-        } else if (value.length > 50) {
-          newErrors.name = 'Name must be less than 50 characters';  
-        } else {
-          delete newErrors.name;
-        }
-        break;
-      case 'email':
-        if (!value) {
-          newErrors.email = 'Email is required';
-        } else if (!/\S+@\S+\.\S+/.test(value)) {
-          newErrors.email = 'Invalid email address';
-        } else {
-          delete newErrors.email;
-        }
-        break;
-      case 'bookingId':
-        if (!value) {
-          newErrors.bookingId = 'Booking ID is required';
-        } else if (studentData.some(s => s.bookingId === value && s.bookingId !== student.bookingId)) {
-          newErrors.bookingId = 'Booking ID already exists';
-        } else {
-          delete newErrors.bookingId;
-        }
-        break;
-        case 'batch':
-        if (!value) {
-          newErrors.batch = 'batch is required';
-        } else {
-          delete newErrors.batch;
-        }
-        break;
-      default:
-        delete newErrors[field];
-    }
-    setErrors(newErrors);
-  };
-
-
-  const handleEpicStatusChange = (value) => {
-    handleChange("epicStatus", value);
-    setShowEpicDropdown(false);
-  };
-
-  const handlePlacementChange = (value) => {
-    handleChange("placement", value);
-    setShowPlacementDropdown(false);
-  };
-
-  const handleSaveEdit = () => {
-    if (changesMade && Object.keys(errors).length === 0) {
-      setShowConfirmModal(true);
-    } else {
-      toast.error("Please fix all errors before saving");
-    }
-  };
-
-  const handleDiscard = () => {
-    if(changesMade){
-      setEditDiscarddModel(true);
-    }else{
-      onClose();
+  const handleSave = () => {
+    if (validateFields()) {
+      if (changesMade) {
+        setShowConfirmModal(true);
+      } else {
+        // No changes, just close
+        onClose();
+      }
     }
   };
 
   const handleConfirmSave = () => {
-    updateStudent(editingStudent.bookingId, editingStudent);
-    onSave && onSave(editingStudent); // Call onSave prop if provided
+    const updatedStudent = {
+      ...editingStudent,
+      mode: typeof editingStudent.mode === 'string' && editingStudent.mode ? editingStudent.mode : 'Online'
+    };
+    updateStudent(updatedStudent.bookingId, updatedStudent);
+    onSave && onSave(updatedStudent);
+    setShowConfirmModal(false);
+    setEditingStudent(initialStudent);
     onClose();
     toast.success("Student updated successfully");
   };
@@ -139,254 +169,241 @@ export default function EditStudentModal({ student, onClose, onSave }) {
     handleChange(field, '');
   };
 
-const batchesNames = useMemo(() => {
-  return [...new Set(studentData.map(s => s.batch))];
-}, [studentData]);
-
   return (
     <>
       <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onClick={onClose}>
-        <div className="relative w-auto bg-white p-10 rounded-sm shadow-lg" onClick={(e) => e.stopPropagation()}>
-          {/* Header */}
-          <div className="mb-8 flex items-center justify-between">
-            <h2 className="text-sm font-bold">Edit Student</h2>
-            <button onClick={ () => { handleDiscard();}} className="text-gray-500 hover:text-gray-700 cursor-pointer">
-              <RiCloseCircleLine size={20} />
-            </button>
-          </div>
-          {/* Form Fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Name */}
-            <div className="relative mb-4 w-full">
-              <input
-                id="name"
-                type="text"
-                value={editingStudent.name}
-                onChange={(e) => handleChange("name", e.target.value)}
-                className={`peer w-full rounded border-2 px-4 pb-2 pt-5  text-sm ${errors.name ? 'border-red-500' : 'border-gray-400'} transition-all focus:border-[#6750A4] focus:outline-none`}
-              />
-              <label
-                htmlFor="name"
-                className="absolute px-2 text-sm text-gray-500 duration-300 bg-white transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
-              >
-                Name
-              </label>
-              {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
-              {editingStudent.name && (
-                <button onClick={() => clearField("name")} className="cursor-pointer absolute top-4.5 right-3 text-gray-400 hover:text-gray-700">
-                  <RiCloseCircleLine size={20} />
-                </button>
-              )}
+        <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] " onClick={(e) => e.stopPropagation()}>
+          <div className="p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Edit Student</h2>
+              <button onClick={() => changesMade ? setEditDiscarddModel(true) : onClose()} className="text-gray-500 hover:text-gray-700">
+                <RiCloseCircleLine size={24} />
+              </button>
             </div>
-            {/* Email */}
-            <div className="relative mb-4 w-full">
-              <input
-                id="email"
-                type="email"
-                value={editingStudent.email}
-                onChange={(e) => handleChange("email", e.target.value)}
-                className={`peer w-full rounded border-2 px-4 pb-2 pt-5  text-sm ${errors.email ? 'border-red-500' : 'border-gray-400'} transition-all focus:border-[#6750A4] focus:outline-none`}
-              />
-              <label
-                htmlFor="email"
-              className="absolute px-2 text-sm text-gray-500 duration-300 bg-white transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
-              >
-                Email
-              </label>
-              {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
-              {editingStudent.email && (
-                <button onClick={() => clearField("email")} className="cursor-pointer absolute top-4.5 right-3 text-gray-500 hover:text-gray-700">
-                  <RiCloseCircleLine size={20} />
-                </button>
-              )}
-            </div>
-            {/* Booking ID */}
-            <div className="relative mb-4 w-full">
-              <input
-                id="bookingId"
-                type="text"
-                value={editingStudent.bookingId}
-                onChange={(e) => handleChange("bookingId", e.target.value)}
-                className={`peer w-full rounded border-2 px-4 pb-2 pt-5 text-sm ${errors.bookingId ? 'border-red-500' : 'border-gray-400'} transition-all focus:border-[#6750A4] focus:outline-none`}
-              />
-              <label
-                htmlFor="bookingId"
-                              className="absolute px-2 text-sm text-gray-500 duration-300 bg-white transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
-              >
-                Booking ID
-              </label>
-              {errors.bookingId && <p className="mt-1 text-xs text-red-500">{errors.bookingId}</p>}
-              {editingStudent.bookingId && (
-                <button onClick={() => clearField("bookingId")} className="cursor-pointer absolute top-4.5 right-3 text-gray-500 hover:text-gray-700">
-                  <RiCloseCircleLine size={20} />
-                </button>
-              )}
-            </div>
-            {/* Batch Dropdown */}
-            <div className="relative mb-4">
-              <input
-                type="text"
-                id="batch"
-                placeholder=" "
-                value={editingStudent.batch}
-                onChange={(e) => {
-                  handleChange("batch", e.target.value);
-                  setShowBatchDropdown(true);
-                }}
-                onFocus={() => setShowBatchDropdown(true)}
-                className={`peer w-full rounded border-2 px-4 pb-2 pt-5 text-sm ${errors.batch ? 'border-red-500' : 'border-gray-400'} transition-all focus:border-[#6750A4] focus:outline-none`}
-              />
-              <label
-                htmlFor="batch"
-                className={`absolute px-2 text-sm text-gray-500 duration-300 bg-white transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 
-                  `}
-              >
-                Batch
-              </label>
-              {errors.batch && <p className="mt-1 text-xs text-red-500">{errors.batch}</p>}
-              <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
-              {showBatchDropdown && (
-                  <div
-                    className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md"
-                    style={{
-                      maxHeight: batchesNames.length > 5 ? '200px' : 'auto',
-                      overflowY: batchesNames.length > 5 ? 'auto' : 'visible'
-                    }}
-                    ref={batchDropdownRef}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Name */}
+              <div className="relative mb-4">
+                <input
+                  type="text"
+                  id="name"
+                  className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 ${
+                    errors.name ? "border-red-500" : "border-gray-400"
+                  } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                  placeholder=" "
+                  value={editingStudent.name}
+                  onChange={(e) => handleChange("name", e.target.value)}
+                />
+                <label
+                  htmlFor="name"
+                  className={`absolute px-2 text-sm ${
+                    errors.name ? "text-red-500" : "text-gray-500"
+                  } duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                >
+                  Name <span className="text-red-500">*</span>
+                </label>
+                {editingStudent.name && (
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    onClick={() => clearField("name")}
                   >
-                    {batchesNames
-                      .filter(batch =>
-                        batch?.toLowerCase().includes(editingStudent.batch?.toLowerCase())
-                      )
-                      .slice(0, 5)
-                      .map((batch) => (
-                        <div
-                          key={batch}
-                          tabIndex={0}
-                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                          onClick={() => {
-                            handleChange("batch", batch);
-                            setShowBatchDropdown(false);
-                          }}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              handleChange("batch", batch);
-                              setShowBatchDropdown(false);
-                            }
-                          }}
-                        >
-                          {batch}
-                        </div>
-                      ))}
-                    {batchesNames.filter(batch =>
-                      batch?.toLowerCase().includes(editingStudent.batch?.toLowerCase())
-                    ).length === 0 && (
-                      <div className="px-4 py-2 text-gray-400">No batches found</div>
-                    )}
+                    <RiCloseCircleLine className="text-gray-400 hover:text-gray-600" />
+                  </button>
+                )}
+                {errors.name && (
+                  <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+                )}
+              </div>
+
+              {/* Email */}
+              <div className="relative mb-4">
+                <input
+                  type="email"
+                  id="email"
+                  className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 ${
+                    errors.email ? "border-red-500" : "border-gray-400"
+                  } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                  placeholder=" "
+                  value={editingStudent.email}
+                  onChange={(e) => handleChange("email", e.target.value)}
+                />
+                <label
+                  htmlFor="email"
+                  className={`absolute px-2 text-sm ${
+                    errors.email ? "text-red-500" : "text-gray-500"
+                  } duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                >
+                  Email <span className="text-red-500">*</span>
+                </label>
+                {editingStudent.email && (
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    onClick={() => clearField("email")}
+                  >
+                    <RiCloseCircleLine className="text-gray-400 hover:text-gray-600" />
+                  </button>
+                )}
+                {errors.email && (
+                  <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+                )}
+              </div>
+
+              {/* Phone */}
+              <div className="relative mb-4">
+                <input
+                  type="tel"
+                  id="phone"
+                  className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 ${
+                    errors.phone ? "border-red-500" : "border-gray-400"
+                  } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                  placeholder=" "
+                  value={editingStudent.phone}
+                  onChange={(e) => {
+                    // Only allow numbers
+                    const val = e.target.value.replace(/[^0-9]/g, "");
+                    handleChange("phone", val);
+                  }}
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                />
+                <label
+                  htmlFor="phone"
+                  className={`absolute px-2 text-sm ${
+                    errors.phone ? "text-red-500" : "text-gray-500"
+                  } duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                >
+                  Phone <span className="text-red-500">*</span>
+                </label>
+                {editingStudent.phone && (
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    onClick={() => clearField("phone")}
+                  >
+                    <RiCloseCircleLine className="text-gray-400 hover:text-gray-600" />
+                  </button>
+                )}
+                {errors.phone && (
+                  <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
+                )}
+              </div>
+
+              {/* Mode of Study Dropdown */}
+              <div className="relative mb-4" ref={modeDropdownRef}>
+                <input
+                  type="text"
+                  id="mode"
+                  readOnly
+                  placeholder=" "
+                  value={editingStudent.mode || ''}
+                  onClick={() => setShowModeDropdown(!showModeDropdown)}
+                  className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer`}
+                />
+                <label
+                  htmlFor="mode"
+                  className="absolute px-2 text-sm text-gray-500 duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+                >
+                  Mode of Study
+                </label>
+                <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
+                {showModeDropdown && (
+                  <div className="absolute z-10 w-full bg-[#f3edf7] border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                    {['Online', 'Offline'].map((mode) => (
+                      <div
+                        key={mode}
+                        tabIndex={0}
+                        className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                        onClick={() => {
+                          handleChange("mode", mode);
+                          setShowModeDropdown(false);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            handleChange("mode", mode);
+                            setShowModeDropdown(false);
+                          }
+                        }}
+                      >
+                        {mode}
+                      </div>
+                    ))}
                   </div>
                 )}
-              {editingStudent.batch && (
-                <button onClick={() => clearField("batch")} className="cursor-pointer absolute top-4.5 right-8 text-gray-500 hover:text-gray-700">
-                  <RiCloseCircleLine size={20} />
-                </button>
-              )}
+              </div>
+
+               {/* Placement Dropdown */}
+              <div className="relative mb-4 z-100" ref={placementDropdownRef}>
+                <input
+                  type="text"
+                  id="placement"
+                  readOnly
+                  placeholder=" "
+                  value={editingStudent.placement || ''}
+                  onClick={() => setShowPlacementDropdown(!showPlacementDropdown)}
+                  className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 ${
+                    errors.placement ? "border-red-500" : "border-gray-400"
+                  } appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer`}
+                />
+                <label
+                  htmlFor="placement"
+                  className={`absolute px-2 text-sm ${
+                    errors.placement ? "text-red-500" : "text-gray-500"
+                  } duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                >
+                  Placement <span className="text-red-500">*</span>
+                </label>
+                <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
+                {showPlacementDropdown && (
+                  <div className="absolute z-10 w-full bg-[#f3edf7] border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                    {['Placed', 'Not Placed', 'Yet to Place', 'Not Required'].map((status) => (
+                      <div
+                        key={status}
+                        tabIndex={0}
+                        className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                        onClick={() => {
+                          handleChange("placement", status);
+                          setShowPlacementDropdown(false);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            handleChange("placement", status);
+                            setShowPlacementDropdown(false);
+                          }
+                        }}
+                      >
+                        {status}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {errors.placement && (
+                  <p className="text-red-500 text-xs mt-1">{errors.placement}</p>
+                )}
+              </div>
             </div>
-            {/* EPIC Status Dropdown */}
-            <div className="relative mb-4">
-              <input
-                type="text"
-                id="epic-status"
-                readOnly
-                placeholder=" "
-                value={editingStudent.epicStatus}
-                onClick={() => setShowEpicDropdown(!showEpicDropdown)}
-                className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
-              />
-              <label
-                htmlFor="epic-status"
-              className="absolute px-2 text-sm text-gray-500 duration-300 bg-white transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+
+            <div className="flex justify-end space-x-3 mt-6">
+              <button
+                type="button"
+                onClick={() => changesMade ? setEditDiscarddModel(true) : onClose()}
+                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-gray-500"
               >
-                EPIC Status
-              </label>
-              <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
-              {showEpicDropdown && (
-                <div className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md" ref={epicDropdownRef}>
-                  {['Excellent', 'Proficient', 'Ideal', 'Capable'].map((status) => (
-                    <div
-                      key={status}
-                      tabIndex={0}
-                      className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                      onClick={() => handleEpicStatusChange(status)}
-                      onKeyDown={(e) => { if (e.key === "Enter") { handleEpicStatusChange(status); } }}
-                    >
-                      {status}
-                    </div>
-                  ))}
-                </div>
-              )}
-              {/* {editingStudent.epicStatus && (
-                <button onClick={() => clearField("epicStatus")} className="cursor-pointer absolute top-4.5 right-8 text-gray-500 hover:text-gray-700">
-                  <RiCloseCircleLine size={20} />
-                </button>
-              )} */}
-            </div>
-            {/* Placement Dropdown */}
-            <div className="relative mb-4">
-              <input
-                type="text"
-                id="placement"
-                readOnly
-                placeholder=" "
-                value={editingStudent.placement}
-                onClick={() => setShowPlacementDropdown(!showPlacementDropdown)}
-                className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
-              />
-              <label
-                htmlFor="placement"
-              className="absolute px-2 text-sm text-gray-500 duration-300 bg-white transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleSave}
+                className="px-4 py-2 bg-[#6750a4] text-white rounded-md hover:bg-[#675b86] focus:outline-none focus:ring-1 focus:ring-blue-500"
               >
-                Placement
-              </label>
-              
-              <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
-              {showPlacementDropdown && (
-                <div className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md" ref={placementDropdownRef}>
-                  {['Placed', 'Yet to Place', 'Not Placed', 'Not Interested'].map((placement) => (
-                    <div
-                      key={placement}
-                      tabIndex={0}
-                      className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                      onClick={() => handlePlacementChange(placement)}
-                      onKeyDown={(e) => { if (e.key === "Enter") { handlePlacementChange(placement); } }}
-                    >
-                      {placement}
-                    </div>
-                  ))}
-                </div>
-              )}
-              {/* {editingStudent.placement && (
-                <button onClick={() => clearField("placement")} className="cursor-pointer absolute top-4.5 right-8 text-gray-500 hover:text-gray-700">
-                  <RiCloseCircleLine size={20} />
-                </button>
-              )} */}
+                Save Changes
+              </button>
             </div>
-          </div>
-          {/* Footer Actions */}
-          <div className="flex justify-end gap-4 mt-8">
-            <button onClick={handleDiscard} className="cursor-pointer rounded-2xl px-4 py-3 bg-[#f1ecfb] text-gray-400 hover:bg-[#e8def8] hover:text-[#4a4459]">
-              Cancel
-            </button>
-            <button 
-              onClick={handleSaveEdit}
-              className={`cursor-pointer rounded-2xl px-4 py-3 text-white bg-[#6750a4] hover:bg-[#56438d] ${!changesMade || Object.keys(errors).length > 0 ? 'cursor-not-allowed bg-[#b5a9d4]' : ''}`}
-              disabled={!changesMade || Object.keys(errors).length > 0}
-            >
-              Save
-            </button>
           </div>
         </div>
       </div>
-      {/* Confirm Modal */}
+{/* Confirm Modal */}
       {showConfirmModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onClick={() => setShowConfirmModal(false)}>
           <div className="w-[500px] bg-[#F8FAFD] rounded-[10px] p-6" onClick={(e) => e.stopPropagation()}>
@@ -403,34 +420,45 @@ const batchesNames = useMemo(() => {
               <button onClick={() => setShowConfirmModal(false)} className="cursor-pointer bg-[#e8def8] text-[#4a4459] px-4 py-2.5 rounded-2xl text-sm font-medium">
                 Cancel
               </button>
-              <button onClick={handleConfirmSave} className="cursor-pointer bg-[#6750a4] text-white px-4 py-2.5 rounded-2xl text-sm font-medium">
+              <button onClick={handleConfirmSave} className="cursor-pointer bg-[#6750a4] hover:bg-[#5f537d] text-white px-4 py-2.5 rounded-xl text-sm font-medium">
                 Confirm
               </button>
             </div>
           </div>
         </div>
       )}
-      {/* Discard confirm model  */}
+
+      {/* Discard Confirmation Modal */}
       {EditDiscarddModel && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onClick={() => setShowConfirmModal(false)}>
-          <div className="w-[500px] bg-[#F8FAFD] rounded-[10px] p-6" onClick={(e) => e.stopPropagation()}>
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-lg font-medium">Confirm Changes</h2>
-              <button onClick={() => setEditDiscarddModel(false)} className="cursor-pointer text-gray-500 hover:text-gray-700">
-                <RiCloseCircleLine size={20} />
-              </button>
-            </div>
-            <p className="mb-4 text-gray-700 text-sm">
-              Are you sure you want to Discard the changes in <strong className='text-m'>{editingStudent.name}</strong>?
-            </p>
-            <div className="flex justify-end gap-4">
-              <button onClick={handleCancel} className="cursor-pointer bg-[#6750a4] text-white px-4 py-2.5 rounded-2xl text-sm font-medium">
-                   Confirm
-              </button>
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+            <div className="p-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Discard Changes?</h3>
+              <p className="text-sm text-gray-500 mb-6">
+                You have unsaved changes. Are you sure you want to discard them?
+              </p>
+              <div className="flex justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={() => setEditDiscarddModel(false)}
+                  className="px-4 py-2 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-gray-500"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCancel}
+                  className="px-4 py-2 bg-[#6750a4] text-white rounded-xl hover:bg-[#675b86] focus:outline-none focus:ring-1 focus:ring-red-500"
+                >
+                  Discard
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
+
     </>
   );
 }
+

@@ -482,7 +482,7 @@ useEffect(() => {
                         "Placed",
                         "Yet to Place",
                         "Not Placed",
-                        "Not Interested",
+                        "Not Required",
                       ].map((placementOption) => (
                         <div
                           key={placementOption}
@@ -627,7 +627,7 @@ useEffect(() => {
           <BatchChange />
         ) : activeTab === "Opportunities" ? (
           <Opportunity />
-        ) : <Scores />}
+        ) : <Scores/>}
       </div>
       {/*View Student Modal*/}
       {selectedStudent && (
