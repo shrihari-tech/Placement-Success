@@ -27,6 +27,7 @@ const Scores = () => {
     const [matchedStudentId, setMatchedStudentId] = useState("");
     const [clearAllConfirmation, setClearAllConfirmation] = useState(false);
     const [editEPIC, setEditEPIC] = useState(false);
+    const [epicDropdownPosition, setEpicDropdownPosition] = useState({ left: 0, top: 0 });
 
     const tableRef = useRef(null);
     const batchDropdownRef = useRef(null);
@@ -212,34 +213,45 @@ const confirmSave = () => {
                         placeholder=" "
                         value={editedScore}
                         readOnly
-                        onClick={() => setEditEPIC(!editEPIC)}
-                        className="block px-2 text-sm w-[100px]  text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+                        onClick={(e) => {
+                            setEditEPIC(!editEPIC);
+                            const rect = e.currentTarget.getBoundingClientRect();
+                            setEpicDropdownPosition({
+                            left: rect.left,
+                            top: rect.bottom
+                            });
+                        }}
+                        className="block px-2 text-sm w-[100px] text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
                         autoComplete="off"
-                    />
+                        />
                     {editEPIC && (
                         <div
-                            className="absolute z-10 text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md"
-                            style={{ left: 0, top: '110%', minWidth: '100px', width: 'max-content' }}
+                            className="fixed z-50 text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md"
+                            style={{
+                            left: `${epicDropdownPosition.left}px`,
+                            top: `${epicDropdownPosition.top}px`,
+                            minWidth: '100px'
+                            }}
                         >
                             {EPIC_OPTIONS.map((option) => (
-                                <div
-                                    key={option}
-                                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                    onClick={() => {
-                                        setEditedScore(option);
-                                        setEdits(prev => ({
-                                            ...prev,
-                                            [student.bookingId]: { score: option }
-                                        }));
-                                        setHasEdits(true);
-                                        setEditEPIC(false);
-                                    }}
-                                >
-                                    {option}
-                                </div>
+                            <div
+                                key={option}
+                                className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                onClick={() => {
+                                setEditedScore(option);
+                                setEdits(prev => ({
+                                    ...prev,
+                                    [student.bookingId]: { score: option }
+                                }));
+                                setHasEdits(true);
+                                setEditEPIC(false);
+                                }}
+                            >
+                                {option}
+                            </div>
                             ))}
                         </div>
-                    )}
+                        )}
                 </div>
             );
         }
@@ -583,7 +595,7 @@ const handleDeleteScope = () => {
             {/* Display Filtered Scores */}
             {searchInitiated && (
                 <div className="bg-white rounded-2xl shadow-sm mt-6 w-full overflow-x-hidden">
-                    <div className="w-full max-w-full overflow-hidden">
+                    <div className="w-full max-w-full overflow-visible">
                         <table className="min-w-full divide-y divide-gray-200">
                             
                             <thead className="bg-gray-50">

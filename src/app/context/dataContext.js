@@ -1368,8 +1368,8 @@ const updateStudent = (bookingId, updatedFields) => {
   console.log("DataContext updateStudent called with:", { bookingId, updatedFields });
 
   // 1. First, find the student in *any* of the domain-specific lists to get its original batch/domain
-  let originalStudent = null;
-  let originalDomain = null;
+  let originalStudent = '';
+  let originalDomain = '';
 
   if (fullstackStudent.some(s => s.bookingId === bookingId)) {
     originalStudent = fullstackStudent.find(s => s.bookingId === bookingId);
