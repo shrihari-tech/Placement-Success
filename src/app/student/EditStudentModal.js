@@ -154,6 +154,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
     updateStudent(updatedStudent.bookingId, updatedStudent);
     onSave && onSave(updatedStudent);
     setShowConfirmModal(false);
+    setEditingStudent(initialStudent);
     onClose();
     toast.success("Student updated successfully");
   };
@@ -171,7 +172,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
   return (
     <>
       <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onClick={onClose}>
-        <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] " onClick={(e) => e.stopPropagation()}>
           <div className="p-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold">Edit Student</h2>
@@ -199,7 +200,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                     errors.name ? "text-red-500" : "text-gray-500"
                   } duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                 >
-                  Name 
+                  Name <span className="text-red-500">*</span>
                 </label>
                 {editingStudent.name && (
                   <button
@@ -233,7 +234,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                     errors.email ? "text-red-500" : "text-gray-500"
                   } duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                 >
-                  Email
+                  Email <span className="text-red-500">*</span>
                 </label>
                 {editingStudent.email && (
                   <button
@@ -273,7 +274,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                     errors.phone ? "text-red-500" : "text-gray-500"
                   } duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                 >
-                  Phone
+                  Phone <span className="text-red-500">*</span>
                 </label>
                 {editingStudent.phone && (
                   <button
@@ -308,7 +309,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                 </label>
                 <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
                 {showModeDropdown && (
-                  <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                  <div className="absolute z-10 w-full bg-[#f3edf7] border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
                     {['Online', 'Offline'].map((mode) => (
                       <div
                         key={mode}
@@ -333,7 +334,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
               </div>
 
                {/* Placement Dropdown */}
-              <div className="relative mb-4" ref={placementDropdownRef}>
+              <div className="relative mb-4 z-100" ref={placementDropdownRef}>
                 <input
                   type="text"
                   id="placement"
@@ -351,11 +352,11 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                     errors.placement ? "text-red-500" : "text-gray-500"
                   } duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                 >
-                  Placement
+                  Placement <span className="text-red-500">*</span>
                 </label>
                 <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
                 {showPlacementDropdown && (
-                  <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                  <div className="absolute z-10 w-full bg-[#f3edf7] border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
                     {['Placed', 'Not Placed', 'Yet to Place', 'Not Required'].map((status) => (
                       <div
                         key={status}

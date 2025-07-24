@@ -219,7 +219,6 @@ export default function StudentDataPage() {
   // --- New: Cancel Discard in Assign Modal ---
   const cancelDiscardAssign = () => {
     setShowDiscardConfirm(false);
-    // Stay in the Assign modal
   };
 
   // --- New: Handle Student Selection Checkbox ---
@@ -880,7 +879,7 @@ const handleSaveSelectedStudents = () => {
                 </button>
                 <button
                   onClick={confirmDiscardAssign}
-                  className="px-4 py-2 text-sm font-medium text-white bg-[#6750A4] rounded hover:bg-red-700"
+                  className="px-4 py-2 text-sm font-medium text-white bg-[#6750A4] rounded hover:bg-[#675b86]"
                 >
                   Discard
                 </button>
@@ -911,7 +910,7 @@ const handleSaveSelectedStudents = () => {
                 </button>
                 <button
                   onClick={() => {setShowStudentSelectModal(false); setStudentSelectModelDiscard(false); setSelectedStudents([]);}}
-                  className="px-4 py-2 text-sm font-medium text-white bg-[#6750A4] rounded hover:bg-red-700"
+                  className="px-4 py-2 text-sm font-medium text-white bg-[#6750A4] rounded hover:bg-[#675b86]"
                 >
                   Discard
                 </button>

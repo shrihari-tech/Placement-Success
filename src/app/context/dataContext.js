@@ -1024,6 +1024,8 @@ const DataProvider = ({ children }) => {
   const [loginUser, setLoginUser] = useState(""); // logged-in user
   const [batchHead, setBatchHead] = useState(""); // domain title for UI
   const [batchData, setBatchData] = useState([]); // currently active batch data
+ // Global student data (all domains)
+ const [allStudentData, setAllStudentData] = useState([]);
 
   // ➤ Domain-wise individual state data
   const [fullstackData, setFullstackData] = useState(fullstackInitial);
