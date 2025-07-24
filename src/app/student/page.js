@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useCallback,useMemo } from 'react';
 import { FiEye, FiEdit, FiTrash2, FiChevronDown } from 'react-icons/fi';
 import Image from 'next/image';
 import { Toaster, toast } from 'sonner';
+import Opportunity from './oppotunities'
 import { RiCloseCircleLine } from "react-icons/ri";
 import { useDataContext } from "../context/dataContext";
 import BulkModal from "./bulkModal";
