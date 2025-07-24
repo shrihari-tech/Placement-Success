@@ -26,10 +26,12 @@ const Scores = () => {
     const [hasEdits, setHasEdits] = useState(false);
     const [matchedStudentId, setMatchedStudentId] = useState("");
     const [clearAllConfirmation, setClearAllConfirmation] = useState(false);
+    const [editEPIC, setEditEPIC] = useState(false);
 
     const tableRef = useRef(null);
     const batchDropdownRef = useRef(null);
     const scoreDropdownRef = useRef(null);
+    const EPIC_OPTIONS = ['Excellent', 'Capable', 'Ideal', 'Proficient'];
 
     const batchesNames = useMemo(() => {
         return [...new Set(studentData.map(s => s.batch))];
@@ -43,6 +45,10 @@ const Scores = () => {
             if (scoreDropdownRef.current && !scoreDropdownRef.current.contains(event.target)) {
                 setShowScopeDropdown(false);
             }
+            if( tableRef.current && !tableRef.current.contains(event.target)) {
+                setShowScopeDelete(false);
+            }
+
         }
 
         document.addEventListener("mousedown", handleClickOutside);
@@ -65,7 +71,7 @@ useEffect(() => {
                     appliedScope === "MileStone-2" ? student.mile2 || "" :
                     appliedScope === "MileStone-3" ? student.mile3 || "" :
                     appliedScope === "IRC" ? student.irc || "" :
-                    appliedScope === "EPIC" ? student.epic || "" :
+                    appliedScope === "EPIC" ? student.epicStatus || "" :
                     appliedScope === "Attendance" ? student.attendance || "" : "";
 
                 // Only show confirmation if changes were made
@@ -85,18 +91,18 @@ useEffect(() => {
 }, [editingStudentId, editedScore, filteredScores, selectedScope, showSaveConfirmation, showCancelConfirmation, showSaveConfirmationAll , clearAllConfirmation]);
 
     const handleEditClick = (student, e) => {
-        e?.stopPropagation();
-        setEditingStudentId(student.bookingId);
-        setEditedScore(
-            appliedScope === 'MileStone-1' ? student.mile1 || '' :
-            appliedScope === 'MileStone-2' ? student.mile2 || '' :
-            appliedScope === 'MileStone-3' ? student.mile3 || '' :
-            appliedScope === 'IRC' ? student.irc || '' :
-            appliedScope === 'EPIC' ? student.epic || '' :
-            appliedScope === 'Attendance' ? student.attendance || '' : ''
-        );
-        setHasEdits(false); // Reset hasEdits when entering edit mode
-    };
+    e?.stopPropagation();
+    setEditingStudentId(student.bookingId);
+    setEditedScore(
+        appliedScope === 'MileStone-1' ? student.mile1 || '' :
+        appliedScope === 'MileStone-2' ? student.mile2 || '' :
+        appliedScope === 'MileStone-3' ? student.mile3 || '' :
+        appliedScope === 'IRC' ? student.irc || '' :
+        appliedScope === 'EPIC' ? student.epicStatus || '' :
+        appliedScope === 'Attendance' ? student.attendance || '' : ''
+    );
+    setHasEdits(false);
+};
 
     const handleSaveClick = (e) => {
         e?.stopPropagation();
@@ -132,7 +138,7 @@ const confirmSave = () => {
       updatedFields.irc = editedScore;
       break;
     case 'EPIC':
-      updatedFields.epic = editedScore; 
+      updatedFields.epicStatus = editedScore; 
       break;
     case 'Attendance':
       updatedFields.attendance = editedScore;
@@ -178,7 +184,7 @@ const confirmSave = () => {
             appliedScope === "MileStone-2" ? student.mile2 || "" :
             appliedScope === "MileStone-3" ? student.mile3 || "" :
             appliedScope === "IRC" ? student.irc || "" :
-            appliedScope === "EPIC" ? student.epic || "" :
+            appliedScope === "EPIC" ? student.epicStatus || "" :
             appliedScope === "Attendance" ? student.attendance || "" : "";
 
         setEditedScore(originalScore);
@@ -195,55 +201,90 @@ const confirmSave = () => {
         setShowCancelConfirmation(false);
     };
 
-    const renderScoreCell = (student) => {
-        if (editingStudentId === student.bookingId) {
+   const renderScoreCell = (student) => {
+    if (editingStudentId === student.bookingId) {
+        // Special handling for EPIC scores
+        if (appliedScope === 'EPIC') {
             return (
-    <input
-    type="text"
-    maxLength={3} // Allow for "100" (3 characters)
-    value={editedScore}
-    onChange={(e) => {
-        const inputValue = e.target.value;
-        
-        // Only allow numbers
-        if (!/^\d*$/.test(inputValue)) return;
-        
-        // Convert to number (returns NaN for empty string)
-        const numericValue = inputValue === "" ? NaN : parseInt(inputValue, 10);
-        
-        // Validate range (empty string, or between 0-100)
-        if (inputValue === "" || (!isNaN(numericValue) && numericValue >= 0 && numericValue <= 100)) {
-            const newScore = inputValue === "" ? "" : String(
-                Math.min(100, Math.max(0, numericValue)) // Enforces both min and max
-            );
-            
-            setEditedScore(newScore);
-            setEdits(prev => ({
-                ...prev,
-                [student.bookingId]: { score: newScore }
-            }));
-            setHasEdits(true);
-        }
-    }}
-    className="w-12 px-2 py-1 rounded text-center border-2 border-[#6750A4] appearance-none outline-none"
-    autoFocus
-/>
-            );
-        } else {
-            const pendingEdit = edits[student.bookingId];
-            if (pendingEdit) {
-                return <span className="text-purple-700 font-bold">{pendingEdit.score}</span>;
-            }
-            return (
-                appliedScope === 'MileStone-1' ? student.mile1 || "N/A" :
-                appliedScope === 'MileStone-2' ? student.mile2 || "N/A" :
-                appliedScope === 'MileStone-3' ? student.mile3 || "N/A" :
-                appliedScope === 'IRC' ? student.irc || "N/A" :
-                appliedScope === 'EPIC' ? student.epic || "N/A" :
-                appliedScope === 'Attendance' ? student.attendance || "N/A" : "N/A"
+                <div className="relative" style={{ minWidth: '100px' }}>
+                    <input
+                        type="text"
+                        placeholder=" "
+                        value={editedScore}
+                        readOnly
+                        onClick={() => setEditEPIC(!editEPIC)}
+                        className="block px-2 text-sm w-[100px]  text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+                        autoComplete="off"
+                    />
+                    {editEPIC && (
+                        <div
+                            className="absolute z-10 text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md"
+                            style={{ left: 0, top: '110%', minWidth: '100px', width: 'max-content' }}
+                        >
+                            {EPIC_OPTIONS.map((option) => (
+                                <div
+                                    key={option}
+                                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                    onClick={() => {
+                                        setEditedScore(option);
+                                        setEdits(prev => ({
+                                            ...prev,
+                                            [student.bookingId]: { score: option }
+                                        }));
+                                        setHasEdits(true);
+                                        setEditEPIC(false);
+                                    }}
+                                >
+                                    {option}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
             );
         }
-    };
+        
+        // Existing numeric input handling for other score types
+        return (
+            <input
+                type="text"
+                maxLength={3}
+                value={editedScore}
+                onChange={(e) => {
+                    const inputValue = e.target.value;
+                    if (!/^\d*$/.test(inputValue)) return;
+                    const numericValue = inputValue === "" ? NaN : parseInt(inputValue, 10);
+                    if (inputValue === "" || (!isNaN(numericValue) && numericValue >= 0 && numericValue <= 100)) {
+                        const newScore = inputValue === "" ? "" : String(
+                            Math.min(100, Math.max(0, numericValue))
+                        );
+                        setEditedScore(newScore);
+                        setEdits(prev => ({
+                            ...prev,
+                            [student.bookingId]: { score: newScore }
+                        }));
+                        setHasEdits(true);
+                    }
+                }}
+                className="w-12 px-2 py-1 rounded text-center border-2 border-[#6750A4] appearance-none outline-none"
+                autoFocus
+            />
+        );
+    } else {
+        const pendingEdit = edits[student.bookingId];
+        if (pendingEdit) {
+            return <span className="text-purple-700 font-bold">{pendingEdit.score}</span>;
+        }
+        return (
+            appliedScope === 'MileStone-1' ? student.mile1 || "N/A" :
+            appliedScope === 'MileStone-2' ? student.mile2 || "N/A" :
+            appliedScope === 'MileStone-3' ? student.mile3 || "N/A" :
+            appliedScope === 'IRC' ? student.irc || "N/A" :
+            appliedScope === 'EPIC' ? student.epicStatus || "N/A" :
+            appliedScope === 'Attendance' ? student.attendance || "N/A" : "N/A"
+        );
+    }
+};
 
     const renderActionButtons = (student) => {
         if (editingStudentId === student.bookingId) {
@@ -282,7 +323,7 @@ const ConfirmSaveAll = () => {
     else if (appliedScope === 'MileStone-2') updatedFields.mile2 = newScore;
     else if (appliedScope === 'MileStone-3') updatedFields.mile3 = newScore;
     else if (appliedScope === 'IRC') updatedFields.irc = newScore;
-    else if (appliedScope === 'EPIC') updatedFields.epic = newScore;
+    else if (appliedScope === 'EPIC') updatedFields.epicStatus = newScore;
     else if (appliedScope === 'Attendance') updatedFields.attendance = newScore;
     else {
       console.error("Invalid scope for update in ConfirmSaveAll:", appliedScope);
@@ -301,7 +342,7 @@ const ConfirmSaveAll = () => {
         else if (appliedScope === 'MileStone-2') updatedStudent.mile2 = newScore;
         else if (appliedScope === 'MileStone-3') updatedStudent.mile3 = newScore;
         else if (appliedScope === 'IRC') updatedStudent.irc = newScore;
-        else if (appliedScope === 'EPIC') updatedStudent.epic = newScore;
+        else if (appliedScope === 'EPIC') updatedStudent.epicStatus = newScore;
         else if (appliedScope === 'Attendance') updatedStudent.attendance = newScore;
         return updatedStudent;
       }
@@ -390,7 +431,7 @@ const handleDeleteScope = () => {
   else if (appliedScope === 'MileStone-2') updatedFields.mile2 = 0;
   else if (appliedScope === 'MileStone-3') updatedFields.mile3 = 0;
   else if (appliedScope === 'IRC') updatedFields.irc = 0;
-  else if (appliedScope === 'EPIC') updatedFields.epic = 0;
+  else if (appliedScope === 'EPIC') updatedFields.epicStatus = 0;
   else if (appliedScope === 'Attendance') updatedFields.attendance = 0;
   else {
     toast.error("Invalid scope for deletion.");
@@ -406,7 +447,7 @@ const handleDeleteScope = () => {
       else if (appliedScope === 'MileStone-2') updatedScores[studentIndexInFiltered].mile2 = 0;
       else if (appliedScope === 'MileStone-3') updatedScores[studentIndexInFiltered].mile3 = 0;
       else if (appliedScope === 'IRC') updatedScores[studentIndexInFiltered].irc = 0;
-      else if (appliedScope === 'EPIC') updatedScores[studentIndexInFiltered].epic = 0;
+      else if (appliedScope === 'EPIC') updatedScores[studentIndexInFiltered].epicStatus = 0;
       else if (appliedScope === 'Attendance') updatedScores[studentIndexInFiltered].attendance = 0;
 
        setFilteredScores(updatedScores);
