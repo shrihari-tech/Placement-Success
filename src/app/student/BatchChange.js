@@ -75,6 +75,21 @@ const BatchChange = () => {
     }
     setShowTable(true);
   }, [fromBatch, toBatch]);
+  
+     useEffect(() => {
+          const handleSearchGlobalKeyDown = (e) => {
+              if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleSearch();
+              }
+          };
+  
+          window.addEventListener("keydown", handleSearchGlobalKeyDown);
+  
+          return () => {
+              window.removeEventListener("keydown", handleSearchGlobalKeyDown);
+          };
+      }, [handleSearch]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {

@@ -1364,47 +1364,88 @@ const DataProvider = ({ children }) => {
   };
 
   // Update an existing student by bookingId in current domain
-  const updateStudent = (bookingId, updatedFields) => {
-    const batch = studentData.find((s) => s.bookingId === bookingId)?.batch;
-    const updateList = (list) =>
-      list.map((item) =>
-        item.bookingId === bookingId ? { ...item, ...updatedFields } : item
-      );
+const updateStudent = (bookingId, updatedFields) => {
+  console.log("DataContext updateStudent called with:", { bookingId, updatedFields });
 
-    switch (batch) {
-      case "fullstack":
-        setFullstackStudent(updateList(fullstackStudent));
-        break;
-      case "dataanalytics":
-        setDataanalyticsStudent(updateList(dataanalyticsStudent));
-        break;
-      case "banking":
-        setBankingStudent(updateList(bankingStudent));
-        break;
-      case "marketing":
-        setMarketingStudent(updateList(marketingStudent));
-        break;
-      case "sap":
-        setSapStudent(updateList(sapStudent));
-        break;
-      case "devops":
-        setDevopsStudent(updateList(devopsStudent));
-        break;
-    }
-    setStudentData((prev) =>
-      prev.map((item) =>
-        item.bookingId === bookingId ? { ...item, ...updatedFields } : item
-      )
+  // 1. First, find the student in *any* of the domain-specific lists to get its original batch/domain
+  let originalStudent = null;
+  let originalDomain = null;
+
+  if (fullstackStudent.some(s => s.bookingId === bookingId)) {
+    originalStudent = fullstackStudent.find(s => s.bookingId === bookingId);
+    originalDomain = "fullstack";
+  } else if (dataanalyticsStudent.some(s => s.bookingId === bookingId)) {
+    originalStudent = dataanalyticsStudent.find(s => s.bookingId === bookingId);
+    originalDomain = "dataanalytics";
+  } else if (bankingStudent.some(s => s.bookingId === bookingId)) {
+    originalStudent = bankingStudent.find(s => s.bookingId === bookingId);
+    originalDomain = "banking";
+  } else if (marketingStudent.some(s => s.bookingId === bookingId)) {
+    originalStudent = marketingStudent.find(s => s.bookingId === bookingId);
+    originalDomain = "marketing";
+  } else if (sapStudent.some(s => s.bookingId === bookingId)) {
+    originalStudent = sapStudent.find(s => s.bookingId === bookingId);
+    originalDomain = "sap";
+  } else if (devopsStudent.some(s => s.bookingId === bookingId)) {
+    originalStudent = devopsStudent.find(s => s.bookingId === bookingId);
+    originalDomain = "devops";
+  }
+
+
+
+  // 2. Update the specific domain's student list
+  const updateList = (list) =>
+    list.map((item) =>
+      item.bookingId === bookingId ? { ...item, ...updatedFields } : item
     );
-  };
+
+  switch (originalDomain) {
+    case "fullstack":
+      setFullstackStudent((prev) => updateList(prev));
+      break;
+    case "dataanalytics":
+      setDataanalyticsStudent((prev) => updateList(prev));
+      break;
+    case "banking":
+      setBankingStudent((prev) => updateList(prev));
+      break;
+    case "marketing":
+      setMarketingStudent((prev) => updateList(prev));
+      break;
+    case "sap":
+      setSapStudent((prev) => updateList(prev));
+      break;
+    case "devops":
+      setDevopsStudent((prev) => updateList(prev));
+      break;
+    default:
+      console.error("Unknown domain for student update:", originalDomain);
+      return;
+  }
+
+  // 3. Also update the studentData state (which might be filtered for a specific domain)
+  // This ensures the UI updates correctly if the user is currently viewing the same domain.
+  setStudentData((prev) =>
+    prev.map((item) =>
+      item.bookingId === bookingId ? { ...item, ...updatedFields } : item
+    )
+  );
+
+  // 4. Update the allStudentData state to reflect the change globally
+  setAllStudentData((prev) =>
+    prev.map((item) =>
+      item.bookingId === bookingId ? { ...item, ...updatedFields } : item
+    )
+  );
+
+  console.log(`Student ${bookingId} updated successfully in domain ${originalDomain}`);
+};
 
 const addOpportunity = (opportunity) => {
     if (!batchingvalue) {
       console.error("Domain is not set. Cannot add opportunity.");
-      toast.error("Please select a domain before adding an opportunity.");
       return;
     }
-    // Add domain based on current batchingvalue (domain)
     const opportunityWithDomain = {
       ...opportunity,
       domain: batchingvalue
@@ -1427,7 +1468,6 @@ const addOpportunity = (opportunity) => {
         break;
       default:
         console.error("Unknown domain:", batchingvalue);
-        toast.error("Unknown domain. Please select a valid domain.");
     }
   };
 
