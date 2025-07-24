@@ -622,6 +622,8 @@ export default function StudentDataPage() {
           </div>
         ) : activeTab === "Batch Change" ? (
           <BatchChange />
+        ) : activeTab === "Opportunities" ? (
+          <Opportunity />
         ) : (
           <div className="flex items-center justify-center mt-12">
             <p className="text-gray-700">
