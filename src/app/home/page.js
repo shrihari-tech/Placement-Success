@@ -1,47 +1,32 @@
 "use client";
 
-import React, { useState } from "react";
+import React , {useState} from "react";
 import NavBar from "../navBar/page";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useRef, useEffect } from "react";
 import FlipCard from "../flipcard/flipcard";
 import { ComposedChart, Line, Area, XAxis, YAxis, CartesianGrid, LabelList, ResponsiveContainer } from 'recharts';
 import { useDataContext } from '../context/dataContext';
 
+
 export default function HomePage() {
-  const { userName, getStatsByBatch } = useDataContext();
-  const [activeCard, setActiveCard] = useState(null);
-  const containerRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (activeCard === null) return;
-      const cardClicked = event.target.closest('[data-is-card="true"]');
-      
-      if (containerRef.current && !containerRef.current.contains(event.target)) {
-        setActiveCard(null);
-      } else if (!cardClicked) {
-        setActiveCard(null);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [activeCard]);
+  const { userName, getStatsByBatch ,setBatchingValue } = useDataContext();
+  const router=useRouter();
+  const [activeCardId, setActiveCardId] = useState(null); 
 
   const handleCardClick = (id) => {
-    setActiveCard(activeCard === id ? null : id);
+    setBatchingValue(id);
+    router.push('/batches');
+    
   };
 
   const cards = [
-    { id: 'fullstack', title: 'Full Stack Development', image:'/website-generic-svgrepo-com.svg', icon: '/computer.svg' },
-    { id: 'data', title: 'Data Analytics & Science', image:'/data-trends-svgrepo-com.svg', icon: '/bar_chart_4_bars.svg' },
-    { id: 'banking', title: 'Banking & Financial Services', image:'/biometric_18491889.png', icon: '/account_balance.svg' },
-    { id: 'marketing', title: 'Digital Marketing', image:'/digital-marketing-promotion-advertising-svgrepo-com.svg', icon: '/ad.svg' },
-    { id: 'sap', title: 'SAP', image:'/sap-svgrepo-com.svg', icon: '/device_hub.svg' },
-    { id: 'devops', title: 'DevOps', image:'/7053234.jpg', icon: '/deployed_code_history.svg' }
+    { id: 'fullstack', title: 'Full Stack Development', icon: '/computer.svg' },
+    { id: 'dataanalytics', title: 'Data Analytics & Science', icon: '/bar_chart_4_bars.svg' },
+    { id: 'banking', title: 'Banking & Financial Services', icon: '/account_balance.svg' },
+    { id: 'marketing', title: 'Digital Marketing', icon: '/ad.svg' },
+    { id: 'sap', title: 'SAP', icon: '/device_hub.svg' },
+    { id: 'devops', title: 'DevOps',  icon: '/deployed_code_history.svg' }
   ];
 
   const date = new Date();
@@ -318,35 +303,68 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Domain Section with FlipCards */}
-          <div className="mt-6 md:mt-10" ref={containerRef}>
+            {/* Domain Section with FlipCards */}
+          <div className="mt-6 md:mt-10">
             <div className="text-sm md:text-base text-gray-700 font-semibold mb-4 md:mb-8">
               <h1>Domain</h1>
             </div>
             <div className="flex justify-center">
-              <div className="grid grid-cols-1  sm:grid-cols-2 pr-4 gap-5 sm:px-1 xl:grid-cols-3 sm:gap-8">
+              {/* Simplified container for Cards - Uses flexbox for layout */}
+
+              <div
+                className="relative flex items-start gap-4 md:gap-6 h-64 sm:h-72 w-full overflow-x-auto pb-4 scrollbar-hide"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                <style jsx>{`
+                  .scrollbar-hide::-webkit-scrollbar {
+                    display: none;
+                  }
+                `}</style>
+
+                {/* Map through cards and render them using Flexbox layout */}
                 {cards.map((card) => {
                   const stats = getStatsByBatch(card.id) || {};
+                  const isCardActive = activeCardId === card.id;
+
                   return (
-                    <div key={card.id} className="transition-all duration-300" data-is-card="true">
+                    <div
+                      key={card.id}
+                      // Use flex-shrink-0 so cards don't shrink below their content width
+                      className={`py-2 flex-shrink-0 transition-all duration-500 ease-in-out ${
+                        isCardActive ? 'z-[100]' : 'z-0'
+                      }`}
+                      // Removed complex inline styles for width/left, handled by FlipCard and Tailwind
+                      onMouseEnter={() => setActiveCardId(card.id)}
+                      onMouseLeave={() => setActiveCardId(null)}
+                      // Removed onClick here, handled inside FlipCard now
+                    >
                       <FlipCard
-                        id={card.id}
-                        isActive={activeCard === card.id}
-                        onClick={handleCardClick}
+                        isActive={isCardActive}
+                        onClick={() => handleCardClick(card.id)} // Pass click handler to FlipCard
                         frontContent={
-                          <div className="flex flex-col items-center h-full p-3 py-6 md:p-4 md:py-10">
-                            <div>
-                              <Image className="py-3 md:py-5" src={card.image} alt={card.title} width={80} height={80} />
-                            </div>
-                            <span className="mt-1 md:mt-2 text-xs md:text-sm font-semibold">
+                        <div className="flex flex-col gap-5 items-center justify-center h-full w-full pr-45">
+                          <div className="mb-2 flex items-center justify-center ">
+                            <Image
+                              src={card.icon}
+                              alt={card.title}
+                              width={36}
+                              height={36}
+                            />
+                          </div>
+                          <div className="-rotate-90">
+                            <span className="text-sm font-semibold text-center px-2 ">
                               {card.title}
                             </span>
                           </div>
+                        </div>
                         }
                         backContent={
-                          <div className="px-3 md:px-5 pb-4 md:pb-8 text-xs">
-                            <p className="text-xs md:text-sm font-bold pb-2 md:pb-3">{card.title}</p>
+                          <div className="w-full p-5 text-xs "> 
+                            <p className="text-xs md:text-sm font-bold pb-2 md:pb-3 text-center truncate"> {/* Added truncate */}
+                              {card.title}
+                            </p>
                             <div className="grid grid-cols-2 gap-2">
+                              {/* Updated colSpan logic to use boolean */}
                               {[
                                 { label: "Completed Batches", value: stats.completedBatches || 0 },
                                 { label: "Ongoing Batches", value: stats.ongoingBatches || 0 },
@@ -354,15 +372,19 @@ export default function HomePage() {
                                 { label: "Ongoing Students", value: stats.ongoingStudents || 0 },
                                 { label: "Placement Eligible", value: stats.placementEligible || 0 },
                                 { label: "Already Placed", value: stats.alreadyPlaced || 0 },
-                                { label: "Yet to Place", value: stats.yetToPlace || 0, colSpan: 2 },
-                              ].map((item, index) => (
+                                { label: "Yet to Place", value: stats.yetToPlace || 0, colSpan: true }, // Boolean colSpan
+                              ].map((item, idx) => (
                                 <div
-                                  key={index}
-                                  className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition ${
+                                  key={idx}
+                                  className={`bg-[#eaddff] rounded-md border-t-2 border-[#6b21a8] shadow-sm p-2 hover:bg-violet-50 transition ${
                                     item.colSpan ? 'col-span-2' : ''
                                   }`}
                                 >
-                                  <span className="font-medium">{item.label}:</span> {item.value}
+                                  {/* Block and truncate for labels/values */}
+                                  <span className="font-medium text-[10px] md:text-[11px] block truncate">
+                                    {item.label}:
+                                  </span>
+                                  <span className="text-[10px] md:text-[11px]"> {item.value}</span>
                                 </div>
                               ))}
                             </div>
