@@ -1,6 +1,6 @@
 "use client";
 
-import React , {useState} from "react";
+import React from "react";
 import NavBar from "../navBar/page";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -8,11 +8,10 @@ import FlipCard from "../flipcard/flipcard";
 import { ComposedChart, Line, Area, XAxis, YAxis, CartesianGrid, LabelList, ResponsiveContainer } from 'recharts';
 import { useDataContext } from '../context/dataContext';
 
-
 export default function HomePage() {
   const { userName, getStatsByBatch ,setBatchingValue } = useDataContext();
   const router=useRouter();
-  const [activeCardId, setActiveCardId] = useState(null); 
+  
 
   const handleCardClick = (id) => {
     setBatchingValue(id);
@@ -304,99 +303,59 @@ export default function HomePage() {
           </div>
 
             {/* Domain Section with FlipCards */}
-          <div className="mt-6 md:mt-10">
-            <div className="text-sm md:text-base text-gray-700 font-semibold mb-4 md:mb-8">
-              <h1>Domain</h1>
-            </div>
-            <div className="flex justify-center">
-              {/* Simplified container for Cards - Uses flexbox for layout */}
-
-              <div
-                className="relative flex items-start gap-4 md:gap-6 h-64 sm:h-72 w-full overflow-x-auto pb-4 scrollbar-hide"
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-              >
-                <style jsx>{`
-                  .scrollbar-hide::-webkit-scrollbar {
-                    display: none;
-                  }
-                `}</style>
-
-                {/* Map through cards and render them using Flexbox layout */}
-                {cards.map((card) => {
-                  const stats = getStatsByBatch(card.id) || {};
-                  const isCardActive = activeCardId === card.id;
-
-                  return (
-                    <div
-                      key={card.id}
-                      // Use flex-shrink-0 so cards don't shrink below their content width
-                      className={`py-2 flex-shrink-0 transition-all duration-500 ease-in-out ${
-                        isCardActive ? 'z-[100]' : 'z-0'
-                      }`}
-                      // Removed complex inline styles for width/left, handled by FlipCard and Tailwind
-                      onMouseEnter={() => setActiveCardId(card.id)}
-                      onMouseLeave={() => setActiveCardId(null)}
-                      // Removed onClick here, handled inside FlipCard now
-                    >
-                      <FlipCard
-                        isActive={isCardActive}
-                        onClick={() => handleCardClick(card.id)} // Pass click handler to FlipCard
-                        frontContent={
-                        <div className="flex flex-col gap-5 items-center justify-center h-full w-full pr-45">
-                          <div className="mb-2 flex items-center justify-center ">
-                            <Image
-                              src={card.icon}
-                              alt={card.title}
-                              width={36}
-                              height={36}
-                            />
-                          </div>
-                          <div className="-rotate-90">
-                            <span className="text-sm font-semibold text-center px-2 ">
-                              {card.title}
-                            </span>
-                          </div>
-                        </div>
-                        }
-                        backContent={
-                          <div className="w-full p-5 text-xs "> 
-                            <p className="text-xs md:text-sm font-bold pb-2 md:pb-3 text-center truncate"> {/* Added truncate */}
-                              {card.title}
-                            </p>
-                            <div className="grid grid-cols-2 gap-2">
-                              {/* Updated colSpan logic to use boolean */}
-                              {[
-                                { label: "Completed Batches", value: stats.completedBatches || 0 },
-                                { label: "Ongoing Batches", value: stats.ongoingBatches || 0 },
-                                { label: "Completed Students", value: stats.completedStudents || 0 },
-                                { label: "Ongoing Students", value: stats.ongoingStudents || 0 },
-                                { label: "Placement Eligible", value: stats.placementEligible || 0 },
-                                { label: "Already Placed", value: stats.alreadyPlaced || 0 },
-                                { label: "Yet to Place", value: stats.yetToPlace || 0, colSpan: true }, // Boolean colSpan
-                              ].map((item, idx) => (
-                                <div
-                                  key={idx}
-                                  className={`bg-[#eaddff] rounded-md border-t-2 border-[#6b21a8] shadow-sm p-2 hover:bg-violet-50 transition ${
-                                    item.colSpan ? 'col-span-2' : ''
-                                  }`}
-                                >
-                                  {/* Block and truncate for labels/values */}
-                                  <span className="font-medium text-[10px] md:text-[11px] block truncate">
-                                    {item.label}:
-                                  </span>
-                                  <span className="text-[10px] md:text-[11px]"> {item.value}</span>
-                                </div>
-                              ))}
+            <div className="mt-6 md:mt-10" >
+              <div className="text-sm md:text-base text-gray-700 font-semibold mb-4 md:mb-8">
+                <h1>Domain</h1>
+              </div>
+              <div className="flex justify-center">
+                <div className="flex flex-row">
+                  {cards.map((card) => {
+                    const stats = getStatsByBatch(card.id) || {};
+                    return (
+                    <div key={card.id} className="transition-all duration-300 ml-[-150]" data-is-card="true" onClick={() => handleCardClick(card.id)}>
+                        <FlipCard
+                          frontContent={
+                            <div className="flex flex-row items-center gap-3 ">
+                              <div>
+                                <Image src={card.icon} alt={card.title} width={20} height={20} />
+                              </div>
+                              <span className=" text-xs font-semibold">   
+                                {card.title}
+                              </span>
                             </div>
-                          </div>
-                        }
-                      />
-                    </div>
-                  );
-                })}
+                          }
+                          backContent={
+                            <div className="px-3 md:px-5 pb-4 md:pb-8 text-xs">
+                              <p className="text-xs md:text-sm font-bold pb-2 md:pb-3">{card.title}</p>
+                              <div className="grid grid-cols-2 gap-2">
+                                {[
+                                  { label: "Completed Batches", value: stats.completedBatches || 0 },
+                                  { label: "Ongoing Batches", value: stats.ongoingBatches || 0 },
+                                  { label: "Completed Students", value: stats.completedStudents || 0 },
+                                  { label: "Ongoing Students", value: stats.ongoingStudents || 0 },
+                                  { label: "Placement Eligible", value: stats.placementEligible || 0 },
+                                  { label: "Already Placed", value: stats.alreadyPlaced || 0 },
+                                  { label: "Yet to Place", value: stats.yetToPlace || 0, colSpan: 2 },
+                                ].map((item, index) => (
+                                  <div
+                                    key={index}
+                                    className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition ${
+                                      item.colSpan ? 'col-span-2' : ''
+                                    }`}
+                                  >
+                                    <span className="font-medium">{item.label}:</span> {item.value}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          }
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
-          </div>
         </div>
       </main>
     </div>
