@@ -2,8 +2,9 @@
 
 import { FiEye, FiEdit, FiTrash2, FiMoreVertical, FiCalendar, FiChevronDown } from 'react-icons/fi';
 import Image from 'next/image';
+import { FaSearch } from 'react-icons/fa';
 import { Toaster, toast } from 'sonner';
-import { X } from 'lucide-react';
+import {GrGroup } from 'react-icons/gr';
 import { RiCloseCircleLine } from "react-icons/ri";
 import React, { useState, useEffect} from 'react';
 import { useDataContext } from '../context/dataContext';
@@ -47,7 +48,7 @@ const [initialEditBatchData, setInitialEditBatchData] = useState(null);
     const [deleteError, setDeleteError] = useState('');
     const [ongoingCount, setOngoingCount] = useState(0);
     const [completedCount, setCompletedCount] = useState(0);
-    const { batchHead, batchData, addBatch, updateBatch, deleteBatch } = useDataContext();
+    const { batchHead, batchData, addBatch, updateBatch, deleteBatch , studentData   } = useDataContext();
     const [formErrors, setFormErrors] = useState({
         batchNo: '',
         mode: '',
@@ -297,8 +298,23 @@ const formatDate = (str) => (str ? toDDMMYYYY(parseDate(str)) : "");
     });
 
     useEffect(() => {
-        const ongoing = batchData.filter(b => b.status === 'Ongoing').length;
-        const completed = batchData.filter(b => b.status === 'Completed').length;
+        // Ongoing: at least one section's endDate is in the future or today
+        const ongoing = batchData.filter(b =>
+          b.sections &&
+          (
+            new Date(b.sections?.Domain?.endDate) > new Date() ||
+            new Date(b.sections?.Aptitude?.endDate) > new Date() ||
+            new Date(b.sections?.Communication?.endDate) > new Date()
+          )
+        ).length;
+
+        // Completed: all sections' endDate are in the past
+        const completed = batchData.filter(b =>
+          b.sections &&
+          new Date(b.sections?.Domain?.endDate) < new Date() &&
+          new Date(b.sections?.Aptitude?.endDate) < new Date() &&
+          new Date(b.sections?.Communication?.endDate) < new Date()
+        ).length;
         setOngoingCount(ongoing);
         setCompletedCount(completed);
     }, [batchData]);
@@ -829,23 +845,9 @@ const validateBatchNumber = (value) => {
           </div>
 
           <div ref={searchContainerRef} className='p-3'>
-              {/* ====== ADD BATCH BUTTON ====== */}
-              <div className='mt-[-20px] z-0'>
-                  <button
-                      onClick={() => setShowModal(true)}
-                      className="absolute cursor-pointer z-10 flex p-2 right-5 bg-[#3f2fb4] hover:bg-[#3f2fb4d4] text-white text-sm font-bold px-2 py-2.5 rounded-lg shadow-sm">
-                      <Image
-                          src='/add.svg'
-                          alt="Add Icon"
-                          width={18}
-                          height={18}
-                          className="mx-2"
-                      /> Add Batch
-                  </button>
-              </div>
 
               {/* ====== STATS CARDS ====== */}
-              <div className="grid grid-cols-1 md:grid-cols-2 md:justify-between gap-4 mt-16 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-4 md:justify-between gap-3 mb-7">
                   {/* Ongoing */}
                   <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
                       <div className="absolute left-6 top-6 text-gray-700 text-4xl font-bold leading-10">{ongoingCount}</div>
@@ -855,24 +857,53 @@ const validateBatchNumber = (value) => {
                       </div>
                   </div>
                   {/* Completed */}
-                  <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
-                      <div className="absolute left-6 top-6 text-4xl text-gray-700 font-bold leading-10">{completedCount}</div>
-                      <div className="absolute left-6 top-[84px] text-xl text-gray-700 font-normal leading-7">Completed&nbsp;Count</div>
-                      <div className="absolute right-4.5 top-6 w-12 h-9 flex items-center justify-center">
-                          <Image src="/completed count.png" alt="Completed Icon" width={30} height={35} className="w-10 h-10" />
-                      </div>
-                  </div>
-              </div>
+                            <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
+                              <div className="absolute left-6 top-6 text-4xl text-gray-700 font-bold leading-10">{completedCount}</div>
+                              <div className="absolute left-6 top-[84px] text-xl text-gray-700 font-normal leading-7">Completed&nbsp;Count</div>
+                              <div className="absolute right-4.5 top-6 w-12 h-9 flex items-center justify-center">
+                                <Image src="/completed count.png" alt="Completed Icon" width={30} height={35} className="w-10 h-10" />
+                              </div>
+                            </div>
+                            
+                            {/* Total batch Count */}
+                            <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
+                              <div className="absolute left-6 top-6 text-4xl text-gray-700 font-bold leading-10">
+                              {
+                                Array.isArray(batchData)
+                                ? batchData.length
+                                : 0
+                              }
+                              </div>
+                              <div className="absolute left-6 top-[84px] text-xl text-gray-700 font-normal leading-7">Total&nbsp;Batches</div>
+                              <div className="absolute right-4.5 top-5 w-10 h-10 flex p-2 items-center justify-center bg-blue-400 rounded-full">
+                                {/* <Image src="/people.png" alt="Total Students Icon" width={30} height={35} /> */}
+                                <GrGroup width={6} height={6} className='h-6 w-6 text-blue-700'/>
+                              </div>
+                            </div>
+                              <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
+                              <div className="absolute left-6 top-6 text-4xl text-gray-700 font-bold leading-10">
+                              {
+                                Array.isArray(batchData)
+                                ? batchData.length
+                                : 0
+                              }
+                              </div>
+                              <div className="absolute left-6 top-[84px] text-xl text-gray-700 font-normal leading-7">Total&nbsp;Batches</div>
+                              <div className="absolute right-4.5 top-5 w-10 h-10 flex p-2 items-center justify-center bg-blue-400 rounded-full">
+                                <Image src="/people.png" alt="Total Students Icon" width={30} height={35} />
+                              </div>
+                            </div>
+                          </div>
 
-              {/* ====== SEARCH SECTION ====== */}
+                          {/* ====== SEARCH SECTION ====== */}
               <div id="search-container" className="bg-[#F4F3FF] py-3 rounded-xl" tabIndex={0}>
-                  <div className="flex flex-row justify-center flex-wrap gap-5 py-3">
+                  <div className="flex flex-row flex-wrap justify-center gap-3 px-2 py-3">
                       {/* Search by Batch number */}
                       <div className="relative">
                           <input
                               type="text"
                               id="batch-id"
-                              className={`block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                              className={`block px-4 pb-2 pt-5 w-[175px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
                               placeholder=" "
                               value={searchTerm}
                               onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleSearch(); } }}
@@ -890,7 +921,7 @@ const validateBatchNumber = (value) => {
                       
                       {/* Start Date Input */}
                       <div className="relative">
-                          <input id="start-date" type="date" value={startDate} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleSearch(); } }} onChange={(e) => handleSearchStartDateChange(e.target.value)} className="cursor-pointer block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer" />
+                          <input id="start-date" type="date" value={startDate} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleSearch(); } }} onChange={(e) => handleSearchStartDateChange(e.target.value)} className="cursor-pointer block px-4 pb-2 pt-5 w-[170px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer" />
                           <label htmlFor="start-date" className={`absolute px-3 pb-2 mt-1 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform z-5 origin-[0] left-4 ${startDate ? 'top-2 -translate-y-3 scale-75 text-[#6750A4] font-medium ' : 'top-6 -translate-y-1/2 scale-100'} peer-focus:top-3.5 peer-focus:-translate-y-7 peer-focus:font-bold peer-focus:scale-75 peer-focus:text-[#6750A4]`}>
                               Start date
                           </label>
@@ -898,7 +929,7 @@ const validateBatchNumber = (value) => {
                       
                       {/* End Date Input */}
                       <div className="relative">
-                          <input id="end-date" type="date" value={endDate} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleSearch(); } }} onChange={(e) => handleSearchEndDateChange(e.target.value)} className="cursor-pointer block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer" />
+                          <input id="end-date" type="date" value={endDate} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleSearch(); } }} onChange={(e) => handleSearchEndDateChange(e.target.value)} className="cursor-pointer block px-4 pb-2 pt-5 w-[170px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer" />
                           <label htmlFor="end-date" className={`absolute px-3.5 pb-2 mt-1 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform z-5 origin-[0] left-4 ${endDate ? 'top-2 -translate-y-3 scale-75 text-[#6750A4] font-medium' : 'top-6 -translate-y-1/2 scale-100'} peer-focus:top-3.5 peer-focus:-translate-y-7 peer-focus:font-bold peer-focus:scale-75 peer-focus:text-[#6750A4]`}>
                               End date
                           </label>
@@ -907,7 +938,7 @@ const validateBatchNumber = (value) => {
                       
                       {/* Mode Dropdown */}
                       <div className="relative">
-                          <input type="text" id="mode" readOnly placeholder=" " value={mode === 'Off' ? '' : mode} onClick={() => setShowModeDropdown(!showModeDropdown)} className="block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer" />
+                          <input type="text" id="mode" readOnly placeholder=" " value={mode === 'Off' ? '' : mode} onClick={() => setShowModeDropdown(!showModeDropdown)} className="block px-4 pb-2 pt-5 w-[170px] text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer" />
                           <label htmlFor="mode" className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6">
                               Mode
                           </label>
@@ -929,13 +960,34 @@ const validateBatchNumber = (value) => {
                       </div>
                       
                       {/* Search and Reset Buttons */}
-                      <div className="flex gap-2 md:justify-end">
-                          <button onClick={handleSearch} className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-5 py-4 rounded-xl text-sm font-semibold">
-                              Search
-                          </button>
-                          <button onClick={handleReset} className="cursor-pointer bg-[#f1ecfb] hover:bg-[#E8DEF8] px-4 py-4 rounded-xl text-sm font-semibold text-gray-700 flex items-center gap-1">
-                              <Image src='/reset.svg' alt="Reset Icon" width={20} height={20} className="object-contain" />
-                              Reset
+                      <div className="flex items-center flex-wrap">
+                        <button
+                          onClick={handleSearch}
+                          className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-4 py-4 rounded-l-xl border-r-gray-700 text-sm font-semibold flex items-center gap-2"
+                        >
+                          <FaSearch className="inline-block" />
+                          <span>Search</span>
+                        </button>
+                        <button
+                          onClick={handleReset}
+                          className="cursor-pointer bg-[#E8DEF8] hover:bg-[#c0b2d6] px-4 py-4 rounded-r-xl text-sm font-semibold border-l-gray-900 text-gray-700 flex items-center gap-2"
+                        >
+                          <Image src='/reset.svg' alt="Reset Icon" width={20} height={20} className="object-contain inline-block" />
+                          <span>Reset</span>
+                        </button>
+                      </div>
+                      {/* ====== ADD BATCH BUTTON ====== */}
+                      <div className='z-0'>
+                          <button
+                              onClick={() => setShowModal(true)}
+                              className=" cursor-pointer z-10 flex  bg-[#6750a4] hover:bg-[#6650a4e7] px-4 py-[15px] text-white text-sm font-bold rounded-xl shadow-sm">
+                              <Image
+                                  src='/add.svg'
+                                  alt="Add Icon"
+                                  width={18}
+                                  height={18}
+                                  className="mx-2"
+                              /> Add Batch
                           </button>
                       </div>
                   </div>
@@ -963,9 +1015,9 @@ const validateBatchNumber = (value) => {
                               </thead>
                               <tbody className="bg-white divide-y divide-gray-200">
                                   {filteredBatches.map((batch, index) => (
-                                      <tr key={batch.id} className="hover:bg-[#e1cfff] hover:text-[#4005a0]">
-                                          <td className="px-4 text-gray-700 text-center py-3 text-sm whitespace-nowrap">{index + 1}</td>
-                                          <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">{batch.batchNo}</td>
+                                      <tr key={batch.id} className="hover:bg-[#e1cfff] text-gray-700 hover:text-[#4005a0] hover:font-semibold">
+                                          <td className="px-4 text-center py-3 text-sm whitespace-nowrap">{index + 1}</td>
+                                          <td className="px-4 py-3 text-center text-sm whitespace-nowrap">{batch.batchNo}</td>
                                           <td className="px-4 py-3 text-center text-sm whitespace-nowrap">
                                               {new Date(batch.sections?.Domain?.endDate) < new Date() &&
                                               new Date(batch.sections?.Aptitude?.endDate) < new Date() &&
@@ -979,12 +1031,12 @@ const validateBatchNumber = (value) => {
                                           <td className="px-4 py-3 text-xs text-center whitespace-nowrap ">{batch.totalCount}</td>
                                           <td className="px-4 py-3 text-xs text-center whitespace-nowrap ">{batch.studentsPlaced}</td>
                                           <td className="px-4 py-3 text-xs text-center whitespace-nowrap ">{batch.pending}</td>
-                                          <td className="px-4 py-3 text-gray-700 text-center text-sm whitespace-nowrap">{batch.mode}</td>
+                                          <td className="px-4 py-3 text-center text-sm whitespace-nowrap">{batch.mode}</td>
                                           <td className="px-4 py-3 text-sm text-center whitespace-nowrap">
-                                              <div className="flex gap-1">
-                                                  <button onClick={() => handleAction('view', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded"><FiEye className="h-4 w-4" /></button>
-                                                  <button onClick={() => handleAction('edit', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded"><FiEdit className="h-4 w-4" /></button>
-                                                  <button onClick={() => handleAction('delete', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded text-black"><FiTrash2 className="h-4 w-4" /></button>
+                                              <div className="flex gap-1 items-center justify-center">
+                                                  <button onClick={() => handleAction('view', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded"><FiEye className='h-4 w-4'/></button>
+                                                  <button onClick={() => handleAction('edit', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded"><FiEdit className='h-4 w-4'/></button>
+                                                  <button onClick={() => handleAction('delete', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded"><FiTrash2 className='h-4 w-4'/></button>
                                               </div>
                                               
                                           </td>
@@ -1417,7 +1469,6 @@ const validateBatchNumber = (value) => {
     {/* ───── Sections ───── */}
     <div className="flex flex-col">
       {/* first row: Domain & Aptitude */}
-      <div className="flex flex-row gap-2">
         {/* Domain */}
         <div className="mb-4 rounded-xl bg-[#ece6f0] p-4">
           <h3 className="mb-4 border-b font-mono text-2xl">Domain</h3>
@@ -1496,9 +1547,7 @@ const validateBatchNumber = (value) => {
             </p>
           )}
         </div>
-      </div>
       {/* second row: Communication */}
-      <div className="w-1/2">
         <div className="mb-4 rounded-xl bg-[#ece6f0] p-4">
           <h3 className="mb-4 border-b font-mono text-2xl">
             Communication
@@ -1544,7 +1593,6 @@ const validateBatchNumber = (value) => {
             </p>
           )}
         </div>
-      </div>
     </div>
     {/* ───── Footer actions ───── */}
     <div className="flex justify-end gap-4">
