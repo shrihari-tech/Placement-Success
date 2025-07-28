@@ -1,47 +1,31 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import NavBar from "../navBar/page";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useRef, useEffect } from "react";
 import FlipCard from "../flipcard/flipcard";
 import { ComposedChart, Line, Area, XAxis, YAxis, CartesianGrid, LabelList, ResponsiveContainer } from 'recharts';
 import { useDataContext } from '../context/dataContext';
 
 export default function HomePage() {
-  const { userName, getStatsByBatch } = useDataContext();
-  const [activeCard, setActiveCard] = useState(null);
-  const containerRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (activeCard === null) return;
-      const cardClicked = event.target.closest('[data-is-card="true"]');
-      
-      if (containerRef.current && !containerRef.current.contains(event.target)) {
-        setActiveCard(null);
-      } else if (!cardClicked) {
-        setActiveCard(null);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [activeCard]);
+  const { userName, getStatsByBatch ,setBatchingValue } = useDataContext();
+  const router=useRouter();
+  
 
   const handleCardClick = (id) => {
-    setActiveCard(activeCard === id ? null : id);
+    setBatchingValue(id);
+    router.push('/batches');
+    
   };
 
   const cards = [
-    { id: 'fullstack', title: 'Full Stack Development', image:'/website-generic-svgrepo-com.svg', icon: '/computer.svg' },
-    { id: 'data', title: 'Data Analytics & Science', image:'/data-trends-svgrepo-com.svg', icon: '/bar_chart_4_bars.svg' },
-    { id: 'banking', title: 'Banking & Financial Services', image:'/biometric_18491889.png', icon: '/account_balance.svg' },
-    { id: 'marketing', title: 'Digital Marketing', image:'/digital-marketing-promotion-advertising-svgrepo-com.svg', icon: '/ad.svg' },
-    { id: 'sap', title: 'SAP', image:'/sap-svgrepo-com.svg', icon: '/device_hub.svg' },
-    { id: 'devops', title: 'DevOps', image:'/7053234.jpg', icon: '/deployed_code_history.svg' }
+    { id: 'fullstack', title: 'Full Stack Development', icon: '/computer.svg' },
+    { id: 'dataanalytics', title: 'Data Analytics & Science', icon: '/bar_chart_4_bars.svg' },
+    { id: 'banking', title: 'Banking & Financial Services', icon: '/account_balance.svg' },
+    { id: 'marketing', title: 'Digital Marketing', icon: '/ad.svg' },
+    { id: 'sap', title: 'SAP', icon: '/device_hub.svg' },
+    { id: 'devops', title: 'DevOps',  icon: '/deployed_code_history.svg' }
   ];
 
   const date = new Date();
@@ -318,63 +302,60 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Domain Section with FlipCards */}
-          <div className="mt-6 md:mt-10" ref={containerRef}>
-            <div className="text-sm md:text-base text-gray-700 font-semibold mb-4 md:mb-8">
-              <h1>Domain</h1>
-            </div>
-            <div className="flex justify-center">
-              <div className="grid grid-cols-1  sm:grid-cols-2 pr-4 gap-5 sm:px-1 xl:grid-cols-3 sm:gap-8">
-                {cards.map((card) => {
-                  const stats = getStatsByBatch(card.id) || {};
-                  return (
-                    <div key={card.id} className="transition-all duration-300" data-is-card="true">
-                      <FlipCard
-                        id={card.id}
-                        isActive={activeCard === card.id}
-                        onClick={handleCardClick}
-                        frontContent={
-                          <div className="flex flex-col items-center h-full p-3 py-6 md:p-4 md:py-10">
-                            <div>
-                              <Image className="py-3 md:py-5" src={card.image} alt={card.title} width={80} height={80} />
+            {/* Domain Section with FlipCards */}
+            <div className="mt-6 md:mt-10" >
+              <div className="text-sm md:text-base text-gray-700 font-semibold mb-4 md:mb-8">
+                <h1>Domain</h1>
+              </div>
+              <div className="flex justify-center">
+                <div className="flex flex-row">
+                  {cards.map((card) => {
+                    const stats = getStatsByBatch(card.id) || {};
+                    return (
+                    <div key={card.id} className="transition-all duration-300 ml-[-150]" data-is-card="true" onClick={() => handleCardClick(card.id)}>
+                        <FlipCard
+                          frontContent={
+                            <div className="flex flex-row items-center gap-3 ">
+                              <div>
+                                <Image src={card.icon} alt={card.title} width={20} height={20} />
+                              </div>
+                              <span className=" text-xs font-semibold">   
+                                {card.title}
+                              </span>
                             </div>
-                            <span className="mt-1 md:mt-2 text-xs md:text-sm font-semibold">
-                              {card.title}
-                            </span>
-                          </div>
-                        }
-                        backContent={
-                          <div className="px-3 md:px-5 pb-4 md:pb-8 text-xs">
-                            <p className="text-xs md:text-sm font-bold pb-2 md:pb-3">{card.title}</p>
-                            <div className="grid grid-cols-2 gap-2">
-                              {[
-                                { label: "Completed Batches", value: stats.completedBatches || 0 },
-                                { label: "Ongoing Batches", value: stats.ongoingBatches || 0 },
-                                { label: "Completed Students", value: stats.completedStudents || 0 },
-                                { label: "Ongoing Students", value: stats.ongoingStudents || 0 },
-                                { label: "Placement Eligible", value: stats.placementEligible || 0 },
-                                { label: "Already Placed", value: stats.alreadyPlaced || 0 },
-                                { label: "Yet to Place", value: stats.yetToPlace || 0, colSpan: 2 },
-                              ].map((item, index) => (
-                                <div
-                                  key={index}
-                                  className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition ${
-                                    item.colSpan ? 'col-span-2' : ''
-                                  }`}
-                                >
-                                  <span className="font-medium">{item.label}:</span> {item.value}
-                                </div>
-                              ))}
+                          }
+                          backContent={
+                            <div className="px-3 md:px-5 pb-4 md:pb-8 text-xs">
+                              <p className="text-xs md:text-sm font-bold pb-2 md:pb-3">{card.title}</p>
+                              <div className="grid grid-cols-2 gap-2">
+                                {[
+                                  { label: "Completed Batches", value: stats.completedBatches || 0 },
+                                  { label: "Ongoing Batches", value: stats.ongoingBatches || 0 },
+                                  { label: "Completed Students", value: stats.completedStudents || 0 },
+                                  { label: "Ongoing Students", value: stats.ongoingStudents || 0 },
+                                  { label: "Placement Eligible", value: stats.placementEligible || 0 },
+                                  { label: "Already Placed", value: stats.alreadyPlaced || 0 },
+                                  { label: "Yet to Place", value: stats.yetToPlace || 0, colSpan: 2 },
+                                ].map((item, index) => (
+                                  <div
+                                    key={index}
+                                    className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition ${
+                                      item.colSpan ? 'col-span-2' : ''
+                                    }`}
+                                  >
+                                    <span className="font-medium">{item.label}:</span> {item.value}
+                                  </div>
+                                ))}
+                              </div>
                             </div>
-                          </div>
-                        }
-                      />
-                    </div>
-                  );
-                })}
+                          }
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
-          </div>
         </div>
       </main>
     </div>
