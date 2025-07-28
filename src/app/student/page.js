@@ -510,7 +510,7 @@ useEffect(() => {
                 <div className="flex gap-2 md:justify-end">
                   <button
                     onClick={handleSearch}
-                    className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-5 py-4 rounded-xl text-sm font-semibold"
+                    className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4] text-white px-5 py-4 rounded-xl text-sm font-semibold"
                   >
                     Search
                   </button>
@@ -565,27 +565,27 @@ useEffect(() => {
                       {filteredStudents.map((student, index) => (
                         <tr
                           key={student.bookingId}
-                          className="hover:bg-[#e1cfff] hover:text-[#4005a0]"
+                          className="hover:bg-[#F4F3FF] hover:text-gray-900   text-gray-500"
                         >
-                          <td className="px-4 text-gray-700 text-center py-3 text-sm whitespace-nowrap">
+                          <td className="px-5 text-gray-700 text-center py-3 text-sm whitespace-nowrap">
                             {index + 1}
                           </td>
-                          <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">
+                          <td className="px-5 py-3 text-center  text-sm whitespace-nowrap">
                             {student.name}
                           </td>
-                          <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">
+                          <td className="px-5 py-3 text-center  text-sm whitespace-nowrap">
                             {student.email}
                           </td>
-                          <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">
+                          <td className="px-5 py-3 text-center text-sm whitespace-nowrap">
                             {student.bookingId}
                           </td>
-                          <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">
+                          <td className="px-5 py-3 text-center  text-sm whitespace-nowrap">
                             {student.phone}
                           </td>
-                          <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">
+                          <td className="px-5 py-3 text-center  text-sm whitespace-nowrap">
                             {student.mode}
                           </td>
-                          <td className="px-4 py-3 text-sm whitespace-nowrap">
+                          <td className="px-5 py-3 text-sm whitespace-nowrap">
                             <div className="flex gap-1 items-center justify-center">
                               <button
                                 className="p-1 hover:bg-gray-100 rounded cursor-pointer"
@@ -609,7 +609,7 @@ useEffect(() => {
                                   setDeleteConfirmationInput("");
                                   setDeleteError("");
                                 }}
-                                className="cursor-pointer p-1 hover:bg-gray-100 rounded text-black"
+                                className="cursor-pointer p-1 hover:bg-gray-100 rounded "
                               >
                                 <FiTrash2 className="h-4 w-4" />
                               </button>
