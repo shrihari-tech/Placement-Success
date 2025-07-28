@@ -995,7 +995,7 @@ const validateBatchNumber = (value) => {
 
               {/* ====== TABLE SECTION - CORRECTED STRUCTURE ====== */}
               {searchInitiated && (
-                  <div className="bg-white rounded-2xl shadow-sm mt-6 w-full overflow-x-hidden">
+                  <div className="bg-white inset-0 rounded-2xl shadow-sm mt-6 overflow-x-auto">
                       {/* This div is the key: It creates the horizontal scroll context for the table */}
                       <div className="w-full max-w-full overflow-hidden">
                           <table className="min-w-full divide-y divide-gray-200">
