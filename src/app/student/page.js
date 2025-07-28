@@ -206,16 +206,15 @@ useEffect(() => {
   return (
     <div className="flex min-h-screen mt-16 md:mt-1">
       <Toaster position="top-right" />
-      <div
-        className={`px-3 pt-20 flex-1 bg-[#F8FAFD] mb-12`}
-        ref={searchContainerRef}
-      >
-        {/* ====== HEADER ====== */}
-        <div className="fixed top-15 md:top-0 ms-[-19px] border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 z-20">
+        <div className="fixed top-15 md:top-0 ms-[-19px] border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 md:px-8 z-20">
           <h1 className="fixed pl-3 text-xl text-gray-800 font-semibold">
             {batchHead}
           </h1>
         </div>
+      <div className={`px-8 pt-20 flex-1 bg-[#F8FAFD] mb-12`}
+        ref={searchContainerRef}
+      >
+
         {/* ====== TABS ====== */}
         <div className="flex bg-[#ECE6F0] rounded-xl p-1 mb-4 relative">
           <div

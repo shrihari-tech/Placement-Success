@@ -1,21 +1,20 @@
 "use client";
+import { useEffect, useState } from "react";
 import NavBar from "./navBar/page";
 import { usePathname } from "next/navigation";
 
 export default function NavWrapper({ children }) {
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
-  const showNavBarPaths = ["/home", "/batches", "/student", "/seting" ,"/showbatches"];
+  const showNavBarPaths = ["/home", "/batches", "/student", "/seting", "/showbatches"];
   const showNavBar = showNavBarPaths.includes(pathname);
+  const mainClass = "flex-1 md:ml-15 ";
 
-  // Set margin-left to 60 only for /batches, otherwise use default
-  const mainClass = "flex-1 p-4 md:ml-15 ";
-  // if (showNavBar) {
-  //   if (pathname === "/batches" || pathname === "/showbatches") {
-  //     mainClass = "flex-1 p-4 ml-68";
-  //   } else {
-  //     mainClass = "flex-1 p-4 ml-10 md:ml-20";
-  //   }
-  // }
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null; // Prevent mismatch
 
   return (
     <div className="flex">

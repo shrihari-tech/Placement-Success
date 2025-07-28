@@ -9,8 +9,10 @@ import { ComposedChart, Line, Area, XAxis, YAxis, CartesianGrid, LabelList, Resp
 import { useDataContext } from '../context/dataContext';
 
 export default function HomePage() {
-  const { userName, getStatsByBatch ,setBatchingValue } = useDataContext();
+  const { userName, getStatsByBatch ,setBatchingValue ,liveCounts } = useDataContext();
   const router=useRouter();
+  const cardFlip = true; // Set to true to enable card flip functionality
+
   
 
   const handleCardClick = (id) => {
@@ -20,12 +22,12 @@ export default function HomePage() {
   };
 
   const cards = [
-    { id: 'fullstack', title: 'Full Stack Development', icon: '/computer.svg' },
-    { id: 'dataanalytics', title: 'Data Analytics & Science', icon: '/bar_chart_4_bars.svg' },
-    { id: 'banking', title: 'Banking & Financial Services', icon: '/account_balance.svg' },
-    { id: 'marketing', title: 'Digital Marketing', icon: '/ad.svg' },
-    { id: 'sap', title: 'SAP', icon: '/device_hub.svg' },
-    { id: 'devops', title: 'DevOps',  icon: '/deployed_code_history.svg' }
+    { id: 'fullstack', title: 'Full Stack Development',image : '/fullstack.svg', icon: '/computer.svg' },
+    { id: 'dataanalytics', title: 'Data Analytics & Science',image : '/Data.svg', icon: '/bar_chart_4_bars.svg' },
+    { id: 'banking', title: 'Banking & Financial Services',image : '/banking.svg', icon: '/account_balance.svg' },
+    { id: 'marketing', title: 'Digital Marketing',image : '/Digital Marketing.svg', icon: '/ad.svg' },
+    { id: 'sap', title: 'SAP',image : '/SAP.svg', icon: '/device_hub.svg' },
+    { id: 'devops', title: 'DevOps',image : '/DevOps.svg',  icon: '/deployed_code_history.svg' }
   ];
 
   const date = new Date();
@@ -48,13 +50,13 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div >
       {/* NavBar at the top */}
       <NavBar />
       {/* Main content container with proper centering */}
-      <main className="flex-grow mx-auto w-full max-w-[1800px] px-[-15] sm:px-6 lg:px-8 py-4 sm:py-6">
+      <main className="flex-grow mx-auto w-full">
         {/* Greeting Section */}
-        <div className="border-b-2 border-gray-300 mb-6 md:mb-10 mt-10 sm:mt-1">
+        <div className="border-b-2 border-gray-300 bg-white ps-10 pt-5 mb-6 md:mb-10 ">
           <p className="text-xl md:text-2xl text-gray-700 font-semibold mb-4 flex items-center">
             Hi {userName}
             <Image
@@ -83,7 +85,7 @@ export default function HomePage() {
         </div>
 
         {/* Main Content */}
-        <div className="p-2 md:p-4">
+        <div className="p-2 md:px-10 md:pb-10">
           {/* Live Count Section */}
           <div>
             <h2 className="text-sm md:text-base text-gray-700 font-semibold mb-4">Live Count</h2>
@@ -91,7 +93,7 @@ export default function HomePage() {
               {/* Card 1: Live Batch Count */}
               <div className="bg-white rounded-xl md:rounded-3xl shadow-md flex items-center justify-between p-4 md:p-5">
                 <div>
-                  <h3 className="text-3xl md:text-4xl font-medium text-[#696969] mb-1 md:mb-2">25</h3>
+                  <h3 className="text-3xl md:text-4xl font-medium text-[#696969] mb-1 md:mb-2">{liveCounts.batch}</h3>
                   <p className="text-[#AEAEAE] text-xs md:text-[13px]">{formattedDate}</p>
                   <p className="text-[#404040] mt-4 md:mt-10 text-sm md:text-base">Live Batch count</p>
                 </div>
@@ -109,7 +111,7 @@ export default function HomePage() {
               {/* Card 2: Live Student Count */}
               <div className="bg-white rounded-xl md:rounded-3xl shadow-md flex items-center justify-between p-4 md:p-5">
                 <div>
-                  <h3 className="text-3xl md:text-4xl font-medium text-[#696969] mb-1 md:mb-2">1200</h3>
+                  <h3 className="text-3xl md:text-4xl font-medium text-[#696969] mb-1 md:mb-2">{liveCounts.student}</h3>
                   <p className="text-[#AEAEAE] text-xs md:text-[13px]">{formattedDate}</p>
                   <p className="text-[#404040] mt-4 md:mt-10 text-sm md:text-base">Live Student count</p>
                 </div>
@@ -127,7 +129,7 @@ export default function HomePage() {
               {/* Card 3: Live Domain Count */}
               <div className="bg-white rounded-xl md:rounded-3xl shadow-md flex items-center justify-between p-4 md:p-5">
                 <div>
-                  <h3 className="text-3xl md:text-4xl font-medium text-[#696969] mb-1 md:mb-2">13</h3>
+                  <h3 className="text-3xl md:text-4xl font-medium text-[#696969] mb-1 md:mb-2">{liveCounts.domain}</h3>
                   <p className="text-[#AEAEAE] text-xs md:text-[13px]">{formattedDate}</p>
                   <p className="text-[#404040] mt-4 md:mt-10 text-sm md:text-base">Live Domain count</p>
                 </div>
@@ -302,24 +304,24 @@ export default function HomePage() {
             </div>
           </div>
 
-            {/* Domain Section with FlipCards */}
-            <div className="mt-6 md:mt-10" >
+            {cardFlip && 
+            <div className="index-0 mt-6 md:mt-10" >
               <div className="text-sm md:text-base text-gray-700 font-semibold mb-4 md:mb-8">
                 <h1>Domain</h1>
               </div>
               <div className="flex justify-center">
-                <div className="flex flex-row">
+                <div className="grid grid-cols-1 gap-10 sm:grid-cols-3">
                   {cards.map((card) => {
                     const stats = getStatsByBatch(card.id) || {};
                     return (
-                    <div key={card.id} className="transition-all duration-300 ml-[-150]" data-is-card="true" onClick={() => handleCardClick(card.id)}>
+                    <div key={card.id} className="transition-all duration-300" data-is-card="true" onClick={() => handleCardClick(card.id)}>
                         <FlipCard
                           frontContent={
-                            <div className="flex flex-row items-center gap-3 ">
+                            <div className="flex flex-col items-center gap-10 ">
                               <div>
-                                <Image src={card.icon} alt={card.title} width={20} height={20} />
+                                <Image src={card.image} alt={card.title} width={160} height={160} />
                               </div>
-                              <span className=" text-xs font-semibold">   
+                              <span className=" text-l font-semibold">   
                                 {card.title}
                               </span>
                             </div>
@@ -355,7 +357,7 @@ export default function HomePage() {
                   })}
                 </div>
               </div>
-            </div>
+            </div>}
         </div>
       </main>
     </div>

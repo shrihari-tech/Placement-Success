@@ -7,7 +7,7 @@ import { Toaster, toast } from "sonner";
 import Image from "next/image";
 
 const BatchChange = () => {
-  const { batchData, studentData, allbatchName, allStudentData } =
+  const { batchData, studentData, allBatchNames, allStudentData } =
     useDataContext(); //
 
   const [fromBatch, setFromBatch] = useState("");
@@ -27,8 +27,8 @@ const BatchChange = () => {
   const toRef = useRef(null);
 
   const batchList = useMemo(() => {
-    return allbatchName ? allbatchName.sort() : [];
-  }, [allbatchName]);
+    return allBatchNames ? allBatchNames.sort() : [];
+  }, [allBatchNames]);
 
   const filteredFromBatches = useMemo(() => {
     return batchList.filter(

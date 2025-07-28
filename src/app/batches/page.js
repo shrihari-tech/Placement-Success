@@ -836,14 +836,15 @@ const validateBatchNumber = (value) => {
   return (
 <div className="flex min-h-screen mt-16 md:mt-1">            
 <Toaster position='top-right' />
+ {/* ====== HEADER ====== */}
+          <div className="fixed top-15 md:top-0 border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 md:px-8 z-20">
+              <h1 className="fixed text-xl text-gray-800 font-semibold">{batchHead}</h1>
+          </div>
+
 
 {/* Main model  */}
       <div className={`px-3 pt-20 flex-1 bg-[#F8FAFD] mb-12 ${showModal || showDeleteModal ? 'pointer-events-none' : ''}`}>
-          {/* ====== HEADER ====== */}
-          <div className="fixed top-15 md:top-0 ms-[-19px] border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 z-20">
-              <h1 className="fixed pl-3 text-xl text-gray-800 font-semibold">{batchHead}</h1>
-          </div>
-
+         
           <div ref={searchContainerRef} className='p-3'>
 
               {/* ====== STATS CARDS ====== */}
@@ -909,8 +910,8 @@ const validateBatchNumber = (value) => {
                               onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleSearch(); } }}
                               onChange={(e) => { setSearchTerm(e.target.value); }}
                           />
-                          <label htmlFor="batch-id" className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-3 scale-75 top-3.5 z-5 origin-[0] left-1 peer-focus:text-xs peer-focus:text-[#6750a4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#efeeff]">
-                              Search by Batch number
+                          <label htmlFor="batch-id" className="absolute px-1 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-3 scale-75 top-3.5 z-5 origin-[0] left-1 peer-focus:text-xs peer-focus:text-[#6750a4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#efeeff]">
+                              Search by Batch Name
                           </label>
                           {searchTerm && (
                               <button onClick={() => setSearchTerm('')} className="cursor-pointer absolute top-4 right-3 text-gray-500 hover:text-gray-00">
@@ -1015,7 +1016,7 @@ const validateBatchNumber = (value) => {
                               </thead>
                               <tbody className="bg-white divide-y divide-gray-200">
                                   {filteredBatches.map((batch, index) => (
-                                      <tr key={batch.id} className="hover:bg-[#e1cfff] text-gray-700 hover:text-[#4005a0] hover:font-semibold">
+                                      <tr key={batch.id} className="hover:bg-[#f4f3ff] text-gray-500 hover:text-gray-900 ">
                                           <td className="px-4 text-center py-3 text-sm whitespace-nowrap">{index + 1}</td>
                                           <td className="px-4 py-3 text-center text-sm whitespace-nowrap">{batch.batchNo}</td>
                                           <td className="px-4 py-3 text-center text-sm whitespace-nowrap">
@@ -1056,13 +1057,10 @@ const validateBatchNumber = (value) => {
       onClick={() => {
         handleCloseModal();
         handleCloseModelSelect();
-      }}
-
-  >
+      }}>
       <div className="w-[380px] bg-[#F8FAFD] rounded-[10px] px-6 py-4"
           onClick={(e) => {e.stopPropagation()
-        }}
-      >
+        }}>
           <div className="flex justify-between items-center mb-4">
               <h2 className="text-gray-800 text-sm font-bold">Add new batch</h2>
               <button
@@ -1070,12 +1068,10 @@ const validateBatchNumber = (value) => {
                       setShowModal(false);
                       resetForm();
                   }}
-                  className="cursor-pointer text-gray-500 hover:text-gray-700"
-              >
+                  className="cursor-pointer text-gray-500 hover:text-gray-700">
                   <RiCloseCircleLine size={20} />
               </button>
           </div>
-
           {/* Batch Number Field */}
           <div className="relative mb-4">
               <input
@@ -1101,7 +1097,7 @@ const validateBatchNumber = (value) => {
                   htmlFor="batch-number"
                   className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
               >
-                  Batch Number
+                  Batch Name
               </label>
               {newBatch.batchNo && (
                   <button
@@ -1182,7 +1178,7 @@ const validateBatchNumber = (value) => {
   />
   <label
     htmlFor={`${activeTab.toLowerCase()}-start-date`}
-    className={`absolute px-2 text-sm pb-1 text-gray-500 duration-300 bg-[#ECE6F0] transform z-5 origin-[0] left-4
+    className={`absolute px-2 text-sm pb-1 text-gray-500 duration-300 bg-[#ECE6F0] transform z-5 origin-[0] left-3
       ${
         newBatch.sections[activeTab].startDate
           ? 'top-3 -translate-y-3 scale-75 text-[#6750A4] font-medium'
@@ -1220,7 +1216,7 @@ const validateBatchNumber = (value) => {
   />
   <label
     htmlFor={`${activeTab.toLowerCase()}-end-date`}
-    className={`absolute px-2 text-sm pb-1 text-gray-500 duration-300 bg-[#ECE6F0] transform z-5 origin-[0] left-4
+    className={`absolute px-2 text-sm pb-1 text-gray-500 duration-300 bg-[#ECE6F0] transform z-5 origin-[0] left-3  
       ${
         newBatch.sections[activeTab].endDate
           ? 'top-3 -translate-y-3 scale-75 text-[#6750A4] font-medium'
