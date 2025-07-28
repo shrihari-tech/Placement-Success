@@ -322,11 +322,7 @@ const handleSaveSelectedStudents = () => {
     <div className="flex min-h-screen mt-16 md:mt-1">
       <Toaster position="top-right" />
       <div className={`px-3 pt-20 flex-1 bg-[#F8FAFD] mb-12`} ref={searchContainerRef}>
-        <div className="fixed top-15 md:top-0 ms-[-19px] border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 z-20">
-          <h1 className="fixed pl-3 text-xl text-gray-800 font-semibold">
-            Opportunities for {batchHead}
-          </h1>
-        </div>
+
         <div >
         <div className="flex gap-4 flex-col md:flex-row mt-[-40px] md:mt-10 w-full">
         {getOpportunitiesByDomain(batchingvalue)
@@ -368,12 +364,7 @@ const handleSaveSelectedStudents = () => {
         )}
         </div>
         </div>
-        {/* ====== HEADER ====== */}
-        <div className="fixed top-15 md:top-0 ms-[-19px] border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 z-20">
-          <h1 className="fixed pl-3 text-xl text-gray-800 font-semibold">
-            {batchHead}
-          </h1>
-        </div>
+
         <div>
           <button
             onClick={handleOpenAssignModal}
