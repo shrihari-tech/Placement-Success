@@ -1024,8 +1024,9 @@ const DataProvider = ({ children }) => {
   const [loginUser, setLoginUser] = useState(""); // logged-in user
   const [batchHead, setBatchHead] = useState(""); // domain title for UI
   const [batchData, setBatchData] = useState([]); // currently active batch data
- // Global student data (all domains)
- const [allStudentData, setAllStudentData] = useState([]);
+  const [allBatchNames, setAllBatchNames] = useState([]); //all batch names across domains
+  const [allStudentData, setAllStudentData] = useState([]); // for storing all student records
+
 
   // ➤ Domain-wise individual state data
   const [fullstackData, setFullstackData] = useState(fullstackInitial);
@@ -1053,6 +1054,52 @@ const DataProvider = ({ children }) => {
 
   const userName =  loginUser.split("@")[0];
   const firstLetterUser = loginUser?.charAt(0).toUpperCase() || "";
+
+  //all batches names across domains
+useEffect(() => {
+  const fullstack = fullstackData.map((b) => b.batchNo);
+  const analytics = dataanalyticsData.map((b) => b.batchNo);
+  const banking = bankingData.map((b) => b.batchNo);
+  const marketing = marketingStudentData.map((b) => b.batch); 
+  const sap = sapData.map((b) => b.batchNo);
+  const devops = devopsData.map((b) => b.batchNo); 
+
+  const all = [
+    ...fullstack,
+    ...analytics,
+    ...banking,
+    ...marketing,
+    ...sap,
+    ...devops,
+  ];
+
+  const uniqueSorted = Array.from(new Set(all)).sort();
+  setAllBatchNames(uniqueSorted);
+
+  const allStudents = [
+    ...fullstackStudent,
+    ...dataanalyticsStudent,
+    ...bankingStudent,
+    ...marketingStudentData,
+    ...sapStudent,
+    ...devopsStudent,
+  ];
+  setAllStudentData(allStudents);
+}, [
+  fullstackData,
+  dataanalyticsData,
+  bankingData,
+  marketingStudentData,
+  sapData,
+  devopsData, 
+  fullstackStudent,
+  dataanalyticsStudent,
+  bankingStudent,
+  sapStudent,
+  devopsStudent,
+]);
+
+
 
   // Update batchData and batchHead when batchingvalue changes
   useEffect(() => {
@@ -1473,7 +1520,7 @@ const addOpportunity = (opportunity) => {
 
   return (
     <DataContext.Provider
-      value={{ batchingvalue,setBatchingValue,setStudentBatchSelect,loginUser,setLoginUser,firstLetterUser,batchHead,batchData,addBatch,updateBatch,deleteBatch ,userName , selectedBatch,setSelectedBatch,getStatsByBatch,batchStatsData,batchesNames,studentData,deleteStudent,updateStudent,addStudent,addMultipleStudents,addOpportunity,getOpportunitiesByDomain
+      value={{ batchingvalue,setBatchingValue,setStudentBatchSelect,loginUser,setLoginUser,firstLetterUser,batchHead,batchData,addBatch,updateBatch,deleteBatch ,userName , selectedBatch,setSelectedBatch,getStatsByBatch,batchStatsData,batchesNames,studentData,deleteStudent,updateStudent,addStudent,addMultipleStudents,addOpportunity,getOpportunitiesByDomain,allBatchNames,allStudentData,batchData,studentData,
       }}
     >  
       {children}
