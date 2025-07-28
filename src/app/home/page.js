@@ -54,9 +54,9 @@ export default function HomePage() {
       {/* NavBar at the top */}
       <NavBar />
       {/* Main content container with proper centering */}
-      <main className="flex-grow mx-auto w-full max-w-[1800px] px-[-15] sm:px-6 lg:px-8 py-4 sm:py-6">
+      <main className="flex-grow mx-auto w-full max-w-[1800px] ">
         {/* Greeting Section */}
-        <div className="border-b-2 border-gray-300 mb-6 md:mb-10 mt-10 sm:mt-1">
+        <div className="border-b-2 border-gray-300 ps-10 mb-6 md:mb-10 mt-10 sm:mt-1">
           <p className="text-xl md:text-2xl text-gray-700 font-semibold mb-4 flex items-center">
             Hi {userName}
             <Image
@@ -310,7 +310,7 @@ export default function HomePage() {
                 <h1>Domain</h1>
               </div>
               <div className="flex justify-center">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="grid grid-cols-1 gap-15 sm:grid-cols-3">
                   {cards.map((card) => {
                     const stats = getStatsByBatch(card.id) || {};
                     return (
