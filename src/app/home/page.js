@@ -20,12 +20,12 @@ export default function HomePage() {
   };
 
   const cards = [
-    { id: 'fullstack', title: 'Full Stack Development', icon: '/computer.svg' },
-    { id: 'dataanalytics', title: 'Data Analytics & Science', icon: '/bar_chart_4_bars.svg' },
-    { id: 'banking', title: 'Banking & Financial Services', icon: '/account_balance.svg' },
-    { id: 'marketing', title: 'Digital Marketing', icon: '/ad.svg' },
-    { id: 'sap', title: 'SAP', icon: '/device_hub.svg' },
-    { id: 'devops', title: 'DevOps',  icon: '/deployed_code_history.svg' }
+    { id: 'fullstack', title: 'Full Stack Development',image : '/fullstack.svg', icon: '/computer.svg' },
+    { id: 'dataanalytics', title: 'Data Analytics & Science',image : '/Data.svg', icon: '/bar_chart_4_bars.svg' },
+    { id: 'banking', title: 'Banking & Financial Services',image : '/banking.svg', icon: '/account_balance.svg' },
+    { id: 'marketing', title: 'Digital Marketing',image : '/Digital Marketing.svg', icon: '/ad.svg' },
+    { id: 'sap', title: 'SAP',image : '/SAP.svg', icon: '/device_hub.svg' },
+    { id: 'devops', title: 'DevOps',image : '/DevOps.svg',  icon: '/deployed_code_history.svg' }
   ];
 
   const date = new Date();
@@ -46,6 +46,8 @@ export default function HomePage() {
       </g>
     );
   };
+
+  const cardFlip = true; // Set to true to enable card flip functionality
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -302,24 +304,24 @@ export default function HomePage() {
             </div>
           </div>
 
-            {/* Domain Section with FlipCards */}
-            <div className="mt-6 md:mt-10" >
+            {cardFlip && 
+            <div className="index-0 mt-6 md:mt-10" >
               <div className="text-sm md:text-base text-gray-700 font-semibold mb-4 md:mb-8">
                 <h1>Domain</h1>
               </div>
               <div className="flex justify-center">
-                <div className="flex flex-row">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   {cards.map((card) => {
                     const stats = getStatsByBatch(card.id) || {};
                     return (
-                    <div key={card.id} className="transition-all duration-300 ml-[-150]" data-is-card="true" onClick={() => handleCardClick(card.id)}>
+                    <div key={card.id} className="transition-all duration-300" data-is-card="true" onClick={() => handleCardClick(card.id)}>
                         <FlipCard
                           frontContent={
-                            <div className="flex flex-row items-center gap-3 ">
+                            <div className="flex flex-col items-center gap-10 ">
                               <div>
-                                <Image src={card.icon} alt={card.title} width={20} height={20} />
+                                <Image src={card.image} alt={card.title} width={160} height={160} />
                               </div>
-                              <span className=" text-xs font-semibold">   
+                              <span className=" text-l font-semibold">   
                                 {card.title}
                               </span>
                             </div>
@@ -355,7 +357,7 @@ export default function HomePage() {
                   })}
                 </div>
               </div>
-            </div>
+            </div>}
         </div>
       </main>
     </div>
