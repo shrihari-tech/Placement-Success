@@ -11,6 +11,8 @@ import { useDataContext } from '../context/dataContext';
 export default function HomePage() {
   const { userName, getStatsByBatch ,setBatchingValue ,liveCounts } = useDataContext();
   const router=useRouter();
+  const cardFlip = true; // Set to true to enable card flip functionality
+
   
 
   const handleCardClick = (id) => {
@@ -47,16 +49,14 @@ export default function HomePage() {
     );
   };
 
-  const cardFlip = true; // Set to true to enable card flip functionality
-
   return (
-    <div className="min-h-screen flex flex-col">
+    <div >
       {/* NavBar at the top */}
       <NavBar />
       {/* Main content container with proper centering */}
-      <main className="flex-grow mx-auto w-full max-w-[1800px] ">
+      <main className="flex-grow mx-auto w-full">
         {/* Greeting Section */}
-        <div className="border-b-2 border-gray-300 ps-10 mb-6 md:mb-10 mt-10 sm:mt-1">
+        <div className="border-b-2 border-gray-300 bg-white ps-10 pt-5 mb-6 md:mb-10 ">
           <p className="text-xl md:text-2xl text-gray-700 font-semibold mb-4 flex items-center">
             Hi {userName}
             <Image
@@ -85,7 +85,7 @@ export default function HomePage() {
         </div>
 
         {/* Main Content */}
-        <div className="p-2 md:p-4">
+        <div className="p-2 md:px-10 md:pb-10">
           {/* Live Count Section */}
           <div>
             <h2 className="text-sm md:text-base text-gray-700 font-semibold mb-4">Live Count</h2>
@@ -310,7 +310,7 @@ export default function HomePage() {
                 <h1>Domain</h1>
               </div>
               <div className="flex justify-center">
-                <div className="grid grid-cols-1 gap-15 sm:grid-cols-3">
+                <div className="grid grid-cols-1 gap-10 sm:grid-cols-3">
                   {cards.map((card) => {
                     const stats = getStatsByBatch(card.id) || {};
                     return (

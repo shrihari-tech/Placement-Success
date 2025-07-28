@@ -8,7 +8,7 @@ export default function FlipCard({ frontContent, backContent }) {
         relative cursor-pointer group
         [perspective:1000px]
         w-72 h-56 sm:w-80 sm:h-64
-        hover:translate-y-[-10px]
+        hover:translate-y-[-15px]
         transition-all duration-500 ease-in-out
       `}
     >
