@@ -9,7 +9,7 @@ import { ComposedChart, Line, Area, XAxis, YAxis, CartesianGrid, LabelList, Resp
 import { useDataContext } from '../context/dataContext';
 
 export default function HomePage() {
-  const { userName, getStatsByBatch ,setBatchingValue } = useDataContext();
+  const { userName, getStatsByBatch ,setBatchingValue ,liveCounts } = useDataContext();
   const router=useRouter();
   
 
@@ -93,7 +93,7 @@ export default function HomePage() {
               {/* Card 1: Live Batch Count */}
               <div className="bg-white rounded-xl md:rounded-3xl shadow-md flex items-center justify-between p-4 md:p-5">
                 <div>
-                  <h3 className="text-3xl md:text-4xl font-medium text-[#696969] mb-1 md:mb-2">25</h3>
+                  <h3 className="text-3xl md:text-4xl font-medium text-[#696969] mb-1 md:mb-2">{liveCounts.batch}</h3>
                   <p className="text-[#AEAEAE] text-xs md:text-[13px]">{formattedDate}</p>
                   <p className="text-[#404040] mt-4 md:mt-10 text-sm md:text-base">Live Batch count</p>
                 </div>
@@ -111,7 +111,7 @@ export default function HomePage() {
               {/* Card 2: Live Student Count */}
               <div className="bg-white rounded-xl md:rounded-3xl shadow-md flex items-center justify-between p-4 md:p-5">
                 <div>
-                  <h3 className="text-3xl md:text-4xl font-medium text-[#696969] mb-1 md:mb-2">1200</h3>
+                  <h3 className="text-3xl md:text-4xl font-medium text-[#696969] mb-1 md:mb-2">{liveCounts.student}</h3>
                   <p className="text-[#AEAEAE] text-xs md:text-[13px]">{formattedDate}</p>
                   <p className="text-[#404040] mt-4 md:mt-10 text-sm md:text-base">Live Student count</p>
                 </div>
@@ -129,7 +129,7 @@ export default function HomePage() {
               {/* Card 3: Live Domain Count */}
               <div className="bg-white rounded-xl md:rounded-3xl shadow-md flex items-center justify-between p-4 md:p-5">
                 <div>
-                  <h3 className="text-3xl md:text-4xl font-medium text-[#696969] mb-1 md:mb-2">13</h3>
+                  <h3 className="text-3xl md:text-4xl font-medium text-[#696969] mb-1 md:mb-2">{liveCounts.domain}</h3>
                   <p className="text-[#AEAEAE] text-xs md:text-[13px]">{formattedDate}</p>
                   <p className="text-[#404040] mt-4 md:mt-10 text-sm md:text-base">Live Domain count</p>
                 </div>

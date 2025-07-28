@@ -175,7 +175,6 @@ export const fullstackInitial = [
   }
 ];
 
-
 export const dataanalyticsInitial = [
   {
     "id": 1,
@@ -445,7 +444,7 @@ export const bankingInitial = [
 export const marketingInitial = [
   {
     "id": 1,
-    "batchNo": "DM01",
+    "batchNo": "MK01",
     "mode": "Online",
     "status": "Completed",
     "startDate": "2024-01-01",
@@ -471,7 +470,7 @@ export const marketingInitial = [
   },
   {
     "id": 2,
-    "batchNo": "DM02",
+    "batchNo": "MK02",
     "mode": "Offline",
     "status": "Completed",
     "startDate": "2024-02-01",
@@ -497,7 +496,7 @@ export const marketingInitial = [
   },
   {
     "id": 3,
-    "batchNo": "DM03",
+    "batchNo": "MK03",
     "mode": "Online",
     "status": "Completed",
     "startDate": "2024-03-01",
@@ -523,7 +522,7 @@ export const marketingInitial = [
   },
   {
     "id": 4,
-    "batchNo": "DM04",
+    "batchNo": "MK04",
     "mode": "Offline",
     "status": "Completed",
     "startDate": "2024-04-01",
@@ -549,7 +548,7 @@ export const marketingInitial = [
   },
   {
     "id": 5,
-    "batchNo": "DM05",
+    "batchNo": "MK05",
     "mode": "Online",
     "status": "Completed",
     "startDate": "2024-05-01",
@@ -578,7 +577,7 @@ export const marketingInitial = [
 export const devopsInitial = [
   {
     "id": 1,
-    "batchNo": "DO01",
+    "batchNo": "DV01",
     "mode": "Online",
     "status": "Completed",
     "startDate": "2024-01-01",
@@ -604,7 +603,7 @@ export const devopsInitial = [
   },
   {
     "id": 2,
-    "batchNo": "DO02",
+    "batchNo": "DV02",
     "mode": "Offline",
     "status": "Completed",
     "startDate": "2024-02-01",
@@ -630,7 +629,7 @@ export const devopsInitial = [
   },
   {
     "id": 3,
-    "batchNo": "DO03",
+    "batchNo": "DV03",
     "mode": "Online",
     "status": "Completed",
     "startDate": "2024-03-01",
@@ -656,7 +655,7 @@ export const devopsInitial = [
   },
   {
     "id": 4,
-    "batchNo": "DO04",
+    "batchNo": "DV04",
     "mode": "Offline",
     "status": "Completed",
     "startDate": "2024-04-01",
@@ -682,7 +681,7 @@ export const devopsInitial = [
   },
   {
     "id": 5,
-    "batchNo": "DO05",
+    "batchNo": "DV05",
     "mode": "Online",
     "status": "Completed",
     "startDate": "2024-05-01",
@@ -898,7 +897,6 @@ export const dataAnalyticsStudentData = [
 { sno: 5, name: "Manoj S", email: "manoj05@gmail.com", bookingId: "DA05-005", epicStatus: "Excellent", placement: "Placed", batch: "DA05", phone: "9123876543", mode: "Offline", mile1: 88, mile2: 86, mile3: 83, irc: 85, attendance: 84 }
 ];
 
-
 export const bankingStudentData = [
 { sno: 1, name: "Amit P", email: "amit01@gmail.com", bookingId: "BK01-001", epicStatus: "Ideal", placement: "Placed", batch: "BK01", phone: "9876543210", mode: "Online", mile1: 83, mile2: 64, mile3: 91, irc: 75, attendance: 88 },
 { sno: 2, name: "Nisha R", email: "nisha02@gmail.com", bookingId: "BK01-002", epicStatus: "Proficient", placement: "Yet to Place", batch: "BK01", phone: "9123456789", mode: "Offline", mile1: 96, mile2: 88, mile3: 79, irc: 93, attendance: 67 },
@@ -926,7 +924,6 @@ export const bankingStudentData = [
 { sno: 4, name: "Rajan V", email: "rajan04@gmail.com", bookingId: "BK05-004", epicStatus: "Capable", placement: "Not Placed", batch: "BK05", phone: "9345612789", mode: "Offline", mile1: 59, mile2: 91, mile3: 58, irc: 71, attendance: 63 },
 { sno: 5, name: "Anu J", email: "anu05@gmail.com", bookingId: "BK05-005", epicStatus: "Excellent", placement: "Placed", batch: "BK05", phone: "9123876543", mode: "Online", mile1: 77, mile2: 60, mile3: 89, irc: 64, attendance: 70 }
 ];
-
 
 export const marketingStudentData = [
 { sno: 1, name: "Rahul M", email: "rahul01@gmail.com", bookingId: "MK01-001", epicStatus: "Excellent", placement: "Placed", batch: "MK01", phone: "9876543210", mode: "Online", mile1: 87, mile2: 91, mile3: 69, irc: 95, attendance: 84 },
@@ -956,7 +953,6 @@ export const marketingStudentData = [
 { sno: 5, name: "Siddarth M", email: "siddarth05@gmail.com", bookingId: "MK05-005", epicStatus: "Capable", placement: "Not Required", batch: "MK05", phone: "9567890123", mode: "Online", mile1: 59, mile2: 84, mile3: 97, irc: 82, attendance: 70 }
 ];
 
-
 export const sapStudentData = [
   { sno: 1, name: "Ritika N", email: "ritika01@gmail.com", bookingId: "SAP01-001", epicStatus: "Capable", placement: "Placed", batch: "SAP01", phone: "9876543012", mode: "Online", mile1: 82, mile2: 74, mile3: 69, irc: 80, attendance: 90 },
   { sno: 2, name: "Abhishek R", email: "abhishek02@gmail.com", bookingId: "SAP01-002", epicStatus: "Excellent", placement: "Yet to Place", batch: "SAP01", phone: "9345627890", mode: "Offline", mile1: 91, mile2: 87, mile3: 93, irc: 88, attendance: 95 },
@@ -984,7 +980,6 @@ export const sapStudentData = [
   { sno: 4, name: "Preethi J", email: "preethi04@gmail.com", bookingId: "SAP05-004", epicStatus: "Proficient", placement: "Not Placed", batch: "SAP05", phone: "9567891112", mode: "Offline", mile1: 82, mile2: 85, mile3: 81, irc: 84, attendance: 89 },
   { sno: 5, name: "Sanjay M", email: "sanjay05@gmail.com", bookingId: "SAP05-005", epicStatus: "Excellent", placement: "Placed", batch: "SAP05", phone: "9789012346", mode: "Online", mile1: 90, mile2: 92, mile3: 93, irc: 91, attendance: 95 }
 ];
-
 
 export const devopsStudentData = [
   { sno: 1, name: "Vikram R", email: "vikram01@gmail.com", bookingId: "DV01-001", epicStatus: "Excellent", placement: "Placed", batch: "DV01", phone: "9876543001", mode: "Online", mile1: 92, mile2: 90, mile3: 95, irc: 91, attendance: 96 },
@@ -1014,7 +1009,6 @@ export const devopsStudentData = [
   { sno: 5, name: "Manikandan V", email: "manikandan05@gmail.com", bookingId: "DV05-005", epicStatus: "Excellent", placement: "Placed", batch: "DV05", phone: "9789012025", mode: "Online", mile1: 95, mile2: 96, mile3: 94, irc: 93, attendance: 97 }
 ];
 
-
 // ➤ Provider Component
 const DataProvider = ({ children }) => {
   const [batchingvalue, setBatchingValue] = useState(""); // selected domain
@@ -1024,8 +1018,9 @@ const DataProvider = ({ children }) => {
   const [loginUser, setLoginUser] = useState(""); // logged-in user
   const [batchHead, setBatchHead] = useState(""); // domain title for UI
   const [batchData, setBatchData] = useState([]); // currently active batch data
- // Global student data (all domains)
- const [allStudentData, setAllStudentData] = useState([]);
+  const [allBatchNames, setAllBatchNames] = useState([]); //all batch names across domains
+  const [allStudentData, setAllStudentData] = useState([]); // for storing all student records
+  const [liveCounts , setLiveCounts] = useState({batch : 0,student : 0 ,domain : 6}); // live counts of students in each domain
 
   // ➤ Domain-wise individual state data
   const [fullstackData, setFullstackData] = useState(fullstackInitial);
@@ -1053,6 +1048,56 @@ const DataProvider = ({ children }) => {
 
   const userName =  loginUser.split("@")[0];
   const firstLetterUser = loginUser?.charAt(0).toUpperCase() || "";
+
+  //all batches names across domains
+useEffect(() => {
+  const fullstack = fullstackData.map((b) => b.batchNo);
+  const analytics = dataanalyticsData.map((b) => b.batchNo);
+  const banking = bankingData.map((b) => b.batchNo);
+  const marketing = marketingStudentData.map((b) => b.batch); 
+  const sap = sapData.map((b) => b.batchNo);
+  const devops = devopsData.map((b) => b.batchNo); 
+
+  const all = [
+    ...fullstack,
+    ...analytics,
+    ...banking,
+    ...marketing,
+    ...sap,
+    ...devops,
+  ];
+
+  const uniqueSorted = Array.from(new Set(all)).sort();
+  setAllBatchNames(uniqueSorted);
+  
+  const allStudents = [
+    ...fullstackStudent,
+    ...dataanalyticsStudent,
+    ...bankingStudent,
+    ...marketingStudentData,
+    ...sapStudent,
+    ...devopsStudent,
+  ];
+  setAllStudentData(allStudents);
+  setLiveCounts((prev) => ({ ...prev, student: allStudents.length }));
+  const uniqueBatchCount = new Set(allStudents.map(student => student.batch)).size;
+  setLiveCounts(prev => ({ ...prev, batch: uniqueBatchCount }));
+
+}, [
+  fullstackData,
+  dataanalyticsData,
+  bankingData,
+  marketingStudentData,
+  sapData,
+  devopsData, 
+  fullstackStudent,
+  dataanalyticsStudent,
+  bankingStudent,
+  sapStudent,
+  devopsStudent,
+]);
+
+
 
   // Update batchData and batchHead when batchingvalue changes
   useEffect(() => {
@@ -1237,7 +1282,7 @@ const deleteStudent = (bookingId) => {
 
   // 🔧 Add a new batch to current domain
   const addBatch = (newBatch) => {
-    const batchWithId = { ...newBatch, id: Date.now() };
+    const batchWithId = { ...newBatch };
 
     switch (batchingvalue) {
       case "fullstack":
@@ -1473,7 +1518,7 @@ const addOpportunity = (opportunity) => {
 
   return (
     <DataContext.Provider
-      value={{ batchingvalue,setBatchingValue,setStudentBatchSelect,loginUser,setLoginUser,firstLetterUser,batchHead,batchData,addBatch,updateBatch,deleteBatch ,userName , selectedBatch,setSelectedBatch,getStatsByBatch,batchStatsData,batchesNames,studentData,deleteStudent,updateStudent,addStudent,addMultipleStudents,addOpportunity,getOpportunitiesByDomain
+      value={{ batchingvalue,setBatchingValue,setStudentBatchSelect,loginUser,setLoginUser,firstLetterUser,batchHead,batchData,addBatch,updateBatch,deleteBatch ,userName , selectedBatch,setSelectedBatch,getStatsByBatch,batchStatsData,batchesNames,studentData,deleteStudent,updateStudent,addStudent,addMultipleStudents,addOpportunity,getOpportunitiesByDomain,allBatchNames,allStudentData,batchData,studentData,liveCounts
       }}
     >  
       {children}
