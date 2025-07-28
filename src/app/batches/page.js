@@ -847,8 +847,8 @@ const validateBatchNumber = (value) => {
           <div ref={searchContainerRef} className='p-3'>
 
               {/* ====== STATS CARDS ====== */}
-              <div className="grid grid-cols-1 md:grid-cols-4 md:justify-between gap-3 mb-7">
-                  {/* Ongoing */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-7 w-full">
+                {/* Ongoing */}
                   <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
                       <div className="absolute left-6 top-6 text-gray-700 text-4xl font-bold leading-10">{ongoingCount}</div>
                       <div className="absolute left-6 top-[84px] text-xl text-gray-700 font-normal leading-7">Ongoing&nbsp;Count</div>
@@ -893,7 +893,7 @@ const validateBatchNumber = (value) => {
                                 <Image src="/people.png" alt="Total Students Icon" width={30} height={35} />
                               </div>
                             </div>
-                          </div>
+              </div>
 
                           {/* ====== SEARCH SECTION ====== */}
               <div id="search-container" className="bg-[#F4F3FF] py-3 rounded-xl" tabIndex={0}>
