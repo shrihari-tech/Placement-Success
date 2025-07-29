@@ -1,24 +1,42 @@
 "use client";
 
-import React from "react";
+import React ,{useState,useEffect} from "react";
 import NavBar from "../navBar/page";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import FlipCard from "../flipcard/flipcard";
 import { ComposedChart, Line, Area, XAxis, YAxis, CartesianGrid, LabelList, ResponsiveContainer } from 'recharts';
+import { IoMdStar } from "react-icons/io";
 import { useDataContext } from '../context/dataContext';
-
+import { FaFire } from 'react-icons/fa';
+import { FcOk } from "react-icons/fc";
+import { AiFillThunderbolt } from "react-icons/ai";
+import { FaGraduationCap ,FaCheck } from "react-icons/fa6";
+import { IoCloseCircleSharp } from "react-icons/io5";
 export default function HomePage() {
-  const { userName, getStatsByBatch ,setBatchingValue ,liveCounts } = useDataContext();
-  const router=useRouter();
-  const cardFlip = true; // Set to true to enable card flip functionality
+  const { userName, getStatsByBatch, setBatchingValue, liveCounts } = useDataContext();
+  const router = useRouter();
+  const cardFlip = true;
+  const [isMobile, setIsMobile] = useState(false);
+  const [flippedCardId, setFlippedCardId] = useState(null);
 
-  
+  // Responsive detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleCardClick = (id) => {
-    setBatchingValue(id);
-    router.push('/batches');
-    
+    if (isMobile) {
+      setFlippedCardId((prevId) => (prevId === id ? null : id));
+    } else {
+      setBatchingValue(id);
+      router.push('/batches');
+    }
   };
 
   const cards = [
@@ -313,8 +331,14 @@ export default function HomePage() {
                 <div className="grid grid-cols-1 gap-10 sm:grid-cols-3">
                   {cards.map((card) => {
                     const stats = getStatsByBatch(card.id) || {};
+                    const isFlipped = isMobile ? flippedCardId === card.id : false;
                     return (
-                    <div key={card.id} className="transition-all duration-300" data-is-card="true" onClick={() => handleCardClick(card.id)}>
+                      <div
+                        key={card.id}
+                        className="transition-all duration-300"
+                        data-is-card="true"
+                        onClick={() => handleCardClick(card.id)}
+                      >
                         <FlipCard
                           frontContent={
                             <div className="flex flex-col items-center gap-10 ">
@@ -331,55 +355,27 @@ export default function HomePage() {
                               <p className="text-xs md:text-sm font-bold pb-2 md:pb-3">{card.title}</p>
                               <div className="grid grid-cols-2 gap-2">
                                 {[
-                                  { label: "Completed Batches", value: stats.completedBatches || 0 , color: "bg-green-100 border-green-300" ,         icon: (
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-          </svg>
-        ),},
-                                  { label: "Ongoing Batches", value: stats.ongoingBatches || 0 , color: "bg-blue-100 border-blue-300" ,         icon: (
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clipRule="evenodd" />
-          </svg>
-        ),},
-                                  { label: "Completed Students", value: stats.completedStudents || 0 , color: "bg-purple-100 border-purple-300",         icon: (
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-600" viewBox="0 0 20 20" fill="currentColor">
-            <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
-          </svg>
-        ),},
-                                  { label: "Ongoing Students", value: stats.ongoingStudents || 0 , color: "bg-indigo-100 border-indigo-300" ,         icon: (
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-indigo-600" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clipRule="evenodd" />
-            <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z" />
-          </svg>
-        ),},
-                                  { label: "Placement Eligible", value: stats.placementEligible || 0 , color: "bg-yellow-100 border-yellow-300" ,         icon: (
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-yellow-600" viewBox="0 0 20 20" fill="currentColor">
-            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-          </svg>
-        ),},
-                                  { label: "Already Placed", value: stats.alreadyPlaced || 0 ,color: "bg-teal-100 border-teal-300" ,         icon: (
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-teal-600" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-          </svg>
-        ),},
-                                  { label: "Yet to Place", value: stats.yetToPlace || 0, colSpan: 2 , color: "bg-rose-100 border-rose-300",         icon: (
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-rose-600" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-          </svg>
-        ),},
+                                  { label: "Completed Batches", value: stats.completedBatches || 0 , color: "bg-green-100 border-green-300" , icon: <FcOk className="text-lg"/>  },
+                                  { label: "Ongoing Batches", value: stats.ongoingBatches || 0 , color: "bg-blue-100 border-blue-300" ,         icon: <FaFire className="text-lg text-blue-500" /> },
+                                  { label: "Completed Students", value: stats.completedStudents || 0 , color: "bg-purple-100 border-purple-300",         icon: <FaGraduationCap className="text-lg text-purple-600"/> },
+                                  { label: "Ongoing Students", value: stats.ongoingStudents || 0 , color: "bg-indigo-100 border-indigo-300" ,         icon:<AiFillThunderbolt className="text-lg text-orange-500" />  },
+                                  { label: "Placement Eligible", value: stats.placementEligible || 0 , color: "bg-yellow-100 border-yellow-300" ,         icon: <IoMdStar className="text-xl text-yellow-500"/>},
+                                  { label: "Already Placed", value: stats.alreadyPlaced || 0 ,color: "bg-teal-100 border-teal-300" ,         icon: <FaCheck className="text-xl text-green-500"/> },
+                                  { label: "Yet to Place", value: stats.yetToPlace || 0, colSpan: 2 , color: "bg-rose-100 border-rose-300",         icon: <IoCloseCircleSharp className="text-lg text-red-500" />},
                                 ].map((item, index) => (
                                   <div
                                     key={index}
-                                    className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] hover:bg-[#e1cfff] shadow p-1 md:px-4 transition ${
+                                    className={` justify-center items-center bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] hover:bg-[#e1cfff] shadow p-1 md:px-4 transition ${
                                       item.colSpan ? 'col-span-2' : ''
                                     }`}
                                   >
-                                    <div><span className="inline-block">{item.icon}</span></div> <div><span className="font-medium">{item.label}:</span>{item.value}</div> 
+                                    <div className="P-1"><span className="inline-block">{item.icon}</span></div> <div><span className="font-medium">{item.label}:</span>{item.value}</div> 
                                   </div>
                                 ))}
                               </div>
                             </div>
                           }
+                          isFlipped={isFlipped}
                         />
                       </div>
                     );
