@@ -30,6 +30,7 @@ export default function StudentDataPage() {
   const [deleteError, setDeleteError] = useState("");
   const [editingStudent, setEditingStudent] = useState(null);
   const [deletingStudent, setDeletingStudent] = useState(null);
+  const [defaultShow, setDefaultShow] = useState(true);
 
   const batchDropdownRef = useRef(null);
   const statusDropdownRef = useRef(null);
@@ -192,16 +193,16 @@ useEffect(() => {
   };
 }, [handleSearch, activeTab]);
 
-  useEffect(() => {
-    if (editingStudent || showDeleteModal) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [editingStudent, showDeleteModal]);
+    useEffect(() => {
+        if (defaultShow) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
+    }, [defaultShow]);
 
   return (
     <div className="flex min-h-screen mt-16 md:mt-1">
@@ -211,18 +212,18 @@ useEffect(() => {
             {batchHead}
           </h1>
         </div>
-      <div className={`px-8 pt-20 flex-1 bg-[#F8FAFD] mb-12`}
+      <div className={`px-10 pt-20 flex-1 bg-[#F8FAFD] mb-12`}
         ref={searchContainerRef}
       >
 
         {/* ====== TABS ====== */}
-        <div className="flex bg-[#ECE6F0] rounded-xl p-1 mb-4 relative">
+        <div className="flex bg-[#ECE6F0] rounded-xl py-2 mb-4 relative mt-5">
           <div
-            className={`absolute top-1 bottom-1 bg-[#F8FAFD] rounded-lg shadow-sm transition-all
+            className={`absolute top-1 bottom-1 py-2 bg-[#F8FAFD] rounded-lg shadow-sm transition-all
             duration-300 ease-in-out z-0
             ${
               activeTab === "Student Data"
-                ? "left-1 w-[calc(25%-0.5rem)]"
+                ? "left-1 w-[calc(25%-0.5rem)] py-2"
                 : activeTab === "Scores"
                 ? "left-[calc(25%+0.25rem)] md:left-[calc(25%+0.25rem)] w-[calc(25%-0.8rem)] md:w-[calc(25%-0.5rem)]"
                 : activeTab === "Opportunities"
@@ -526,7 +527,7 @@ useEffect(() => {
                     />
                     Reset
                   </button>
-                  <BulkModal />
+                  {defaultShow && <BulkModal />}  
                 </div>
               </div>
             </div>
