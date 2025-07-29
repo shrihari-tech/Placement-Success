@@ -1,9 +1,43 @@
 "use client";
 import { useEffect, useState } from "react";
-import { RiCloseCircleLine } from "react-icons/ri";
+import { RiCloseCircleLine } from "react-icons/ri"; 
+import { useDataContext } from "../context/dataContext";
+
 
 const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
   const [infoTab, setInfoTab] = useState("Domain");
+  const [sectionData, setSectionData] = useState({});
+
+  const { batchData } = useDataContext();
+
+    const toDDMMYYYY = (d) => {
+    const date = d instanceof Date ? d : new Date(d);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = date.toLocaleString("en-US", { month: "short" }); // e.g., Jul
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
+  const parseDate = (str) => {
+    if (!str) return null;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return new Date(str);
+    if (/^\d{2}-\d{2}-\d{4}$/.test(str)) {
+      const [dd, mm, yyyy] = str.split("-");
+      return new Date(`${yyyy}-${mm}-${dd}`);
+    }
+    return new Date(str);
+  };
+
+  const formatDate = (str) => (str ? toDDMMYYYY(parseDate(str)) : "");
+
+useEffect(() => {
+  if(batchData && selectedStudent) {
+    const batchInfo = batchData.find(b => b.batchNo.trim() === selectedStudent.batch.trim());
+    if (batchInfo) {
+      setSectionData(batchInfo.sections);
+    }
+  }
+},[selectedStudent.batch])
 
   useEffect(() => {
     if (isOpen) {
@@ -15,6 +49,7 @@ const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
     return () => {
       document.body.style.overflow = "";
     };
+  
   }, [isOpen]);
 
   if (!isOpen || !selectedStudent) return null;
@@ -150,17 +185,17 @@ const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center text-sm sm:text-base">
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
                   <p className="text-gray-800 font-bold">Start Date:</p>
-                  <p className="text-gray-700">1-Jan-2025</p>
+                  <p className="text-gray-700"> {formatDate(sectionData.Domain?.startDate) || "N/A"}</p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
                   <p className="text-gray-800 font-bold">End Date:</p>
-                  <p className="text-gray-700">1-Feb-2025</p>
+                  <p className="text-gray-700">{formatDate(sectionData.Domain?.endDate) || "N/A"}</p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
                   <p className="text-gray-800 font-bold">Domain Status:</p>
-                  <p className="text-gray-700">Ongoing</p>
+                  <p className="text-gray-700">{ new Date(sectionData.Domain?.endDate) < new Date() ? "Compeleted" : "Ongoing"}</p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
@@ -184,17 +219,17 @@ const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center text-sm sm:text-base">
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
                   <p className="text-gray-800 font-bold">Start Date:</p>
-                  <p className="text-gray-700">1-Mar-2025</p>
+                  <p className="text-gray-700">{formatDate(sectionData.Aptitude?.startDate) || "N/A"}</p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
                   <p className="text-gray-800 font-bold">End Date:</p>
-                  <p className="text-gray-700">1-Apr-2025</p>
+                  <p className="text-gray-700">{formatDate(sectionData.Aptitude?.endDate) || "N/A"}</p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
                   <p className="text-gray-800 font-bold">Aptitude Status:</p>
-                  <p className="text-gray-700">Ongoing</p>
+                  <p className="text-gray-700">{ new Date(sectionData.Aptitude?.endDate) < new Date() ? "Compeleted" : "Ongoing"}</p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
@@ -217,19 +252,19 @@ const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center text-sm sm:text-base">
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
                   <p className="text-gray-800 font-bold">Start Date:</p>
-                  <p className="text-gray-700">2-Apr-2025</p>
+                  <p className="text-gray-700">{formatDate(sectionData.Communication?.startDate) || "N/A"}</p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
                   <p className="text-gray-800 font-bold">End Date:</p>
-                  <p className="text-gray-700">2-May-2025</p>
+                  <p className="text-gray-700">{formatDate(sectionData.Communication.endDate) || "N/A"}</p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
                   <p className="text-gray-800 font-bold">
                     Communication Status:
                   </p>
-                  <p className="text-gray-700">Completed</p>
+                  <p className="text-gray-700">{ new Date(sectionData.Communication?.endDate) < new Date() ? "Compeleted" : "Ongoing" }</p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">

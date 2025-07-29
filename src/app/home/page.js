@@ -365,7 +365,7 @@ export default function HomePage() {
                                 ].map((item, index) => (
                                   <div
                                     key={index}
-                                    className={`justify-center items-center  bg-[#eaddff] rounded-md   hover:bg-[#e1cfff] shadow p-1 md:px-4 transition ${
+                                    className={`justify-center items-center ${item.color}  bg-[#eaddff] rounded-md   hover:bg-[#e1cfff] shadow p-1 md:px-4 transition ${
                                       item.colSpan ? 'col-span-2' : ''
                                     }`}
                                   >
@@ -382,7 +382,8 @@ export default function HomePage() {
                   })}
                 </div>
               </div>
-            </div>}
+            </div>
+            }
         </div>
       </main>
     </div>

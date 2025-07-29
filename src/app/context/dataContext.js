@@ -87,93 +87,12 @@ const sapOpportunitiesInitial = [];
 const devopsOpportunitiesInitial = [];
 
 // ===== Full‑Stack =====
-export const fullstackInitial = [
-  {
-    id: 1,
-    batchNo: "FS01",
-    mode: "Online",
-    status: "Completed",
-    startDate: "2024-01-01",
-    endDate: "2024-06-30",
-    sections: {
-      Domain: { startDate: "2024-01-01", endDate: "2024-03-01" },
-      Aptitude: { startDate: "2024-03-02", endDate: "2024-05-01" },
-      Communication: { startDate: "2024-05-02", endDate: "2024-06-30" },
-    },
-    session: "FN",
-    studentsPlaced: 120,
-    pending: 40,
-    totalCount: 160,
-  },
-  {
-    id: 2,
-    batchNo: "FS02",
-    mode: "Offline",
-    status: "Completed",
-    startDate: "2024-02-01",
-    endDate: "2024-07-31",
-    sections: {
-      Domain: { startDate: "2024-02-01", endDate: "2024-04-01" },
-      Aptitude: { startDate: "2024-04-02", endDate: "2024-06-01" },
-      Communication: { startDate: "2024-06-02", endDate: "2024-07-31" },
-    },
-    session: "AN",
-    studentsPlaced: 85,
-    pending: 35,
-    totalCount: 120,
-  },
-  {
-    id: 3,
-    batchNo: "FS03",
-    mode: "Online",
-    status: "Completed",
-    startDate: "2024-03-01",
-    endDate: "2024-08-31",
-    sections: {
-      Domain: { startDate: "2024-03-01", endDate: "2024-05-01" },
-      Aptitude: { startDate: "2024-05-02", endDate: "2024-07-01" },
-      Communication: { startDate: "2024-07-02", endDate: "2024-08-31" },
-    },
-    session: "FN",
-    studentsPlaced: 100,
-    pending: 50,
-    totalCount: 150,
-  },
-  {
-    id: 4,
-    batchNo: "FS04",
-    mode: "Offline",
-    status: "Completed",
-    startDate: "2024-04-01",
-    endDate: "2024-09-30",
-    sections: {
-      Domain: { startDate: "2024-04-01", endDate: "2024-06-01" },
-      Aptitude: { startDate: "2024-06-02", endDate: "2024-08-01" },
-      Communication: { startDate: "2024-08-02", endDate: "2024-09-30" },
-    },
-    session: "AN",
-    studentsPlaced: 110,
-    pending: 45,
-    totalCount: 155,
-  },
-  {
-    id: 5,
-    batchNo: "FS05",
-    mode: "Online",
-    status: "Completed",
-    startDate: "2024-05-01",
-    endDate: "2024-10-31",
-    sections: {
-      Domain: { startDate: "2024-05-01", endDate: "2024-07-01" },
-      Aptitude: { startDate: "2024-07-02", endDate: "2024-09-01" },
-      Communication: { startDate: "2024-09-02", endDate: "2024-10-31" },
-    },
-    session: "FN",
-    studentsPlaced: 95,
-    pending: 25,
-    totalCount: 120,
-  },
-];
+export const fullstackInitial = [{id:1,batchNo:"FS01",mode:"Online",status:"Completed",startDate:"2024-01-03",endDate:"2024-06-28",sections:{Domain:{startDate:"2024-01-03",endDate:"2024-02-28"},Aptitude:{startDate:"2024-03-01",endDate:"2024-04-25"},Communication:{startDate:"2024-04-26",endDate:"2024-06-28"}},session:"FN",studentsPlaced:120,pending:40,totalCount:160},
+  {id:2,batchNo:"FS02",mode:"Offline",status:"Completed",startDate:"2024-02-05",endDate:"2024-08-02",sections:{Domain:{startDate:"2024-02-05",endDate:"2024-03-30"},Aptitude:{startDate:"2024-04-01",endDate:"2024-06-02"},Communication:{startDate:"2024-06-04",endDate:"2024-08-02"}},session:"AN",studentsPlaced:85,pending:35,totalCount:120},
+  {id:3,batchNo:"FS03",mode:"Online",status:"Completed",startDate:"2024-03-04",endDate:"2024-09-01",sections:{Domain:{startDate:"2024-03-04",endDate:"2024-04-29"},Aptitude:{startDate:"2024-04-30",endDate:"2024-06-25"},Communication:{startDate:"2024-06-26",endDate:"2024-09-01"}},session:"FN",studentsPlaced:100,pending:50,totalCount:150},
+  {id:4,batchNo:"FS04",mode:"Offline",status:"Completed",startDate:"2024-04-05",endDate:"2024-10-04",sections:{Domain:{startDate:"2024-04-05",endDate:"2024-06-05"},Aptitude:{startDate:"2024-06-06",endDate:"2024-08-05"},Communication:{startDate:"2024-08-06",endDate:"2024-10-04"}},session:"AN",studentsPlaced:110,pending:45,totalCount:155},
+  {id:5,batchNo:"FS05",mode:"Online",status:"Completed",startDate:"2024-05-06",endDate:"2024-11-04",sections:{Domain:{startDate:"2024-05-06",endDate:"2024-07-01"},Aptitude:{startDate:"2024-07-02",endDate:"2024-09-02"},Communication:{startDate:"2024-09-03",endDate:"2024-11-04"}},session:"FN",studentsPlaced:95,pending:25,totalCount:120}];
+
 
 export const dataanalyticsInitial = [
   {
