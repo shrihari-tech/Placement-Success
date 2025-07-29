@@ -365,7 +365,7 @@ export default function HomePage() {
                                 ].map((item, index) => (
                                   <div
                                     key={index}
-                                    className={` justify-center items-center bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] hover:bg-[#e1cfff] shadow p-1 md:px-4 transition ${
+                                    className={`justify-center items-center  bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] hover:bg-[#e1cfff] shadow p-1 md:px-4 transition ${
                                       item.colSpan ? 'col-span-2' : ''
                                     }`}
                                   >

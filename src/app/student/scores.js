@@ -613,13 +613,13 @@ const handleDeleteScope = () => {
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
                                 {filteredScores.map((student, index) => (
-                                    <tr key={student.bookingId} className="hover:bg-[#e1cfff] hover:text-[#4005a0]">
+                                    <tr key={student.bookingId} className="hover:bg-[#f4f3ff] hover:text-gray-900 ">
                                         <td className="px-4 text-gray-700 text-center py-3 text-sm whitespace-nowrap">{index + 1}</td>
-                                        <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">{student.name}</td>
-                                        <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">{student.email}</td>
-                                        <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">{student.bookingId}</td>
-                                        <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">{student.phone}</td>
-                                        <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">
+                                        <td className="px-4 py-3 text-center text-gray-500 text-sm whitespace-nowrap">{student.name}</td>
+                                        <td className="px-4 py-3 text-center text-gray-500 text-sm whitespace-nowrap">{student.email}</td>
+                                        <td className="px-4 py-3 text-center text-gray-500 text-sm whitespace-nowrap">{student.bookingId}</td>
+                                        <td className="px-4 py-3 text-center text-gray-500 text-sm whitespace-nowrap">{student.phone}</td>
+                                        <td className="px-4 py-3 text-center text-gray-500 text-sm whitespace-nowrap">
                                             {renderScoreCell(student)}
                                         </td>
                                         <td className="px-4 py-3 text-sm whitespace-nowrap">
