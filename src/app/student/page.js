@@ -193,16 +193,6 @@ useEffect(() => {
   };
 }, [handleSearch, activeTab]);
 
-    useEffect(() => {
-        if (defaultShow) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'auto';
-        }
-        return () => {
-            document.body.style.overflow = 'auto';
-        };
-    }, [defaultShow]);
 
   return (
     <div className="flex min-h-screen mt-16 md:mt-1">
@@ -235,8 +225,8 @@ useEffect(() => {
             (label) => (
               <span
                 key={label}
-                className={`flex-1 items-center text-gray-800 text-center py-2 text-xs font-semibold select-none cursor-default relative z-10
-                ${activeTab === label ? "text-indigo-600" : "text-black"}`}
+                className={`flex-1 cursor-pointer items-center text-gray-700 text-center py-2 text-xs font-semibold select-none relative z-10
+                ${activeTab === label ? "text-indigo-600" : "text-gray-700"}`}
                 onClick={() => setActiveTab(label)}
               >
                 {label}

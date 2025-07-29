@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef , useEffect } from "react";
 import { RiCloseCircleLine } from "react-icons/ri";
 import { useDataContext } from "../context/dataContext";
 import * as XLSX from "xlsx";
@@ -264,6 +264,17 @@ addMultipleStudents(newStudentsArray);
   const clearField = (field, setter) => {
     setter("");
   };
+
+      useEffect(() => {
+          if (isOpen) {
+              document.body.style.overflow = 'hidden';
+          } else {
+              document.body.style.overflow = 'auto';
+          }
+          return () => {
+              document.body.style.overflow = 'auto';
+          };
+      }, [isOpen]);
 
   return (
     <div>
