@@ -1,14 +1,14 @@
 'use client';
 import React from 'react';
 
-export default function FlipCard({ frontContent, backContent }) {
+export default function FlipCard({ frontContent, backContent, isFlipped }) {
   return (
     <div
       className={`
         relative cursor-pointer group
         [perspective:1000px]
         w-85 h-80 sm:w-85 sm:h-80
-        hover:translate-y-[-15px]
+        md:hover:translate-y-[-15px]
         transition-all duration-500 ease-in-out
       `}
     >
@@ -16,6 +16,7 @@ export default function FlipCard({ frontContent, backContent }) {
         className={`
           relative w-full h-full transition-transform duration-700
           [transform-style:preserve-3d]
+          ${isFlipped ? 'rotate-y-180' : ''}
           group-hover:rotate-y-180
         `}
       >

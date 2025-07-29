@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useRef , useEffect } from "react";
+import { useState, useRef } from "react";
 import { RiCloseCircleLine } from "react-icons/ri";
 import { useDataContext } from "../context/dataContext";
 import * as XLSX from "xlsx";
 import { toast } from "sonner";
 
 export default function BulkModal() {
-  const { studentData, addStudent , addMultipleStudents } = useDataContext();
+  const { studentData, addStudent, addMultipleStudents } = useDataContext();
   const [isOpen, setIsOpen] = useState(false);
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
@@ -16,6 +16,24 @@ export default function BulkModal() {
   const [uploadMessage, setUploadMessage] = useState("");
   const fileInputRef = useRef(null);
 
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+
+    if (isOpen || showBatchInput) {
+      html.style.overflow = "hidden";
+      body.style.overflow = "hidden";
+    } else {
+      html.style.overflow = "auto";
+      body.style.overflow = "auto";
+    }
+
+    return () => {
+      html.style.overflow = "auto";
+      body.style.overflow = "auto";
+    };
+  }, [isOpen, showBatchInput]);
+
   const headerFieldsToIgnore = [
     "BASIC ESSENTIAL DETAILS",
     "10TH & 12TH DETAILS",
@@ -23,7 +41,7 @@ export default function BulkModal() {
     "PG DETAILS",
     "Languages Known",
   ];
-  
+
   const requiredDataFields = [
     "BATCH NAME",
     "STUDENT FULL NAME (AS PER DOCUMENTS)",
@@ -211,28 +229,29 @@ export default function BulkModal() {
       if (validationErrors.length > 0) {
         setError("Validation Errors:");
         validationErrors.forEach(({ rowIndex, errors }) => {
-          setError((prev) => `${prev}\nRow ${rowIndex + 3}: ${JSON.stringify(errors)}`);
+          setError(
+            (prev) => `${prev}\nRow ${rowIndex + 3}: ${JSON.stringify(errors)}`
+          );
         });
         return;
       }
-     // Add valid data to the specific domain
-const newStudentsArray = validData.map((student) => ({
-  name: student["STUDENT FULL NAME (AS PER DOCUMENTS)"],
-  email: student["EMAIL ADDRESS"],
-  bookingId: student["Booking ID"],
-  epicStatus: "",
-  placement: "",
-  batch: batchName,
-  phone: student["CONTACT NUMBER (10 digit)"] || "",
-  mode: student["MODE OF STUDY"] || "",
-}));
+      // Add valid data to the specific domain
+      const newStudentsArray = validData.map((student) => ({
+        name: student["STUDENT FULL NAME (AS PER DOCUMENTS)"],
+        email: student["EMAIL ADDRESS"],
+        bookingId: student["Booking ID"],
+        epicStatus: "",
+        placement: "",
+        batch: batchName,
+        phone: student["CONTACT NUMBER (10 digit)"] || "",
+        mode: student["MODE OF STUDY"] || "",
+      }));
 
-addMultipleStudents(newStudentsArray);
+      addMultipleStudents(newStudentsArray);
 
-
-
-
-      setUploadMessage(`File "${file.name}" uploaded successfully with batch: ${batchName}`);
+      setUploadMessage(
+        `File "${file.name}" uploaded successfully with batch: ${batchName}`
+      );
       setFile(null);
       setBatchName("");
       setShowBatchInput(false);
@@ -242,7 +261,6 @@ addMultipleStudents(newStudentsArray);
 
     reader.readAsArrayBuffer(file);
   };
-  
 
   const handleOpenModal = () => {
     setIsOpen(true);
@@ -296,7 +314,10 @@ addMultipleStudents(newStudentsArray);
           >
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg font-medium">Upload Bulk File</h2>
-              <button onClick={handleCloseModal} className="cursor-pointer text-gray-500 hover:text-gray-700">
+              <button
+                onClick={handleCloseModal}
+                className="cursor-pointer text-gray-500 hover:text-gray-700"
+              >
                 <RiCloseCircleLine size={20} />
               </button>
             </div>
@@ -317,7 +338,11 @@ addMultipleStudents(newStudentsArray);
               </div>
             </div>
 
-            {error && <div className="text-red-600 text-sm text-center mb-2">{error}</div>}
+            {error && (
+              <div className="text-red-600 text-sm text-center mb-2">
+                {error}
+              </div>
+            )}
             {uploadMessage && (
               <div className="text-green-600 text-sm text-center mb-2">
                 {uploadMessage}
@@ -341,11 +366,20 @@ addMultipleStudents(newStudentsArray);
                     onChange={(e) => setBatchName(e.target.value)}
                     className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
                   />
-                  <label htmlFor="batch-name" className="absolute px-2 text-m text-gray-500 duration-300 bg-white transform -translate-y-4 scale-75 top-7 z-5 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-9">
+                  <label
+                    htmlFor="batch-name"
+                    className="absolute px-2 text-m text-gray-500 duration-300 bg-white transform -translate-y-4 scale-75 top-7 z-5 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-9"
+                  >
                     Batch Name
                   </label>
                   {batchName && (
-                    <button onClick={(e) => { e.stopPropagation(); clearField("batchName", setBatchName); }} className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        clearField("batchName", setBatchName);
+                      }}
+                      className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700"
+                    >
                       <RiCloseCircleLine size={20} />
                     </button>
                   )}

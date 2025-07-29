@@ -177,21 +177,21 @@ export default function StudentDataPage() {
     setDeletingStudent(null);
   };
 
-useEffect(() => {
-  const handleGlobalKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (activeTab === "Student Data") {
-        handleSearch();
+  useEffect(() => {
+    const handleGlobalKeyDown = (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        if (activeTab === "Student Data") {
+          handleSearch();
+        }
       }
-    }
-  };
+    };
 
-  window.addEventListener("keydown", handleGlobalKeyDown);
-  return () => {
-    window.removeEventListener("keydown", handleGlobalKeyDown);
-  };
-}, [handleSearch, activeTab]);
+    window.addEventListener("keydown", handleGlobalKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleGlobalKeyDown);
+    };
+  }, [handleSearch, activeTab]);
 
 
   return (
@@ -617,7 +617,9 @@ useEffect(() => {
           <BatchChange />
         ) : activeTab === "Opportunities" ? (
           <Opportunity />
-        ) : <Scores/>}
+        ) : (
+          <Scores />
+        )}
       </div>
       {/*View Student Modal*/}
       {selectedStudent && (
