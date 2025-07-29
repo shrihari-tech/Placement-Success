@@ -75,21 +75,21 @@ const BatchChange = () => {
     }
     setShowTable(true);
   }, [fromBatch, toBatch]);
-  
-     useEffect(() => {
-          const handleSearchGlobalKeyDown = (e) => {
-              if (e.key === "Enter") {
-                  e.preventDefault();
-                  handleSearch();
-              }
-          };
-  
-          window.addEventListener("keydown", handleSearchGlobalKeyDown);
-  
-          return () => {
-              window.removeEventListener("keydown", handleSearchGlobalKeyDown);
-          };
-      }, [handleSearch]);
+
+  useEffect(() => {
+    const handleSearchGlobalKeyDown = (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleSearch();
+      }
+    };
+
+    window.addEventListener("keydown", handleSearchGlobalKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleSearchGlobalKeyDown);
+    };
+  }, [handleSearch]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -280,7 +280,7 @@ const BatchChange = () => {
                 {filteredStudents.map((student, index) => (
                   <tr
                     key={student.bookingId}
-                    className="hover:bg-[#e1cfff] hover:text-[#4005a0]"
+                    className="hover:bg-[#f4f3ff] hover:text-[#4005a0]"
                   >
                     <td className="px-4 text-center py-3 text-sm whitespace-nowrap">
                       {index + 1}
