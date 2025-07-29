@@ -30,6 +30,7 @@ export default function StudentDataPage() {
   const [deleteError, setDeleteError] = useState("");
   const [editingStudent, setEditingStudent] = useState(null);
   const [deletingStudent, setDeletingStudent] = useState(null);
+  const [defaultShow, setDefaultShow] = useState(true);
 
   const batchDropdownRef = useRef(null);
   const statusDropdownRef = useRef(null);
@@ -192,38 +193,37 @@ export default function StudentDataPage() {
     };
   }, [handleSearch, activeTab]);
 
-  useEffect(() => {
-    if (editingStudent || showDeleteModal) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [editingStudent, showDeleteModal]);
+    useEffect(() => {
+        if (defaultShow) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
+    }, [defaultShow]);
 
   return (
     <div className="flex min-h-screen mt-16 md:mt-1">
       <Toaster position="top-right" />
-      <div
-        className={`px-3 pt-20 flex-1 bg-[#F8FAFD] mb-12`}
-        ref={searchContainerRef}
-      >
-        {/* ====== HEADER ====== */}
-        <div className="fixed top-15 md:top-0 ms-[-19px] border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 z-20">
+        <div className="fixed top-15 md:top-0 ms-[-19px] border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 md:px-8 z-20">
           <h1 className="fixed pl-3 text-xl text-gray-800 font-semibold">
             {batchHead}
           </h1>
         </div>
+      <div className={`px-10 pt-20 flex-1 bg-[#F8FAFD] mb-12`}
+        ref={searchContainerRef}
+      >
+
         {/* ====== TABS ====== */}
-        <div className="flex bg-[#ECE6F0] rounded-xl p-1 mb-4 relative">
+        <div className="flex bg-[#ECE6F0] rounded-xl py-2 mb-4 relative mt-5">
           <div
-            className={`absolute top-1 bottom-1 bg-[#F8FAFD] rounded-lg shadow-sm transition-all
+            className={`absolute top-1 bottom-1 py-2 bg-[#F8FAFD] rounded-lg shadow-sm transition-all
             duration-300 ease-in-out z-0
             ${
               activeTab === "Student Data"
-                ? "left-1 w-[calc(25%-0.5rem)]"
+                ? "left-1 w-[calc(25%-0.5rem)] py-2"
                 : activeTab === "Scores"
                 ? "left-[calc(25%+0.25rem)] md:left-[calc(25%+0.25rem)] w-[calc(25%-0.8rem)] md:w-[calc(25%-0.5rem)]"
                 : activeTab === "Opportunities"
@@ -510,7 +510,7 @@ export default function StudentDataPage() {
                 <div className="flex gap-2 md:justify-end">
                   <button
                     onClick={handleSearch}
-                    className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-5 py-4 rounded-xl text-sm font-semibold"
+                    className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4] text-white px-5 py-4 rounded-xl text-sm font-semibold"
                   >
                     Search
                   </button>
@@ -527,7 +527,7 @@ export default function StudentDataPage() {
                     />
                     Reset
                   </button>
-                  <BulkModal />
+                  {defaultShow && <BulkModal />}  
                 </div>
               </div>
             </div>
@@ -565,27 +565,27 @@ export default function StudentDataPage() {
                       {filteredStudents.map((student, index) => (
                         <tr
                           key={student.bookingId}
-                          className="hover:bg-[#e1cfff] hover:text-[#4005a0]"
+                          className="hover:bg-[#F4F3FF] hover:text-gray-900   text-gray-500"
                         >
-                          <td className="px-4 text-gray-700 text-center py-3 text-sm whitespace-nowrap">
+                          <td className="px-5 text-gray-700 text-center py-3 text-sm whitespace-nowrap">
                             {index + 1}
                           </td>
-                          <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">
+                          <td className="px-5 py-3 text-center  text-sm whitespace-nowrap">
                             {student.name}
                           </td>
-                          <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">
+                          <td className="px-5 py-3 text-center  text-sm whitespace-nowrap">
                             {student.email}
                           </td>
-                          <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">
+                          <td className="px-5 py-3 text-center text-sm whitespace-nowrap">
                             {student.bookingId}
                           </td>
-                          <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">
+                          <td className="px-5 py-3 text-center  text-sm whitespace-nowrap">
                             {student.phone}
                           </td>
-                          <td className="px-4 py-3 text-center text-gray-700 text-sm whitespace-nowrap">
+                          <td className="px-5 py-3 text-center  text-sm whitespace-nowrap">
                             {student.mode}
                           </td>
-                          <td className="px-4 py-3 text-sm whitespace-nowrap">
+                          <td className="px-5 py-3 text-sm whitespace-nowrap">
                             <div className="flex gap-1 items-center justify-center">
                               <button
                                 className="p-1 hover:bg-gray-100 rounded cursor-pointer"
@@ -609,7 +609,7 @@ export default function StudentDataPage() {
                                   setDeleteConfirmationInput("");
                                   setDeleteError("");
                                 }}
-                                className="cursor-pointer p-1 hover:bg-gray-100 rounded text-black"
+                                className="cursor-pointer p-1 hover:bg-gray-100 rounded "
                               >
                                 <FiTrash2 className="h-4 w-4" />
                               </button>

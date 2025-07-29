@@ -20,7 +20,7 @@ export default function BulkModal() {
     const html = document.documentElement;
     const body = document.body;
 
-    if (showBatchInput) {
+    if (isOpen || showBatchInput) {
       html.style.overflow = "hidden";
       body.style.overflow = "hidden";
     } else {
@@ -32,7 +32,7 @@ export default function BulkModal() {
       html.style.overflow = "auto";
       body.style.overflow = "auto";
     };
-  }, [showBatchInput]);
+  }, [isOpen, showBatchInput]);
 
   const headerFieldsToIgnore = [
     "BASIC ESSENTIAL DETAILS",
