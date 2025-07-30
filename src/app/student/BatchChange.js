@@ -7,7 +7,9 @@ import { Toaster, toast } from "sonner";
 import Image from "next/image";
 
 const BatchChange = () => {
-  const { batchData, studentData, allBatchNames, allStudentData } =
+  // Track domain errors for each student row
+  const [domainErrors, setDomainErrors] = useState({});
+  const { batchData, allBatchNames, allStudentData } =
     useDataContext(); //
 
   const [fromBatch, setFromBatch] = useState("");
@@ -22,6 +24,10 @@ const BatchChange = () => {
 
   const [reason, setReason] = useState("");
   const [attachment, setAttachment] = useState(null);
+  const [isReasonEmpty, setIsReasonEmpty] = useState(false);
+  const [reasonError, setReasonError] = useState("");
+  const [isAttachmentEmpty, setIsAttachmentEmpty] = useState(false);
+  const [attachmentError, setAttachmentError] = useState("");
 
   const fromRef = useRef(null);
   const toRef = useRef(null);
@@ -52,7 +58,7 @@ const BatchChange = () => {
     return allStudentData.filter(
       (s) => (s.batch || s.batchNo)?.toLowerCase() === fromBatch.toLowerCase()
     );
-  }, [allStudentData, fromBatch]);
+  }, [allStudentData, fromBatch , toBatch]);
 
   const handleRefresh = () => {
     setFromBatch("");
@@ -104,6 +110,39 @@ const BatchChange = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleBatchchangeSubmit = () => {
+    if(!reason.trim() && !attachment) {
+      toast.error("Please enter a reason or attach an image before submitting.");
+      setIsReasonEmpty(true);
+      setReasonError("Please enter a reason for the batch change");
+      setIsAttachmentEmpty(true);
+      setAttachmentError("Please attach an image before submitting.");
+      return;
+
+    }
+    else if (!reason.trim()) {
+      toast.error("Please enter a reason for the batch change.");
+      setIsReasonEmpty(true)
+      setReasonError("Please enter a reason for the batch change");
+      return;
+    }
+    else if (!attachment) {
+      toast.error("Please attach an image before submitting.");
+      setIsAttachmentEmpty(true);
+      setAttachmentError("Please attach an image before submitting.");
+      return;
+    }
+    toast.success("Batch change request submitted successfully!");
+    setReason("");
+    setAttachment(null);
+    setIsReasonEmpty(false);
+    setReasonError("");
+    setIsAttachmentEmpty(false);
+    setAttachmentError("");
+    setShowTable(false);
+
+  }
 
   return (
     <div>
@@ -316,43 +355,44 @@ const BatchChange = () => {
                     </td>
                     <td className="px-4 py-3 text-center text-sm whitespace-nowrap">
                       <select
-                        className="border border-gray-300 rounded px-2 py-1 text-sm"
+                        className={`border rounded px-2 py-1 text-sm ${domainErrors[student.bookingId] ? 'border-red-500' : 'border-gray-300'}`}
                         defaultValue={(() => {
-                          const batchCode = (
-                            student.batch ||
-                            student.batchNo ||
-                            ""
-                          ).toUpperCase();
-
-                          if (batchCode.startsWith("FS"))
-                            return "Full Stack Development";
-                          if (batchCode.startsWith("DA"))
-                            return "Data Analytics & Science";
-                          if (batchCode.startsWith("BK"))
-                            return "Banking & Financial Services";
-                          if (batchCode.startsWith("MK"))
-                            return "Digital Marketing";
+                          const batchCode = (searchTermTo || "").toUpperCase();
+                          if (batchCode.startsWith("FS")) return "Full Stack Development";
+                          if (batchCode.startsWith("DA")) return "Data Analytics & Science";
+                          if (batchCode.startsWith("BK")) return "Banking & Financial Services";
+                          if (batchCode.startsWith("MK")) return "Digital Marketing";
                           if (batchCode.startsWith("SAP")) return "SAP";
                           if (batchCode.startsWith("DV")) return "DevOps";
-
-                          return ""; // fallback
+                          return "";
                         })()}
+                        onChange={e => {
+                          const selected = e.target.value;
+                          const batchCode = (searchTermTo || "").toUpperCase();
+                          let error = false;
+                          if (batchCode.startsWith("FS") && selected !== "Full Stack Development") error = true;
+                          if (batchCode.startsWith("DA") && selected !== "Data Analytics & Science") error = true;
+                          if (batchCode.startsWith("BK") && selected !== "Banking & Financial Services") error = true;
+                          if (batchCode.startsWith("MK") && selected !== "Digital Marketing") error = true;
+                          if (batchCode.startsWith("SAP") && selected !== "SAP") error = true;
+                          if (batchCode.startsWith("DV") && selected !== "DevOps") error = true;
+                          setDomainErrors(prev => ({ ...prev, [student.bookingId]: error }));
+                          if (error) {
+                            toast.error("Domain Name Changed");
+                          }
+                        }}
                       >
-                        <option value="Full Stack Development">
-                          Full Stack Development
-                        </option>
-                        <option value="Data Analytics & Science">
-                          Data Analytics & Science
-                        </option>
-                        <option value="Banking & Financial Services">
-                          Banking & Financial Services
-                        </option>
-                        <option value="Digital Marketing">
-                          Digital Marketing
-                        </option>
+                        <option value=""></option>
+                        <option value="Full Stack Development">Full Stack Development</option>
+                        <option value="Data Analytics & Science">Data Analytics & Science</option>
+                        <option value="Banking & Financial Services">Banking & Financial Services</option>
+                        <option value="Digital Marketing">Digital Marketing</option>
                         <option value="SAP">SAP</option>
                         <option value="DevOps">DevOps</option>
                       </select>
+                      {domainErrors[student.bookingId] && (
+                        <div className="text-red-500 text-xs mt-1">Domain Name Changed</div>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -369,9 +409,15 @@ const BatchChange = () => {
                 rows="3"
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
+                onFocus={() => setIsReasonEmpty(false)}
                 placeholder="Enter reason for batch change"
-                className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#6750A4]"
+                className={`w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#6750A4] ${isReasonEmpty ? 'border-red-500 border-1' : ''}`}
               ></textarea>
+              {isReasonEmpty && (
+                <p className="text-red-500 text-sm mt-1">
+                  {reasonError}
+                </p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -381,8 +427,14 @@ const BatchChange = () => {
                 type="file"
                 accept="image/"
                 onChange={(e) => setAttachment(e.target.files[0])}
-                className="cursor-pointer block w-full text-sm text-gray-700 border border-gray-300 rounded px-3 py-2 file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#E8DEF8] file:text-[#6750A4] hover:file:bg-[#d1c3ea]"
+                onFocus={() => setIsAttachmentEmpty(false)}
+                className={`cursor-pointer block w-full text-sm text-gray-700 border border-gray-300 rounded px-3 py-2 file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#E8DEF8] file:text-[#6750A4] hover:file:bg-[#d1c3ea]
+                  ${isAttachmentEmpty ? 'border-red-500 border-1' : ''}
+                  `}
               />
+              {isAttachmentEmpty && (
+                <p className="text-red-500 text-sm mt-1">
+                  {attachmentError}</p>)}
             </div>
             <div className="flex justify-end gap-4 pt-2">
               <button
@@ -393,16 +445,7 @@ const BatchChange = () => {
               </button>
               <button
                 onClick={() => {
-                  if (!reason.trim()) {
-                    toast.error("Please enter a reason for the batch change.");
-                    return;
-                  }
-                  if (!attachment) {
-                    toast.error("Please attach an image before submitting.");
-                    return;
-                  }
-
-                  toast.success("Submitted successfully");
+                  handleBatchchangeSubmit();
                 }}
                 className="cursor-pointer bg-[#6750A4] text-white hover:bg-[#584195] px-6 py-2 rounded-md text-sm font-medium"
               >

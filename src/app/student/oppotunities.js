@@ -308,7 +308,6 @@ const handleSaveSelectedStudents = () => {
   };
 
 
-
   const getFilteredBatches = () => {
     if (batchHead === "Full Stack Development") {
       return batchesNames.filter(batch => batch.startsWith("FS"));
@@ -971,4 +970,5 @@ const handleSaveSelectedStudents = () => {
     </div>
   );
 }
+
 
