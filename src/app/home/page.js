@@ -356,20 +356,20 @@ export default function HomePage() {
                               <div className="grid grid-cols-2 gap-2">
                                 {[
                                   { label: "Completed Batches", value: stats.completedBatches || 0 , color: "bg-green-100 border-green-300" , icon: <FcOk className="text-lg"/>  },
-                                  { label: "Ongoing Batches", value: stats.ongoingBatches || 0 , color: "bg-blue-100 border-blue-300" ,         icon: <FaFire className="text-lg text-blue-500" /> },
-                                  { label: "Completed Students", value: stats.completedStudents || 0 , color: "bg-purple-100 border-purple-300",         icon: <FaGraduationCap className="text-lg text-purple-600"/> },
-                                  { label: "Ongoing Students", value: stats.ongoingStudents || 0 , color: "bg-indigo-100 border-indigo-300" ,         icon:<AiFillThunderbolt className="text-lg text-orange-500" />  },
-                                  { label: "Placement Eligible", value: stats.placementEligible || 0 , color: "bg-yellow-100 border-yellow-300" ,         icon: <IoMdStar className="text-xl text-yellow-500"/>},
-                                  { label: "Already Placed", value: stats.alreadyPlaced || 0 ,color: "bg-teal-100 border-teal-300" ,         icon: <FaCheck className="text-xl text-green-500"/> },
-                                  { label: "Yet to Place", value: stats.yetToPlace || 0, colSpan: 2 , color: "bg-rose-100 border-rose-300",         icon: <IoCloseCircleSharp className="text-lg text-red-500" />},
+                                  { label: "Ongoing Batches", value: stats.ongoingBatches || 0 , color: "bg-blue-100 border-blue-300" ,   icon: <FaFire className="text-lg text-blue-500" /> },
+                                  { label: "Completed Students", value: stats.completedStudents || 0 , color: "bg-purple-100 border-purple-300", icon: <FaGraduationCap className="text-lg text-purple-600"/> },
+                                  { label: "Ongoing Students", value: stats.ongoingStudents || 0 , color: "bg-indigo-100 border-indigo-300" , icon:<AiFillThunderbolt className="text-lg text-orange-500" />  },
+                                  { label: "Placement Eligible", value: stats.placementEligible || 0 , color: "bg-yellow-100 border-yellow-300" , icon: <IoMdStar className="text-xl text-yellow-500"/>},
+                                  { label: "Already Placed", value: stats.alreadyPlaced || 0 ,color: "bg-teal-100 border-teal-300" , icon: <FaCheck className="text-xl text-green-500"/> },
+                                  { label: "Yet to Place", value: stats.yetToPlace || 0, colSpan: 2 , color: "bg-rose-100 border-rose-300", icon: <IoCloseCircleSharp className="text-lg text-red-500" />},
                                 ].map((item, index) => (
                                   <div
                                     key={index}
-                                    className={` justify-center items-center bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] hover:bg-[#e1cfff] shadow p-1 md:px-4 transition ${
+                                    className={`justify-center items-center ${item.color}  bg-[#eaddff] rounded-md   hover:bg-[#e1cfff] shadow p-1 md:px-4 transition ${
                                       item.colSpan ? 'col-span-2' : ''
                                     }`}
                                   >
-                                    <div className="P-1"><span className="inline-block">{item.icon}</span></div> <div><span className="font-medium">{item.label}:</span>{item.value}</div> 
+                                    <div className="P-1"><span className="inline-block">{item.icon}</span></div> <div><span className="font-medium">{item.label}:</span><span className="text-[#6b21a8] font-semibold">{item.value}</span></div> 
                                   </div>
                                 ))}
                               </div>
@@ -382,7 +382,8 @@ export default function HomePage() {
                   })}
                 </div>
               </div>
-            </div>}
+            </div>
+            }
         </div>
       </main>
     </div>
