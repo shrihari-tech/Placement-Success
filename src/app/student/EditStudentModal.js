@@ -414,7 +414,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
               </button>
             </div>
             <p className="mb-4 text-gray-700 text-sm">
-              Are you sure you want to update student <strong className='text-m'>{editingStudent.name}</strong>?
+              Are you sure you want to update student <strong className='text-m'>{initialStudent.name}</strong>?
             </p>
             <div className="flex justify-end gap-4">
               <button onClick={() => setShowConfirmModal(false)} className="cursor-pointer bg-[#e8def8] text-[#4a4459] px-4 py-2.5 rounded-2xl text-sm font-medium">

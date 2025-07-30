@@ -2,9 +2,10 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { FiChevronDown } from "react-icons/fi";
 import { RiCloseCircleLine } from "react-icons/ri";
-import { useDataContext } from "../context/dataContext"; //
+import { useDataContext } from "../context/dataContext"; 
 import { Toaster, toast } from "sonner";
 import Image from "next/image";
+import { set } from "date-fns";
 
 const BatchChange = () => {
   // Track domain errors for each student row
@@ -74,7 +75,7 @@ const BatchChange = () => {
     return allStudentData.filter(
       (s) => (s.batch || s.batchNo)?.toLowerCase() === fromBatch.toLowerCase()
     );
-  }, [allStudentData, toBatch]);
+  }, [allStudentData , toBatch]);
 
   const handleRefresh = () => {
     setFromBatch("");
@@ -86,7 +87,12 @@ const BatchChange = () => {
     setAttachment(null);
     setEditDiscarddModel(false);
     setSelectedStudents([]);
+    setAttachmentError("");
+    setIsAttachmentEmpty(false);
+    setShowConfirmModal(false);
+    setSelectedStudents([]); 
   };
+
 
   const handleSearch = useCallback(() => {
     if (!fromBatch || !toBatch) {
@@ -129,7 +135,7 @@ const BatchChange = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleBatchchangeSubmit = () => {
+   const confirmBatchChange = () => {
     // --- Validation ---
     if (!reason.trim() && !attachment) {
       toast.error(
@@ -150,11 +156,16 @@ const BatchChange = () => {
       setIsAttachmentEmpty(true);
       setAttachmentError("Please attach an image before submitting.");
       return;
-    }
-    if (selectedStudents.length === 0) {
+    }else if (selectedStudents.length === 0) {
       toast.error("Please select at least one student to change the batch.");
       return;
+    }else{
+    setShowConfirmModal(true);
     }
+  }
+
+
+   const handleBatchchangeSubmit = () => {
     selectedStudents.forEach((bookingId) => {
       const studentToUpdate = filteredStudents.find(
         (s) => s.bookingId === bookingId
@@ -164,14 +175,12 @@ const BatchChange = () => {
         batchChange(bookingId, updatedStudentData);
       }
     });
-
-    // --- Success Feedback & Reset ---
     toast.success("Batch change request submitted successfully!");
-
+    
     // Clear form fields
     setReason("");
     setAttachment(null);
-
+    
     // Clear errors
     handleRefresh();
     setReasonError("");
@@ -179,9 +188,9 @@ const BatchChange = () => {
     handleRefresh();
     setAttachmentError("");
     setIsAttachmentEmpty(false);
-    setShowConfirmModal(false);
-    setSelectedStudents([]);
-  };
+     setShowConfirmModal(false);
+      setSelectedStudents([]); 
+  }
 
   const handleDiscard = () => {
     if (reason || attachment || selectedStudents.length > 0) {
@@ -536,10 +545,7 @@ const BatchChange = () => {
                 Cancel
               </button>
               <button
-                onClick={() => {
-                  //handleBatchchangeSubmit();
-                  setShowConfirmModal(true);
-                }}
+                onClick={confirmBatchChange}
                 className="cursor-pointer bg-[#6750A4] text-white hover:bg-[#584195] px-6 py-2 rounded-md text-sm font-medium"
               >
                 Submit
@@ -583,10 +589,7 @@ const BatchChange = () => {
               >
                 Cancel
               </button>
-              <button
-                onClick={handleBatchchangeSubmit}
-                className="cursor-pointer bg-[#6750a4] hover:bg-[#5f537d] text-white px-4 py-2.5 rounded-xl text-sm font-medium"
-              >
+              <button onClick={handleBatchchangeSubmit } className="cursor-pointer bg-[#6750a4] hover:bg-[#5f537d] text-white px-4 py-2.5 rounded-xl text-sm font-medium">
                 Confirm
               </button>
             </div>
