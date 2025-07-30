@@ -639,7 +639,7 @@ const handleDeleteScope = () => {
                                     </tr>
                                 ))}
                                
-                                {/* Save All / Cancel All Buttons */}
+
                 {/* Save All / Cancel All Buttons */}
 {hasEdits && Object.keys(edits).length > 1 && (
     <tr>
