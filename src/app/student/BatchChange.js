@@ -9,7 +9,7 @@ import Image from "next/image";
 const BatchChange = () => {
   // Track domain errors for each student row
   const [domainErrors, setDomainErrors] = useState({});
-  const { batchData, allBatchNames, allStudentData , updateStudent } =
+  const { batchData, allBatchNames, allStudentData , updateStudent ,batchChange } =
     useDataContext(); //
 
   const [fromBatch, setFromBatch] = useState("");
@@ -153,7 +153,7 @@ const BatchChange = () => {
       const studentToUpdate = filteredStudents.find(s => s.bookingId === bookingId);
       if (studentToUpdate) {
          const updatedStudentData = { ...studentToUpdate, batch: toBatch }; 
-         updateStudent(bookingId, updatedStudentData);
+         batchChange(bookingId, updatedStudentData);
       }
     });
 
