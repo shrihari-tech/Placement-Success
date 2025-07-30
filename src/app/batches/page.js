@@ -49,6 +49,8 @@ export default function BatchModel() {
   const [errors, setErrors] = useState({});
   const [hasErrors, setHasErrors] = useState(false);
   const [initialEditBatchData, setInitialEditBatchData] = useState(null);
+  // Store original batch number for confirmation modal
+  const [originalBatchNo, setOriginalBatchNo] = useState("");
 
   const [batchNameError, setBatchNameError] = useState(false);
 
@@ -501,6 +503,7 @@ export default function BatchModel() {
 
       setEditBatchData(initialData);
       setInitialEditBatchData(JSON.parse(JSON.stringify(initialData))); // Deep clone
+      setOriginalBatchNo(batchToEdit.batchNo);
       setShowEditModel(true);
     }
   };
@@ -1748,7 +1751,7 @@ export default function BatchModel() {
 
             <p className="mb-4 text-gray-700 text-sm">
               Are you sure you want to update batch{" "}
-              <strong className="text-m">{editBatchData.batchNo}</strong>?
+              <strong className="text-m">{initialEditBatchData?.batchNo || originalBatchNo}</strong>?
             </p>
 
             {/* Buttons */}

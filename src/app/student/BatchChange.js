@@ -70,7 +70,7 @@ const BatchChange = () => {
     return allStudentData.filter(
       (s) => (s.batch || s.batchNo)?.toLowerCase() === fromBatch.toLowerCase()
     );
-  }, [allStudentData, toBatch]);
+  }, [allStudentData , toBatch]);
 
   const handleRefresh = () => {
     setFromBatch("");
