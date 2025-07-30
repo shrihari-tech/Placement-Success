@@ -104,22 +104,49 @@ export default function StudentDataPage() {
   }, []);
 
   useEffect(() => {
-    if (
-      editingStudent ||
-      showDeleteModal ||
-      showAssignModal ||
-      showStudentSelectModal ||
-      showViewModal
-    ) {
-      document.body.style.overflow = "hidden";
+    const html = document.documentElement;
+    const body = document.body;
+
+    if (editingStudent ||    showDeleteModal ||showAssignModal ||showStudentSelectModal ||showViewModal ||showDiscardConfirm ||studentSelectModelDiscard) {
+      html.style.overflow = "hidden";
+      body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "auto";
+      html.style.overflow = "auto";
+      body.style.overflow = "auto";
     }
     return () => {
-      document.body.style.overflow = "auto";
+      html.style.overflow = "auto";
+      body.style.overflow = "auto";
     };
-  }, [editingStudent, showDeleteModal, showAssignModal, showStudentSelectModal, showViewModal]);  // Added new modals
+  }, [editingStudent,   showDeleteModal,   showAssignModal,   showStudentSelectModal,   showViewModal,   showDiscardConfirm,studentSelectModelDiscard]);
 
+//  useEffect(() => {
+//   const modalOpen =
+//     editingStudent ||
+//     showDeleteModal ||
+//     showAssignModal ||
+//     showStudentSelectModal ||
+//     showViewModal ||
+//     showDiscardConfirm ||
+//     studentSelectModelDiscard;
+
+//   if (modalOpen) {
+//     document.body.style.overflow = "hidden";
+//   } else {
+//     document.body.style.overflow = "";
+//   }
+//   return () => {
+//     document.body.style.overflow = "";
+//   };
+// }, [
+//   editingStudent,
+//   showDeleteModal,
+//   showAssignModal,
+//   showStudentSelectModal,
+//   showViewModal,
+//   showDiscardConfirm,
+//   studentSelectModelDiscard
+// ]);
   // --- New: Handle Assign Modal Open ---
   const handleOpenAssignModal = () => {
     setShowAssignModal(true);

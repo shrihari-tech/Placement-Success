@@ -29,8 +29,20 @@ const BatchChange = () => {
   const [isAttachmentEmpty, setIsAttachmentEmpty] = useState(false);
   const [attachmentError, setAttachmentError] = useState("");
 
+
   const fromRef = useRef(null);
   const toRef = useRef(null);
+
+  const getDomainFromBatch = (batch) => {
+    const code = batch.toUpperCase();
+    if (code.startsWith("FS")) return "Full Stack Development";
+    if (code.startsWith("DA")) return "Data Analytics & Science";
+    if (code.startsWith("BK")) return "Banking & Financial Services";
+    if (code.startsWith("MK")) return "Digital Marketing";
+    if (code.startsWith("SAP")) return "SAP";
+    if (code.startsWith("DV")) return "DevOps";
+    return "";
+  };
 
   const batchList = useMemo(() => {
     return allBatchNames ? allBatchNames.sort() : [];
@@ -58,7 +70,7 @@ const BatchChange = () => {
     return allStudentData.filter(
       (s) => (s.batch || s.batchNo)?.toLowerCase() === fromBatch.toLowerCase()
     );
-  }, [allStudentData, fromBatch , toBatch]);
+  }, [allStudentData, toBatch]);
 
   const handleRefresh = () => {
     setFromBatch("");
@@ -354,45 +366,57 @@ const BatchChange = () => {
                       </label>
                     </td>
                     <td className="px-4 py-3 text-center text-sm whitespace-nowrap">
-                      <select
-                        className={`border rounded px-2 py-1 text-sm ${domainErrors[student.bookingId] ? 'border-red-500' : 'border-gray-300'}`}
-                        defaultValue={(() => {
-                          const batchCode = (searchTermTo || "").toUpperCase();
-                          if (batchCode.startsWith("FS")) return "Full Stack Development";
-                          if (batchCode.startsWith("DA")) return "Data Analytics & Science";
-                          if (batchCode.startsWith("BK")) return "Banking & Financial Services";
-                          if (batchCode.startsWith("MK")) return "Digital Marketing";
-                          if (batchCode.startsWith("SAP")) return "SAP";
-                          if (batchCode.startsWith("DV")) return "DevOps";
-                          return "";
-                        })()}
-                        onChange={e => {
-                          const selected = e.target.value;
-                          const batchCode = (searchTermTo || "").toUpperCase();
-                          let error = false;
-                          if (batchCode.startsWith("FS") && selected !== "Full Stack Development") error = true;
-                          if (batchCode.startsWith("DA") && selected !== "Data Analytics & Science") error = true;
-                          if (batchCode.startsWith("BK") && selected !== "Banking & Financial Services") error = true;
-                          if (batchCode.startsWith("MK") && selected !== "Digital Marketing") error = true;
-                          if (batchCode.startsWith("SAP") && selected !== "SAP") error = true;
-                          if (batchCode.startsWith("DV") && selected !== "DevOps") error = true;
-                          setDomainErrors(prev => ({ ...prev, [student.bookingId]: error }));
-                          if (error) {
-                            toast.error("Domain Name Changed");
-                          }
-                        }}
-                      >
-                        <option value=""></option>
-                        <option value="Full Stack Development">Full Stack Development</option>
-                        <option value="Data Analytics & Science">Data Analytics & Science</option>
-                        <option value="Banking & Financial Services">Banking & Financial Services</option>
-                        <option value="Digital Marketing">Digital Marketing</option>
-                        <option value="SAP">SAP</option>
-                        <option value="DevOps">DevOps</option>
-                      </select>
-                      {domainErrors[student.bookingId] && (
-                        <div className="text-red-500 text-xs mt-1">Domain Name Changed</div>
-                      )}
+                      <div className="flex flex-col items-center">
+                        <select
+                          className={`border rounded px-2 py-1 text-sm ${
+                            domainErrors[student.bookingId]
+                              ? "border-red-500"
+                              : "border-gray-300"
+                          }`}
+                          value={(() => getDomainFromBatch(toBatch))()} // always show the correct one
+                          onChange={(e) => {
+                            const selectedDomain = e.target.value;
+                            const correctDomain = getDomainFromBatch(toBatch);
+
+                            if (selectedDomain !== correctDomain) {
+                              setDomainErrors((prev) => ({
+                                ...prev,
+                                [student.bookingId]: true,
+                              }));
+                            } else {
+                              setDomainErrors((prev) => {
+                                const updated = { ...prev };
+                                delete updated[student.bookingId];
+                                return updated;
+                              });
+                            }
+                          }}
+                        >
+                          {[
+                            "Full Stack Development",
+                            "Data Analytics & Science",
+                            "Banking & Financial Services",
+                            "Digital Marketing",
+                            "SAP",
+                            "DevOps",
+                          ].map((option) => (
+                            <option
+                              key={option}
+                              value={option}
+                              disabled={option !== getDomainFromBatch(toBatch)}
+                            >
+                              {option}
+                            </option>
+                          ))}
+                        </select>
+
+                        {domainErrors[student.bookingId] && (
+                          <span className="text-red-500 text-xs mt-1">
+                            The transfer batch name and the domain should be
+                            same
+                          </span>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
