@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import FlipCard from "../flipcard/flipcard";
 import { ComposedChart, Line, Area, XAxis, YAxis, CartesianGrid, LabelList, ResponsiveContainer } from 'recharts';
+import { Doughnut } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { IoMdStar } from "react-icons/io";
 import { useDataContext } from '../context/dataContext';
 import { FaFire } from 'react-icons/fa';
@@ -19,6 +21,18 @@ export default function HomePage() {
   const cardFlip = true;
   const [isMobile, setIsMobile] = useState(false);
   const [flippedCardId, setFlippedCardId] = useState(null);
+
+  ChartJS.register(ArcElement, Tooltip, Legend);
+
+const iconMap = {
+  "Completed Batches": <FcOk />,
+  "Ongoing Batches": <FaFire className="text-blue-500" />,
+  "Completed Students": <FaGraduationCap className="text-purple-600" />,
+  "Ongoing Students": <AiFillThunderbolt className="text-orange-500" />,
+  "Placement Eligible": <IoMdStar className="text-yellow-500" />,
+  "Already Placed": <FaCheck className="text-green-500" />,
+  "Yet to Place": <IoCloseCircleSharp className="text-red-500" />,
+};
 
   // Responsive detection
   useEffect(() => {
@@ -41,7 +55,7 @@ export default function HomePage() {
 
   const cards = [
     { id: 'fullstack', title: 'Full Stack Development',image : '/fullstack.svg', icon: '/computer.svg' },
-    { id: 'dataanalytics', title: 'Data Analytics & Science',image : '/Data.svg', icon: '/bar_chart_4_bars.svg' },
+    { id: 'data', title: 'Data Analytics & Science',image : '/Data.svg', icon: '/bar_chart_4_bars.svg' },
     { id: 'banking', title: 'Banking & Financial Services',image : '/banking.svg', icon: '/account_balance.svg' },
     { id: 'marketing', title: 'Digital Marketing',image : '/Digital Marketing.svg', icon: '/ad.svg' },
     { id: 'sap', title: 'SAP',image : '/SAP.svg', icon: '/device_hub.svg' },
@@ -322,68 +336,119 @@ export default function HomePage() {
             </div>
           </div>
 
-            {cardFlip && 
-            <div className="index-0 mt-6 md:mt-15" >
-              <div className="text-sm md:text-base text-gray-700 font-semibold mb-4 md:mb-8">
-                <h1>Domain</h1>
-              </div>
-              <div className="flex justify-center">
-                <div className="grid grid-cols-1 gap-10 sm:grid-cols-3">
-                  {cards.map((card) => {
-                    const stats = getStatsByBatch(card.id) || {};
-                    const isFlipped = isMobile ? flippedCardId === card.id : false;
-                    return (
-                      <div
-                        key={card.id}
-                        className="transition-all duration-300"
-                        data-is-card="true"
-                        onClick={() => handleCardClick(card.id)}
-                      >
-                        <FlipCard
-                          frontContent={
-                            <div className="flex flex-col items-center gap-10 ">
-                              <div>
-                                <Image src={card.image} alt={card.title} width={160} height={160} />
-                              </div>
-                              <span className=" text-l font-semibold">   
-                                {card.title}
-                              </span>
-                            </div>
-                          }
-                          backContent={
-                            <div className="px-3 md:px-5 pb-4 md:pb-8 text-xs">
-                              <p className="text-xs md:text-sm font-bold pb-2 md:pb-3">{card.title}</p>
-                              <div className="grid grid-cols-2 gap-2">
-                                {[
-                                  { label: "Completed Batches", value: stats.completedBatches || 0 , color: "bg-green-100 border-green-300" , icon: <FcOk className="text-lg"/>  },
-                                  { label: "Ongoing Batches", value: stats.ongoingBatches || 0 , color: "bg-blue-100 border-blue-300" ,   icon: <FaFire className="text-lg text-blue-500" /> },
-                                  { label: "Completed Students", value: stats.completedStudents || 0 , color: "bg-purple-100 border-purple-300", icon: <FaGraduationCap className="text-lg text-purple-600"/> },
-                                  { label: "Ongoing Students", value: stats.ongoingStudents || 0 , color: "bg-indigo-100 border-indigo-300" , icon:<AiFillThunderbolt className="text-lg text-orange-500" />  },
-                                  { label: "Placement Eligible", value: stats.placementEligible || 0 , color: "bg-yellow-100 border-yellow-300" , icon: <IoMdStar className="text-xl text-yellow-500"/>},
-                                  { label: "Already Placed", value: stats.alreadyPlaced || 0 ,color: "bg-teal-100 border-teal-300" , icon: <FaCheck className="text-xl text-green-500"/> },
-                                  { label: "Yet to Place", value: stats.yetToPlace || 0, colSpan: 2 , color: "bg-rose-100 border-rose-300", icon: <IoCloseCircleSharp className="text-lg text-red-500" />},
-                                ].map((item, index) => (
-                                  <div
-                                    key={index}
-                                    className={`justify-center items-center ${item.color}  bg-[#eaddff] rounded-md   hover:bg-[#e1cfff] shadow p-1 md:px-4 transition ${
-                                      item.colSpan ? 'col-span-2' : ''
-                                    }`}
-                                  >
-                                    <div className="P-1"><span className="inline-block">{item.icon}</span></div> <div><span className="font-medium">{item.label}:</span><span className="text-[#6b21a8] font-semibold">{item.value}</span></div> 
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          }
-                          isFlipped={isFlipped}
-                        />
+            {    cardFlip && (
+      <div className="index-0 mt-6 md:mt-15">
+        <div className="text-sm md:text-base text-gray-700 font-semibold mb-4 md:mb-8">
+          <h1>Domain</h1>
+        </div>
+        <div className="flex justify-center">
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-3">
+            {cards.map((card) => {
+              const stats = getStatsByBatch(card.id) || {};
+              const isFlipped = isMobile ? flippedCardId === card.id : false;
+
+              const items = [
+                { label: "Completed Batches", value: stats.completedBatches || 0 },
+                { label: "Ongoing Batches", value: stats.ongoingBatches || 0 },
+                { label: "Completed Students", value: stats.completedStudents || 0 },
+                { label: "Ongoing Students", value: stats.ongoingStudents || 0 },
+                { label: "Placement Eligible", value: stats.placementEligible || 0 },
+                { label: "Already Placed", value: stats.alreadyPlaced || 0 },
+                { label: "Yet to Place", value: stats.yetToPlace || 0 },
+              ];
+
+              const total = items.reduce((sum, item) => sum + item.value, 0);
+
+              const data = {
+                labels: items.map((i) => i.label),
+                datasets: [
+                  {
+                    data: items.map((i) => i.value),
+                    backgroundColor: [
+                      "#51f88bff",
+                      "#56a2ffff",
+                      "#836affff",
+                      "#6583f9ff",
+                      "#fef162ff",
+                      "#72ffe1ff",
+                      "#f98c99ff",
+                    ],
+                    borderWidth: 1,
+                  },
+                ],
+              };
+
+              const options = {
+                plugins: {
+                  tooltip: {
+                    callbacks: {
+                      label: function (context) {
+                        const label = context.label;
+                        const value = context.raw;
+                        return `${label}: ${value}`;
+                      },
+                    },
+                  },
+                  legend: { display: false },
+                },
+                cutout: "70%",
+              };
+
+              return (
+                <div
+                  key={card.id}
+                  className="transition-all duration-300"
+                  data-is-card="true"
+                  onClick={() => handleCardClick(card.id)}
+                >
+                  <FlipCard
+                    frontContent={
+                      <div className="flex flex-col items-center gap-10">
+                        <div>
+                          <Image
+                            src={card.image}
+                            alt={card.title}
+                            width={160}
+                            height={160}
+                          />
+                        </div>
+                        <span className="text-l font-semibold">{card.title}</span>
                       </div>
-                    );
-                  })}
+                    }
+                    backContent={
+                      <div className="px-3 md:px-5 pb-4 md:pb-8 text-xs">
+                        <p className="text-xs md:text-sm font-bold pb-2 md:pb-3">
+                          {card.title}
+                        </p>
+                        <div className="relative w-64 h-64 mx-auto">
+                          <Doughnut data={data} options={options} />
+                          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                            <p className="text-sm font-medium text-gray-600">Total</p>
+                            <p className="text-xl font-bold text-purple-700">{total}</p>
+                          </div>
+                        </div>
+                        {/* <div className="grid grid-cols-2 gap-2 mt-4">
+                          {items.map((item, idx) => (
+                            <div
+                              key={idx}
+                              className="flex items-center gap-2 text-xs bg-[#f5f3ff] px-2 py-1 rounded shadow-sm"
+                            >
+                              <span>{iconMap[item.label]}</span>
+                              <span className="font-medium text-gray-700">{item.label}</span>
+                            </div>
+                          ))}
+                        </div> */}
+                      </div>
+                    }
+                    isFlipped={isFlipped}
+                  />
                 </div>
-              </div>
-            </div>
-            }
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    )}
         </div>
       </main>
     </div>
