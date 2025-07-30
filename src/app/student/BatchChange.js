@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { FiChevronDown } from "react-icons/fi";
 import { RiCloseCircleLine } from "react-icons/ri";
-import { useDataContext } from "../context/dataContext"; //
+import { useDataContext } from "../context/dataContext"; 
 import { Toaster, toast } from "sonner";
 import Image from "next/image";
 
