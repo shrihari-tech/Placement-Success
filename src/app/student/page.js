@@ -637,6 +637,8 @@ export default function StudentDataPage() {
           isOpen={showViewModal}
           onClose={() => setShowViewModal(false)}
           selectedStudent={selectedStudent}
+          selectedBatch={selectedBatch} 
+
         />
       )}
 
