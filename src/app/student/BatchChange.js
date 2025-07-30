@@ -13,22 +13,19 @@ const BatchChange = () => {
   const [fromBatch, setFromBatch] = useState("");
   const [showFromDropdown, setShowFromDropdown] = useState(false);
   const [searchTermFrom, setSearchTermFrom] = useState("");
-
   const [toBatch, setToBatch] = useState("");
   const [showToDropdown, setShowToDropdown] = useState(false);
   const [searchTermTo, setSearchTermTo] = useState("");
-
   const [showTable, setShowTable] = useState(false);
-
   const [reason, setReason] = useState("");
   const [attachment, setAttachment] = useState(null);
-
   const fromRef = useRef(null);
   const toRef = useRef(null);
 
   const batchList = useMemo(() => {
     return allBatchNames ? allBatchNames.sort() : [];
   }, [allBatchNames]);
+
 
   const filteredFromBatches = useMemo(() => {
     return batchList.filter(
@@ -401,7 +398,9 @@ const BatchChange = () => {
                     toast.error("Please attach an image before submitting.");
                     return;
                   }
-
+                    selectedStudents.forEach((student) => {
+                      updateStudent(student.bookingId, { ...student, batch: toBatch });
+                    });
                   toast.success("Submitted successfully");
                 }}
                 className="cursor-pointer bg-[#6750A4] text-white hover:bg-[#584195] px-6 py-2 rounded-md text-sm font-medium"
