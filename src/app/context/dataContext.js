@@ -3623,6 +3623,86 @@ const DataProvider = ({ children }) => {
     );
   };
 
+  const batchChange = (bookingId, updatedStudentData) => {
+  console.log("DataContext batchChange called with:", {
+    bookingId,
+    updatedStudentData,
+  });
+
+  let originalDomain = "";
+  let originalListSetter = null;
+
+  // 1. Identify the original domain and remove student from it
+  const removeStudent = (list) => list.filter((item) => item.bookingId !== bookingId);
+
+  if (fullstackStudent.some((s) => s.bookingId === bookingId)) {
+    originalDomain = "fullstack";
+    originalListSetter = setFullstackStudent;
+  } else if (dataanalyticsStudent.some((s) => s.bookingId === bookingId)) {
+    originalDomain = "dataanalytics";
+    originalListSetter = setDataanalyticsStudent;
+  } else if (bankingStudent.some((s) => s.bookingId === bookingId)) {
+    originalDomain = "banking";
+    originalListSetter = setBankingStudent;
+  } else if (marketingStudent.some((s) => s.bookingId === bookingId)) {
+    originalDomain = "marketing";
+    originalListSetter = setMarketingStudent;
+  } else if (sapStudent.some((s) => s.bookingId === bookingId)) {
+    originalDomain = "sap";
+    originalListSetter = setSapStudent;
+  } else if (devopsStudent.some((s) => s.bookingId === bookingId)) {
+    originalDomain = "devops";
+    originalListSetter = setDevopsStudent;
+  }
+
+  if (!originalListSetter) {
+    console.error("Original domain not found for bookingId:", bookingId);
+    return;
+  }
+
+  // Remove from original domain
+  originalListSetter((prev) => removeStudent(prev));
+
+  // 2. Determine target domain from batch ID (e.g., FS01 → fullstack)
+  const batchCode = updatedStudentData.batch?.slice(0, 2).toUpperCase();
+  let targetSetter = null;
+
+  switch (batchCode) {
+    case "FS":
+      targetSetter = setFullstackStudent;
+      break;
+    case "DA":
+      targetSetter = setDataanalyticsStudent;
+      break;
+    case "BK":
+      targetSetter = setBankingStudent;
+      break;
+    case "MK":
+      targetSetter = setMarketingStudent;
+      break;
+    case "SA":
+      targetSetter = setSapStudent;
+      break;
+    case "DV":
+      targetSetter = setDevopsStudent;
+      break;
+    default:
+      console.error("Unknown target batch prefix:", batchCode);
+      return;
+  }
+
+  // 3. Add to new domain
+  targetSetter((prev) => [...prev, updatedStudentData]);
+
+  // 4. Update global data lists
+  setStudentData((prev) =>
+    prev.map((item) =>
+      item.bookingId === bookingId ? updatedStudentData : item
+    )
+  );
+};
+
+
   const addOpportunity = (opportunity) => {
     if (!batchingvalue) {
       console.error("Domain is not set. Cannot add opportunity.");
@@ -3733,6 +3813,7 @@ const DataProvider = ({ children }) => {
     <DataContext.Provider
       value={{
         batchingvalue,
+        batchChange,
         setBatchingValue,
         setStudentBatchSelect,
         loginUser,
