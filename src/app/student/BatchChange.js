@@ -161,30 +161,6 @@ const BatchChange = () => {
 
 
    const handleBatchchangeSubmit = () => {
-    // --- Validation ---
-    // if (!reason.trim() && !attachment) {
-    //   toast.error("Please enter a reason or attach an image before submitting.");
-    //   setIsReasonEmpty(true);
-    //   setReasonError("Please enter a reason for the batch change");
-    //   setIsAttachmentEmpty(true);
-    //   setAttachmentError("Please attach an image before submitting.");
-    //   return;
-    // }
-    // else if (!reason.trim()) {
-    //   toast.error("Please enter a reason for the batch change.");
-    //   setIsReasonEmpty(true);
-    //   setReasonError("Please enter a reason for the batch change");
-    //   return;
-    // } else if (!attachment) {
-    //   toast.error("Please attach an image before submitting.");
-    //   setIsAttachmentEmpty(true);
-    //   setAttachmentError("Please attach an image before submitting.");
-    //   return;
-    // }
-    // if (selectedStudents.length === 0) {
-    //   toast.error("Please select at least one student to change the batch.");
-    //   return;
-    // }
     selectedStudents.forEach((bookingId) => {
       const studentToUpdate = filteredStudents.find(s => s.bookingId === bookingId);
       if (studentToUpdate) {
@@ -195,7 +171,6 @@ const BatchChange = () => {
     toast.success("Batch change request submitted successfully!");
 
     handleRefresh();
-
   }
 
   const handleDiscard = () => {
