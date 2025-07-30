@@ -136,11 +136,10 @@ const BatchChange = () => {
     }
     else if (!reason.trim()) {
       toast.error("Please enter a reason for the batch change.");
-      setIsReasonEmpty(true)
+      setIsReasonEmpty(true);
       setReasonError("Please enter a reason for the batch change");
       return;
-    }
-    else if (!attachment) {
+    } else if (!attachment) {
       toast.error("Please attach an image before submitting.");
       setIsAttachmentEmpty(true);
       setAttachmentError("Please attach an image before submitting.");
@@ -199,7 +198,7 @@ const BatchChange = () => {
               value={fromBatch}
               onChange={(e) => {
                 setSearchTermFrom(e.target.value);
-
+                setFromBatch(e.target.value);
                 setShowFromDropdown(true);
               }}
               onClick={() => setShowFromDropdown(!showFromDropdown)}
@@ -258,7 +257,7 @@ const BatchChange = () => {
               value={toBatch}
               onChange={(e) => {
                 setSearchTermTo(e.target.value);
-
+                setToBatch(e.target.value);
                 setShowToDropdown(true);
               }}
               onClick={() => setShowToDropdown(!showToDropdown)}
@@ -477,12 +476,12 @@ const BatchChange = () => {
                 onChange={(e) => setReason(e.target.value)}
                 onFocus={() => setIsReasonEmpty(false)}
                 placeholder="Enter reason for batch change"
-                className={`w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#6750A4] ${isReasonEmpty ? 'border-red-500 border-1' : ''}`}
+                className={`w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#6750A4] ${
+                  isReasonEmpty ? "border-red-500 border-1" : ""
+                }`}
               ></textarea>
               {isReasonEmpty && (
-                <p className="text-red-500 text-sm mt-1">
-                  {reasonError}
-                </p>
+                <p className="text-red-500 text-sm mt-1">{reasonError}</p>
               )}
             </div>
             <div>
@@ -495,12 +494,12 @@ const BatchChange = () => {
                 onChange={(e) => setAttachment(e.target.files[0])}
                 onFocus={() => setIsAttachmentEmpty(false)}
                 className={`cursor-pointer block w-full text-sm text-gray-700 border border-gray-300 rounded px-3 py-2 file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#E8DEF8] file:text-[#6750A4] hover:file:bg-[#d1c3ea]
-                  ${isAttachmentEmpty ? 'border-red-500 border-1' : ''}
+                  ${isAttachmentEmpty ? "border-red-500 border-1" : ""}
                   `}
               />
               {isAttachmentEmpty && (
-                <p className="text-red-500 text-sm mt-1">
-                  {attachmentError}</p>)}
+                <p className="text-red-500 text-sm mt-1">{attachmentError}</p>
+              )}
             </div>
             <div className="flex justify-end gap-4 pt-2">
               <button
