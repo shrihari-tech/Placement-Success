@@ -9,26 +9,25 @@ import Image from "next/image";
 const BatchChange = () => {
   // Track domain errors for each student row
   const [domainErrors, setDomainErrors] = useState({});
-  const { batchData, allBatchNames, allStudentData } =
+  const { batchData, allBatchNames, allStudentData , updateStudent } =
     useDataContext(); //
 
   const [fromBatch, setFromBatch] = useState("");
   const [showFromDropdown, setShowFromDropdown] = useState(false);
   const [searchTermFrom, setSearchTermFrom] = useState("");
-
   const [toBatch, setToBatch] = useState("");
   const [showToDropdown, setShowToDropdown] = useState(false);
   const [searchTermTo, setSearchTermTo] = useState("");
-
   const [showTable, setShowTable] = useState(false);
-
   const [reason, setReason] = useState("");
   const [attachment, setAttachment] = useState(null);
   const [isReasonEmpty, setIsReasonEmpty] = useState(false);
   const [reasonError, setReasonError] = useState("");
   const [isAttachmentEmpty, setIsAttachmentEmpty] = useState(false);
+  const [selectedStudents, setSelectedStudents] = useState([]);
   const [attachmentError, setAttachmentError] = useState("");
-
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [EditDiscarddModel , setEditDiscarddModel] = useState(false);
 
   const fromRef = useRef(null);
   const toRef = useRef(null);
@@ -47,6 +46,7 @@ const BatchChange = () => {
   const batchList = useMemo(() => {
     return allBatchNames ? allBatchNames.sort() : [];
   }, [allBatchNames]);
+
 
   const filteredFromBatches = useMemo(() => {
     return batchList.filter(
@@ -80,7 +80,8 @@ const BatchChange = () => {
     setShowTable(false);
     setReason("");
     setAttachment(null);
-  };
+    setEditDiscarddModel(false);
+    setSelectedStudents([]);};
 
   const handleSearch = useCallback(() => {
     if (!fromBatch || !toBatch) {
@@ -123,37 +124,64 @@ const BatchChange = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleBatchchangeSubmit = () => {
-    if(!reason.trim() && !attachment) {
+   const handleBatchchangeSubmit = () => {
+    // --- Validation ---
+    if (!reason.trim() && !attachment) {
       toast.error("Please enter a reason or attach an image before submitting.");
       setIsReasonEmpty(true);
       setReasonError("Please enter a reason for the batch change");
       setIsAttachmentEmpty(true);
       setAttachmentError("Please attach an image before submitting.");
       return;
-
     }
     else if (!reason.trim()) {
       toast.error("Please enter a reason for the batch change.");
-      setIsReasonEmpty(true)
+      setIsReasonEmpty(true);
       setReasonError("Please enter a reason for the batch change");
       return;
-    }
-    else if (!attachment) {
+    } else if (!attachment) {
       toast.error("Please attach an image before submitting.");
       setIsAttachmentEmpty(true);
       setAttachmentError("Please attach an image before submitting.");
       return;
     }
+    if (selectedStudents.length === 0) {
+      toast.error("Please select at least one student to change the batch.");
+      return;
+    }
+    selectedStudents.forEach((bookingId) => {
+      const studentToUpdate = filteredStudents.find(s => s.bookingId === bookingId);
+      if (studentToUpdate) {
+         const updatedStudentData = { ...studentToUpdate, batch: toBatch }; 
+         updateStudent(bookingId, updatedStudentData);
+      }
+    });
+
+    // --- Success Feedback & Reset ---
     toast.success("Batch change request submitted successfully!");
+    
+    // Clear form fields
     setReason("");
     setAttachment(null);
-    setIsReasonEmpty(false);
+    
+    // Clear errors
+    handleRefresh();
     setReasonError("");
-    setIsAttachmentEmpty(false);
+    setIsReasonEmpty(false);
+    handleRefresh();
     setAttachmentError("");
-    setShowTable(false);
+    setIsAttachmentEmpty(false);
+    setShowConfirmModal(false);
+    setSelectedStudents([]); 
+  }
 
+  const handleDiscard = () => {
+    if (reason || attachment || selectedStudents.length > 0) {
+      setEditDiscarddModel(true);
+    } else {
+      handleRefresh();
+      setEditDiscarddModel(false);
+    }
   }
 
   return (
@@ -170,7 +198,7 @@ const BatchChange = () => {
               value={fromBatch}
               onChange={(e) => {
                 setSearchTermFrom(e.target.value);
-
+                setFromBatch(e.target.value);
                 setShowFromDropdown(true);
               }}
               onClick={() => setShowFromDropdown(!showFromDropdown)}
@@ -229,7 +257,7 @@ const BatchChange = () => {
               value={toBatch}
               onChange={(e) => {
                 setSearchTermTo(e.target.value);
-
+                setToBatch(e.target.value);
                 setShowToDropdown(true);
               }}
               onClick={() => setShowToDropdown(!showToDropdown)}
@@ -346,6 +374,19 @@ const BatchChange = () => {
                       <label className="relative inline-block">
                         <input
                           type="checkbox"
+                          checked={selectedStudents.includes(student.bookingId)}
+                          onChange={(e) => {
+                            const bookingId = student.bookingId; // Get the ID of the student for this row
+                            if (e.target.checked) {
+                              // If checkbox is checked, add the bookingId to the array
+                              setSelectedStudents(prevSelected => [...prevSelected, bookingId]);
+                            } else {
+                              // If checkbox is unchecked, remove the bookingId from the array
+                              setSelectedStudents(prevSelected =>
+                                prevSelected.filter(id => id !== bookingId)
+                              );
+                            }
+                          }}
                           className="peer hidden"
                           id="customCheck"
                         />
@@ -435,12 +476,12 @@ const BatchChange = () => {
                 onChange={(e) => setReason(e.target.value)}
                 onFocus={() => setIsReasonEmpty(false)}
                 placeholder="Enter reason for batch change"
-                className={`w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#6750A4] ${isReasonEmpty ? 'border-red-500 border-1' : ''}`}
+                className={`w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#6750A4] ${
+                  isReasonEmpty ? "border-red-500 border-1" : ""
+                }`}
               ></textarea>
               {isReasonEmpty && (
-                <p className="text-red-500 text-sm mt-1">
-                  {reasonError}
-                </p>
+                <p className="text-red-500 text-sm mt-1">{reasonError}</p>
               )}
             </div>
             <div>
@@ -453,23 +494,23 @@ const BatchChange = () => {
                 onChange={(e) => setAttachment(e.target.files[0])}
                 onFocus={() => setIsAttachmentEmpty(false)}
                 className={`cursor-pointer block w-full text-sm text-gray-700 border border-gray-300 rounded px-3 py-2 file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#E8DEF8] file:text-[#6750A4] hover:file:bg-[#d1c3ea]
-                  ${isAttachmentEmpty ? 'border-red-500 border-1' : ''}
+                  ${isAttachmentEmpty ? "border-red-500 border-1" : ""}
                   `}
               />
               {isAttachmentEmpty && (
-                <p className="text-red-500 text-sm mt-1">
-                  {attachmentError}</p>)}
+                <p className="text-red-500 text-sm mt-1">{attachmentError}</p>
+              )}
             </div>
             <div className="flex justify-end gap-4 pt-2">
               <button
-                onClick={handleRefresh}
+                onClick={handleDiscard}
                 className="cursor-pointer bg-gray-200 text-gray-700 hover:bg-gray-300 px-6 py-2 rounded-md text-sm font-medium"
               >
                 Cancel
               </button>
               <button
                 onClick={() => {
-                  handleBatchchangeSubmit();
+               setShowConfirmModal(true)
                 }}
                 className="cursor-pointer bg-[#6750A4] text-white hover:bg-[#584195] px-6 py-2 rounded-md text-sm font-medium"
               >
@@ -482,6 +523,59 @@ const BatchChange = () => {
       {showTable && filteredStudents.length === 0 && (
         <div className="text-center py-4 text-gray-500">
           No students found in batch &quot{fromBatch}&quot.
+        </div>
+      )}
+            {showConfirmModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onClick={() => setShowConfirmModal(false)}>
+          <div className="w-[500px] bg-[#F8FAFD] rounded-[10px] p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-lg font-medium">Confirm Changes</h2>
+              <button onClick={() => setShowConfirmModal(false)} className="cursor-pointer text-gray-500 hover:text-gray-700">
+                <RiCloseCircleLine size={20} />
+              </button>
+            </div>
+            <p className="mb-4 text-gray-700 text-sm">
+              Are you sure you want to update student from <strong className='text-m'>{fromBatch}</strong> to <strong className='text-m'>{toBatch}</strong>?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button onClick={() => setShowConfirmModal(false)} className="cursor-pointer bg-[#e8def8] text-[#4a4459] px-4 py-2.5 rounded-2xl text-sm font-medium">
+                Cancel
+              </button>
+              <button onClick={handleBatchchangeSubmit } className="cursor-pointer bg-[#6750a4] hover:bg-[#5f537d] text-white px-4 py-2.5 rounded-xl text-sm font-medium">
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Discard Confirmation Modal */}
+      {EditDiscarddModel && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+            <div className="p-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Discard Changes?</h3>
+              <p className="text-sm text-gray-500 mb-6">
+                You have unsaved changes. Are you sure you want to discard them?
+              </p>
+              <div className="flex justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={() => setEditDiscarddModel(false)}
+                  className="px-4 py-2 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-gray-500"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleRefresh}
+                  className="px-4 py-2 bg-[#6750a4] text-white rounded-xl hover:bg-[#675b86] focus:outline-none focus:ring-1 focus:ring-red-500"
+                >
+                  Discard
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

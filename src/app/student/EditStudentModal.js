@@ -6,7 +6,7 @@ import { useDataContext } from '../context/dataContext';
 import { toast } from 'sonner';
 
 export default function EditStudentModal({ student, onClose, onSave }) {
-  const { studentData, updateStudent, batchesNames } = useDataContext();
+  const { updateStudent, batchesNames } = useDataContext();
   const [EditDiscarddModel, setEditDiscarddModel] = useState(false);
   const [editingStudent, setEditingStudent] = useState({
     ...student,
