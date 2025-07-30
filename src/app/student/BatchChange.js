@@ -7,7 +7,9 @@ import { Toaster, toast } from "sonner";
 import Image from "next/image";
 
 const BatchChange = () => {
-  const { batchData, studentData, allBatchNames, allStudentData } =
+  // Track domain errors for each student row
+  const [domainErrors, setDomainErrors] = useState({});
+  const { batchData, allBatchNames, allStudentData , updateStudent } =
     useDataContext(); //
 
   const [fromBatch, setFromBatch] = useState("");
@@ -19,8 +21,27 @@ const BatchChange = () => {
   const [showTable, setShowTable] = useState(false);
   const [reason, setReason] = useState("");
   const [attachment, setAttachment] = useState(null);
+  const [isReasonEmpty, setIsReasonEmpty] = useState(false);
+  const [reasonError, setReasonError] = useState("");
+  const [isAttachmentEmpty, setIsAttachmentEmpty] = useState(false);
+  const [selectedStudents, setSelectedStudents] = useState([]);
+  const [attachmentError, setAttachmentError] = useState("");
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [EditDiscarddModel , setEditDiscarddModel] = useState(false);
+
   const fromRef = useRef(null);
   const toRef = useRef(null);
+
+  const getDomainFromBatch = (batch) => {
+    const code = batch.toUpperCase();
+    if (code.startsWith("FS")) return "Full Stack Development";
+    if (code.startsWith("DA")) return "Data Analytics & Science";
+    if (code.startsWith("BK")) return "Banking & Financial Services";
+    if (code.startsWith("MK")) return "Digital Marketing";
+    if (code.startsWith("SAP")) return "SAP";
+    if (code.startsWith("DV")) return "DevOps";
+    return "";
+  };
 
   const batchList = useMemo(() => {
     return allBatchNames ? allBatchNames.sort() : [];
@@ -49,7 +70,7 @@ const BatchChange = () => {
     return allStudentData.filter(
       (s) => (s.batch || s.batchNo)?.toLowerCase() === fromBatch.toLowerCase()
     );
-  }, [allStudentData, fromBatch]);
+  }, [allStudentData, toBatch]);
 
   const handleRefresh = () => {
     setFromBatch("");
@@ -59,7 +80,8 @@ const BatchChange = () => {
     setShowTable(false);
     setReason("");
     setAttachment(null);
-  };
+    setEditDiscarddModel(false);
+    setSelectedStudents([]);};
 
   const handleSearch = useCallback(() => {
     if (!fromBatch || !toBatch) {
@@ -101,6 +123,67 @@ const BatchChange = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+   const handleBatchchangeSubmit = () => {
+    // --- Validation ---
+    if (!reason.trim() && !attachment) {
+      toast.error("Please enter a reason or attach an image before submitting.");
+      setIsReasonEmpty(true);
+      setReasonError("Please enter a reason for the batch change");
+      setIsAttachmentEmpty(true);
+      setAttachmentError("Please attach an image before submitting.");
+      return;
+    }
+    else if (!reason.trim()) {
+      toast.error("Please enter a reason for the batch change.");
+      setIsReasonEmpty(true)
+      setReasonError("Please enter a reason for the batch change");
+      return;
+    }
+    else if (!attachment) {
+      toast.error("Please attach an image before submitting.");
+      setIsAttachmentEmpty(true);
+      setAttachmentError("Please attach an image before submitting.");
+      return;
+    }
+    if (selectedStudents.length === 0) {
+      toast.error("Please select at least one student to change the batch.");
+      return;
+    }
+    selectedStudents.forEach((bookingId) => {
+      const studentToUpdate = filteredStudents.find(s => s.bookingId === bookingId);
+      if (studentToUpdate) {
+         const updatedStudentData = { ...studentToUpdate, batch: toBatch }; 
+         updateStudent(bookingId, updatedStudentData);
+      }
+    });
+
+    // --- Success Feedback & Reset ---
+    toast.success("Batch change request submitted successfully!");
+    
+    // Clear form fields
+    setReason("");
+    setAttachment(null);
+    
+    // Clear errors
+    handleRefresh();
+    setReasonError("");
+    setIsReasonEmpty(false);
+    handleRefresh();
+    setAttachmentError("");
+    setIsAttachmentEmpty(false);
+     setShowConfirmModal(false);
+      setSelectedStudents([]); 
+  }
+
+  const handleDiscard = () => {
+    if (reason || attachment || selectedStudents.length > 0) {
+      setEditDiscarddModel(true);
+    } else {
+      handleRefresh();
+      setEditDiscarddModel(false);
+    }
+  }
 
   return (
     <div>
@@ -292,6 +375,19 @@ const BatchChange = () => {
                       <label className="relative inline-block">
                         <input
                           type="checkbox"
+                          checked={selectedStudents.includes(student.bookingId)}
+                          onChange={(e) => {
+                            const bookingId = student.bookingId; // Get the ID of the student for this row
+                            if (e.target.checked) {
+                              // If checkbox is checked, add the bookingId to the array
+                              setSelectedStudents(prevSelected => [...prevSelected, bookingId]);
+                            } else {
+                              // If checkbox is unchecked, remove the bookingId from the array
+                              setSelectedStudents(prevSelected =>
+                                prevSelected.filter(id => id !== bookingId)
+                              );
+                            }
+                          }}
                           className="peer hidden"
                           id="customCheck"
                         />
@@ -312,44 +408,57 @@ const BatchChange = () => {
                       </label>
                     </td>
                     <td className="px-4 py-3 text-center text-sm whitespace-nowrap">
-                      <select
-                        className="border border-gray-300 rounded px-2 py-1 text-sm"
-                        defaultValue={(() => {
-                          const batchCode = (
-                            student.batch ||
-                            student.batchNo ||
-                            ""
-                          ).toUpperCase();
+                      <div className="flex flex-col items-center">
+                        <select
+                          className={`border rounded px-2 py-1 text-sm ${
+                            domainErrors[student.bookingId]
+                              ? "border-red-500"
+                              : "border-gray-300"
+                          }`}
+                          value={(() => getDomainFromBatch(toBatch))()} // always show the correct one
+                          onChange={(e) => {
+                            const selectedDomain = e.target.value;
+                            const correctDomain = getDomainFromBatch(toBatch);
 
-                          if (batchCode.startsWith("FS"))
-                            return "Full Stack Development";
-                          if (batchCode.startsWith("DA"))
-                            return "Data Analytics & Science";
-                          if (batchCode.startsWith("BK"))
-                            return "Banking & Financial Services";
-                          if (batchCode.startsWith("MK"))
-                            return "Digital Marketing";
-                          if (batchCode.startsWith("SAP")) return "SAP";
-                          if (batchCode.startsWith("DV")) return "DevOps";
+                            if (selectedDomain !== correctDomain) {
+                              setDomainErrors((prev) => ({
+                                ...prev,
+                                [student.bookingId]: true,
+                              }));
+                            } else {
+                              setDomainErrors((prev) => {
+                                const updated = { ...prev };
+                                delete updated[student.bookingId];
+                                return updated;
+                              });
+                            }
+                          }}
+                        >
+                          {[
+                            "Full Stack Development",
+                            "Data Analytics & Science",
+                            "Banking & Financial Services",
+                            "Digital Marketing",
+                            "SAP",
+                            "DevOps",
+                          ].map((option) => (
+                            <option
+                              key={option}
+                              value={option}
+                              disabled={option !== getDomainFromBatch(toBatch)}
+                            >
+                              {option}
+                            </option>
+                          ))}
+                        </select>
 
-                          return ""; // fallback
-                        })()}
-                      >
-                        <option value="Full Stack Development">
-                          Full Stack Development
-                        </option>
-                        <option value="Data Analytics & Science">
-                          Data Analytics & Science
-                        </option>
-                        <option value="Banking & Financial Services">
-                          Banking & Financial Services
-                        </option>
-                        <option value="Digital Marketing">
-                          Digital Marketing
-                        </option>
-                        <option value="SAP">SAP</option>
-                        <option value="DevOps">DevOps</option>
-                      </select>
+                        {domainErrors[student.bookingId] && (
+                          <span className="text-red-500 text-xs mt-1">
+                            The transfer batch name and the domain should be
+                            same
+                          </span>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -366,9 +475,15 @@ const BatchChange = () => {
                 rows="3"
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
+                onFocus={() => setIsReasonEmpty(false)}
                 placeholder="Enter reason for batch change"
-                className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#6750A4]"
+                className={`w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#6750A4] ${isReasonEmpty ? 'border-red-500 border-1' : ''}`}
               ></textarea>
+              {isReasonEmpty && (
+                <p className="text-red-500 text-sm mt-1">
+                  {reasonError}
+                </p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -378,30 +493,26 @@ const BatchChange = () => {
                 type="file"
                 accept="image/"
                 onChange={(e) => setAttachment(e.target.files[0])}
-                className="cursor-pointer block w-full text-sm text-gray-700 border border-gray-300 rounded px-3 py-2 file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#E8DEF8] file:text-[#6750A4] hover:file:bg-[#d1c3ea]"
+                onFocus={() => setIsAttachmentEmpty(false)}
+                className={`cursor-pointer block w-full text-sm text-gray-700 border border-gray-300 rounded px-3 py-2 file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-[#E8DEF8] file:text-[#6750A4] hover:file:bg-[#d1c3ea]
+                  ${isAttachmentEmpty ? 'border-red-500 border-1' : ''}
+                  `}
               />
+              {isAttachmentEmpty && (
+                <p className="text-red-500 text-sm mt-1">
+                  {attachmentError}</p>)}
             </div>
             <div className="flex justify-end gap-4 pt-2">
               <button
-                onClick={handleRefresh}
+                onClick={handleDiscard}
                 className="cursor-pointer bg-gray-200 text-gray-700 hover:bg-gray-300 px-6 py-2 rounded-md text-sm font-medium"
               >
                 Cancel
               </button>
               <button
                 onClick={() => {
-                  if (!reason.trim()) {
-                    toast.error("Please enter a reason for the batch change.");
-                    return;
-                  }
-                  if (!attachment) {
-                    toast.error("Please attach an image before submitting.");
-                    return;
-                  }
-                    selectedStudents.forEach((student) => {
-                      updateStudent(student.bookingId, { ...student, batch: toBatch });
-                    });
-                  toast.success("Submitted successfully");
+                  //handleBatchchangeSubmit();
+                  setShowConfirmModal(true);
                 }}
                 className="cursor-pointer bg-[#6750A4] text-white hover:bg-[#584195] px-6 py-2 rounded-md text-sm font-medium"
               >
@@ -414,6 +525,59 @@ const BatchChange = () => {
       {showTable && filteredStudents.length === 0 && (
         <div className="text-center py-4 text-gray-500">
           No students found in batch &quot{fromBatch}&quot.
+        </div>
+      )}
+            {showConfirmModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onClick={() => setShowConfirmModal(false)}>
+          <div className="w-[500px] bg-[#F8FAFD] rounded-[10px] p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-lg font-medium">Confirm Changes</h2>
+              <button onClick={() => setShowConfirmModal(false)} className="cursor-pointer text-gray-500 hover:text-gray-700">
+                <RiCloseCircleLine size={20} />
+              </button>
+            </div>
+            <p className="mb-4 text-gray-700 text-sm">
+              Are you sure you want to update student from <strong className='text-m'>{fromBatch}</strong> to <strong className='text-m'>{toBatch}</strong>?
+            </p>
+            <div className="flex justify-end gap-4">
+              <button onClick={() => setShowConfirmModal(false)} className="cursor-pointer bg-[#e8def8] text-[#4a4459] px-4 py-2.5 rounded-2xl text-sm font-medium">
+                Cancel
+              </button>
+              <button onClick={handleBatchchangeSubmit } className="cursor-pointer bg-[#6750a4] hover:bg-[#5f537d] text-white px-4 py-2.5 rounded-xl text-sm font-medium">
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Discard Confirmation Modal */}
+      {EditDiscarddModel && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+            <div className="p-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Discard Changes?</h3>
+              <p className="text-sm text-gray-500 mb-6">
+                You have unsaved changes. Are you sure you want to discard them?
+              </p>
+              <div className="flex justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={() => setEditDiscarddModel(false)}
+                  className="px-4 py-2 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-gray-500"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleRefresh}
+                  className="px-4 py-2 bg-[#6750a4] text-white rounded-xl hover:bg-[#675b86] focus:outline-none focus:ring-1 focus:ring-red-500"
+                >
+                  Discard
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

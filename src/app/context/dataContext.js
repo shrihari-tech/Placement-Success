@@ -3555,9 +3555,7 @@ const DataProvider = ({ children }) => {
       bookingId,
       updatedFields,
     });
-
-    // 1. First, find the student in *any* of the domain-specific lists to get its original batch/domain
-    let originalStudent = "";
+    
     let originalDomain = "";
 
     if (fullstackStudent.some((s) => s.bookingId === bookingId)) {
@@ -3612,23 +3610,16 @@ const DataProvider = ({ children }) => {
         return;
     }
 
-    // 3. Also update the studentData state (which might be filtered for a specific domain)
-    // This ensures the UI updates correctly if the user is currently viewing the same domain.
     setStudentData((prev) =>
       prev.map((item) =>
         item.bookingId === bookingId ? { ...item, ...updatedFields } : item
       )
     );
 
-    // 4. Update the allStudentData state to reflect the change globally
     setAllStudentData((prev) =>
       prev.map((item) =>
         item.bookingId === bookingId ? { ...item, ...updatedFields } : item
       )
-    );
-
-    console.log(
-      `Student ${bookingId} updated successfully in domain ${originalDomain}`
     );
   };
 

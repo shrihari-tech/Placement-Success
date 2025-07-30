@@ -16,10 +16,7 @@ export default function StudentDataPage() {
   const [searchInitiated, setSearchInitiated] = useState(false);
   const [selectedBatch, setSelectedBatch] = useState("");
   const [showBatchDropdown, setShowBatchDropdown] = useState(false);
-  const [showStatusDropdown, setShowStatusDropdown] = useState(false);
-  const [showPlacementDropdown, setShowPlacementDropdown] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [editingStudent, setEditingStudent] = useState(null);
+
   // --- New State for Assign Modal ---
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [assignFormData, setAssignFormData] = useState({
@@ -107,7 +104,7 @@ export default function StudentDataPage() {
     const html = document.documentElement;
     const body = document.body;
 
-    if (editingStudent ||    showDeleteModal ||showAssignModal ||showStudentSelectModal ||showViewModal ||showDiscardConfirm ||studentSelectModelDiscard) {
+    if (showAssignModal ||showStudentSelectModal ||showViewModal ||showDiscardConfirm ||studentSelectModelDiscard) {
       html.style.overflow = "hidden";
       body.style.overflow = "hidden";
     } else {
@@ -118,7 +115,7 @@ export default function StudentDataPage() {
       html.style.overflow = "auto";
       body.style.overflow = "auto";
     };
-  }, [editingStudent,   showDeleteModal,   showAssignModal,   showStudentSelectModal,   showViewModal,   showDiscardConfirm,studentSelectModelDiscard]);
+  }, [ showAssignModal,   showStudentSelectModal,   showViewModal,   showDiscardConfirm,studentSelectModelDiscard]);
 
 //  useEffect(() => {
 //   const modalOpen =
@@ -333,7 +330,6 @@ const handleSaveSelectedStudents = () => {
     setShowViewModal(false);
     setViewOpportunityDetails(null);
   };
-
 
 
   const getFilteredBatches = () => {
@@ -998,4 +994,5 @@ const handleSaveSelectedStudents = () => {
     </div>
   );
 }
+
 
