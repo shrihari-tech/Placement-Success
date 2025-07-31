@@ -23,7 +23,6 @@ export const useDataContext = () => {
 };
 
 
-
 const fullstackOpportunitiesInitial = [];
 const dataanalyticsOpportunitiesInitial = [];
 const marketingOpportunitiesInitial = [];
@@ -761,7 +760,7 @@ export const dataAnalyticsStudentData = [
   { sno: 5, name: "Manoj S", email: "manoj05@gmail.com", bookingId: "DA05-005", epicStatus: "Excellent", placement: "Placed", batch: "DA05", phone: "9123876543", mode: "Offline", mile1: 88, mile2: 86, mile3: 83, irc: 85, attendance: 84, status: "Completed" }
 ];
 
-export const bankingStudentDataWithStatus = [
+export const bankingStudentData = [
   { sno: 1, name: "Amit P", email: "amit01@gmail.com", bookingId: "BK01-001", epicStatus: "Ideal", placement: "Placed", batch: "BK01", phone: "9876543210", mode: "Online", mile1: 83, mile2: 64, mile3: 91, irc: 75, attendance: 88, status: "Completed" },
   { sno: 2, name: "Nisha R", email: "nisha02@gmail.com", bookingId: "BK01-002", epicStatus: "Proficient", placement: "Yet to Place", batch: "BK01", phone: "9123456789", mode: "Offline", mile1: 96, mile2: 88, mile3: 79, irc: 93, attendance: 67, status: "Ongoing" },
   { sno: 3, name: "Karthik G", email: "karthik03@gmail.com", bookingId: "BK01-003", epicStatus: "Excellent", placement: "Not Placed", batch: "BK01", phone: "9871234560", mode: "Online", mile1: 78, mile2: 66, mile3: 90, irc: 89, attendance: 81, status: "Completed" },
@@ -2434,6 +2433,7 @@ const DataProvider = ({ children }) => {
     });
     
     let originalDomain = "";
+    let originalStudent = "";
 
     if (fullstackStudent.some((s) => s.bookingId === bookingId)) {
       originalStudent = fullstackStudent.find((s) => s.bookingId === bookingId);
