@@ -13,9 +13,11 @@ const BatchChange = () => {
   const {
     batchData,
     allBatchNames,
+    liveBatchNames,
     allStudentData,
     updateStudent,
     batchChange,
+    studentData ,
   } = useDataContext(); //
 
   const [fromBatch, setFromBatch] = useState("");
@@ -48,10 +50,20 @@ const BatchChange = () => {
     if (code.startsWith("DV")) return "DevOps";
     return "";
   };
+const mergedStudents = useMemo(() => {
+  const all = [...allStudentData, ...studentData];
+  // Remove duplicates using bookingId
+  const uniqueByBookingId = new Map(all.map((s) => [s.bookingId, s]));
+  return Array.from(uniqueByBookingId.values());
+}, [allStudentData, studentData]);
 
-  const batchList = useMemo(() => {
-    return allBatchNames ? allBatchNames.sort() : [];
-  }, [allBatchNames]);
+const batchList = useMemo(() => {
+  const combined = [...allBatchNames, ...liveBatchNames];
+  const uniqueSorted = [...new Set(combined)].sort();
+  return uniqueSorted;
+}, [allBatchNames, liveBatchNames]);
+
+
 
   const filteredFromBatches = useMemo(() => {
     return batchList.filter(
@@ -71,11 +83,11 @@ const BatchChange = () => {
   }, [batchList, fromBatch, searchTermTo]);
 
   const filteredStudents = useMemo(() => {
-    if (!fromBatch) return [];
-    return allStudentData.filter(
-      (s) => (s.batch || s.batchNo)?.toLowerCase() === fromBatch.toLowerCase()
-    );
-  }, [allStudentData , toBatch]);
+  if (!fromBatch) return [];
+  return mergedStudents.filter(
+    (s) => (s.batch || s.batchNo)?.toLowerCase() === fromBatch.toLowerCase()
+  );
+}, [mergedStudents, fromBatch]);
 
   const handleRefresh = () => {
     setFromBatch("");
@@ -167,7 +179,7 @@ const BatchChange = () => {
 
    const handleBatchchangeSubmit = () => {
     selectedStudents.forEach((bookingId) => {
-      const studentToUpdate = filteredStudents.find(
+      const studentToUpdate = mergedStudents.find(
         (s) => s.bookingId === bookingId
       );
       if (studentToUpdate) {

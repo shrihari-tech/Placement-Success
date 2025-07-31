@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useMemo } from "react";
 import { usePathname } from "next/navigation";
 
 // Create the context
@@ -3244,6 +3244,10 @@ const DataProvider = ({ children }) => {
   const userName = loginUser.split("@")[0];
   const firstLetterUser = loginUser?.charAt(0).toUpperCase() || "";
 
+    const liveBatchNames = useMemo(() => {
+    return [...new Set(studentData.map((s) => s.batch).filter(Boolean))].sort();
+  }, [studentData]);
+
   //all batches names across domains
   useEffect(() => {
     const fullstack = fullstackData.map((b) => b.batchNo);
@@ -3849,6 +3853,7 @@ const DataProvider = ({ children }) => {
         batchData,
         studentData,
         liveCounts,
+        liveBatchNames
       }}
     >
       {children}
