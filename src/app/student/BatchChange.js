@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { FiChevronDown } from "react-icons/fi";
 import { RiCloseCircleLine } from "react-icons/ri";

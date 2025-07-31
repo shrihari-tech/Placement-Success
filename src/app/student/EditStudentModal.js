@@ -200,7 +200,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                     errors.name ? "text-red-500" : "text-gray-500"
                   } duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                 >
-                  Name <span className="text-red-500">*</span>
+                  Name 
                 </label>
                 {editingStudent.name && (
                   <button
@@ -234,7 +234,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                     errors.email ? "text-red-500" : "text-gray-500"
                   } duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                 >
-                  Email <span className="text-red-500">*</span>
+                  Email 
                 </label>
                 {editingStudent.email && (
                   <button
@@ -274,7 +274,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                     errors.phone ? "text-red-500" : "text-gray-500"
                   } duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                 >
-                  Phone <span className="text-red-500">*</span>
+                  Phone 
                 </label>
                 {editingStudent.phone && (
                   <button
@@ -352,7 +352,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
                     errors.placement ? "text-red-500" : "text-gray-500"
                   } duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                 >
-                  Placement <span className="text-red-500">*</span>
+                  Placement 
                 </label>
                 <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
                 {showPlacementDropdown && (

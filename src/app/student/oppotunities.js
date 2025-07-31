@@ -358,7 +358,7 @@ export default function StudentDataPage() {
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search by Company Name..."
+              placeholder="Search by Company Name"
               className="px-2 py-3.5 w-[250px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4]  cursor-pointer"
               onKeyDown={(e) => { if (e.key === 'Enter') handleSearch(); }} // Allow Enter key to trigger search
             />

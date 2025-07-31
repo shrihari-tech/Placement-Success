@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import React, { useState, useRef } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useRouter } from "next/navigation";
@@ -122,7 +122,7 @@ export default function Home() {
         <div className="flex flex-col items-start justify-start w-full max-w-md">
           <div className="mb-5">
             <div className="flex flex-row gap-1">
-                <h1 className="font-bold text-3xl md:text-4xl">Welcome PSM !</h1>
+                <h1 className="font-bold text-3xl md:text-4xl">Welcome PSM!</h1>
             <Image
                 src='/Rocket SVG Icon 1.svg' 
                 alt="Rocket image"
