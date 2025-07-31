@@ -3,6 +3,7 @@
 import React ,{useState,useEffect} from "react";
 import NavBar from "../navBar/page";
 import { useRouter } from "next/navigation";
+import Cards from "../cards/cards"
 import Image from "next/image";
 import FlipCard from "../flipcard/flipcard";
 import { ComposedChart, Line, Area, XAxis, YAxis, CartesianGrid, LabelList, ResponsiveContainer } from 'recharts';
@@ -343,6 +344,7 @@ const iconMap = {
         </div>
         <div className="flex justify-center">
           <div className="grid grid-cols-1 gap-10 sm:grid-cols-3">
+
             {cards.map((card) => {
               const stats = getStatsByBatch(card.id) || {};
               const isFlipped = isMobile ? flippedCardId === card.id : false;
@@ -445,6 +447,8 @@ const iconMap = {
                 </div>
               );
             })}
+
+            < Cards />
           </div>
         </div>
       </div>

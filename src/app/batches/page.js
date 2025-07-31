@@ -261,7 +261,7 @@ export default function BatchModel() {
       ...prev,
       sections: {
         ...prev.sections,
-        [tab]: "Both start and end dates are required",
+        [tab]: "Both start and end date are required",
       },
     }));
   };
@@ -1207,7 +1207,7 @@ export default function BatchModel() {
                           ${
                             activeTab === label
                               ? "text-indigo-600"
-                              : "text-black"
+                              : "text-gray-800" 
                           }`}
                 >
                   {label}

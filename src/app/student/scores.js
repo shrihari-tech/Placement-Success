@@ -1,6 +1,8 @@
 import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { useDataContext } from "../context/dataContext";
 import { Toaster, toast } from 'sonner';
+import Image from "next/image";
+import { FaSearch } from 'react-icons/fa';
 import { FiChevronDown, FiEdit, FiTrash2 } from 'react-icons/fi';
 import { RiCloseCircleLine } from "react-icons/ri";
 import { FaRegSave } from "react-icons/fa";
@@ -484,6 +486,7 @@ const handleDeleteScope = () => {
                             type="text"
                             placeholder=" "
                             value={selectedBatch}
+                            maxLength={16}
                             onChange={(e) => {
                                 setSelectedBatch(e.target.value);
                                 setShowBatchDropdown(true);
@@ -532,6 +535,7 @@ const handleDeleteScope = () => {
                             type="text"
                             placeholder=" "
                             value={selectedScope}
+                            maxLength={16}
                             onChange={(e) => {
                                 setSelectedScope(e.target.value);
                                 setShowScopeDropdown(true);
@@ -580,13 +584,19 @@ const handleDeleteScope = () => {
                             onClick={handleScoreSearch}
                             className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-5 py-4 rounded-xl text-sm font-semibold"
                         >
-                            Search
+                           <FaSearch className="inline-block" /> Search
                         </button>
                         <button
                             onClick={handleScoreReset}
                             className="cursor-pointer bg-[#E8DEF8] hover:bg-[#d1c3ea] px-4 py-4 rounded-xl text-sm font-semibold text-gray-700 flex items-center gap-1"
                         >
-                            Reset
+                                                <Image
+                                                  src="/reset.svg"
+                                                  alt="Reset Icon"
+                                                  width={20}
+                                                  height={20}
+                                                  className="object-contain"
+                                                />Reset
                         </button>
                     </div>
                 </div>
