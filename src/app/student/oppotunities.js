@@ -775,11 +775,11 @@ const handleSaveSelectedStudents = () => {
                         <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Phone</th>
                         <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Epic Status</th>
                         <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Attendance</th>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Select Student(s) <button  onClick={handleSelectAllStudents}
-                        className="cursor-pointer bg-[#e8def8] text-[#4a4459] px-2 py-1 rounded-xl text-sm font-medium"
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase"> <div className="flex flex-row"><div
+                        className="px-1 py-3 text-center text-xs font-medium text-gray-500 uppercase"
                       >
                         Select All
-                      </button></th>
+                      </div> <div className="pt-3"><input type="checkbox" onClick={handleSelectAllStudents} className="h-4 w-4 cursor-pointer text-[#6750A4] border-gray-300 rounded focus:ring-[#6750A4]"/></div></div></th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
@@ -797,7 +797,7 @@ const handleSaveSelectedStudents = () => {
                                 type="checkbox"
                                 checked={selectedStudents.includes(student.bookingId)}
                                 onChange={() => handleStudentSelect(student.bookingId)}
-                                className="h-4 w-4 text-[#6750A4] border-gray-300 rounded focus:ring-[#6750A4]"
+                                className="h-4 w-4 cursor-pointer text-[#6750A4] border-gray-300 rounded focus:ring-[#6750A4]"
                               />
                             </td>
                           </tr>
