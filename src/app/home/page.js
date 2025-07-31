@@ -5,25 +5,9 @@ import NavBar from "../navBar/page";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import FlipCard from "../flipcard/flipcard";
-import {
-  ComposedChart,
-  Line,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  LabelList,
-  ResponsiveContainer,
-} from "recharts";
-import { Doughnut } from "react-chartjs-2";
+import {ComposedChart,Line,Area,XAxis,YAxis,CartesianGrid,LabelList,ResponsiveContainer} from "recharts";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { IoMdStar } from "react-icons/io";
 import { useDataContext } from "../context/dataContext";
-import { FaFire } from "react-icons/fa";
-import { FcOk } from "react-icons/fc";
-import { AiFillThunderbolt } from "react-icons/ai";
-import { FaGraduationCap, FaCheck } from "react-icons/fa6";
-import { IoCloseCircleSharp } from "react-icons/io5";
 export default function HomePage() {
   const { userName, getStatsByBatch, setBatchingValue, liveCounts } =
     useDataContext();
@@ -33,16 +17,6 @@ export default function HomePage() {
   const [flippedCardId, setFlippedCardId] = useState(null);
 
   ChartJS.register(ArcElement, Tooltip, Legend);
-
-  const iconMap = {
-    "Completed Batches": <FcOk />,
-    "Ongoing Batches": <FaFire className="text-blue-500" />,
-    "Completed Students": <FaGraduationCap className="text-purple-600" />,
-    "Ongoing Students": <AiFillThunderbolt className="text-orange-500" />,
-    "Placement Eligible": <IoMdStar className="text-yellow-500" />,
-    "Already Placed": <FaCheck className="text-green-500" />,
-    "Yet to Place": <IoCloseCircleSharp className="text-red-500" />,
-  };
 
   // Responsive detection
   useEffect(() => {
@@ -104,20 +78,7 @@ export default function HomePage() {
   const formattedDate = `${mm}/${dd}/${yyyy}`;
   const premonth = (mm - 1 + 12) % 12;
   const currentmonth = mm % 12;
-  const month = [
-    "Jan",
-    "Feb",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
+  const month = ["Jan","Feb","March","April","May","June","July","Aug","Sep","Oct","Nov","Dec"];
 
   const CustomDot = ({ cx, cy }) => {
     return (
@@ -466,14 +427,14 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-
+          {/* Domain Cards Section */}
           {cardFlip && (
             <div className="index-0 mt-6 md:mt-15">
               <div className="text-sm md:text-base text-gray-700 font-semibold mb-4 md:mb-8">
                 <h1>Domain</h1>
               </div>
               <div className="flex justify-center">
-                <div className="grid grid-cols-1 gap-10 sm:grid-cols-3">
+                <div className="flex flex-col gap-4 md:gap-4 md:flex-row">
                   {cards.map((card) => {
                     const stats = getStatsByBatch(card.id) || {};
                     const isFlipped = isMobile
@@ -513,41 +474,6 @@ export default function HomePage() {
                       0
                     );
 
-                    const data = {
-                      labels: items.map((i) => i.label),
-                      datasets: [
-                        {
-                          data: items.map((i) => i.value),
-                          backgroundColor: [
-                            "#51f88bff",
-                            "#56a2ffff",
-                            "#836affff",
-                            "#6583f9ff",
-                            "#fef162ff",
-                            "#72ffe1ff",
-                            "#f98c99ff",
-                          ],
-                          borderWidth: 1,
-                        },
-                      ],
-                    };
-
-                    const options = {
-                      plugins: {
-                        tooltip: {
-                          callbacks: {
-                            label: function (context) {
-                              const label = context.label;
-                              const value = context.raw;
-                              return `${label}: ${value}`;
-                            },
-                          },
-                        },
-                        legend: { display: false },
-                      },
-                      cutout: "70%",
-                    };
-
                     return (
                       <div
                         key={card.id}
@@ -557,22 +483,22 @@ export default function HomePage() {
                       >
                         <FlipCard
                           frontContent={
-                            <div className="flex flex-col items-center gap-10">
+                            <div className="flex flex-col items-center gap-7">
                               <div>
                                 <Image
                                   src={card.image}
                                   alt={card.title}
-                                  width={160}
-                                  height={160}
+                                  width={100}
+                                  height={100}
                                 />
                               </div>
-                              <span className="text-l text-gray-800 font-semibold">
+                              <span className="text-[10px] text-gray-800 font-semibold">
                                 {card.title}
                               </span>
                             </div>
                           }
-                          backContent={
-                            <div className="relative w-full h-full rounded-xl overflow-hidden shadow bg-white">
+                         backContent={
+                            <div className="relative w-65 h-100 p-1.5 rounded-xl overflow-hidden shadow bg-white">
                               <svg
                                 className="absolute top-0 left-0 w-full h-full rounded-xl"
                                 viewBox="0 0 800 600"
@@ -581,94 +507,53 @@ export default function HomePage() {
                                 <path
                                   fill="#9076deff"
                                   fillOpacity="0.6"
-                                  d="
-                                      M 0 0
-                                      L 800 0
-                                      L 800 624
-                                      C 600 624, 440 624, 400 520
-                                      C 360 416, 440 364, 300 312
-                                      C 160 260, 240 208, 200 104
-                                      C 160 0, 0 0, 0 0
-                                      Z
-                                    "
+                                  d="M 0 0 L 800 0 L 800 624 C 600 624, 440 624, 400 520 C 360 416, 440 364, 300 312 C 160 260, 240 208, 200 104 C 160 0, 0 0, 0 0 Z"
                                 />
                               </svg>
-
-                              <div className="relative z-10 h-full flex flex-col">
-                                <p className="text-sm md:text-base font-bold text-white drop-shadow-md text-center pt-2">
+                              <div className="relative z-10 h-full w-full flex flex-col">
+                                {/* Tighter title */}
+                                <p className="text-sm font-bold text-white drop-shadow-md text-center pt-1">
                                   {card.title}
                                 </p>
-
-                                <div className="grid grid-cols-2 gap-3 p-4 flex-grow items-start">
+                                {/* Tighter grid with less padding and gap */}
+                                <div className="grid grid-cols-2 gap-x-2 gap-y-1 p-1 flex-grow">
                                   {/* Left side stats */}
-                                  <div className="space-y-2">
-                                    <div className="bg-white/80 px-1 py-1 rounded-md shadow text-sm font-medium text-center space-y-1">
-                                      <div className="text-xs font-semibold">
-                                        Completed Batches
-                                      </div>
-                                      <div className="text-[#6750A4] text-sm font-bold">
-                                        {stats.completedBatches || 0}
-                                      </div>
+                                  <div className="space-y-1">
+                                    {/* Redesigned compact stat boxes */}
+                                    <div className="bg-white/80 px-1 py-0.5 rounded shadow text-center">
+                                      <div className="text-[11px] font-semibold leading-tight">Completed Batches</div>
+                                      <div className="text-[13px] text-[#6750A4] font-bold leading-tight">{stats.completedBatches || 0}</div>
                                     </div>
-                                    <div className="bg-white/80 px-1 py-1 rounded-md shadow text-sm font-medium text-center space-y-1">
-                                      <div className="text-xs font-semibold">
-                                        Completed Students
-                                      </div>
-                                      <div className="text-[#6750A4] text-sm font-bold">
-                                        {stats.completedStudents || 0}
-                                      </div>
+                                    <div className="bg-white/80 px-1 py-0.5 rounded shadow text-center">
+                                      <div className="text-[11px] font-semibold leading-tight">Completed Students</div>
+                                      <div className="text-[13px] text-[#6750A4] font-bold leading-tight">{stats.completedStudents || 0}</div>
                                     </div>
-                                    <div className="bg-white/80 px-1 py-1 rounded-md shadow text-sm font-medium text-center space-y-1">
-                                      <div className="text-xs font-semibold">
-                                        Placement Eligible
-                                      </div>
-                                      <div className="text-[#6750A4] text-sm font-bold">
-                                        {stats.placementEligible || 0}
-                                      </div>
+                                    <div className="bg-white/80 px-1 py-0.5 rounded shadow text-center">
+                                      <div className="text-[11px] font-semibold leading-tight">Placement Eligible</div>
+                                      <div className="text-[13px] text-[#6750A4] font-bold leading-tight">{stats.placementEligible || 0}</div>
                                     </div>
-                                    <div className="bg-white/80 px-1 py-1 rounded-md shadow text-sm font-medium text-center space-y-1">
-                                      <div className="text-xs font-semibold">
-                                        Yet to Place
-                                      </div>
-                                      <div className="text-[#6750A4] text-sm font-bold">
-                                        {stats.yetToPlace || 0}
-                                      </div>
+                                    <div className="bg-white/80 px-1 py-0.5 rounded shadow text-center">
+                                      <div className="text-[11px] font-semibold leading-tight">Yet to Place</div>
+                                      <div className="text-[13px] text-[#6750A4] font-bold leading-tight">{stats.yetToPlace || 0}</div>
                                     </div>
                                   </div>
-
                                   {/* Right side stats */}
-                                  <div className="space-y-2">
-                                    <div className="bg-white/80 px-1 py-1 rounded-md shadow text-sm font-medium text-center space-y-1">
-                                      <div className="text-xs font-semibold">
-                                        Ongoing Batches
-                                      </div>
-                                      <div className="text-[#6750A4] text-sm font-bold">
-                                        {stats.ongoingBatches || 0}
-                                      </div>
+                                  <div className="space-y-1">
+                                    <div className="bg-white/80 px-1 py-0.5 rounded shadow text-center">
+                                      <div className="text-[11px] font-semibold leading-tight">Ongoing Batches</div>
+                                      <div className="text-[13px] text-[#6750A4] font-bold leading-tight">{stats.ongoingBatches || 0}</div>
                                     </div>
-                                    <div className="bg-white/80 px-1 py-1 rounded-md shadow text-sm font-medium text-center space-y-1">
-                                      <div className="text-xs font-semibold">
-                                        Ongoing Students
-                                      </div>
-                                      <div className="text-[#6750A4] text-sm font-bold">
-                                        {stats.ongoingStudents || 0}
-                                      </div>
+                                    <div className="bg-white/80 px-1 py-0.5 rounded shadow text-center">
+                                      <div className="text-[11px] font-semibold leading-tight">Ongoing Students</div>
+                                      <div className="text-[13px] text-[#6750A4] font-bold leading-tight">{stats.ongoingStudents || 0}</div>
                                     </div>
-                                    <div className="bg-white/80 px-1 py-1 rounded-md shadow text-sm font-medium text-center space-y-1">
-                                      <div className="text-xs font-semibold">
-                                        Already Placed
-                                      </div>
-                                      <div className="text-[#6750A4] text-sm font-bold">
-                                        {stats.alreadyPlaced || 0}
-                                      </div>
+                                    <div className="bg-white/80 px-1 py-0.5 rounded shadow text-center">
+                                      <div className="text-[11px] font-semibold leading-tight">Already Placed</div>
+                                      <div className="text-[13px] text-[#6750A4] font-bold leading-tight">{stats.alreadyPlaced || 0}</div>
                                     </div>
-                                    <div className="bg-white/80 px-1 py-1 rounded-md shadow text-sm font-medium text-center space-y-1">
-                                      <div className="text-xs font-semibold">
-                                        Total Students
-                                      </div>
-                                      <div className="text-[#6750A4] text-sm font-bold">
-                                        {total}
-                                      </div>
+                                    <div className="bg-white/80 px-1 py-0.5 rounded shadow text-center">
+                                      <div className="text-[11px] font-semibold leading-tight">Total Students</div>
+                                      <div className="text-[13px] text-[#6750A4] font-bold leading-tight">{total}</div>
                                     </div>
                                   </div>
                                 </div>

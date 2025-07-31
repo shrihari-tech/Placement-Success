@@ -198,10 +198,7 @@ const batchList = useMemo(() => {
     setReasonError("");
     setIsReasonEmpty(false);
     handleRefresh();
-    setAttachmentError("");
-    setIsAttachmentEmpty(false);
-     setShowConfirmModal(false);
-      setSelectedStudents([]); 
+
   }
 
   const handleDiscard = () => {
