@@ -1,5 +1,5 @@
-'use client';
-import React from 'react';
+"use client";
+import React from "react";
 
 export default function FlipCard({ frontContent, backContent, isFlipped }) {
   return (
@@ -16,7 +16,7 @@ export default function FlipCard({ frontContent, backContent, isFlipped }) {
         className={`
           relative w-full h-full transition-transform duration-700
           [transform-style:preserve-3d]
-          ${isFlipped ? 'rotate-y-180' : ''}
+          ${isFlipped ? "rotate-y-180" : ""}
           group-hover:rotate-y-180
         `}
       >
@@ -26,7 +26,7 @@ export default function FlipCard({ frontContent, backContent, isFlipped }) {
         </div>
 
         {/* Back Side */}
-        <div className="absolute w-full text-sm h-full flex flex-col items-center justify-center text-center bg-white text-gray-700 pt-7 rounded-xl shadow-2xl [transform:rotateY(180deg)] backface-hidden">
+        <div className="absolute w-full text-sm h-full flex flex-col items-center justify-center text-center bg-white text-gray-700 pt-0 rounded-xl shadow-2xl [transform:rotateY(180deg)] backface-hidden">
           {backContent}
         </div>
       </div>
