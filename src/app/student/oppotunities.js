@@ -1,7 +1,17 @@
 "use client";
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import Image from "next/image";
-import { FiEye, FiEdit, FiTrash2, FiChevronDown, FiPlus, FiSearch, FiX, FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import {
+  FiEye,
+  FiEdit,
+  FiTrash2,
+  FiChevronDown,
+  FiPlus,
+  FiSearch,
+  FiX,
+  FiChevronLeft,
+  FiChevronRight,
+} from "react-icons/fi";
 import { Toaster, toast } from "sonner";
 import { FaSearch } from "react-icons/fa";
 import { RiCloseCircleLine } from "react-icons/ri";
@@ -32,7 +42,8 @@ export default function StudentDataPage() {
   const [isAssignFormDirty, setIsAssignFormDirty] = useState(false);
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
   const [showStudentSelectModal, setShowStudentSelectModal] = useState(false);
-  const [studentSelectModelDiscard, setStudentSelectModelDiscard] = useState(false);
+  const [studentSelectModelDiscard, setStudentSelectModelDiscard] =
+    useState(false);
   const [opportunityDetails, setOpportunityDetails] = useState(null);
   const [filteredBatchStudents, setFilteredBatchStudents] = useState([]);
   const [selectedStudents, setSelectedStudents] = useState([]);
@@ -106,7 +117,13 @@ export default function StudentDataPage() {
   useEffect(() => {
     const html = document.documentElement;
     const body = document.body;
-    if (showAssignModal || showStudentSelectModal || showViewModal || showDiscardConfirm || studentSelectModelDiscard) {
+    if (
+      showAssignModal ||
+      showStudentSelectModal ||
+      showViewModal ||
+      showDiscardConfirm ||
+      studentSelectModelDiscard
+    ) {
       html.style.overflow = "hidden";
       body.style.overflow = "hidden";
     } else {
@@ -117,16 +134,26 @@ export default function StudentDataPage() {
       html.style.overflow = "auto";
       body.style.overflow = "auto";
     };
-  }, [showAssignModal, showStudentSelectModal, showViewModal, showDiscardConfirm, studentSelectModelDiscard]);
+  }, [
+    showAssignModal,
+    showStudentSelectModal,
+    showViewModal,
+    showDiscardConfirm,
+    studentSelectModelDiscard,
+  ]);
 
   const handleSearch = useCallback(() => {
     const term = searchTerm.trim().toLowerCase();
-    const allOpportunities = getOpportunitiesByDomain(batchingvalue)
-      ?.filter(opportunity => opportunity.createdDomain === batchHead) || [];
-    const sortedOpportunities = [...allOpportunities].sort((a, b) => (b.id || 0) - (a.id || 0));
+    const allOpportunities =
+      getOpportunitiesByDomain(batchingvalue)?.filter(
+        (opportunity) => opportunity.createdDomain === batchHead
+      ) || [];
+    const sortedOpportunities = [...allOpportunities].sort(
+      (a, b) => (b.id || 0) - (a.id || 0)
+    );
 
     if (term) {
-      const results = sortedOpportunities.filter(opportunity =>
+      const results = sortedOpportunities.filter((opportunity) =>
         opportunity.companyName.toLowerCase().includes(term)
       );
       setSearchResults(results);
@@ -162,7 +189,7 @@ export default function StudentDataPage() {
       driveRole: "",
       package: "",
       selectedBatch: selectedBatch || "",
-      createdDomain: batchHead || ""
+      createdDomain: batchHead || "",
     });
     setAssignErrors({});
     setIsAssignFormDirty(false);
@@ -175,7 +202,10 @@ export default function StudentDataPage() {
     if (id === "driveDate") {
       const today = new Date().toISOString().split("T")[0];
       if (value < today) {
-        setAssignErrors(prev => ({ ...prev, driveDate: "The drive date cannot be earlier than today." }));
+        setAssignErrors((prev) => ({
+          ...prev,
+          driveDate: "The drive date cannot be earlier than today.",
+        }));
         return;
       }
     }
@@ -261,7 +291,9 @@ export default function StudentDataPage() {
     if (selectedStudents.length === filteredBatchStudents.length) {
       setSelectedStudents([]);
     } else {
-      setSelectedStudents(filteredBatchStudents.map((student) => student.bookingId));
+      setSelectedStudents(
+        filteredBatchStudents.map((student) => student.bookingId)
+      );
     }
   };
 
@@ -274,7 +306,7 @@ export default function StudentDataPage() {
       setStudentSelectModelDiscard(true);
       return;
     }
-  }
+  };
 
   const handleSaveSelectedStudents = () => {
     if (selectedStudents.length === 0) {
@@ -286,22 +318,30 @@ export default function StudentDataPage() {
       domainKey = opportunityDetails.selectedBatch;
     }
     if (!domainKey) {
-      toast.error("No domain selected. Please select a domain or batch before saving.");
+      toast.error(
+        "No domain selected. Please select a domain or batch before saving."
+      );
       return;
     }
+    const existingOpportunities = getOpportunitiesByDomain(batchingvalue) || [];
+    const maxId = Math.max(...existingOpportunities.map((o) => o.id || 0), 0);
 
     const opportunity = {
+      id: maxId + 1,
       ...opportunityDetails,
       selectedStudents,
       domain: domainKey,
-      createdDomain: batchHead || ""
+      createdDomain: batchHead || "",
     };
+
     addOpportunity(opportunity);
     setShowAssignModal(false);
     setShowStudentSelectModal(false);
     setSelectedStudents([]);
     setOpportunityDetails(null);
-    toast.success(` ${selectedStudents.length}  student(s) assigned successfully!`);
+    toast.success(
+      ` ${selectedStudents.length}  student(s) assigned successfully!`
+    );
     resetSearch();
     setCurrentPage(1);
   };
@@ -324,21 +364,32 @@ export default function StudentDataPage() {
 
   const getFilteredBatches = () => {
     if (batchHead === "Full Stack Development") {
-      return batchesNames.filter(batch => batch.startsWith("FS"));
+      return batchesNames.filter((batch) => batch.startsWith("FS"));
     } else if (batchHead === "Data Analytics & Science") {
-      return batchesNames.filter(batch => ["DA", "BK", "DM", "DAP", "DV"].includes(batch.substring(0, 2)));
+      return batchesNames.filter((batch) =>
+        ["DA", "BK", "DM", "DAP", "DV"].includes(batch.substring(0, 2))
+      );
     }
     return batchesNames;
   };
 
-  const baseOpportunities = getOpportunitiesByDomain(batchingvalue)
-    ?.filter(opportunity => opportunity.createdDomain === batchHead) || [];
-  const sortedBaseOpportunities = [...baseOpportunities].sort((a, b) => (b.id || 0) - (a.id || 0));
-  const opportunitiesToDisplay = searchInitiated ? searchResults : sortedBaseOpportunities;
+  const baseOpportunities =
+    getOpportunitiesByDomain(batchingvalue)?.filter(
+      (opportunity) => opportunity.createdDomain === batchHead
+    ) || [];
+  const sortedBaseOpportunities = [...baseOpportunities].sort(
+    (a, b) => (b.id || 0) - (a.id || 0)
+  );
+  const opportunitiesToDisplay = searchInitiated
+    ? searchResults
+    : sortedBaseOpportunities;
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentOpportunities = opportunitiesToDisplay.slice(indexOfFirstItem, indexOfLastItem);
+  const currentOpportunities = opportunitiesToDisplay.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
   const totalPages = Math.ceil(opportunitiesToDisplay.length / itemsPerPage);
 
   const handlePageChange = (pageNumber) => {
@@ -425,17 +476,33 @@ export default function StudentDataPage() {
                   <div className="absolute top-0 right-0 w-20 h-20 bg-[#6750A4]/5 rounded-bl-full"></div>
                   {/* Company header */}
                   <div className="flex items-start justify-between mb-4">
-                    <h2 className="text-xl font-bold text-gray-800 pr-6">{opportunity.companyName}</h2>
+                    <h2 className="text-xl font-bold text-gray-800 pr-6">
+                      {opportunity.companyName}
+                    </h2>
                     <div className="bg-[#6750A4]/10 text-[#6750A4] text-xs font-semibold px-2 py-1 rounded-full">
-                      # {indexOfFirstItem + index + 1} {/* Display global serial number */}
+                      #{" "}
+                      {opportunitiesToDisplay.length -
+                        (indexOfFirstItem + index)}{" "}
+                      {/* Display global serial number */}
                     </div>
                   </div>
                   {/* Details grid */}
                   <div className="space-y-3 mb-6">
                     <div className="flex items-center">
                       <div className="w-8 h-8 rounded-full bg-[#E8DEF8] flex items-center justify-center mr-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[#6750A4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-4 w-4 text-[#6750A4]"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
                         </svg>
                       </div>
                       <div>
@@ -445,8 +512,19 @@ export default function StudentDataPage() {
                     </div>
                     <div className="flex items-center">
                       <div className="w-8 h-8 rounded-full bg-[#E8DEF8] flex items-center justify-center mr-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[#6750A4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-4 w-4 text-[#6750A4]"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                          />
                         </svg>
                       </div>
                       <div>
@@ -456,8 +534,19 @@ export default function StudentDataPage() {
                     </div>
                     <div className="flex items-center">
                       <div className="w-8 h-8 rounded-full bg-[#E8DEF8] flex items-center justify-center mr-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[#6750A4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-4 w-4 text-[#6750A4]"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
                         </svg>
                       </div>
                       <div>
@@ -467,13 +556,26 @@ export default function StudentDataPage() {
                     </div>
                     <div className="flex items-center">
                       <div className="w-8 h-8 rounded-full bg-[#E8DEF8] flex items-center justify-center mr-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-[#6750A4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-4 w-4 text-[#6750A4]"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                          />
                         </svg>
                       </div>
                       <div>
                         <p className="text-xs text-gray-500">Batch</p>
-                        <p className="font-medium">{opportunity.selectedBatch}</p>
+                        <p className="font-medium">
+                          {opportunity.selectedBatch}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -490,8 +592,19 @@ export default function StudentDataPage() {
               <div className="col-span-full w-full py-12">
                 <div className="text-center">
                   <div className="inline-block p-4 bg-[#E8DEF8] rounded-full mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-[#6750A4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-12 w-12 text-[#6750A4]"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
                     </svg>
                   </div>
                   <h3 className="text-lg font-medium text-gray-900 mb-1">
@@ -519,7 +632,11 @@ export default function StudentDataPage() {
               <button
                 onClick={handlePrevPage}
                 disabled={currentPage === 1}
-                className={`p-2 rounded-full ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-[#6750A4] hover:bg-[#E8DEF8]'}`}
+                className={`p-2 rounded-full ${
+                  currentPage === 1
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "text-[#6750A4] hover:bg-[#E8DEF8]"
+                }`}
                 aria-label="Previous Page"
               >
                 <FiChevronLeft size={20} />
@@ -532,7 +649,8 @@ export default function StudentDataPage() {
                 if (
                   pageNumber === 1 ||
                   pageNumber === totalPages ||
-                  (pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1)
+                  (pageNumber >= currentPage - 1 &&
+                    pageNumber <= currentPage + 1)
                 ) {
                   return (
                     <button
@@ -540,8 +658,8 @@ export default function StudentDataPage() {
                       onClick={() => handlePageChange(pageNumber)}
                       className={`px-4 py-2 rounded-md text-sm font-medium ${
                         currentPage === pageNumber
-                          ? 'bg-[#6750A4] text-white'
-                          : 'text-[#6750A4] hover:bg-[#E8DEF8]'
+                          ? "bg-[#6750A4] text-white"
+                          : "text-[#6750A4] hover:bg-[#E8DEF8]"
                       }`}
                     >
                       {pageNumber}
@@ -551,10 +669,14 @@ export default function StudentDataPage() {
                 // Show ellipsis for gaps
                 else if (
                   (pageNumber === currentPage - 2 && pageNumber > 2) ||
-                  (pageNumber === currentPage + 2 && pageNumber < totalPages - 1)
+                  (pageNumber === currentPage + 2 &&
+                    pageNumber < totalPages - 1)
                 ) {
                   return (
-                    <span key={`ellipsis-${pageNumber}`} className="px-2 py-2 text-gray-500">
+                    <span
+                      key={`ellipsis-${pageNumber}`}
+                      className="px-2 py-2 text-gray-500"
+                    >
                       ...
                     </span>
                   );
@@ -565,7 +687,11 @@ export default function StudentDataPage() {
               <button
                 onClick={handleNextPage}
                 disabled={currentPage === totalPages}
-                className={`p-2 rounded-full ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-[#6750A4] hover:bg-[#E8DEF8]'}`}
+                className={`p-2 rounded-full ${
+                  currentPage === totalPages
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "text-[#6750A4] hover:bg-[#E8DEF8]"
+                }`}
                 aria-label="Next Page"
               >
                 <FiChevronRight size={20} />
@@ -599,19 +725,29 @@ export default function StudentDataPage() {
                   <input
                     type="text"
                     id="companyName"
-                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2  ${assignErrors.companyName ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2  ${
+                      assignErrors.companyName
+                        ? "border-red-500"
+                        : "border-gray-400"
+                    } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
                     placeholder=" "
                     value={assignFormData.companyName}
                     onChange={handleAssignFormChange}
                   />
                   <label
                     htmlFor="companyName"
-                    className={`absolute px-2 text-sm  ${assignErrors.companyName ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                    className={`absolute px-2 text-sm  ${
+                      assignErrors.companyName
+                        ? "text-red-500"
+                        : "text-gray-500"
+                    } duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                   >
                     Company Name
                   </label>
                   {assignErrors.companyName && (
-                    <p className="text-red-500 text-xs mt-1">{assignErrors.companyName}</p>
+                    <p className="text-red-500 text-xs mt-1">
+                      {assignErrors.companyName}
+                    </p>
                   )}
                 </div>
                 {/* Drive Date */}
@@ -619,19 +755,27 @@ export default function StudentDataPage() {
                   <input
                     type="date" // Changed to date type
                     id="driveDate"
-                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2  ${assignErrors.driveDate ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#6750A4] peer`}
-                    placeholder=" " // 
+                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2  ${
+                      assignErrors.driveDate
+                        ? "border-red-500"
+                        : "border-gray-400"
+                    } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                    placeholder=" " //
                     value={assignFormData.driveDate}
                     onChange={handleAssignFormChange}
                   />
                   <label
                     htmlFor="driveDate"
-                    className={`absolute px-2 text-sm  ${assignErrors.driveDate ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                    className={`absolute px-2 text-sm  ${
+                      assignErrors.driveDate ? "text-red-500" : "text-gray-500"
+                    } duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                   >
                     Drive Date
                   </label>
                   {assignErrors.driveDate && (
-                    <p className="text-red-500 text-xs mt-1">{assignErrors.driveDate}</p>
+                    <p className="text-red-500 text-xs mt-1">
+                      {assignErrors.driveDate}
+                    </p>
                   )}
                 </div>
                 {/* Drive Role */}
@@ -639,19 +783,27 @@ export default function StudentDataPage() {
                   <input
                     type="text"
                     id="driveRole"
-                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2  ${assignErrors.driveRole ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2  ${
+                      assignErrors.driveRole
+                        ? "border-red-500"
+                        : "border-gray-400"
+                    } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
                     placeholder=" "
                     value={assignFormData.driveRole}
                     onChange={handleAssignFormChange}
                   />
                   <label
                     htmlFor="driveRole"
-                    className={`absolute px-2 text-sm  ${assignErrors.driveRole ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                    className={`absolute px-2 text-sm  ${
+                      assignErrors.driveRole ? "text-red-500" : "text-gray-500"
+                    } duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                   >
                     Drive Role
                   </label>
                   {assignErrors.driveRole && (
-                    <p className="text-red-500 text-xs mt-1">{assignErrors.driveRole}</p>
+                    <p className="text-red-500 text-xs mt-1">
+                      {assignErrors.driveRole}
+                    </p>
                   )}
                 </div>
                 {/* Package */}
@@ -659,19 +811,27 @@ export default function StudentDataPage() {
                   <input
                     type="text" // Can be text or number depending on format (e.g., "5 LPA")
                     id="package"
-                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2  ${assignErrors.package ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2  ${
+                      assignErrors.package
+                        ? "border-red-500"
+                        : "border-gray-400"
+                    } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
                     placeholder=" "
                     value={assignFormData.package}
                     onChange={handleAssignFormChange}
                   />
                   <label
                     htmlFor="package"
-                    className={`absolute px-2 text-sm  ${assignErrors.package ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                    className={`absolute px-2 text-sm  ${
+                      assignErrors.package ? "text-red-500" : "text-gray-500"
+                    } duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                   >
                     Package
                   </label>
                   {assignErrors.package && (
-                    <p className="text-red-500 text-xs mt-1">{assignErrors.package}</p>
+                    <p className="text-red-500 text-xs mt-1">
+                      {assignErrors.package}
+                    </p>
                   )}
                 </div>
                 {/* Custom Batch Dropdown for Assign Modal */}
@@ -690,17 +850,28 @@ export default function StudentDataPage() {
                       setShowBatchDropdown(true);
                       // Clear error for batch field
                       if (assignErrors.selectedBatch) {
-                        setAssignErrors((prev) => ({ ...prev, selectedBatch: "" }));
+                        setAssignErrors((prev) => ({
+                          ...prev,
+                          selectedBatch: "",
+                        }));
                       }
                       setIsAssignFormDirty(true);
                     }}
                     onClick={() => setShowBatchDropdown(!showBatchDropdown)}
-                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2  ${assignErrors.selectedBatch ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer`}
+                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2  ${
+                      assignErrors.selectedBatch
+                        ? "border-red-500"
+                        : "border-gray-400"
+                    } appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer`}
                     autoComplete="off"
                   />
                   <label
                     htmlFor="selectedBatch"
-                    className={`absolute px-2 text-sm  ${assignErrors.selectedBatch ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                    className={`absolute px-2 text-sm  ${
+                      assignErrors.selectedBatch
+                        ? "text-red-500"
+                        : "text-gray-500"
+                    } duration-300 bg-[#F8FAFD] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                   >
                     Select Batch
                   </label>
@@ -713,7 +884,10 @@ export default function StudentDataPage() {
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
-                        setAssignFormData((prev) => ({ ...prev, selectedBatch: "" }));
+                        setAssignFormData((prev) => ({
+                          ...prev,
+                          selectedBatch: "",
+                        }));
                         setShowBatchDropdown(false);
                         setIsAssignFormDirty(true);
                       }}
@@ -737,7 +911,9 @@ export default function StudentDataPage() {
                             !assignFormData.selectedBatch ||
                             batchName
                               .toLowerCase()
-                              .includes(assignFormData.selectedBatch.toLowerCase())
+                              .includes(
+                                assignFormData.selectedBatch.toLowerCase()
+                              )
                         )
                         .map((batchName) => (
                           <div
@@ -790,12 +966,16 @@ export default function StudentDataPage() {
                           </div>
                         ))}
                       {getFilteredBatches().length === 0 && (
-                        <div className="px-4 py-2 text-gray-500">No batches found</div>
+                        <div className="px-4 py-2 text-gray-500">
+                          No batches found
+                        </div>
                       )}
                     </div>
                   )}
                   {assignErrors.selectedBatch && (
-                    <p className="text-red-500 text-xs mt-1">{assignErrors.selectedBatch}</p>
+                    <p className="text-red-500 text-xs mt-1">
+                      {assignErrors.selectedBatch}
+                    </p>
                   )}
                 </div>
                 <div className="flex justify-end gap-3">
@@ -828,7 +1008,9 @@ export default function StudentDataPage() {
               onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
             >
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-medium">Select Students for Opportunity</h2>
+                <h2 className="text-lg font-medium">
+                  Select Students for Opportunity
+                </h2>
                 <button
                   onClick={selectedStudentDiscard}
                   className="cursor-pointer text-gray-500 hover:text-gray-700"
@@ -838,66 +1020,136 @@ export default function StudentDataPage() {
               </div>
               {/* Display Opportunity Details */}
               <div className="flex justify-evenly flex-wrap gap-2 items-center mb-4 p-3 bg-[#ECE6F0] rounded">
-                <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
+                <div
+                  className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
+                >
                   <p className="text-sm p-1">
-                    <span className="font-semibold">Company: </span> {opportunityDetails.companyName}
+                    <span className="font-semibold">Company: </span>{" "}
+                    {opportunityDetails.companyName}
                   </p>
                 </div>
-                <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
+                <div
+                  className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
+                >
                   <p className="text-sm p-1">
-                    <span className="font-semibold"> Date: </span> {opportunityDetails.driveDate}
+                    <span className="font-semibold"> Date: </span>{" "}
+                    {opportunityDetails.driveDate}
                   </p>
                 </div>
-                <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
+                <div
+                  className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
+                >
                   <p className="text-sm p-1">
-                    <span className="font-semibold"> Role: </span> {opportunityDetails.driveRole}
+                    <span className="font-semibold"> Role: </span>{" "}
+                    {opportunityDetails.driveRole}
                   </p>
                 </div>
-                <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
+                <div
+                  className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
+                >
                   <p className="text-sm p-1">
-                    <span className="font-semibold"> Package: </span> {opportunityDetails.package}
+                    <span className="font-semibold"> Package: </span>{" "}
+                    {opportunityDetails.package}
                   </p>
                 </div>
-                <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
+                <div
+                  className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
+                >
                   <p className="text-sm p-1">
-                    <span className="font-semibold"> Batch: </span> {opportunityDetails.selectedBatch}
+                    <span className="font-semibold"> Batch: </span>{" "}
+                    {opportunityDetails.selectedBatch}
                   </p>
                 </div>
               </div>
               {/* Student Table */}
               <div className="bg-white rounded-lg shadow overflow-hidden">
-                <div className="overflow-x-auto max-h-[60vh]"> {/* Add max height and overflow for scrolling */}
+                <div className="overflow-x-auto max-h-[60vh]">
+                  {" "}
+                  {/* Add max height and overflow for scrolling */}
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50 sticky top-0 z-10">
                       <tr>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase"> S.No </th>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase"> Name </th>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase"> E-mail </th>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase"> Phone </th>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase"> Epic Status </th>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase"> Attendance </th>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase"> <div className="flex flex-row"><div
-                          className="px-1 py-3 text-center text-xs font-medium text-gray-500 uppercase"
-                        >
-                          Select All
-                        </div> <div className="pt-3"><input type="checkbox" onClick={handleSelectAllStudents} className="h-4 w-4 cursor-pointer text-[#6750A4] border-gray-300 rounded focus:ring-[#6750A4]" /></div></div></th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                          {" "}
+                          S.No{" "}
+                        </th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                          {" "}
+                          Name{" "}
+                        </th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                          {" "}
+                          E-mail{" "}
+                        </th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                          {" "}
+                          Phone{" "}
+                        </th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                          {" "}
+                          Epic Status{" "}
+                        </th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                          {" "}
+                          Attendance{" "}
+                        </th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                          {" "}
+                          <div className="flex flex-row">
+                            <div className="px-1 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                              Select All
+                            </div>{" "}
+                            <div className="pt-3">
+                              <input
+                                type="checkbox"
+                                onClick={handleSelectAllStudents}
+                                className="h-4 w-4 cursor-pointer text-[#6750A4] border-gray-300 rounded focus:ring-[#6750A4]"
+                              />
+                            </div>
+                          </div>
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {filteredBatchStudents.length > 0 ? (
                         filteredBatchStudents.map((student, index) => (
-                          <tr key={student.bookingId} className="hover:bg-gray-50">
-                            <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap"> {index + 1} </td>
-                            <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap"> {student.name} </td>
-                            <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap"> {student.email} </td>
-                            <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap"> {student.phone} </td>
-                            <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap"> {student.epicStatus} </td>
-                            <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap"> {student.attendance}% </td>
+                          <tr
+                            key={student.bookingId}
+                            className="hover:bg-gray-50"
+                          >
+                            <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">
+                              {" "}
+                              {index + 1}{" "}
+                            </td>
+                            <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">
+                              {" "}
+                              {student.name}{" "}
+                            </td>
+                            <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">
+                              {" "}
+                              {student.email}{" "}
+                            </td>
+                            <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">
+                              {" "}
+                              {student.phone}{" "}
+                            </td>
+                            <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">
+                              {" "}
+                              {student.epicStatus}{" "}
+                            </td>
+                            <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">
+                              {" "}
+                              {student.attendance}%{" "}
+                            </td>
                             <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">
                               <input
                                 type="checkbox"
-                                checked={selectedStudents.includes(student.bookingId)}
-                                onChange={() => handleStudentSelect(student.bookingId)}
+                                checked={selectedStudents.includes(
+                                  student.bookingId
+                                )}
+                                onChange={() =>
+                                  handleStudentSelect(student.bookingId)
+                                }
                                 className="h-4 w-4 cursor-pointer text-[#6750A4] border-gray-300 rounded focus:ring-[#6750A4]"
                               />
                             </td>
@@ -905,7 +1157,10 @@ export default function StudentDataPage() {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan="7" className="px-4 py-6 text-center text-sm text-gray-500">
+                          <td
+                            colSpan="7"
+                            className="px-4 py-6 text-center text-sm text-gray-500"
+                          >
                             No students found for the selected batch.
                           </td>
                         </tr>
@@ -919,7 +1174,9 @@ export default function StudentDataPage() {
                 <button
                   onClick={selectedStudentDiscard}
                   className="cursor-pointer bg-[#e8def8] text-[#4a4459] px-4 py-2 rounded-xl text-sm font-medium"
-                > Back
+                >
+                  {" "}
+                  Back
                 </button>
                 {/* <button
                  onClick={handleSelectAllStudents}
@@ -959,65 +1216,126 @@ export default function StudentDataPage() {
               </div>
               {/* Display Opportunity Details */}
               <div className="flex justify-evenly gap-2 md:gap-1 flex-wrap items-center mb-4 p-3 bg-[#ECE6F0] rounded">
-                <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
+                <div
+                  className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
+                >
                   <p className="text-sm p-1">
-                    <span className="font-semibold"> Company: </span> {viewOpportunityDetails.companyName}
+                    <span className="font-semibold"> Company: </span>{" "}
+                    {viewOpportunityDetails.companyName}
                   </p>
                 </div>
-                <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
+                <div
+                  className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
+                >
                   <p className="text-sm p-1">
-                    <span className="font-semibold"> Date: </span> {viewOpportunityDetails.driveDate}
+                    <span className="font-semibold"> Date: </span>{" "}
+                    {viewOpportunityDetails.driveDate}
                   </p>
                 </div>
-                <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
+                <div
+                  className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
+                >
                   <p className="text-sm p-1">
-                    <span className="font-semibold"> Role: </span> {viewOpportunityDetails.driveRole}
+                    <span className="font-semibold"> Role: </span>{" "}
+                    {viewOpportunityDetails.driveRole}
                   </p>
                 </div>
-                <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
+                <div
+                  className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
+                >
                   <p className="text-sm p-1">
-                    <span className="font-semibold"> Package: </span> {viewOpportunityDetails.package}
+                    <span className="font-semibold"> Package: </span>{" "}
+                    {viewOpportunityDetails.package}
                   </p>
                 </div>
-                <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
+                <div
+                  className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
+                >
                   <p className="text-sm p-1">
-                    <span className="font-semibold"> Batch: </span> {viewOpportunityDetails.selectedBatch}
+                    <span className="font-semibold"> Batch: </span>{" "}
+                    {viewOpportunityDetails.selectedBatch}
                   </p>
                 </div>
               </div>
               {/* Student Table */}
               <div className="bg-white rounded-lg shadow overflow-hidden">
-                <div className="overflow-x-auto max-h-[60vh]"> {/* Add max height and overflow for scrolling */}
+                <div className="overflow-x-auto max-h-[60vh]">
+                  {" "}
+                  {/* Add max height and overflow for scrolling */}
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50 sticky top-0 z-10">
                       <tr>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase"> S.No </th>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase"> Name </th>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase"> Email ID </th>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase"> Phone No </th>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase"> Epic Status </th>
-                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase"> Attendance </th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                          {" "}
+                          S.No{" "}
+                        </th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                          {" "}
+                          Name{" "}
+                        </th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                          {" "}
+                          Email ID{" "}
+                        </th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                          {" "}
+                          Phone No{" "}
+                        </th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                          {" "}
+                          Epic Status{" "}
+                        </th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                          {" "}
+                          Attendance{" "}
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {Array.isArray(viewOpportunityDetails.selectedStudents) && viewOpportunityDetails.selectedStudents.length > 0 ? (
-                        viewOpportunityDetails.selectedStudents.slice(0, 8).map((bookingId, index) => {
-                          const student = studentData.find(s => s.bookingId === bookingId);
-                          if (!student) return null; // Skip if student not found
-                          return (
-                            <tr key={bookingId} className="hover:bg-gray-50">
-                              <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap"> {index + 1} </td>
-                              <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap"> {student.name} </td>
-                              <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap"> {student.email} </td>
-                              <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap"> {student.phone} </td>
-                              <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap"> {student.epicStatus} </td>
-                              <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap"> {student.attendance}% </td>
-                            </tr>
-                          );
-                        })
+                      {Array.isArray(viewOpportunityDetails.selectedStudents) &&
+                      viewOpportunityDetails.selectedStudents.length > 0 ? (
+                        viewOpportunityDetails.selectedStudents
+                          .slice(0, 8)
+                          .map((bookingId, index) => {
+                            const student = studentData.find(
+                              (s) => s.bookingId === bookingId
+                            );
+                            if (!student) return null; // Skip if student not found
+                            return (
+                              <tr key={bookingId} className="hover:bg-gray-50">
+                                <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">
+                                  {" "}
+                                  {index + 1}{" "}
+                                </td>
+                                <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">
+                                  {" "}
+                                  {student.name}{" "}
+                                </td>
+                                <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">
+                                  {" "}
+                                  {student.email}{" "}
+                                </td>
+                                <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">
+                                  {" "}
+                                  {student.phone}{" "}
+                                </td>
+                                <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">
+                                  {" "}
+                                  {student.epicStatus}{" "}
+                                </td>
+                                <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">
+                                  {" "}
+                                  {student.attendance}%{" "}
+                                </td>
+                              </tr>
+                            );
+                          })
                       ) : (
                         <tr>
-                          <td colSpan="6" className="px-4 py-6 text-center text-sm text-gray-500">
+                          <td
+                            colSpan="6"
+                            className="px-4 py-6 text-center text-sm text-gray-500"
+                          >
                             No students assigned to this opportunity.
                           </td>
                         </tr>
@@ -1039,7 +1357,10 @@ export default function StudentDataPage() {
               className="w-full max-w-sm bg-white rounded-lg p-6 shadow-lg"
               onClick={(e) => e.stopPropagation()}
             >
-              <h3 className="font-medium text-gray-800 mb-2"> Discard Changes? </h3>
+              <h3 className="font-medium text-gray-800 mb-2">
+                {" "}
+                Discard Changes?{" "}
+              </h3>
               <p className="text-sm text-gray-600 mb-4">
                 You have unsaved changes. Are you sure you want to discard them?
               </p>
@@ -1064,25 +1385,37 @@ export default function StudentDataPage() {
         {studentSelectModelDiscard && (
           <div
             className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
-            onClick={(e) => { setStudentSelectModelDiscard(false); e.stopPropagation() }} // Clicking backdrop cancels
+            onClick={(e) => {
+              setStudentSelectModelDiscard(false);
+              e.stopPropagation();
+            }} // Clicking backdrop cancels
           >
             <div
               className="w-full max-w-sm bg-white rounded-lg p-6 shadow-lg"
               onClick={(e) => e.stopPropagation()}
             >
-              <h3 className="font-medium text-gray-800 mb-2"> Discard Changes? </h3>
+              <h3 className="font-medium text-gray-800 mb-2">
+                {" "}
+                Discard Changes?{" "}
+              </h3>
               <p className="text-sm text-gray-600 mb-4">
                 You have unsaved changes. Are you sure you want to discard them?
               </p>
               <div className="flex justify-end gap-2">
                 <button
-                  onClick={() => { setStudentSelectModelDiscard(false); }}
+                  onClick={() => {
+                    setStudentSelectModelDiscard(false);
+                  }}
                   className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded hover:bg-gray-300"
                 >
                   Cancel
                 </button>
                 <button
-                  onClick={() => { setShowStudentSelectModal(false); setStudentSelectModelDiscard(false); setSelectedStudents([]); }}
+                  onClick={() => {
+                    setShowStudentSelectModal(false);
+                    setStudentSelectModelDiscard(false);
+                    setSelectedStudents([]);
+                  }}
                   className="px-4 py-2 text-sm font-medium text-white bg-[#6750A4] rounded hover:bg-[#675b86]"
                 >
                   Discard
