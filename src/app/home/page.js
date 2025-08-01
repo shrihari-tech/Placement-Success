@@ -497,13 +497,13 @@ const { userName, getStatsByBatch, setBatchingValue, liveCounts } = useDataConte
                         <p className="text-xs md:text-sm font-bold pb-2 md:pb-3">
                           {card.title}
                         </p>
-                        <div className="relative w-64 h-64 mx-auto">
+                        {/* <div className="relative w-64 h-64 mx-auto">
                           <Doughnut data={data} options={options} />
                           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                             <p className="text-sm font-medium text-gray-600">Total</p>
                             <p className="text-xl font-bold text-purple-700">{total}</p>
                           </div>
-                        </div>
+                        </div> */}
                         {/* <div className="grid grid-cols-2 gap-2 mt-4">
                           {items.map((item, idx) => (
                             <div
