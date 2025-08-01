@@ -2405,8 +2405,7 @@ const DataProvider = ({ children }) => {
     }
   };
 
-  // 🔧 Update an existing batch by ID in current domain
-  // DataContext.jsx
+  // Update an existing batch by ID in current domain
   const updateBatch = (id, updatedFields) => {
     const updateList = (list) =>
       list.map((item) =>
