@@ -1,9 +1,9 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
-import  Image  from "next/image";
-import { FiEye, FiEdit, FiTrash2, FiChevronDown, FiPlus, FiSearch, FiX } from "react-icons/fi"; // Added FiSearch, FiX
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import Image from "next/image";
+import { FiEye, FiEdit, FiTrash2, FiChevronDown, FiPlus, FiSearch, FiX, FiChevronLeft, FiChevronRight } from "react-icons/fi"; // Added FiChevronLeft, FiChevronRight for pagination
 import { Toaster, toast } from "sonner";
-import { FaSearch } from "react-icons/fa"; // Importing FaSearch for search icon
+import { FaSearch } from "react-icons/fa";
 import { RiCloseCircleLine } from "react-icons/ri";
 import { useDataContext } from "../context/dataContext";
 
@@ -15,15 +15,12 @@ export default function StudentDataPage() {
     batchingvalue,
     getOpportunitiesByDomain,
   } = useDataContext();
-
   const [searchInitiated, setSearchInitiated] = useState(false);
   const [selectedBatch, setSelectedBatch] = useState("");
   const [showBatchDropdown, setShowBatchDropdown] = useState(false);
-
   // --- New State for Search ---
   const [searchTerm, setSearchTerm] = useState(""); // State for the search input
   const [searchResults, setSearchResults] = useState([]); // State for filtered results
-
   // --- New State for Assign Modal ---
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [assignFormData, setAssignFormData] = useState({
@@ -36,23 +33,23 @@ export default function StudentDataPage() {
   const [assignErrors, setAssignErrors] = useState({});
   const [isAssignFormDirty, setIsAssignFormDirty] = useState(false); // Track changes
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false); // Confirm discard
-
   // --- New State for Student Selection Modal ---
   const [showStudentSelectModal, setShowStudentSelectModal] = useState(false);
   const [studentSelectModelDiscard, setStudentSelectModelDiscard] = useState(false);
   const [opportunityDetails, setOpportunityDetails] = useState(null); // Store details from Assign form
   const [filteredBatchStudents, setFilteredBatchStudents] = useState([]); // Students for the selected batch
   const [selectedStudents, setSelectedStudents] = useState([]); // Track selected students
-
   // --- New State for View Modal ---
   const [showViewModal, setShowViewModal] = useState(false);
   const [viewOpportunityDetails, setViewOpportunityDetails] = useState(null);
+  // --- New State for Pagination ---
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 4; // Number of opportunities per page
 
   const batchDropdownRef = useRef(null);
   const statusDropdownRef = useRef(null);
   const placementDropdownRef = useRef(null);
   const searchContainerRef = useRef(null);
-
   // --- New: Filter students for Student Select Modal based on opportunity batch ---
   useEffect(() => {
     if (opportunityDetails?.selectedBatch) {
@@ -67,6 +64,7 @@ export default function StudentDataPage() {
     }
   }, [opportunityDetails, studentData]);
 
+  // Use useMemo to calculate batchesNames efficiently
   const batchesNames = useMemo(() => {
     return [...new Set(studentData.map((s) => s.batch))];
   }, [studentData]);
@@ -77,10 +75,17 @@ export default function StudentDataPage() {
       isInitialMount.current = false;
     } else {
       if (searchInitiated) {
-        handleSearch(); // This seems redundant now, but kept for potential future use
+        // Ensure currentPage resets when search results change
+        setCurrentPage(1);
+        // handleSearch(); // This seems redundant now, but kept for potential future use
       }
     }
-  }, [studentData]); // Added handleSearch to dependency
+  }, [searchResults]); // Reset page when search results change
+
+  // Also reset page when domain/batch changes (affects original list)
+  useEffect(() => {
+      setCurrentPage(1);
+  }, [batchingvalue, batchHead]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -126,7 +131,7 @@ export default function StudentDataPage() {
   }, [showAssignModal, showStudentSelectModal, showViewModal, showDiscardConfirm, studentSelectModelDiscard]);
 
   // --- New: Handle Search ---
-  const handleSearch = () => {
+  const handleSearch = useCallback(() => {
     const term = searchTerm.trim().toLowerCase();
     if (term) {
       const allOpportunities = getOpportunitiesByDomain(batchingvalue)
@@ -135,18 +140,19 @@ export default function StudentDataPage() {
         opportunity.companyName.toLowerCase().includes(term)
       );
       setSearchResults(results);
-      setSearchInitiated(true); // Indicate search is active
+      setSearchInitiated(true);
+      setCurrentPage(1); // Reset to first page on new search
     } else {
-      // If search term is empty, treat it as reset
       resetSearch();
     }
-  };
+  }, [searchTerm, batchingvalue, batchHead, getOpportunitiesByDomain]); // Dependencies for useCallback
 
   // --- New: Reset Search ---
   const resetSearch = () => {
     setSearchTerm("");
     setSearchResults([]);
     setSearchInitiated(false);
+    setCurrentPage(1); // Reset to first page on reset
   };
 
   // --- New: Handle Assign Modal Open ---
@@ -282,7 +288,6 @@ export default function StudentDataPage() {
       setStudentSelectModelDiscard(true);
       return;
     }
-
   }
 
   // --- New: Handle Saving Selected Students ---
@@ -291,7 +296,6 @@ export default function StudentDataPage() {
       toast.error("Please select at least one student.");
       return;
     }
-
     let domainKey = batchingvalue;
     if (!domainKey && opportunityDetails?.selectedBatch) {
       domainKey = opportunityDetails.selectedBatch;
@@ -300,12 +304,13 @@ export default function StudentDataPage() {
       toast.error("No domain selected. Please select a domain or batch before saving.");
       return;
     }
+
     // Define opportunity object with domain
     const opportunity = {
       ...opportunityDetails,
       selectedStudents,
       domain: domainKey,  // Add domain to the opportunity
-      createdDomain: batchHead || ""   // Track which domain created this opportunity
+      createdDomain: batchHead || ""  // Track which domain created this opportunity
     };
     addOpportunity(opportunity);
     setShowAssignModal(false);
@@ -314,6 +319,7 @@ export default function StudentDataPage() {
     setOpportunityDetails(null);
     toast.success(` ${selectedStudents.length}  student(s) assigned successfully!`);
     resetSearch(); // Reset search after adding a new opportunity
+    setCurrentPage(1); // Reset to first page after adding new opportunity
   };
 
   // --- New: Handle Closing Student Select Modal ---
@@ -347,19 +353,43 @@ export default function StudentDataPage() {
   // Determine which list to display: search results or the original list
   const opportunitiesToDisplay = searchInitiated ? searchResults : (getOpportunitiesByDomain(batchingvalue)?.filter(opportunity => opportunity.createdDomain === batchHead) || []);
 
+  // --- Pagination Logic ---
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentOpportunities = opportunitiesToDisplay.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(opportunitiesToDisplay.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    // Optional: Scroll to top of opportunities list on page change
+    // window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
   return (
     <div className="flex min-h-screen">
       <Toaster position="top-right" />
-      <div className={` flex-1 bg-[#F8FAFD]`} ref={searchContainerRef}>
+      <div className={`flex-1 bg-[#F8FAFD]`} ref={searchContainerRef}>
         {/* --- Search Bar --- */}
-        <div className="bg-[#F4F3FF] w-full flex flex-col md:flex-row justify-center rounded-xl gap-5 py-5 px-5">
+        <div className="bg-[#F4F3FF] w-full flex flex-col md:flex-row justify-center rounded-xl gap-5 py-6 px-5">
           <div>
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search by Company Name"
-              className="px-2 py-3.5 w-[250px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4]  cursor-pointer"
+              className="px-2 py-3.5 w-[250px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] cursor-pointer"
               onKeyDown={(e) => { if (e.key === 'Enter') handleSearch(); }} // Allow Enter key to trigger search
             />
             {searchTerm && (
@@ -373,55 +403,53 @@ export default function StudentDataPage() {
           </div>
           <div>
             <button
-            onClick={handleSearch}
-            className=" cursor-pointer bg-[#6750A4] hover:bg-[#5a4a8f] text-white px-4 py-4 rounded-xl text-sm font-semibold flex items-center gap-1"
-          >
-            <FaSearch className="inline-block" /> Search
-          </button>
+              onClick={handleSearch}
+              className=" cursor-pointer bg-[#6750A4] hover:bg-[#5a4a8f] text-white px-4 py-4 rounded-xl text-sm font-semibold flex items-center gap-1"
+            >
+              <FaSearch className="inline-block" /> Search
+            </button>
           </div>
           <div>
             <button
-            onClick={resetSearch}
-                    className="cursor-pointer bg-[#E8DEF8] hover:bg-[#d1c3ea] px-4 py-4 rounded-xl text-sm font-semibold text-gray-700 flex items-center gap-1"
-          >
-                                <Image
-                                  src="/reset.svg"
-                                  alt="Reset Icon"
-                                  width={20}
-                                  height={20}
-                                  className="inline-block mr-2"
-                                />
-            Reset
-          </button>
+              onClick={resetSearch}
+              className="cursor-pointer bg-[#E8DEF8] hover:bg-[#d1c3ea] px-4 py-4 rounded-xl text-sm font-semibold text-gray-700 flex items-center gap-1"
+            >
+              <Image
+                src="/reset.svg"
+                alt="Reset Icon"
+                width={20}
+                height={20}
+                className="inline-block mr-2"
+              />
+              Reset
+            </button>
           </div>
-          
-          <div>
-          <button
-            onClick={handleOpenAssignModal}
-            className=" cursor-pointer bg-[#6750A4] hover:bg-[#5a4a8f] text-white px-4 py-4 rounded-xl text-sm font-semibold flex items-center gap-1"
-          >
-            <FiPlus /> Assign
-          </button>
-        </div>
-        </div>
 
+          <div>
+            <button
+              onClick={handleOpenAssignModal}
+              className=" cursor-pointer bg-[#6750A4] hover:bg-[#5a4a8f] text-white px-4 py-4 rounded-xl text-sm font-semibold flex items-center gap-1"
+            >
+              <FiPlus /> Assign
+            </button>
+          </div>
+        </div>
         <div>
           {/* opportunities showing model */}
           <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 mt-[-20px] md:mt-4 w-full">
-            {opportunitiesToDisplay.length > 0 ? (
-              opportunitiesToDisplay.map((opportunity, index) => (
+            {currentOpportunities.length > 0 ? (
+              currentOpportunities.map((opportunity, index) => (
                 <div
-                  key={index}
+                  key={index + indexOfFirstItem} // Use global index for unique key
                   className="relative bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg p-6 mb-4 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex-1 min-w-[280px]"
                 >
                   {/* Decorative element */}
                   <div className="absolute top-0 right-0 w-20 h-20 bg-[#6750A4]/5 rounded-bl-full"></div>
-
                   {/* Company header */}
                   <div className="flex items-start justify-between mb-4">
                     <h2 className="text-xl font-bold text-gray-800 pr-6">{opportunity.companyName}</h2>
                     <div className="bg-[#6750A4]/10 text-[#6750A4] text-xs font-semibold px-2 py-1 rounded-full">
-                      # {index + 1}
+                      # {indexOfFirstItem + index + 1} {/* Display global serial number */}
                     </div>
                   </div>
                   {/* Details grid */}
@@ -508,7 +536,68 @@ export default function StudentDataPage() {
               </div>
             )}
           </div>
+
+          {/* --- Pagination Controls --- */}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center my-6 space-x-2">
+              <button
+                onClick={handlePrevPage}
+                disabled={currentPage === 1}
+                className={`p-2 rounded-full ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-[#6750A4] hover:bg-[#E8DEF8]'}`}
+                aria-label="Previous Page"
+              >
+                <FiChevronLeft size={20} />
+              </button>
+
+              {/* Page Numbers */}
+              {[...Array(totalPages)].map((_, index) => {
+                const pageNumber = index + 1;
+                // Show first, last, current, and nearby pages
+                if (
+                  pageNumber === 1 ||
+                  pageNumber === totalPages ||
+                  (pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1)
+                ) {
+                  return (
+                    <button
+                      key={pageNumber}
+                      onClick={() => handlePageChange(pageNumber)}
+                      className={`px-4 py-2 rounded-md text-sm font-medium ${
+                        currentPage === pageNumber
+                          ? 'bg-[#6750A4] text-white'
+                          : 'text-[#6750A4] hover:bg-[#E8DEF8]'
+                      }`}
+                    >
+                      {pageNumber}
+                    </button>
+                  );
+                }
+                // Show ellipsis for gaps
+                else if (
+                  (pageNumber === currentPage - 2 && pageNumber > 2) ||
+                  (pageNumber === currentPage + 2 && pageNumber < totalPages - 1)
+                ) {
+                  return (
+                    <span key={`ellipsis-${pageNumber}`} className="px-2 py-2 text-gray-500">
+                      ...
+                    </span>
+                  );
+                }
+                return null;
+              })}
+
+              <button
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+                className={`p-2 rounded-full ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-[#6750A4] hover:bg-[#E8DEF8]'}`}
+                aria-label="Next Page"
+              >
+                <FiChevronRight size={20} />
+              </button>
+            </div>
+          )}
         </div>
+
         {/* --- New Assign Modal --- */}
         {showAssignModal && (
           <div
@@ -534,14 +623,14 @@ export default function StudentDataPage() {
                   <input
                     type="text"
                     id="companyName"
-                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${assignErrors.companyName ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2  ${assignErrors.companyName ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#6750A4] peer`}
                     placeholder=" "
                     value={assignFormData.companyName}
                     onChange={handleAssignFormChange}
                   />
                   <label
                     htmlFor="companyName"
-                    className={`absolute px-2 text-sm ${assignErrors.companyName ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                    className={`absolute px-2 text-sm  ${assignErrors.companyName ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                   >
                     Company Name
                   </label>
@@ -554,14 +643,14 @@ export default function StudentDataPage() {
                   <input
                     type="date" // Changed to date type
                     id="driveDate"
-                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${assignErrors.driveDate ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2  ${assignErrors.driveDate ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#6750A4] peer`}
                     placeholder=" " // 
                     value={assignFormData.driveDate}
                     onChange={handleAssignFormChange}
                   />
                   <label
                     htmlFor="driveDate"
-                    className={`absolute px-2 text-sm ${assignErrors.driveDate ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                    className={`absolute px-2 text-sm  ${assignErrors.driveDate ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                   >
                     Drive Date
                   </label>
@@ -574,15 +663,14 @@ export default function StudentDataPage() {
                   <input
                     type="text"
                     id="driveRole"
-                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${assignErrors.driveRole ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2  ${assignErrors.driveRole ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#6750A4] peer`}
                     placeholder=" "
                     value={assignFormData.driveRole}
                     onChange={handleAssignFormChange}
-
                   />
                   <label
                     htmlFor="driveRole"
-                    className={`absolute px-2 text-sm ${assignErrors.driveRole ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                    className={`absolute px-2 text-sm  ${assignErrors.driveRole ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                   >
                     Drive Role
                   </label>
@@ -595,14 +683,14 @@ export default function StudentDataPage() {
                   <input
                     type="text" // Can be text or number depending on format (e.g., "5 LPA")
                     id="package"
-                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${assignErrors.package ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2  ${assignErrors.package ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#6750A4] peer`}
                     placeholder=" "
                     value={assignFormData.package}
                     onChange={handleAssignFormChange}
                   />
                   <label
                     htmlFor="package"
-                    className={`absolute px-2 text-sm ${assignErrors.package ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                    className={`absolute px-2 text-sm  ${assignErrors.package ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                   >
                     Package
                   </label>
@@ -631,12 +719,12 @@ export default function StudentDataPage() {
                       setIsAssignFormDirty(true);
                     }}
                     onClick={() => setShowBatchDropdown(!showBatchDropdown)}
-                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${assignErrors.selectedBatch ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer`}
+                    className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2  ${assignErrors.selectedBatch ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer`}
                     autoComplete="off"
                   />
                   <label
                     htmlFor="selectedBatch"
-                    className={`absolute px-2 text-sm ${assignErrors.selectedBatch ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                    className={`absolute px-2 text-sm  ${assignErrors.selectedBatch ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                   >
                     Select Batch
                   </label>
@@ -828,7 +916,7 @@ export default function StudentDataPage() {
                             <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap"> {student.email} </td>
                             <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap"> {student.phone} </td>
                             <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap"> {student.epicStatus} </td>
-                            <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap"> {student.attendance} % </td>
+                            <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap"> {student.attendance}% </td>
                             <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">
                               <input
                                 type="checkbox"
@@ -868,7 +956,7 @@ export default function StudentDataPage() {
                   className="cursor-pointer bg-[#6750a4] text-white px-4 py-2 rounded-xl text-sm font-medium"
                   disabled={selectedStudents.length === 0} // Disable if no students selected
                 >
-                  Save Selected ( {selectedStudents.length} )
+                  Save Selected ({selectedStudents.length})
                 </button>
               </div>
             </div>
@@ -947,7 +1035,7 @@ export default function StudentDataPage() {
                               <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap"> {student.email} </td>
                               <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap"> {student.phone} </td>
                               <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap"> {student.epicStatus} </td>
-                              <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap"> {student.attendance} % </td>
+                              <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap"> {student.attendance}% </td>
                             </tr>
                           );
                         })
@@ -1031,12 +1119,3 @@ export default function StudentDataPage() {
     </div>
   );
 }
-
-// Add useMemo for batchesNames
-const useMemo = (fn, deps) => {
-  const ref = useRef();
-  if (!ref.current || deps.some((dep, i) => dep !== ref.current.deps[i])) {
-    ref.current = { value: fn(), deps };
-  }
-  return ref.current.value;
-};
