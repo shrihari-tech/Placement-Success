@@ -8,7 +8,8 @@ import * as XLSX from "xlsx";
 import { toast } from "sonner";
 
 export default function BulkModal() {
-  const { studentData, addStudent ,batchesNames , addMultipleStudents } = useDataContext();
+  const { studentData, addStudent, batchesNames, addMultipleStudents } =
+    useDataContext();
   const [isOpen, setIsOpen] = useState(false);
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
@@ -17,7 +18,17 @@ export default function BulkModal() {
   const [uploadMessage, setUploadMessage] = useState("");
   const [showBatchDropdown, setShowBatchDropdown] = useState(false);
   const fileInputRef = useRef(null);
+  const dropdownRef = useRef(null);
 
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowBatchDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -201,6 +212,8 @@ export default function BulkModal() {
           errors.email = "Email is required";
         } else if (!/\S+@\S+\.\S+/.test(row["EMAIL ADDRESS"])) {
           errors.email = "Invalid email address";
+        } else if (studentData.some((s) => s.email === row["EMAIL ADDRESS"])) {
+          errors.email = "Email already exists";
         }
 
         // Validate Booking ID
@@ -215,6 +228,10 @@ export default function BulkModal() {
           errors.contactNumber = "Contact Number is required";
         } else if (!/^\d{10}$/.test(row["CONTACT NUMBER (10 digit)"])) {
           errors.contactNumber = "Invalid Contact Number";
+        } else if (
+          studentData.some((s) => s.phone === row["CONTACT NUMBER (10 digit)"])
+        ) {
+          errors.contactNumber = "Contact Number already exists";
         }
 
         if (!row["MODE OF STUDY"] || !row["MODE OF STUDY"].trim()) {
@@ -361,13 +378,13 @@ export default function BulkModal() {
 
             {showBatchInput && (
               <div className="mt-4">
-                <div className="relative mt-4 mb-4">
+                <div className="relative mt-4 mb-4" ref={dropdownRef}>
                   <input
                     type="text"
                     id="batch-name"
                     placeholder=" "
                     value={batchName}
-                    readOnly
+                    onChange={(e) => setBatchName(e.target.value)}
                     onClick={() => setShowBatchDropdown(!showBatchDropdown)}
                     className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
                     autoComplete="off"
@@ -407,25 +424,29 @@ export default function BulkModal() {
                         overflowY: batchesNames.length > 5 ? "auto" : "visible",
                       }}
                     >
-                      {batchesNames.map((name) => (
-                        <div
-                          key={name}
-                          tabIndex={0}
-                          className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                          onClick={() => {
-                            setBatchName(name);
-                            setShowBatchDropdown(false);
-                          }}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
+                      {batchesNames
+                        .filter((name) =>
+                          name.toLowerCase().includes(batchName.toLowerCase())
+                        )
+                        .map((name) => (
+                          <div
+                            key={name}
+                            tabIndex={0}
+                            className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                            onClick={() => {
                               setBatchName(name);
                               setShowBatchDropdown(false);
-                            }
-                          }}
-                        >
-                          {name}
-                        </div>
-                      ))}
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                setBatchName(name);
+                                setShowBatchDropdown(false);
+                              }
+                            }}
+                          >
+                            {name}
+                          </div>
+                        ))}
                     </div>
                   )}
                 </div>

@@ -320,6 +320,11 @@ export default function BatchModel() {
       Communication: { startDate: "", endDate: "" },
     },
   });
+  useEffect(() => {
+    if (showViewModal) {
+      setInfoTab("Basic Info");
+    }
+  }, [showViewModal]);
 
   useEffect(() => {
     // Ongoing: at least one section's endDate is in the future or today
@@ -899,247 +904,449 @@ export default function BatchModel() {
   };
 
   return (
-<div className="flex min-h-screen mt-16 md:mt-1">            
-<Toaster position='top-right' />
- {/* ====== HEADER ====== */}
-          <div className="fixed top-15 md:top-0 border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 md:px-8 z-20">
-              <h1 className="fixed text-xl text-gray-800 font-semibold">{batchHead}</h1>
-          </div>
-
-
-{/* Main model  */}
-      <div className={`px-3 pt-20 flex-1 bg-[#F8FAFD] mb-12 ${showModal || showDeleteModal ? 'pointer-events-none' : ''}`}>
-         
-          <div ref={searchContainerRef} className='p-3'>
-
-              {/* ====== STATS CARDS ====== */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-7 w-full">
-                {/* Ongoing */}
-                  <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
-                      <div className="absolute left-6 top-6 text-gray-700 text-4xl font-bold leading-10">{ongoingCount}</div>
-                      <div className="absolute left-6 top-[84px] text-xl text-gray-700 font-normal leading-7">Ongoing&nbsp;Count</div>
-                      <div className="absolute right-4.5 top-6 w-12 h-9 flex items-center justify-center">
-                          <Image src="/onging count.png" alt="Ongoing Icon" width={30} height={30} className="w-10 h-10" />
-                      </div>
-                  </div>
-                  {/* Completed */}
-                            <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
-                              <div className="absolute left-6 top-6 text-4xl text-gray-700 font-bold leading-10">{completedCount}</div>
-                              <div className="absolute left-6 top-[84px] text-xl text-gray-700 font-normal leading-7">Completed&nbsp;Count</div>
-                              <div className="absolute right-4.5 top-6 w-12 h-9 flex items-center justify-center">
-                                <Image src="/completed count.png" alt="Completed Icon" width={30} height={35} className="w-10 h-10" />
-                              </div>
-                            </div>
-                            
-                            {/* Total batch Count */}
-                            <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
-                              <div className="absolute left-6 top-6 text-4xl text-gray-700 font-bold leading-10">
-                              {
-                                Array.isArray(batchData)
-                                ? batchData.length
-                                : 0
-                              }
-                              </div>
-                              <div className="absolute left-6 top-[84px] text-xl text-gray-700 font-normal leading-7">Total&nbsp;Batches</div>
-                              <div className="absolute right-4.5 top-5 w-10 h-10 flex p-2 items-center justify-center bg-blue-400 rounded-full">
-                                {/* <Image src="/people.png" alt="Total Students Icon" width={30} height={35} /> */}
-                                <GrGroup width={6} height={6} className='h-6 w-6 text-blue-700'/>
-                              </div>
-                            </div>
-                              <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
-                              <div className="absolute left-6 top-6 text-4xl text-gray-700 font-bold leading-10">
-                              {
-                                Array.isArray(batchData)
-                                ? batchData.length
-                                : 0
-                              }
-                              </div>
-                              <div className="absolute left-6 top-[84px] text-xl text-gray-700 font-normal leading-7">Total&nbsp;Batches</div>
-                              <div className="absolute right-4.5 top-5 w-10 h-10 flex p-2 items-center justify-center bg-blue-400 rounded-full">
-                                <Image src="/people.png" alt="Total Students Icon" width={30} height={35} />
-                              </div>
-                            </div>
-              </div>
-
-                          {/* ====== SEARCH SECTION ====== */}
-              <div id="search-container" className="bg-[#F4F3FF] py-3 rounded-xl" tabIndex={0}>
-                  <div className="flex flex-row flex-wrap justify-center gap-3 px-2 py-3">
-                      {/* Search by Batch number */}
-                      <div className="relative">
-                          <input
-                              type="text"
-                              id="batch-id"
-                              className={`block px-4 pb-2 pt-5 w-[175px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
-                              placeholder=" "
-                              value={searchTerm}
-                              onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleSearch(); } }}
-                              onChange={(e) => { setSearchTerm(e.target.value); }}
-                          />
-                          <label htmlFor="batch-id" className="absolute px-1 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-3 scale-75 top-3.5 z-5 origin-[0] left-1 peer-focus:text-xs peer-focus:text-[#6750a4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#efeeff]">
-                              Search by Batch Name
-                          </label>
-                          {searchTerm && (
-                              <button onClick={() => setSearchTerm('')} className="cursor-pointer absolute top-4 right-3 text-gray-500 hover:text-gray-00">
-                                  <RiCloseCircleLine size={20} />
-                              </button>
-                          )}
-                      </div>
-                      
-                      {/* Start Date Input */}
-                      <div className="relative">
-                          <input id="start-date" type="date" value={startDate} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleSearch(); } }} onChange={(e) => handleSearchStartDateChange(e.target.value)} className="cursor-pointer block px-4 pb-2 pt-5 w-[170px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer" />
-                          <label htmlFor="start-date" className={`absolute px-3 pb-2 mt-1 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform z-5 origin-[0] left-4 ${startDate ? 'top-2 -translate-y-3 scale-75 text-[#6750A4] font-medium ' : 'top-6 -translate-y-1/2 scale-100'} peer-focus:top-3.5 peer-focus:-translate-y-7 peer-focus:font-bold peer-focus:scale-75 peer-focus:text-[#6750A4]`}>
-                              Start date
-                          </label>
-                      </div>
-                      
-                      {/* End Date Input */}
-                      <div className="relative">
-                          <input id="end-date" type="date" value={endDate} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleSearch(); } }} onChange={(e) => handleSearchEndDateChange(e.target.value)} className="cursor-pointer block px-4 pb-2 pt-5 w-[170px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer" />
-                          <label htmlFor="end-date" className={`absolute px-3.5 pb-2 mt-1 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform z-5 origin-[0] left-4 ${endDate ? 'top-2 -translate-y-3 scale-75 text-[#6750A4] font-medium' : 'top-6 -translate-y-1/2 scale-100'} peer-focus:top-3.5 peer-focus:-translate-y-7 peer-focus:font-bold peer-focus:scale-75 peer-focus:text-[#6750A4]`}>
-                              End date
-                          </label>
-                          {searchDateError && <p className="text-red-500 text-xs mt-1 px-2">{searchDateError}</p>}
-                      </div>
-                      
-                      {/* Mode Dropdown */}
-                      <div className="relative">
-                          <input type="text" id="mode" readOnly placeholder=" " value={mode === 'Off' ? '' : mode} onClick={() => setShowModeDropdown(!showModeDropdown)} className="block px-4 pb-2 pt-5 w-[170px] text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer" />
-                          <label htmlFor="mode" className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6">
-                              Mode
-                          </label>
-                          <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
-                          {mode && mode !== 'Off' && (
-                              <button onClick={(e) => { e.stopPropagation(); setMode('Off'); handleSearch(); }} className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700">
-                                  <RiCloseCircleLine size={20} />
-                              </button>
-                          )}
-                          {showModeDropdown && (
-                              <div className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md" ref={modeDropdownRef}>
-                                  {['Online', 'Offline'].map((item) => (
-                                      <div key={item} tabIndex={0} className="px-4 py-2 cursor-pointer hover:bg-gray-100" onClick={() => { setMode(item); setShowModeDropdown(false); }} onKeyDown={(e) => { if (e.key === "Enter") { setMode(item); setShowModeDropdown(false); handleSearch(); } }}>
-                                          {item}
-                                      </div>
-                                  ))}
-                              </div>
-                          )}
-                      </div>
-                      
-                      {/* Search and Reset Buttons */}
-                      <div className="flex items-center flex-wrap">
-                        <button
-                          onClick={handleSearch}
-                          className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-4 py-4 rounded-l-xl border-r-gray-700 text-sm font-semibold flex items-center gap-2"
-                        >
-                          <FaSearch className="inline-block" />
-                          <span>Search</span>
-                        </button>
-                        <button
-                          onClick={handleReset}
-                          className="cursor-pointer bg-[#E8DEF8] hover:bg-[#c0b2d6] px-4 py-4 rounded-r-xl text-sm font-semibold border-l-gray-900 text-gray-700 flex items-center gap-2"
-                        >
-                          <Image src='/reset.svg' alt="Reset Icon" width={20} height={20} className="object-contain inline-block" />
-                          <span>Reset</span>
-                        </button>
-                      </div>
-                      {/* ====== ADD BATCH BUTTON ====== */}
-                      <div className='z-0'>
-                          <button
-                              onClick={() => setShowModal(true)}
-                              className=" cursor-pointer z-10 flex  bg-[#6750a4] hover:bg-[#6650a4e7] px-4 py-[15px] text-white text-sm font-bold rounded-xl shadow-sm">
-                              <Image
-                                  src='/add.svg'
-                                  alt="Add Icon"
-                                  width={18}
-                                  height={18}
-                                  className="mx-2"
-                              /> Add Batch
-                          </button>
-                      </div>
-                  </div>
-              </div>
-
-              {/* ====== TABLE SECTION - CORRECTED STRUCTURE ====== */}
-              {searchInitiated && (
-                  <div className="bg-white inset-0 rounded-2xl shadow-sm mt-6 overflow-x-auto">
-                      {/* This div is the key: It creates the horizontal scroll context for the table */}
-                      <div className="w-full max-w-full overflow-hidden">
-                          <table className="min-w-full divide-y divide-gray-200">
-                              <thead className="bg-gray-50">
-                                  <tr>
-                    
-                                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">S.No</th>
-                                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Batch No</th>
-                                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
-                                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Session</th>
-                                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Total Students</th>                                        
-                                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Placed Students</th>
-                                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Yet to be placed</th>
-                                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Mode</th>
-                                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
-                                  </tr>
-                              </thead>
-                              <tbody className="bg-white divide-y divide-gray-200">
-                                  {filteredBatches.map((batch, index) => (
-                                      <tr key={batch.id} className="hover:bg-[#f4f3ff] text-gray-500 hover:text-gray-900 ">
-                                          <td className="px-4 text-center py-3 text-sm whitespace-nowrap">{index + 1}</td>
-                                          <td className="px-4 py-3 text-center text-sm whitespace-nowrap">{batch.batchNo}</td>
-                                          <td className="px-4 py-3 text-center text-sm whitespace-nowrap">
-                                              {new Date(batch.sections?.Domain?.endDate) < new Date() &&
-                                              new Date(batch.sections?.Aptitude?.endDate) < new Date() &&
-                                              new Date(batch.sections?.Communication?.endDate) < new Date() ? (
-                                                  <Image src="/com.svg" alt="Completed" width={70} height={50} className="w-20 h-7" />
-                                              ) : (
-                                                  <Image src="/going.svg" alt="Ongoing" width={70} height={50} className="w-20 h-7" />
-                                              )}
-                                          </td>
-                                          <td className="px-4 py-3 text-xs text-center whitespace-nowrap ">{batch.session}</td>
-                                          <td className="px-4 py-3 text-xs text-center whitespace-nowrap ">{batch.totalCount}</td>
-                                          <td className="px-4 py-3 text-xs text-center whitespace-nowrap ">{batch.studentsPlaced}</td>
-                                          <td className="px-4 py-3 text-xs text-center whitespace-nowrap ">{batch.pending}</td>
-                                          <td className="px-4 py-3 text-center text-sm whitespace-nowrap">{batch.mode}</td>
-                                          <td className="px-4 py-3 text-sm text-center whitespace-nowrap">
-                                              <div className="flex gap-1 items-center justify-center">
-                                                  <button onClick={() => handleAction('view', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded"><FiEye className='h-4 w-4'/></button>
-                                                  <button onClick={() => handleAction('edit', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded"><FiEdit className='h-4 w-4'/></button>
-                                                  <button onClick={() => handleAction('delete', batch.id)} className="cursor-pointer p-1 hover:bg-gray-100 rounded"><FiTrash2 className='h-4 w-4'/></button>
-                                              </div>
-                                              
-                                          </td>
-                                      </tr>
-                                  ))}
-                              </tbody>
-                          </table>
-                      </div>
-                  </div>
-              )}
-          </div>
+    <div className="flex min-h-screen mt-16 md:mt-1">
+      <Toaster position="top-right" />
+      {/* ====== HEADER ====== */}
+      <div className="fixed top-15 md:top-0 border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 md:px-8 z-20">
+        <h1 className="fixed text-xl text-gray-800 font-semibold">
+          {batchHead}
+        </h1>
       </div>
 
-{/* addNewBatch model */}
-{showModal && (
-  <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
-      onClick={() => {
-        handleCloseModal();
-        handleCloseModelSelect();
-      }}>
-      <div className="w-[380px] bg-[#F8FAFD] rounded-[10px] px-6 py-4"
-          onClick={(e) => {e.stopPropagation()
-        }}>
-          <div className="flex justify-between items-center mb-4">
+      {/* Main model  */}
+      <div
+        className={`px-3 pt-20 flex-1 bg-[#F8FAFD] mb-12 ${
+          showModal || showDeleteModal ? "pointer-events-none" : ""
+        }`}
+      >
+        <div ref={searchContainerRef} className="p-3">
+          {/* ====== STATS CARDS ====== */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-7 w-full">
+            {/* Ongoing */}
+            <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
+              <div className="absolute left-6 top-6 text-gray-700 text-4xl font-bold leading-10">
+                {ongoingCount}
+              </div>
+              <div className="absolute left-6 top-[84px] text-xl text-gray-700 font-normal leading-7">
+                Ongoing&nbsp;Count
+              </div>
+              <div className="absolute right-4.5 top-6 w-12 h-9 flex items-center justify-center">
+                <Image
+                  src="/onging count.png"
+                  alt="Ongoing Icon"
+                  width={30}
+                  height={30}
+                  className="w-10 h-10"
+                />
+              </div>
+            </div>
+            {/* Completed */}
+            <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
+              <div className="absolute left-6 top-6 text-4xl text-gray-700 font-bold leading-10">
+                {completedCount}
+              </div>
+              <div className="absolute left-6 top-[84px] text-xl text-gray-700 font-normal leading-7">
+                Completed&nbsp;Count
+              </div>
+              <div className="absolute right-4.5 top-6 w-12 h-9 flex items-center justify-center">
+                <Image
+                  src="/completed count.png"
+                  alt="Completed Icon"
+                  width={30}
+                  height={35}
+                  className="w-10 h-10"
+                />
+              </div>
+            </div>
+
+            {/* Total batch Count */}
+            <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
+              <div className="absolute left-6 top-6 text-4xl text-gray-700 font-bold leading-10">
+                {Array.isArray(batchData) ? batchData.length : 0}
+              </div>
+              <div className="absolute left-6 top-[84px] text-xl text-gray-700 font-normal leading-7">
+                Total&nbsp;Batches
+              </div>
+              <div className="absolute right-4.5 top-5 w-10 h-10 flex p-2 items-center justify-center bg-blue-400 rounded-full">
+                {/* <Image src="/people.png" alt="Total Students Icon" width={30} height={35} /> */}
+                <GrGroup
+                  width={6}
+                  height={6}
+                  className="h-6 w-6 text-blue-700"
+                />
+              </div>
+            </div>
+            <div className="relative flex-1 bg-[#efeeff] h-36 rounded-[10px] shadow-[0px_10.345px_103.45px_0px_rgba(67,67,67,0.10)]">
+              <div className="absolute left-6 top-6 text-4xl text-gray-700 font-bold leading-10">
+                {Array.isArray(batchData) ? batchData.length : 0}
+              </div>
+              <div className="absolute left-6 top-[84px] text-xl text-gray-700 font-normal leading-7">
+                Total&nbsp;Batches
+              </div>
+              <div className="absolute right-4.5 top-5 w-10 h-10 flex p-2 items-center justify-center bg-blue-400 rounded-full">
+                <Image
+                  src="/people.png"
+                  alt="Total Students Icon"
+                  width={30}
+                  height={35}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* ====== SEARCH SECTION ====== */}
+          <div
+            id="search-container"
+            className="bg-[#F4F3FF] py-3 rounded-xl"
+            tabIndex={0}
+          >
+            <div className="flex flex-row flex-wrap justify-center gap-3 px-2 py-3">
+              {/* Search by Batch number */}
+              <div className="relative">
+                <input
+                  type="text"
+                  id="batch-id"
+                  className={`block px-4 pb-2 pt-5 w-[175px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                  placeholder=" "
+                  value={searchTerm}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleSearch();
+                    }
+                  }}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                  }}
+                />
+                <label
+                  htmlFor="batch-id"
+                  className="absolute px-1 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-3 scale-75 top-3.5 z-5 origin-[0] left-1 peer-focus:text-xs peer-focus:text-[#6750a4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#efeeff]"
+                >
+                  Search by Batch Name
+                </label>
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm("")}
+                    className="cursor-pointer absolute top-4 right-3 text-gray-500 hover:text-gray-00"
+                  >
+                    <RiCloseCircleLine size={20} />
+                  </button>
+                )}
+              </div>
+
+              {/* Start Date Input */}
+              <div className="relative">
+                <input
+                  id="start-date"
+                  type="date"
+                  value={startDate}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleSearch();
+                    }
+                  }}
+                  onChange={(e) => handleSearchStartDateChange(e.target.value)}
+                  className="cursor-pointer block px-4 pb-2 pt-5 w-[170px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+                />
+                <label
+                  htmlFor="start-date"
+                  className={`absolute px-3 pb-2 mt-1 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform z-5 origin-[0] left-4 ${
+                    startDate
+                      ? "top-2 -translate-y-3 scale-75 text-[#6750A4] font-medium "
+                      : "top-6 -translate-y-1/2 scale-100"
+                  } peer-focus:top-3.5 peer-focus:-translate-y-7 peer-focus:font-bold peer-focus:scale-75 peer-focus:text-[#6750A4]`}
+                >
+                  Start date
+                </label>
+              </div>
+
+              {/* End Date Input */}
+              <div className="relative">
+                <input
+                  id="end-date"
+                  type="date"
+                  value={endDate}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleSearch();
+                    }
+                  }}
+                  onChange={(e) => handleSearchEndDateChange(e.target.value)}
+                  className="cursor-pointer block px-4 pb-2 pt-5 w-[170px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+                />
+                <label
+                  htmlFor="end-date"
+                  className={`absolute px-3.5 pb-2 mt-1 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform z-5 origin-[0] left-4 ${
+                    endDate
+                      ? "top-2 -translate-y-3 scale-75 text-[#6750A4] font-medium"
+                      : "top-6 -translate-y-1/2 scale-100"
+                  } peer-focus:top-3.5 peer-focus:-translate-y-7 peer-focus:font-bold peer-focus:scale-75 peer-focus:text-[#6750A4]`}
+                >
+                  End date
+                </label>
+                {searchDateError && (
+                  <p className="text-red-500 text-xs mt-1 px-2">
+                    {searchDateError}
+                  </p>
+                )}
+              </div>
+
+              {/* Mode Dropdown */}
+              <div className="relative">
+                <input
+                  type="text"
+                  id="mode"
+                  readOnly
+                  placeholder=" "
+                  value={mode === "Off" ? "" : mode}
+                  onClick={() => setShowModeDropdown(!showModeDropdown)}
+                  className="block px-4 pb-2 pt-5 w-[170px] text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+                />
+                <label
+                  htmlFor="mode"
+                  className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+                >
+                  Mode
+                </label>
+                <FiChevronDown
+                  className="absolute top-5 right-3 text-gray-500 pointer-events-none"
+                  size={16}
+                />
+                {mode && mode !== "Off" && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setMode("Off");
+                      handleSearch();
+                    }}
+                    className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700"
+                  >
+                    <RiCloseCircleLine size={20} />
+                  </button>
+                )}
+                {showModeDropdown && (
+                  <div
+                    className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md"
+                    ref={modeDropdownRef}
+                  >
+                    {["Online", "Offline"].map((item) => (
+                      <div
+                        key={item}
+                        tabIndex={0}
+                        className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                        onClick={() => {
+                          setMode(item);
+                          setShowModeDropdown(false);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            setMode(item);
+                            setShowModeDropdown(false);
+                            handleSearch();
+                          }
+                        }}
+                      >
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Search and Reset Buttons */}
+              <div className="flex items-center flex-wrap">
+                <button
+                  onClick={handleSearch}
+                  className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-4 py-4 rounded-l-xl border-r-gray-700 text-sm font-semibold flex items-center gap-2"
+                >
+                  <FaSearch className="inline-block" />
+                  <span>Search</span>
+                </button>
+                <button
+                  onClick={handleReset}
+                  className="cursor-pointer bg-[#E8DEF8] hover:bg-[#c0b2d6] px-4 py-4 rounded-r-xl text-sm font-semibold border-l-gray-900 text-gray-700 flex items-center gap-2"
+                >
+                  <Image
+                    src="/reset.svg"
+                    alt="Reset Icon"
+                    width={20}
+                    height={20}
+                    className="object-contain inline-block"
+                  />
+                  <span>Reset</span>
+                </button>
+              </div>
+              {/* ====== ADD BATCH BUTTON ====== */}
+              <div className="z-0">
+                <button
+                  onClick={() => setShowModal(true)}
+                  className=" cursor-pointer z-10 flex  bg-[#6750a4] hover:bg-[#6650a4e7] px-4 py-[15px] text-white text-sm font-bold rounded-xl shadow-sm"
+                >
+                  <Image
+                    src="/add.svg"
+                    alt="Add Icon"
+                    width={18}
+                    height={18}
+                    className="mx-2"
+                  />{" "}
+                  Add Batch
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* ====== TABLE SECTION - CORRECTED STRUCTURE ====== */}
+          {searchInitiated && (
+            <div className="bg-white inset-0 rounded-2xl shadow-sm mt-6 overflow-x-auto">
+              {/* This div is the key: It creates the horizontal scroll context for the table */}
+              <div className="w-full max-w-full overflow-hidden">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                        S.No
+                      </th>
+                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                        Batch No
+                      </th>
+                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                        Status
+                      </th>
+                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                        Session
+                      </th>
+                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                        Total Students
+                      </th>
+                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                        Placed Students
+                      </th>
+                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                        Yet to be placed
+                      </th>
+                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                        Mode
+                      </th>
+                      <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {filteredBatches.map((batch, index) => (
+                      <tr
+                        key={batch.id}
+                        className="hover:bg-[#f4f3ff] text-gray-500 hover:text-gray-900 "
+                      >
+                        <td className="px-4 text-center py-3 text-sm whitespace-nowrap">
+                          {index + 1}
+                        </td>
+                        <td className="px-4 py-3 text-center text-sm whitespace-nowrap">
+                          {batch.batchNo}
+                        </td>
+                        <td className="px-4 py-3 text-center text-sm whitespace-nowrap">
+                          {new Date(batch.sections?.Domain?.endDate) <
+                            new Date() &&
+                          new Date(batch.sections?.Aptitude?.endDate) <
+                            new Date() &&
+                          new Date(batch.sections?.Communication?.endDate) <
+                            new Date() ? (
+                            <Image
+                              src="/com.svg"
+                              alt="Completed"
+                              width={70}
+                              height={50}
+                              className="w-20 h-7"
+                            />
+                          ) : (
+                            <Image
+                              src="/going.svg"
+                              alt="Ongoing"
+                              width={70}
+                              height={50}
+                              className="w-20 h-7"
+                            />
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-xs text-center whitespace-nowrap ">
+                          {batch.session}
+                        </td>
+                        <td className="px-4 py-3 text-xs text-center whitespace-nowrap ">
+                          {batch.totalCount}
+                        </td>
+                        <td className="px-4 py-3 text-xs text-center whitespace-nowrap ">
+                          {batch.studentsPlaced}
+                        </td>
+                        <td className="px-4 py-3 text-xs text-center whitespace-nowrap ">
+                          {batch.pending}
+                        </td>
+                        <td className="px-4 py-3 text-center text-sm whitespace-nowrap">
+                          {batch.mode}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-center whitespace-nowrap">
+                          <div className="flex gap-1 items-center justify-center">
+                            <button
+                              onClick={() => handleAction("view", batch.id)}
+                              className="cursor-pointer p-1 hover:bg-gray-100 rounded"
+                            >
+                              <FiEye className="h-4 w-4" />
+                            </button>
+                            <button
+                              onClick={() => handleAction("edit", batch.id)}
+                              className="cursor-pointer p-1 hover:bg-gray-100 rounded"
+                            >
+                              <FiEdit className="h-4 w-4" />
+                            </button>
+                            <button
+                              onClick={() => handleAction("delete", batch.id)}
+                              className="cursor-pointer p-1 hover:bg-gray-100 rounded"
+                            >
+                              <FiTrash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* addNewBatch model */}
+      {showModal && (
+        <div
+          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+          onClick={() => {
+            handleCloseModal();
+            handleCloseModelSelect();
+          }}
+        >
+          <div
+            className="w-[380px] bg-[#F8FAFD] rounded-[10px] px-6 py-4"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <div className="flex justify-between items-center mb-4">
               <h2 className="text-gray-800 text-sm font-bold">Add new batch</h2>
               <button
-                  onClick={() => {
-                      setShowModal(false);
-                      resetForm();
-                  }}
-                  className="cursor-pointer text-gray-500 hover:text-gray-700"
+                onClick={() => {
+                  setShowModal(false);
+                  resetForm();
+                }}
+                className="cursor-pointer text-gray-500 hover:text-gray-700"
               >
-                  <RiCloseCircleLine size={20} />
+                <RiCloseCircleLine size={20} />
               </button>
-          </div>
-          {/* Batch Number Field */}
-          <div className="relative mb-4">
+            </div>
+            {/* Batch Number Field */}
+            <div className="relative mb-4">
               <input
                 type="text"
                 id="batch-number"
@@ -1166,7 +1373,7 @@ export default function BatchModel() {
                 htmlFor="batch-number"
                 className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
               >
-                  Batch Name
+                Batch Name
               </label>
               {newBatch.batchNo && (
                 <button
@@ -1207,7 +1414,7 @@ export default function BatchModel() {
                           ${
                             activeTab === label
                               ? "text-indigo-600"
-                              : "text-gray-800" 
+                              : "text-gray-800"
                           }`}
                 >
                   {label}
@@ -1229,33 +1436,38 @@ export default function BatchModel() {
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3 mb-3">
-<div className="relative">
-  <input
-    type="date"
-    id={`${activeTab.toLowerCase()}-start-date`}
-    className={`block px-3 py-2 pt-4 w-full text-xs text-gray-900 bg-[#ECE6F0] rounded-sm border-2 ${
-      formErrors.sections[activeTab] || modalDateErrors[activeTab]
-        ? 'border-red-500'
-        : 'border-gray-400'
-    } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
-    placeholder=" "
-    value={newBatch.sections[activeTab].startDate}
-    onChange={(e) => {
-      handleSectionDateChange(activeTab, 'startDate', e.target.value);
-      if (formErrors.sections[activeTab]) {
-        setFormErrors({
-          ...formErrors,
-          sections: {
-            ...formErrors.sections,
-            [activeTab]: ''
-          }
-        });
-      }
-    }}
-  />
-  <label
-    htmlFor={`${activeTab.toLowerCase()}-start-date`}
-    className={`absolute px-2 text-sm pb-1 text-gray-500 duration-300 bg-[#ECE6F0] transform z-5 origin-[0] left-3
+                <div className="relative">
+                  <input
+                    type="date"
+                    id={`${activeTab.toLowerCase()}-start-date`}
+                    className={`block px-3 py-2 pt-4 w-full text-xs text-gray-900 bg-[#ECE6F0] rounded-sm border-2 ${
+                      formErrors.sections[activeTab] ||
+                      modalDateErrors[activeTab]
+                        ? "border-red-500"
+                        : "border-gray-400"
+                    } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                    placeholder=" "
+                    value={newBatch.sections[activeTab].startDate}
+                    onChange={(e) => {
+                      handleSectionDateChange(
+                        activeTab,
+                        "startDate",
+                        e.target.value
+                      );
+                      if (formErrors.sections[activeTab]) {
+                        setFormErrors({
+                          ...formErrors,
+                          sections: {
+                            ...formErrors.sections,
+                            [activeTab]: "",
+                          },
+                        });
+                      }
+                    }}
+                  />
+                  <label
+                    htmlFor={`${activeTab.toLowerCase()}-start-date`}
+                    className={`absolute px-2 text-sm pb-1 text-gray-500 duration-300 bg-[#ECE6F0] transform z-5 origin-[0] left-3
       ${
         newBatch.sections[activeTab].startDate
           ? "top-3 -translate-y-3 scale-75 text-[#6750A4] font-medium"
@@ -1267,33 +1479,38 @@ export default function BatchModel() {
                   </label>
                 </div>
 
-<div className="relative">
-  <input
-    type="date"
-    id={`${activeTab.toLowerCase()}-end-date`}
-    className={`block px-3 py-2 pt-4 w-full text-xs text-gray-900 bg-[#ECE6F0] rounded-sm border-2 ${
-      formErrors.sections[activeTab] || modalDateErrors[activeTab]
-        ? 'border-red-500'
-        : 'border-gray-400'
-    } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
-    placeholder=" "
-    value={newBatch.sections[activeTab].endDate}
-    onChange={(e) => {
-      handleSectionDateChange(activeTab, 'endDate', e.target.value);
-      if (formErrors.sections[activeTab]) {
-        setFormErrors({
-          ...formErrors,
-          sections: {
-            ...formErrors.sections,
-            [activeTab]: ''
-          }
-        });
-      }
-    }}
-  />
-  <label
-    htmlFor={`${activeTab.toLowerCase()}-end-date`}
-    className={`absolute px-2 text-sm pb-1 text-gray-500 duration-300 bg-[#ECE6F0] transform z-5 origin-[0] left-3  
+                <div className="relative">
+                  <input
+                    type="date"
+                    id={`${activeTab.toLowerCase()}-end-date`}
+                    className={`block px-3 py-2 pt-4 w-full text-xs text-gray-900 bg-[#ECE6F0] rounded-sm border-2 ${
+                      formErrors.sections[activeTab] ||
+                      modalDateErrors[activeTab]
+                        ? "border-red-500"
+                        : "border-gray-400"
+                    } appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                    placeholder=" "
+                    value={newBatch.sections[activeTab].endDate}
+                    onChange={(e) => {
+                      handleSectionDateChange(
+                        activeTab,
+                        "endDate",
+                        e.target.value
+                      );
+                      if (formErrors.sections[activeTab]) {
+                        setFormErrors({
+                          ...formErrors,
+                          sections: {
+                            ...formErrors.sections,
+                            [activeTab]: "",
+                          },
+                        });
+                      }
+                    }}
+                  />
+                  <label
+                    htmlFor={`${activeTab.toLowerCase()}-end-date`}
+                    className={`absolute px-2 text-sm pb-1 text-gray-500 duration-300 bg-[#ECE6F0] transform z-5 origin-[0] left-3  
       ${
         newBatch.sections[activeTab].endDate
           ? "top-3 -translate-y-3 scale-75 text-[#6750A4] font-medium"
@@ -1751,7 +1968,10 @@ export default function BatchModel() {
 
             <p className="mb-4 text-gray-700 text-sm">
               Are you sure you want to update batch{" "}
-              <strong className="text-m">{initialEditBatchData?.batchNo || originalBatchNo}</strong>?
+              <strong className="text-m">
+                {initialEditBatchData?.batchNo || originalBatchNo}
+              </strong>
+              ?
             </p>
 
             {/* Buttons */}
