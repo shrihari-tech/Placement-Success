@@ -1,9 +1,44 @@
 "use client";
 import { useEffect, useState } from "react";
-import { RiCloseCircleLine } from "react-icons/ri";
+import { RiCloseCircleLine } from "react-icons/ri"; 
+import Image from "next/image";
+import { useDataContext } from "../context/dataContext";
+
 
 const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
   const [infoTab, setInfoTab] = useState("Domain");
+  const [sectionData, setSectionData] = useState({});
+
+  const { batchData } = useDataContext();
+
+    const toDDMMYYYY = (d) => {
+    const date = d instanceof Date ? d : new Date(d);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = date.toLocaleString("en-US", { month: "short" }); // e.g., Jul
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
+  const parseDate = (str) => {
+    if (!str) return null;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return new Date(str);
+    if (/^\d{2}-\d{2}-\d{4}$/.test(str)) {
+      const [dd, mm, yyyy] = str.split("-");
+      return new Date(`${yyyy}-${mm}-${dd}`);
+    }
+    return new Date(str);
+  };
+
+  const formatDate = (str) => (str ? toDDMMYYYY(parseDate(str)) : "");
+
+useEffect(() => {
+  if(batchData && selectedStudent) {
+    const batchInfo = batchData.find(b => b.batchNo.trim() === selectedStudent.batch.trim());
+    if (batchInfo) {
+      setSectionData(batchInfo.sections);
+    }
+  }
+},[selectedStudent.batch])
 
   useEffect(() => {
     if (isOpen) {
@@ -15,6 +50,7 @@ const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
     return () => {
       document.body.style.overflow = "";
     };
+  
   }, [isOpen]);
 
   if (!isOpen || !selectedStudent) return null;
@@ -41,6 +77,9 @@ const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
         return "Unknown";
     }
   };
+  //   const domainSection = fullBatch?.sections?.Domain || {};
+  // const aptitudeSection = fullBatch?.sections?.Aptitude || {};
+  // const communicationSection = fullBatch?.sections?.Communication || {};
 
   return (
     <div
@@ -53,7 +92,7 @@ const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
       >
         {/* Modal Header */}
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-medium text-gray-800">Student Details</h2>
+          <h2 className="text-lg font-semibold text-gray-700">Student Details</h2>
           <button
             onClick={onClose} // Changed to use onClose prop
             className="cursor-pointer text-gray-500 hover:text-gray-700"
@@ -65,7 +104,7 @@ const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
         {/* Profile Section */}
         <div className="flex items-center gap-4 mb-6">
           {/* Profile Picture */}
-          <img
+          <Image
             src={selectedStudent.image || "/profile.png"}
             alt="Profile"
             className="w-20 h-20 rounded-full object-cover border"
@@ -86,6 +125,12 @@ const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
                 </span>
               </div>
               <div>
+                <span className="font-semibold text-[#6750A4]">Placement:</span>{" "}
+                <span className="text-gray-700">
+                  {selectedStudent.placement}
+                </span>
+              </div>
+              <div>
                 <span className="font-semibold text-[#6750A4]">Mode:</span>{" "}
                 <span className="text-gray-700">{selectedStudent.mode}</span>
               </div>
@@ -100,6 +145,14 @@ const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
               <div>
                 <span className="font-semibold text-[#6750A4]">Phone:</span>{" "}
                 <span className="text-gray-700">{selectedStudent.phone} </span>
+              </div>
+              <div>
+                <span className="font-semibold text-[#6750A4]">
+                  Booking ID:
+                </span>{" "}
+                <span className="text-gray-700">
+                  {selectedStudent.bookingId}{" "}
+                </span>
               </div>
             </div>
           </div>
@@ -139,32 +192,32 @@ const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
             {infoTab === "Domain" && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center text-sm sm:text-base">
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-800 font-bold">Start Date:</p>
-                  <p className="text-gray-700">1-Jan-2025</p>
+                  <p className="text-gray-700 font-bold">Start Date:</p>
+                  <p className="text-gray-700"> {formatDate(sectionData.Domain?.startDate) || "N/A"}</p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-800 font-bold">End Date:</p>
-                  <p className="text-gray-700">1-Feb-2025</p>
+                  <p className="text-gray-700 font-bold">End Date:</p>
+                  <p className="text-gray-700">{formatDate(sectionData.Domain?.endDate) || "N/A"}</p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-800 font-bold">Domain Status:</p>
-                  <p className="text-gray-700">Ongoing</p>
+                  <p className="text-gray-700 font-bold">Domain Status:</p>
+                  <p className="text-gray-700">{ new Date(sectionData.Domain?.endDate) < new Date() ? "Completed" : "Ongoing"}</p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-800 font-bold">Domain Progress:</p>
+                  <p className="text-gray-700 font-bold">Domain Progress:</p>
                   <p className="text-gray-700">Initial Phase</p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-800 font-bold">Domain Trainer:</p>
+                  <p className="text-gray-700 font-bold">Domain Trainer:</p>
                   <p className="text-gray-700">Shri Hari</p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-800 font-bold">EPIC:</p>
+                  <p className="text-gray-700 font-bold">EPIC:</p>
                   <p className="text-gray-700">{selectedStudent.epicStatus}</p>
                 </div>
               </div>
@@ -173,32 +226,32 @@ const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
             {infoTab === "Aptitude" && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center text-sm sm:text-base">
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-800 font-bold">Start Date:</p>
-                  <p className="text-gray-700">1-Mar-2025</p>
+                  <p className="text-gray-700 font-bold">Start Date:</p>
+                  <p className="text-gray-700">{formatDate(sectionData.Aptitude?.startDate) || "N/A"}</p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-800 font-bold">End Date:</p>
-                  <p className="text-gray-700">1-Apr-2025</p>
+                  <p className="text-gray-700 font-bold">End Date:</p>
+                  <p className="text-gray-700">{formatDate(sectionData.Aptitude?.endDate) || "N/A"}</p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-800 font-bold">Aptitude Status:</p>
-                  <p className="text-gray-700">Ongoing</p>
+                  <p className="text-gray-700 font-bold">Aptitude Status:</p>
+                  <p className="text-gray-700">{ new Date(sectionData.Aptitude?.endDate) < new Date() ? "Completed" : "Ongoing"}</p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-800 font-bold">Aptitude Progress:</p>
+                  <p className="text-gray-700 font-bold">Aptitude Progress:</p>
                   <p className="text-gray-700">Capstone Project</p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-800 font-bold">Aptitude Trainer:</p>
+                  <p className="text-gray-700 font-bold">Aptitude Trainer:</p>
                   <p className="text-gray-700">Shri Hari</p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-800 font-bold">EPIC:</p>
+                  <p className="text-gray-700 font-bold">EPIC:</p>
                   <p className="text-gray-700">{selectedStudent.epicStatus}</p>
                 </div>
               </div>
@@ -206,38 +259,38 @@ const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
             {infoTab === "Communication" && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center text-sm sm:text-base">
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-800 font-bold">Start Date:</p>
-                  <p className="text-gray-700">2-Apr-2025</p>
+                  <p className="text-gray-700 font-bold">Start Date:</p>
+                  <p className="text-gray-700">{formatDate(sectionData.Communication?.startDate) || "N/A"}</p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-800 font-bold">End Date:</p>
-                  <p className="text-gray-700">2-May-2025</p>
+                  <p className="text-gray-700 font-bold">End Date:</p>
+                  <p className="text-gray-700">{formatDate(sectionData.Communication.endDate) || "N/A"}</p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-800 font-bold">
+                  <p className="text-gray-700 font-bold">
                     Communication Status:
                   </p>
-                  <p className="text-gray-700">Completed</p>
+                  <p className="text-gray-700">{ new Date(sectionData.Communication?.endDate) < new Date() ? "Completed" : "Ongoing" }</p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-800 font-bold">
+                  <p className="text-gray-700 font-bold">
                     Communication Progress:
                   </p>
                   <p className="text-gray-700">IRC Completed</p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-800 font-bold">
+                  <p className="text-gray-700 font-bold">
                     Communication Trainer:
                   </p>
                   <p className="text-gray-700">Shri Hari</p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-800 font-bold">EPIC:</p>
+                  <p className="text-gray-700 font-bold">EPIC:</p>
                   <p className="text-gray-700">{selectedStudent.epicStatus}</p>
                 </div>
               </div>

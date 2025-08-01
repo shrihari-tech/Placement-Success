@@ -1,57 +1,83 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import NavBar from "../navBar/page";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useRef, useEffect } from "react";
 import FlipCard from "../flipcard/flipcard";
-import { ComposedChart, Line, Area, XAxis, YAxis, CartesianGrid, LabelList, ResponsiveContainer } from 'recharts';
-import { useDataContext } from '../context/dataContext';
-
+import {ComposedChart,Line,Area,XAxis,YAxis,CartesianGrid,LabelList,ResponsiveContainer} from "recharts";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { useDataContext } from "../context/dataContext";
 export default function HomePage() {
-  const { userName, getStatsByBatch } = useDataContext();
-  const [activeCard, setActiveCard] = useState(null);
-  const containerRef = useRef(null);
+const { userName, getStatsByBatch, setBatchingValue, liveCounts } = useDataContext();
+  const router = useRouter();
+  const cardFlip = true;
+  const [isMobile, setIsMobile] = useState(false);
+  const [flippedCardId, setFlippedCardId] = useState(null);
 
+  ChartJS.register(ArcElement, Tooltip, Legend);
+
+  // Responsive detection
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (activeCard === null) return;
-      const cardClicked = event.target.closest('[data-is-card="true"]');
-      
-      if (containerRef.current && !containerRef.current.contains(event.target)) {
-        setActiveCard(null);
-      } else if (!cardClicked) {
-        setActiveCard(null);
-      }
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
     };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [activeCard]);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const handleCardClick = (id) => {
-    setActiveCard(activeCard === id ? null : id);
+    if (isMobile) {
+      setFlippedCardId((prevId) => (prevId === id ? null : id));
+    } else {
+      setBatchingValue(id);
+      router.push("/batches");
+    }
   };
 
   const cards = [
-    { id: 'fullstack', title: 'Full Stack Development', image:'/website-generic-svgrepo-com.svg', icon: '/computer.svg' },
-    { id: 'data', title: 'Data Analytics & Science', image:'/data-trends-svgrepo-com.svg', icon: '/bar_chart_4_bars.svg' },
-    { id: 'banking', title: 'Banking & Financial Services', image:'/biometric_18491889.png', icon: '/account_balance.svg' },
-    { id: 'marketing', title: 'Digital Marketing', image:'/digital-marketing-promotion-advertising-svgrepo-com.svg', icon: '/ad.svg' },
-    { id: 'sap', title: 'SAP', image:'/sap-svgrepo-com.svg', icon: '/device_hub.svg' },
-    { id: 'devops', title: 'DevOps', image:'/7053234.jpg', icon: '/deployed_code_history.svg' }
+    {
+      id: "fullstack",
+      title: "Full Stack Development",
+      image: "/fullstack.svg",
+      icon: "/computer.svg",
+    },
+    {
+      id: "data",
+      title: "Data Analytics & Science",
+      image: "/Data.svg",
+      icon: "/bar_chart_4_bars.svg",
+    },
+    {
+      id: "banking",
+      title: "Banking & Financial Services",
+      image: "/banking.svg",
+      icon: "/account_balance.svg",
+    },
+    {
+      id: "marketing",
+      title: "Digital Marketing",
+      image: "/Digital Marketing.svg",
+      icon: "/ad.svg",
+    },
+    { id: "sap", title: "SAP", image: "/SAP.svg", icon: "/device_hub.svg" },
+    {
+      id: "devops",
+      title: "DevOps",
+      image: "/DevOps.svg",
+      icon: "/deployed_code_history.svg",
+    },
   ];
 
   const date = new Date();
-  const mm = String(date.getMonth() + 1).padStart(2, '0');
-  const dd = String(date.getDate()).padStart(2, '0');
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const dd = String(date.getDate()).padStart(2, "0");
   const yyyy = date.getFullYear();
   const formattedDate = `${mm}/${dd}/${yyyy}`;
   const premonth = (mm - 1 + 12) % 12;
-  const currentmonth = (mm % 12);
-  const month = ["Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const currentmonth = mm % 12;
+  const month = ["Jan","Feb","March","April","May","June","July","Aug","Sep","Oct","Nov","Dec"];
 
   const CustomDot = ({ cx, cy }) => {
     return (
@@ -64,52 +90,75 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="pt-15 sm:pt-0">
       {/* NavBar at the top */}
       <NavBar />
       {/* Main content container with proper centering */}
-      <main className="flex-grow mx-auto w-full max-w-[1800px] px-[-15] sm:px-6 lg:px-8 py-4 sm:py-6">
+      <main className="flex-grow mx-auto w-full">
         {/* Greeting Section */}
-        <div className="border-b-2 border-gray-300 mb-6 md:mb-10 mt-10 sm:mt-1">
+        <div className="border-b-2 border-gray-300 bg-white ps-10 pt-5 mb-6 md:mb-10 ">
           <p className="text-xl md:text-2xl text-gray-700 font-semibold mb-4 flex items-center">
             Hi {userName}
             <Image
-              src='/waving-hand_1f44b 1.svg'
+              src="/waving-hand_1f44b 1.svg"
               alt="hand"
               className="ml-2 animate-bounce"
               width={28}
               height={28}
               style={{
-                animation: 'wave 1.5s ease-in-out infinite',
-                transformOrigin: 'bottom right',
+                animation: "wave 1.5s ease-in-out infinite",
+                transformOrigin: "bottom right",
               }}
             />
             <style jsx>{`
               @keyframes wave {
-                0% { transform: rotate(0deg); }
-                10% { transform: rotate(14deg); }
-                20% { transform: rotate(-8deg); }
-                30% { transform: rotate(14deg); }
-                40% { transform: rotate(-4deg); }
-                50% { transform: rotate(10deg); }
-                60%, 100% { transform: rotate(0deg); }
+                0% {
+                  transform: rotate(0deg);
+                }
+                10% {
+                  transform: rotate(14deg);
+                }
+                20% {
+                  transform: rotate(-8deg);
+                }
+                30% {
+                  transform: rotate(14deg);
+                }
+                40% {
+                  transform: rotate(-4deg);
+                }
+                50% {
+                  transform: rotate(10deg);
+                }
+                60%,
+                100% {
+                  transform: rotate(0deg);
+                }
               }
             `}</style>
           </p>
         </div>
 
         {/* Main Content */}
-        <div className="p-2 md:p-4">
+        <div className="p-4 md:p-2 md:px-10 md:pb-10">
           {/* Live Count Section */}
           <div>
-            <h2 className="text-sm md:text-base text-gray-700 font-semibold mb-4">Live Count</h2>
+            <h2 className="text-sm md:text-base text-gray-700 font-semibold mb-4">
+              Live Count
+            </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {/* Card 1: Live Batch Count */}
               <div className="bg-white rounded-xl md:rounded-3xl shadow-md flex items-center justify-between p-4 md:p-5">
                 <div>
-                  <h3 className="text-3xl md:text-4xl font-medium text-[#696969] mb-1 md:mb-2">25</h3>
-                  <p className="text-[#AEAEAE] text-xs md:text-[13px]">{formattedDate}</p>
-                  <p className="text-[#404040] mt-4 md:mt-10 text-sm md:text-base">Live Batch count</p>
+                  <h3 className="text-3xl md:text-4xl font-medium text-[#696969] mb-1 md:mb-2">
+                    {liveCounts.batch}
+                  </h3>
+                  <p className="text-[#AEAEAE] text-xs md:text-[13px]">
+                    {formattedDate}
+                  </p>
+                  <p className="text-[#404040] mt-4 md:mt-10 text-sm md:text-base">
+                    Live Batch count
+                  </p>
                 </div>
                 <div className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14">
                   <Image
@@ -125,9 +174,15 @@ export default function HomePage() {
               {/* Card 2: Live Student Count */}
               <div className="bg-white rounded-xl md:rounded-3xl shadow-md flex items-center justify-between p-4 md:p-5">
                 <div>
-                  <h3 className="text-3xl md:text-4xl font-medium text-[#696969] mb-1 md:mb-2">1200</h3>
-                  <p className="text-[#AEAEAE] text-xs md:text-[13px]">{formattedDate}</p>
-                  <p className="text-[#404040] mt-4 md:mt-10 text-sm md:text-base">Live Student count</p>
+                  <h3 className="text-3xl md:text-4xl font-medium text-[#696969] mb-1 md:mb-2">
+                    {liveCounts.student}
+                  </h3>
+                  <p className="text-[#AEAEAE] text-xs md:text-[13px]">
+                    {formattedDate}
+                  </p>
+                  <p className="text-[#404040] mt-4 md:mt-10 text-sm md:text-base">
+                    Live Student count
+                  </p>
                 </div>
                 <div className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14">
                   <Image
@@ -143,9 +198,15 @@ export default function HomePage() {
               {/* Card 3: Live Domain Count */}
               <div className="bg-white rounded-xl md:rounded-3xl shadow-md flex items-center justify-between p-4 md:p-5">
                 <div>
-                  <h3 className="text-3xl md:text-4xl font-medium text-[#696969] mb-1 md:mb-2">13</h3>
-                  <p className="text-[#AEAEAE] text-xs md:text-[13px]">{formattedDate}</p>
-                  <p className="text-[#404040] mt-4 md:mt-10 text-sm md:text-base">Live Domain count</p>
+                  <h3 className="text-3xl md:text-4xl font-medium text-[#696969] mb-1 md:mb-2">
+                    {liveCounts.domain}
+                  </h3>
+                  <p className="text-[#AEAEAE] text-xs md:text-[13px]">
+                    {formattedDate}
+                  </p>
+                  <p className="text-[#404040] mt-4 md:mt-10 text-sm md:text-base">
+                    Live Domain count
+                  </p>
                 </div>
                 <div className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14">
                   <Image
@@ -162,14 +223,18 @@ export default function HomePage() {
 
           {/* Barchart Section */}
           <div className="mt-6 md:mt-10">
-            <h4 className="text-sm md:text-base text-gray-700 font-semibold mb-4">Placement projection</h4>
+            <h4 className="text-sm md:text-base text-gray-700 font-semibold mb-4">
+              Placement projection
+            </h4>
             <div className="flex flex-col lg:flex-row gap-4 md:gap-6">
               {/* Current month chart */}
               <div className="bg-white rounded-lg md:rounded-xl shadow-md p-3 md:p-4 w-full">
                 <div className="flex items-center mb-2 md:mb-3">
-                  <h2 className="font-semibold text-xs md:text-sm text-gray-700">Current month</h2>
+                  <h2 className="font-semibold text-xs md:text-sm text-gray-700">
+                    Current month
+                  </h2>
                   <Image
-                    src='/Line-1.svg'
+                    src="/Line-1.svg"
                     alt="Line-1"
                     width={100}
                     height={20}
@@ -178,21 +243,42 @@ export default function HomePage() {
                 </div>
                 <div className="h-[200px] md:h-[250px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <ComposedChart data={[
-                      { name: "FSD", value: 56 },
-                      { name: "DA & DS", value: 64 },
-                      { name: "Banking", value: 76 },
-                      { name: "DM", value: 78 },
-                      { name: "SAP", value: 70 },
-                      { name: "DevOps", value: 37 },
-                    ]}>
+                    <ComposedChart
+                      data={[
+                        { name: "FSD", value: 56 },
+                        { name: "DA & DS", value: 64 },
+                        { name: "Banking", value: 76 },
+                        { name: "DM", value: 78 },
+                        { name: "SAP", value: 70 },
+                        { name: "DevOps", value: 37 },
+                      ]}
+                    >
                       <defs>
-                        <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#6366f1" stopOpacity={0.3} />
-                          <stop offset="100%" stopColor="#6366f1" stopOpacity={0} />
+                        <linearGradient
+                          id="colorUv"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="0%"
+                            stopColor="#6366f1"
+                            stopOpacity={0.3}
+                          />
+                          <stop
+                            offset="100%"
+                            stopColor="#6366f1"
+                            stopOpacity={0}
+                          />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" vertical={true} horizontal={true} stroke="#d1d5db" />
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        vertical={true}
+                        horizontal={true}
+                        stroke="#d1d5db"
+                      />
                       <XAxis
                         dataKey="name"
                         interval={0}
@@ -231,7 +317,7 @@ export default function HomePage() {
                 </div>
                 <div className="flex justify-center items-center text-xs md:text-sm text-gray-500 mt-2 gap-1.5">
                   <Image
-                    src='/LegendNode.svg'
+                    src="/LegendNode.svg"
                     width={14}
                     height={14}
                     alt="legendNode"
@@ -243,9 +329,11 @@ export default function HomePage() {
               {/* Previous month chart */}
               <div className="bg-white rounded-lg md:rounded-xl shadow-md p-3 md:p-4 w-full">
                 <div className="flex items-center mb-2 md:mb-3">
-                  <h2 className="font-semibold text-xs md:text-sm text-gray-700">Previous month</h2>
+                  <h2 className="font-semibold text-xs md:text-sm text-gray-700">
+                    Previous month
+                  </h2>
                   <Image
-                    src='/Line-1.svg'
+                    src="/Line-1.svg"
                     alt="Line-1"
                     width={100}
                     height={20}
@@ -254,21 +342,42 @@ export default function HomePage() {
                 </div>
                 <div className="h-[200px] md:h-[250px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <ComposedChart data={[
-                      { name: "FSD", value: 27 },
-                      { name: "DA & DS", value: 64 },
-                      { name: "Banking", value: 36 },
-                      { name: "DM", value: 58 },
-                      { name: "SAP", value: 80 },
-                      { name: "DevOps", value: 67 },
-                    ]}>
+                    <ComposedChart
+                      data={[
+                        { name: "FSD", value: 27 },
+                        { name: "DA & DS", value: 64 },
+                        { name: "Banking", value: 36 },
+                        { name: "DM", value: 58 },
+                        { name: "SAP", value: 80 },
+                        { name: "DevOps", value: 67 },
+                      ]}
+                    >
                       <defs>
-                        <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#6366f1" stopOpacity={0.3} />
-                          <stop offset="100%" stopColor="#6366f1" stopOpacity={0} />
+                        <linearGradient
+                          id="colorUv"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="0%"
+                            stopColor="#6366f1"
+                            stopOpacity={0.3}
+                          />
+                          <stop
+                            offset="100%"
+                            stopColor="#6366f1"
+                            stopOpacity={0}
+                          />
                         </linearGradient>
                       </defs>
-                      <CartesianGrid strokeDasharray="3 3" vertical={true} horizontal={true} stroke="#d1d5db" />
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        vertical={true}
+                        horizontal={true}
+                        stroke="#d1d5db"
+                      />
                       <XAxis
                         dataKey="name"
                         interval={0}
@@ -307,7 +416,7 @@ export default function HomePage() {
                 </div>
                 <div className="flex justify-center items-center text-xs md:text-sm text-gray-500 mt-2 gap-1.5">
                   <Image
-                    src='/LegendNode.svg'
+                    src="/LegendNode.svg"
                     width={14}
                     height={14}
                     alt="legendNode"
@@ -318,63 +427,105 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Domain Section with FlipCards */}
-          <div className="mt-6 md:mt-10" ref={containerRef}>
-            <div className="text-sm md:text-base text-gray-700 font-semibold mb-4 md:mb-8">
-              <h1>Domain</h1>
-            </div>
-            <div className="flex justify-center">
-              <div className="grid grid-cols-1  sm:grid-cols-2 pr-4 gap-5 sm:px-1 xl:grid-cols-3 sm:gap-8">
-                {cards.map((card) => {
-                  const stats = getStatsByBatch(card.id) || {};
-                  return (
-                    <div key={card.id} className="transition-all duration-300" data-is-card="true">
-                      <FlipCard
-                        id={card.id}
-                        isActive={activeCard === card.id}
-                        onClick={handleCardClick}
-                        frontContent={
-                          <div className="flex flex-col items-center h-full p-3 py-6 md:p-4 md:py-10">
-                            <div>
-                              <Image className="py-3 md:py-5" src={card.image} alt={card.title} width={80} height={80} />
-                            </div>
-                            <span className="mt-1 md:mt-2 text-xs md:text-sm font-semibold">
-                              {card.title}
-                            </span>
+            {    cardFlip && (
+      <div className="index-0 mt-6 md:mt-15">
+        <div className="text-sm md:text-base text-gray-700 font-semibold mb-4 md:mb-8">
+          <h1>Domain</h1>
+        </div>
+        <div className="flex justify-center">
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-3">
+            {cards.map((card) => {
+              const stats = getStatsByBatch(card.id) || {};
+              const isFlipped = isMobile ? flippedCardId === card.id : false;
+
+                    const items = [
+                      {
+                        label: "Completed Batches",
+                        value: stats.completedBatches || 0,
+                      },
+                      {
+                        label: "Ongoing Batches",
+                        value: stats.ongoingBatches || 0,
+                      },
+                      {
+                        label: "Completed Students",
+                        value: stats.completedStudents || 0,
+                      },
+                      {
+                        label: "Ongoing Students",
+                        value: stats.ongoingStudents || 0,
+                      },
+                      {
+                        label: "Placement Eligible",
+                        value: stats.placementEligible || 0,
+                      },
+                      {
+                        label: "Already Placed",
+                        value: stats.alreadyPlaced || 0,
+                      },
+                      { label: "Yet to Place", value: stats.yetToPlace || 0 },
+                    ];
+
+                    const total = items.reduce(
+                      (sum, item) => sum + item.value,
+                      0
+                    );
+
+              return (
+                <div
+                  key={card.id}
+                  className="transition-all duration-300"
+                  data-is-card="true"
+                  onClick={() => handleCardClick(card.id)}
+                >
+                  <FlipCard
+                    frontContent={
+                      <div className="flex flex-col items-center gap-10">
+                        <div>
+                          <Image
+                            src={card.image}
+                            alt={card.title}
+                            width={160}
+                            height={160}
+                          />
+                        </div>
+                        <span className="text-l font-semibold">{card.title}</span>
+                      </div>
+                    }
+                    backContent={
+                      <div className="px-3 md:px-5 pb-4 md:pb-8 text-xs">
+                        <p className="text-xs md:text-sm font-bold pb-2 md:pb-3">
+                          {card.title}
+                        </p>
+                        {/* <div className="relative w-64 h-64 mx-auto">
+                          <Doughnut data={data} options={options} />
+                          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                            <p className="text-sm font-medium text-gray-600">Total</p>
+                            <p className="text-xl font-bold text-purple-700">{total}</p>
                           </div>
-                        }
-                        backContent={
-                          <div className="px-3 md:px-5 pb-4 md:pb-8 text-xs">
-                            <p className="text-xs md:text-sm font-bold pb-2 md:pb-3">{card.title}</p>
-                            <div className="grid grid-cols-2 gap-2">
-                              {[
-                                { label: "Completed Batches", value: stats.completedBatches || 0 },
-                                { label: "Ongoing Batches", value: stats.ongoingBatches || 0 },
-                                { label: "Completed Students", value: stats.completedStudents || 0 },
-                                { label: "Ongoing Students", value: stats.ongoingStudents || 0 },
-                                { label: "Placement Eligible", value: stats.placementEligible || 0 },
-                                { label: "Already Placed", value: stats.alreadyPlaced || 0 },
-                                { label: "Yet to Place", value: stats.yetToPlace || 0, colSpan: 2 },
-                              ].map((item, index) => (
-                                <div
-                                  key={index}
-                                  className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition ${
-                                    item.colSpan ? 'col-span-2' : ''
-                                  }`}
-                                >
-                                  <span className="font-medium">{item.label}:</span> {item.value}
-                                </div>
-                              ))}
+                        </div> */}
+                        {/* <div className="grid grid-cols-2 gap-2 mt-4">
+                          {items.map((item, idx) => (
+                            <div
+                              key={idx}
+                              className="flex items-center gap-2 text-xs bg-[#f5f3ff] px-2 py-1 rounded shadow-sm"
+                            >
+                              <span>{iconMap[item.label]}</span>
+                              <span className="font-medium text-gray-700">{item.label}</span>
                             </div>
-                          </div>
-                        }
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+                          ))}
+                        </div> */}
+                      </div>
+                    }
+                    isFlipped={isFlipped}
+                  />
+                </div>
+              );
+            })}
           </div>
+        </div>
+      </div>
+    )}
         </div>
       </main>
     </div>
