@@ -2581,8 +2581,7 @@ const DataProvider = ({ children }) => {
       item.bookingId === bookingId ? updatedStudentData : item
     )
   );
-};
-
+  };
 
   const addOpportunity = (opportunity) => {
     if (!batchingvalue) {
