@@ -9,8 +9,7 @@ import {ComposedChart,Line,Area,XAxis,YAxis,CartesianGrid,LabelList,ResponsiveCo
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useDataContext } from "../context/dataContext";
 export default function HomePage() {
-  const { userName, getStatsByBatch, setBatchingValue, liveCounts } =
-    useDataContext();
+const { userName, getStatsByBatch, setBatchingValue, liveCounts } = useDataContext();
   const router = useRouter();
   const cardFlip = true;
   const [isMobile, setIsMobile] = useState(false);
