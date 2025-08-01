@@ -123,6 +123,7 @@ const BatchChange = () => {
       }
     };
 
+  
     window.addEventListener("keydown", handleSearchGlobalKeyDown);
 
     return () => {
