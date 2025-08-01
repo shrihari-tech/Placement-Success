@@ -8,7 +8,7 @@ import * as XLSX from "xlsx";
 import { toast } from "sonner";
 
 export default function BulkModal() {
-  const { studentData, addStudent, addMultipleStudents } = useDataContext();
+  const { studentData, addStudent ,batchesNames , addMultipleStudents } = useDataContext();
   const [isOpen, setIsOpen] = useState(false);
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
@@ -18,9 +18,6 @@ export default function BulkModal() {
   const [showBatchDropdown, setShowBatchDropdown] = useState(false);
   const fileInputRef = useRef(null);
 
-  const batchOptions = useMemo(() => {
-    return [...new Set(studentData.map((s) => s.batch))];
-  }, [studentData]);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -406,11 +403,11 @@ export default function BulkModal() {
                     <div
                       className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md"
                       style={{
-                        maxHeight: batchOptions.length > 5 ? "200px" : "auto",
-                        overflowY: batchOptions.length > 5 ? "auto" : "visible",
+                        maxHeight: batchesNames.length > 5 ? "200px" : "auto",
+                        overflowY: batchesNames.length > 5 ? "auto" : "visible",
                       }}
                     >
-                      {batchOptions.map((name) => (
+                      {batchesNames.map((name) => (
                         <div
                           key={name}
                           tabIndex={0}
