@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import Image from "next/image";
-import { FiEye, FiEdit, FiTrash2, FiChevronDown, FiPlus, FiSearch, FiX, FiChevronLeft, FiChevronRight } from "react-icons/fi"; // Added FiChevronLeft, FiChevronRight for pagination
+import { FiEye, FiEdit, FiTrash2, FiChevronDown, FiPlus, FiSearch, FiX, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { Toaster, toast } from "sonner";
 import { FaSearch } from "react-icons/fa";
 import { RiCloseCircleLine } from "react-icons/ri";
@@ -18,10 +18,8 @@ export default function StudentDataPage() {
   const [searchInitiated, setSearchInitiated] = useState(false);
   const [selectedBatch, setSelectedBatch] = useState("");
   const [showBatchDropdown, setShowBatchDropdown] = useState(false);
-  // --- New State for Search ---
-  const [searchTerm, setSearchTerm] = useState(""); // State for the search input
-  const [searchResults, setSearchResults] = useState([]); // State for filtered results
-  // --- New State for Assign Modal ---
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
   const [showAssignModal, setShowAssignModal] = useState(false);
   const [assignFormData, setAssignFormData] = useState({
     companyName: "",
@@ -31,40 +29,36 @@ export default function StudentDataPage() {
     selectedBatch: selectedBatch || "",
   });
   const [assignErrors, setAssignErrors] = useState({});
-  const [isAssignFormDirty, setIsAssignFormDirty] = useState(false); // Track changes
-  const [showDiscardConfirm, setShowDiscardConfirm] = useState(false); // Confirm discard
-  // --- New State for Student Selection Modal ---
+  const [isAssignFormDirty, setIsAssignFormDirty] = useState(false);
+  const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
   const [showStudentSelectModal, setShowStudentSelectModal] = useState(false);
   const [studentSelectModelDiscard, setStudentSelectModelDiscard] = useState(false);
-  const [opportunityDetails, setOpportunityDetails] = useState(null); // Store details from Assign form
-  const [filteredBatchStudents, setFilteredBatchStudents] = useState([]); // Students for the selected batch
-  const [selectedStudents, setSelectedStudents] = useState([]); // Track selected students
-  // --- New State for View Modal ---
+  const [opportunityDetails, setOpportunityDetails] = useState(null);
+  const [filteredBatchStudents, setFilteredBatchStudents] = useState([]);
+  const [selectedStudents, setSelectedStudents] = useState([]);
   const [showViewModal, setShowViewModal] = useState(false);
   const [viewOpportunityDetails, setViewOpportunityDetails] = useState(null);
-  // --- New State for Pagination ---
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 4; // Number of opportunities per page
+  const itemsPerPage = 4;
 
   const batchDropdownRef = useRef(null);
   const statusDropdownRef = useRef(null);
   const placementDropdownRef = useRef(null);
   const searchContainerRef = useRef(null);
-  // --- New: Filter students for Student Select Modal based on opportunity batch ---
+
   useEffect(() => {
     if (opportunityDetails?.selectedBatch) {
       const studentsInBatch = studentData.filter(
         (student) => student.batch === opportunityDetails.selectedBatch
       );
       setFilteredBatchStudents(studentsInBatch);
-      setSelectedStudents([]); // Reset selection when batch changes
+      setSelectedStudents([]);
     } else {
       setFilteredBatchStudents([]);
       setSelectedStudents([]);
     }
   }, [opportunityDetails, studentData]);
 
-  // Use useMemo to calculate batchesNames efficiently
   const batchesNames = useMemo(() => {
     return [...new Set(studentData.map((s) => s.batch))];
   }, [studentData]);
@@ -75,16 +69,13 @@ export default function StudentDataPage() {
       isInitialMount.current = false;
     } else {
       if (searchInitiated) {
-        // Ensure currentPage resets when search results change
         setCurrentPage(1);
-        // handleSearch(); // This seems redundant now, but kept for potential future use
       }
     }
-  }, [searchResults]); // Reset page when search results change
+  }, [searchResults]);
 
-  // Also reset page when domain/batch changes (affects original list)
   useEffect(() => {
-      setCurrentPage(1);
+    setCurrentPage(1);
   }, [batchingvalue, batchHead]);
 
   useEffect(() => {
@@ -99,13 +90,11 @@ export default function StudentDataPage() {
         statusDropdownRef.current &&
         !statusDropdownRef.current.contains(event.target)
       ) {
-        // setShowStatusDropdown(false); // Assuming this state exists elsewhere
       }
       if (
         placementDropdownRef.current &&
         !placementDropdownRef.current.contains(event.target)
       ) {
-        // setShowPlacementDropdown(false); // Assuming this state exists elsewhere
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -130,41 +119,49 @@ export default function StudentDataPage() {
     };
   }, [showAssignModal, showStudentSelectModal, showViewModal, showDiscardConfirm, studentSelectModelDiscard]);
 
-  // --- New: Handle Search ---
   const handleSearch = useCallback(() => {
     const term = searchTerm.trim().toLowerCase();
+    const allOpportunities = getOpportunitiesByDomain(batchingvalue)
+      ?.filter(opportunity => opportunity.createdDomain === batchHead) || [];
+    const sortedOpportunities = [...allOpportunities].sort((a, b) => (b.id || 0) - (a.id || 0));
+
     if (term) {
-      const allOpportunities = getOpportunitiesByDomain(batchingvalue)
-        ?.filter(opportunity => opportunity.createdDomain === batchHead) || [];
-      const results = allOpportunities.filter(opportunity =>
+      const results = sortedOpportunities.filter(opportunity =>
         opportunity.companyName.toLowerCase().includes(term)
       );
       setSearchResults(results);
       setSearchInitiated(true);
-      setCurrentPage(1); // Reset to first page on new search
+      setCurrentPage(1);
     } else {
-      resetSearch();
+      setSearchResults(sortedOpportunities);
+      setSearchInitiated(true);
+      setCurrentPage(1);
     }
-  }, [searchTerm, batchingvalue, batchHead, getOpportunitiesByDomain]); // Dependencies for useCallback
+  }, [searchTerm, batchingvalue, batchHead, getOpportunitiesByDomain]);
 
-  // --- New: Reset Search ---
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      handleSearch();
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm, handleSearch]);
+
   const resetSearch = () => {
     setSearchTerm("");
     setSearchResults([]);
     setSearchInitiated(false);
-    setCurrentPage(1); // Reset to first page on reset
+    setCurrentPage(1);
   };
 
-  // --- New: Handle Assign Modal Open ---
   const handleOpenAssignModal = () => {
     setShowAssignModal(true);
-    // Reset form and errors when opening
     setAssignFormData({
       companyName: "",
       driveDate: "",
       driveRole: "",
       package: "",
-      selectedBatch: selectedBatch || "", // Pre-fill with current search batch if any
+      selectedBatch: selectedBatch || "",
       createdDomain: batchHead || ""
     });
     setAssignErrors({});
@@ -172,31 +169,27 @@ export default function StudentDataPage() {
     setShowDiscardConfirm(false);
   };
 
-  // --- New: Handle Assign Form Input Changes ---
   const handleAssignFormChange = (e) => {
     const { id, value } = e.target;
     setAssignFormData((prev) => ({ ...prev, [id]: value }));
-    // Clear error for the field being edited
     if (id === "driveDate") {
       const today = new Date().toISOString().split("T")[0];
       if (value < today) {
         setAssignErrors(prev => ({ ...prev, driveDate: "The drive date cannot be earlier than today." }));
-        return; // Prevent updating the value
+        return;
       }
     }
     if (assignErrors[id]) {
       setAssignErrors((prev) => ({ ...prev, [id]: "" }));
     }
-    setIsAssignFormDirty(true); // Mark form as dirty
+    setIsAssignFormDirty(true);
   };
 
-  // --- New: Handle Assign Form Submission ---
   const handleAssignFormSubmit = (e) => {
     e.preventDefault();
     const errors = {};
     let isValid = true;
 
-    // Validation
     if (!assignFormData.companyName.trim()) {
       errors.companyName = "Company Name is required.";
       isValid = false;
@@ -229,24 +222,20 @@ export default function StudentDataPage() {
       return;
     }
 
-    // If valid, store the opportunity details and open the student selection modal
     setOpportunityDetails(assignFormData);
     setShowStudentSelectModal(true);
-    // setShowAssignModal(false); // Close the assign modal
   };
 
-  // --- New: Handle Closing Assign Modal with Discard Confirmation ---
   const handleCloseAssignModal = () => {
     if (isAssignFormDirty) {
-      setShowDiscardConfirm(true); // Show confirmation if form is dirty
+      setShowDiscardConfirm(true);
     } else {
-      setShowAssignModal(false); // Close directly if no changes
+      setShowAssignModal(false);
       setIsAssignFormDirty(false);
       setAssignErrors({});
     }
   };
 
-  // --- New: Confirm Discard in Assign Modal ---
   const confirmDiscardAssign = () => {
     setShowAssignModal(false);
     setShowDiscardConfirm(false);
@@ -254,12 +243,10 @@ export default function StudentDataPage() {
     setAssignErrors({});
   };
 
-  // --- New: Cancel Discard in Assign Modal ---
   const cancelDiscardAssign = () => {
     setShowDiscardConfirm(false);
   };
 
-  // --- New: Handle Student Selection Checkbox ---
   const handleStudentSelect = (bookingId) => {
     setSelectedStudents((prevSelected) => {
       if (prevSelected.includes(bookingId)) {
@@ -270,7 +257,6 @@ export default function StudentDataPage() {
     });
   };
 
-  // --- New: Handle Select All Checkbox ---
   const handleSelectAllStudents = () => {
     if (selectedStudents.length === filteredBatchStudents.length) {
       setSelectedStudents([]);
@@ -290,7 +276,6 @@ export default function StudentDataPage() {
     }
   }
 
-  // --- New: Handle Saving Selected Students ---
   const handleSaveSelectedStudents = () => {
     if (selectedStudents.length === 0) {
       toast.error("Please select at least one student.");
@@ -305,12 +290,11 @@ export default function StudentDataPage() {
       return;
     }
 
-    // Define opportunity object with domain
     const opportunity = {
       ...opportunityDetails,
       selectedStudents,
-      domain: domainKey,  // Add domain to the opportunity
-      createdDomain: batchHead || ""  // Track which domain created this opportunity
+      domain: domainKey,
+      createdDomain: batchHead || ""
     };
     addOpportunity(opportunity);
     setShowAssignModal(false);
@@ -318,24 +302,21 @@ export default function StudentDataPage() {
     setSelectedStudents([]);
     setOpportunityDetails(null);
     toast.success(` ${selectedStudents.length}  student(s) assigned successfully!`);
-    resetSearch(); // Reset search after adding a new opportunity
-    setCurrentPage(1); // Reset to first page after adding new opportunity
+    resetSearch();
+    setCurrentPage(1);
   };
 
-  // --- New: Handle Closing Student Select Modal ---
   const handleCloseStudentSelectModal = () => {
     setShowStudentSelectModal(false);
-    setSelectedStudents([]); // Clear selection on close
-    setOpportunityDetails(null); // Clear opportunity details
+    setSelectedStudents([]);
+    setOpportunityDetails(null);
   };
 
-  // --- New: Handle View Button Click ---
   const handleViewOpportunity = (opportunity) => {
     setViewOpportunityDetails(opportunity);
     setShowViewModal(true);
   };
 
-  // --- New: Handle Closing View Modal ---
   const handleCloseViewModal = () => {
     setShowViewModal(false);
     setViewOpportunityDetails(null);
@@ -350,10 +331,11 @@ export default function StudentDataPage() {
     return batchesNames;
   };
 
-  // Determine which list to display: search results or the original list
-  const opportunitiesToDisplay = searchInitiated ? searchResults : (getOpportunitiesByDomain(batchingvalue)?.filter(opportunity => opportunity.createdDomain === batchHead) || []);
+  const baseOpportunities = getOpportunitiesByDomain(batchingvalue)
+    ?.filter(opportunity => opportunity.createdDomain === batchHead) || [];
+  const sortedBaseOpportunities = [...baseOpportunities].sort((a, b) => (b.id || 0) - (a.id || 0));
+  const opportunitiesToDisplay = searchInitiated ? searchResults : sortedBaseOpportunities;
 
-  // --- Pagination Logic ---
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentOpportunities = opportunitiesToDisplay.slice(indexOfFirstItem, indexOfLastItem);
@@ -361,8 +343,6 @@ export default function StudentDataPage() {
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
-    // Optional: Scroll to top of opportunities list on page change
-    // window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handlePrevPage = () => {
@@ -381,7 +361,6 @@ export default function StudentDataPage() {
     <div className="flex min-h-screen">
       <Toaster position="top-right" />
       <div className={`flex-1 bg-[#F8FAFD]`} ref={searchContainerRef}>
-        {/* --- Search Bar --- */}
         <div className="bg-[#F4F3FF] w-full flex flex-col md:flex-row justify-center rounded-xl gap-5 py-6 px-5">
           <div>
             <input
@@ -390,7 +369,6 @@ export default function StudentDataPage() {
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search by Company Name"
               className="px-2 py-3.5 w-[250px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] cursor-pointer"
-              onKeyDown={(e) => { if (e.key === 'Enter') handleSearch(); }} // Allow Enter key to trigger search
             />
             {searchTerm && (
               <button
@@ -517,21 +495,19 @@ export default function StudentDataPage() {
                     </svg>
                   </div>
                   <h3 className="text-lg font-medium text-gray-900 mb-1">
-                    {searchInitiated ? "No Matching Opportunities Found" : "No Opportunities Found"}
+                    {searchInitiated && "No Opportunities Found"}
                   </h3>
-                  <p className="text-gray-500">
-                    {searchInitiated
-                      ? "Your search did not match any companies."
-                      : "There are currently no opportunities available for your domain."}
-                  </p>
-                  {searchInitiated && (
+                  {/* <p className="text-gray-500">
+                    {searchInitiated && "There are currently no opportunities available for your domain."}
+                  </p> */}
+                  {/* {searchInitiated && (
                     <button
                       onClick={resetSearch}
                       className="mt-4 px-4 py-2 bg-[#6750A4] text-white rounded-lg text-sm font-medium hover:bg-[#5a4a8f]"
                     >
                       Clear Search
                     </button>
-                  )}
+                  )} */}
                 </div>
               </div>
             )}
