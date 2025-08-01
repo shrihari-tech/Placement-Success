@@ -14,7 +14,7 @@ import BatchChange from "./BatchChange";
 import Scores from "./scores";
 
 export default function StudentDataPage() {
-  const { studentData, batchHead, batchData, deleteStudent } = useDataContext();
+  const { studentData, batchHead, batchesNames , batchData, deleteStudent } = useDataContext();
   const [activeTab, setActiveTab] = useState("Student Data");
   const [searchInitiated, setSearchInitiated] = useState(false);
   const [selectedBatch, setSelectedBatch] = useState("");
@@ -38,9 +38,9 @@ export default function StudentDataPage() {
   const placementDropdownRef = useRef(null);
   const searchContainerRef = useRef(null);
 
-  const batchesNames = useMemo(() => {
-    return [...new Set(studentData.map((s) => s.batch))];
-  }, [studentData]);
+  // const batchesNames = useMemo(() => {
+  //   return [...new Set(studentData.map((s) => s.batch))];
+  // }, [studentData]);
 
   const handleSearch = useCallback(() => {
     let results = studentData;

@@ -2172,26 +2172,32 @@ const DataProvider = ({ children }) => {
     switch (batchingvalue) {
       case "fullstack":
         setBatchHead("Full Stack Development");
+        setBatchesNames(fullstackData.map((b) => b.batchNo));
         setBatchData(fullstackData);
         break;
       case "dataanalytics":
         setBatchHead("Data Analytics & Science");
+        setBatchesNames(dataanalyticsData.map((b) => b.batchNo));
         setBatchData(dataanalyticsData);
         break;
       case "banking":
         setBatchHead("Banking & Financial Services");
+        setBatchesNames(bankingData.map((b) => b.batchNo));
         setBatchData(bankingData);
         break;
       case "marketing":
         setBatchHead("Digital Marketing");
+        setBatchesNames(marketingData.map((b) => b.batchNo));
         setBatchData(marketingData);
         break;
       case "sap":
         setBatchHead("SAP");
+        setBatchesNames(sapData.map((b) => b.batchNo));
         setBatchData(sapData);
         break;
       case "devops":
         setBatchHead("DevOps");
+        setBatchesNames(devopsData.map((b) => b.batchNo));
         setBatchData(devopsData);
         break;
       default:
@@ -2286,32 +2292,32 @@ const DataProvider = ({ children }) => {
     switch (studentBatchSelect) {
       case "fullstack":
         setBatchHead("Full Stack Development");
-        setBatchesNames(fullstackStudent.map((batch) => batch.batch));
+        // setBatchesNames(fullstackStudent.map((batch) => batch.batch));
         setStudentData(fullstackStudent);
         break;
       case "dataanalytics":
         setBatchHead("Data Analytics & Science");
-        setBatchesNames(dataanalyticsStudent.map((batch) => batch.batch));
+        // setBatchesNames(dataanalyticsStudent.map((batch) => batch.batch));
         setStudentData(dataanalyticsStudent);
         break;
       case "banking":
         setBatchHead("Banking & Financial Services");
-        setBatchesNames(bankingStudent.map((batch) => batch.batch));
+        // setBatchesNames(bankingStudent.map((batch) => batch.batch));
         setStudentData(bankingStudent);
         break;
       case "marketing":
         setBatchHead("Digital Marketing");
-        setBatchesNames(marketingStudent.map((batch) => batch.batch));
+        // setBatchesNames(marketingStudent.map((batch) => batch.batch));
         setStudentData(marketingStudent);
         break;
       case "sap":
         setBatchHead("SAP");
-        setBatchesNames(sapStudent.map((batch) => batch.batch));
+        // setBatchesNames(sapStudent.map((batch) => batch.batch));
         setStudentData(sapStudent);
         break;
       case "devops":
         setBatchHead("DevOps");
-        setBatchesNames(devopsStudent.map((batch) => batch.batch));
+        // setBatchesNames(devopsStudent.map((batch) => batch.batch));
         setStudentData(devopsStudent);
         break;
       default:
