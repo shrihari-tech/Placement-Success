@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { FiEye, FiEdit, FiTrash2, FiChevronDown } from "react-icons/fi";
 import Image from "next/image";
 import { Toaster, toast } from "sonner";
+import { FaSearch } from "react-icons/fa";
 import Opportunity from "./oppotunities";
 import { RiCloseCircleLine } from "react-icons/ri";
 import { useDataContext } from "../context/dataContext";
@@ -249,6 +250,7 @@ export default function StudentDataPage() {
                     id="batch-select"
                     placeholder=" "
                     value={selectedBatch}
+                    maxLength={16}
                     onChange={(e) => {
                       setSelectedBatch(e.target.value);
                       setShowBatchDropdown(true);
@@ -501,7 +503,7 @@ export default function StudentDataPage() {
                     onClick={handleSearch}
                     className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4] text-white px-5 py-4 rounded-xl text-sm font-semibold"
                   >
-                    Search
+                    <FaSearch className="inline-block" /> Search
                   </button>
                   <button
                     onClick={handleReset}

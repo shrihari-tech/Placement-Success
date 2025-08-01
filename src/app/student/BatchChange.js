@@ -1,8 +1,9 @@
-"use client";
+"use client"
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { FiChevronDown } from "react-icons/fi";
 import { RiCloseCircleLine } from "react-icons/ri";
-import { useDataContext } from "../context/dataContext";
+import { FaSearch } from "react-icons/fa"; 
+import { useDataContext } from "../context/dataContext"; 
 import { Toaster, toast } from "sonner";
 import Image from "next/image";
 import { set } from "date-fns";
@@ -232,6 +233,7 @@ const BatchChange = () => {
               type="text"
               id="from-batch"
               placeholder=" "
+              maxLength={16}
               value={fromBatch}
               onChange={(e) => {
                 setSearchTermFrom(e.target.value);
@@ -291,6 +293,7 @@ const BatchChange = () => {
               type="text"
               id="to-batch"
               placeholder=" "
+              maxLength={16}
               value={toBatch}
               onChange={(e) => {
                 setSearchTermTo(e.target.value);
@@ -350,7 +353,7 @@ const BatchChange = () => {
               className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-5 py-4 rounded-xl text-sm font-semibold"
               onClick={handleSearch}
             >
-              Search
+              <FaSearch className="inline-block" /> Search
             </button>
             <button
               onClick={handleRefresh}

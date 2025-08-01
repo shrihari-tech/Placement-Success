@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { RiCloseCircleLine } from "react-icons/ri"; 
+import Image from "next/image";
 import { useDataContext } from "../context/dataContext";
 
 
@@ -103,7 +104,7 @@ useEffect(() => {
         {/* Profile Section */}
         <div className="flex items-center gap-4 mb-6">
           {/* Profile Picture */}
-          <img
+          <Image
             src={selectedStudent.image || "/profile.png"}
             alt="Profile"
             className="w-20 h-20 rounded-full object-cover border"
