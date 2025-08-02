@@ -5,8 +5,6 @@ import NavBar from "../navBar/page";
 import { Toaster } from "react-hot-toast";
 import Dashboard from "./dashboard/dashboard";
 import { useDataContext } from "../context/dataContext";
-import { FaSearch } from "react-icons/fa";
-import Image from "next/image";
 
 export default function SMEPage() {
     const [activeTab, setActiveTab] = useState("Dashboard");

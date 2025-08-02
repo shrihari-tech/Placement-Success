@@ -1,9 +1,6 @@
-// app/sme/page.js (or the correct path for your SME dashboard page)
 'use client';
 
-import React, { useState, useEffect, useMemo } from "react";
-import { Toaster, toast } from "sonner";
-import { FaSearch } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
 import { FiChevronDown, FiChevronLeft, FiChevronRight, FiEye } from "react-icons/fi";
 import { RiCloseCircleLine } from "react-icons/ri";
 import Image from "next/image";
@@ -271,14 +268,13 @@ export default function SMEPage() {
   } else {
     graphContent = (
       <div className="text-center py-10 text-gray-500">
-        Graphs for the domain '{batchHead}' are not configured yet.
+        Graphs for the domain {batchHead} are not configured yet.
       </div>
     );
   }
 
   return (
     <div className="flex min-h-screen bg-[#F8FAFD]">
-      <Toaster position="top-right" />
 
       {/* Main Content Area */}
       <div className="flex-1 p-6">
@@ -288,7 +284,7 @@ export default function SMEPage() {
           <h2 className="text-xl font-bold text-gray-800 mb-6">Placement Analytics</h2>
           {graphContent}
         </div>
-
+        
         {/* --- Opportunities Section --- */}
         <div className="mt-10">
           {/* Opportunities Section Header */}
