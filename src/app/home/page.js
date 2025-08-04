@@ -433,7 +433,7 @@ const { userName, getStatsByBatch, setBatchingValue, liveCounts } = useDataConte
           <h1>Domain</h1>
         </div>
         <div className="flex justify-center">
-          <div className="grid grid-cols-1 gap-10 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-6 sm:grid-cols-3">
             {cards.map((card) => {
               const stats = getStatsByBatch(card.id) || {};
               const isFlipped = isMobile ? flippedCardId === card.id : false;
@@ -489,7 +489,7 @@ const { userName, getStatsByBatch, setBatchingValue, liveCounts } = useDataConte
                             height={160}
                           />
                         </div>
-                        <span className="text-l font-semibold">{card.title}</span>
+                        <span className="text-sm font-semibold">{card.title}</span>
                       </div>
                     }
                     backContent={
