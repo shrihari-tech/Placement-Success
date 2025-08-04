@@ -52,7 +52,7 @@ export default function NavBar() {
     } else if (pathname === '/batches') {
       setActiveNavItem('batches');
       setShowSubNav(false);
-    } else if (pathname === '/SME') {
+    } else if (pathname === '/sme') {
       setActiveNavItem('sme');
       setShowSubNav(false);
     } else {
@@ -142,7 +142,7 @@ export default function NavBar() {
     });
     // Synchronous localStorage update
     localStorage.setItem('activeSubNav', subNavItem);
-    router.push('/SME');
+    router.push('/sme');
   };
 
   const toggleMobileMenu = () => {
@@ -286,7 +286,7 @@ export default function NavBar() {
                 <HiOutlineUserGroup size={20} />
               </button>
               <span className={`text-xs font-semibold cursor-pointer ${activeNavItem === 'sme' ? 'text-[#9585bf]' : 'text-[#49454f]'}`}
-              >SME</span>
+              >Placement</span>
             </div>
           </nav>
         </div>
@@ -596,7 +596,7 @@ export default function NavBar() {
                 onClick={handleSMEClick} // Toggle mobile SME subnav
               >
                 <HiOutlineUserGroup size={20} className="mr-3" />
-                <span>SME</span>
+                <span>Placement</span>
                 <FiChevronDown className="absolute right-8" size={25} />
               </button>
 

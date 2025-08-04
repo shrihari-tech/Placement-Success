@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useState, useRef } from "react";
 import NavBar from "../navBar/page";
 import { Toaster } from "react-hot-toast";
