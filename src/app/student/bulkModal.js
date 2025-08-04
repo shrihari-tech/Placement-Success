@@ -1,20 +1,34 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { RiCloseCircleLine } from "react-icons/ri";
+import { FiChevronDown } from "react-icons/fi";
 import { useDataContext } from "../context/dataContext";
 import * as XLSX from "xlsx";
 import { toast } from "sonner";
 
 export default function BulkModal() {
-  const { studentData, addStudent, addMultipleStudents } = useDataContext();
+  const { studentData, addStudent, batchesNames, addMultipleStudents } =
+    useDataContext();
   const [isOpen, setIsOpen] = useState(false);
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
   const [showBatchInput, setShowBatchInput] = useState(false);
   const [batchName, setBatchName] = useState("");
   const [uploadMessage, setUploadMessage] = useState("");
+  const [showBatchDropdown, setShowBatchDropdown] = useState(false);
   const fileInputRef = useRef(null);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowBatchDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -198,6 +212,8 @@ export default function BulkModal() {
           errors.email = "Email is required";
         } else if (!/\S+@\S+\.\S+/.test(row["EMAIL ADDRESS"])) {
           errors.email = "Invalid email address";
+        } else if (studentData.some((s) => s.email === row["EMAIL ADDRESS"])) {
+          errors.email = "Email already exists";
         }
 
         // Validate Booking ID
@@ -212,6 +228,10 @@ export default function BulkModal() {
           errors.contactNumber = "Contact Number is required";
         } else if (!/^\d{10}$/.test(row["CONTACT NUMBER (10 digit)"])) {
           errors.contactNumber = "Invalid Contact Number";
+        } else if (
+          studentData.some((s) => s.phone === row["CONTACT NUMBER (10 digit)"])
+        ) {
+          errors.contactNumber = "Contact Number already exists";
         }
 
         if (!row["MODE OF STUDY"] || !row["MODE OF STUDY"].trim()) {
@@ -283,16 +303,16 @@ export default function BulkModal() {
     setter("");
   };
 
-      useEffect(() => {
-          if (isOpen) {
-              document.body.style.overflow = 'hidden';
-          } else {
-              document.body.style.overflow = 'auto';
-          }
-          return () => {
-              document.body.style.overflow = 'auto';
-          };
-      }, [isOpen]);
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isOpen]);
 
   return (
     <div>
@@ -358,32 +378,79 @@ export default function BulkModal() {
 
             {showBatchInput && (
               <div className="mt-4">
-                <div className="relative mb-4">
+                <div className="relative mt-4 mb-4" ref={dropdownRef}>
                   <input
                     type="text"
                     id="batch-name"
+                    placeholder=" "
                     value={batchName}
                     onChange={(e) => setBatchName(e.target.value)}
-                    className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+                    onClick={() => setShowBatchDropdown(!showBatchDropdown)}
+                    className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+                    autoComplete="off"
                   />
                   <label
                     htmlFor="batch-name"
-                    className="absolute px-2 text-m text-gray-500 duration-300 bg-white transform -translate-y-4 scale-75 top-7 z-5 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-9"
+                    className="absolute px-2 text-sm text-gray-500 duration-300 bg-white transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
                   >
                     Batch Name
                   </label>
+
+                  <FiChevronDown
+                    className="absolute top-5 right-3 text-gray-500 pointer-events-none"
+                    size={16}
+                  />
+
                   {batchName && (
                     <button
+                      type="button"
                       onClick={(e) => {
                         e.stopPropagation();
-                        clearField("batchName", setBatchName);
+                        setBatchName("");
+                        setShowBatchDropdown(false);
                       }}
                       className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700"
                     >
                       <RiCloseCircleLine size={20} />
                     </button>
                   )}
+
+                  {/* 🔽 Dropdown List */}
+                  {showBatchDropdown && (
+                    <div
+                      className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md"
+                      style={{
+                        maxHeight: batchesNames.length > 5 ? "200px" : "auto",
+                        overflowY: batchesNames.length > 5 ? "auto" : "visible",
+                      }}
+                    >
+                      {batchesNames
+                        .filter((name) =>
+                          name.toLowerCase().includes(batchName.toLowerCase())
+                        )
+                        .map((name) => (
+                          <div
+                            key={name}
+                            tabIndex={0}
+                            className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                            onClick={() => {
+                              setBatchName(name);
+                              setShowBatchDropdown(false);
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                setBatchName(name);
+                                setShowBatchDropdown(false);
+                              }
+                            }}
+                          >
+                            {name}
+                          </div>
+                        ))}
+                    </div>
+                  )}
                 </div>
+
                 <button
                   onClick={handleSubmit}
                   className="w-full bg-[#6750a4] text-white px-4 py-2 rounded hover:bg-[#553b95] cursor-pointer"

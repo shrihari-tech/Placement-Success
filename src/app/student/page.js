@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { FiEye, FiEdit, FiTrash2, FiChevronDown } from "react-icons/fi";
 import Image from "next/image";
 import { Toaster, toast } from "sonner";
+import { FaSearch } from "react-icons/fa";
 import Opportunity from "./oppotunities";
 import { RiCloseCircleLine } from "react-icons/ri";
 import { useDataContext } from "../context/dataContext";
@@ -13,7 +14,7 @@ import BatchChange from "./BatchChange";
 import Scores from "./scores";
 
 export default function StudentDataPage() {
-  const { studentData, batchHead, batchData, deleteStudent } = useDataContext();
+  const { studentData, batchHead, batchesNames , batchData, deleteStudent } = useDataContext();
   const [activeTab, setActiveTab] = useState("Student Data");
   const [searchInitiated, setSearchInitiated] = useState(false);
   const [selectedBatch, setSelectedBatch] = useState("");
@@ -37,9 +38,9 @@ export default function StudentDataPage() {
   const placementDropdownRef = useRef(null);
   const searchContainerRef = useRef(null);
 
-  const batchesNames = useMemo(() => {
-    return [...new Set(studentData.map((s) => s.batch))];
-  }, [studentData]);
+  // const batchesNames = useMemo(() => {
+  //   return [...new Set(studentData.map((s) => s.batch))];
+  // }, [studentData]);
 
   const handleSearch = useCallback(() => {
     let results = studentData;
@@ -193,19 +194,18 @@ export default function StudentDataPage() {
     };
   }, [handleSearch, activeTab]);
 
-
   return (
     <div className="flex min-h-screen mt-16 md:mt-1">
       <Toaster position="top-right" />
-        <div className="fixed top-15 md:top-0 ms-[-19px] border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 md:px-8 z-20">
-          <h1 className="fixed pl-3 text-xl text-gray-800 font-semibold">
-            {batchHead}
-          </h1>
-        </div>
-      <div className={`px-10 pt-20 flex-1 bg-[#F8FAFD] mb-12`}
+      <div className="fixed top-15 md:top-0 ms-[-19px] border-b-2 border-gray-300 flex items-center justify-between bg-white w-full py-9 px-4 md:px-8 z-20">
+        <h1 className="fixed pl-3 text-xl text-gray-800 font-semibold">
+          {batchHead}
+        </h1>
+      </div>
+      <div
+        className={`px-10 pt-20 flex-1 bg-[#F8FAFD] mb-12`}
         ref={searchContainerRef}
       >
-
         {/* ====== TABS ====== */}
         <div className="flex bg-[#ECE6F0] rounded-xl py-2 mb-4 relative mt-5">
           <div
@@ -250,6 +250,7 @@ export default function StudentDataPage() {
                     id="batch-select"
                     placeholder=" "
                     value={selectedBatch}
+                    maxLength={16}
                     onChange={(e) => {
                       setSelectedBatch(e.target.value);
                       setShowBatchDropdown(true);
@@ -466,8 +467,7 @@ export default function StudentDataPage() {
                             setSelectedPlacement("");
                             setShowPlacementDropdown(false);
                           }
-                        }}
-                      ></div>
+                        }}></div>
                       {[
                         "Placed",
                         "Yet to Place",
@@ -488,8 +488,7 @@ export default function StudentDataPage() {
                               setShowPlacementDropdown(false);
                               handleSearch();
                             }
-                          }}
-                        >
+                          }}>
                           {placementOption}
                         </div>
                       ))}
@@ -500,24 +499,21 @@ export default function StudentDataPage() {
                 <div className="flex gap-2 md:justify-end">
                   <button
                     onClick={handleSearch}
-                    className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4] text-white px-5 py-4 rounded-xl text-sm font-semibold"
-                  >
-                    Search
+                    className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4] text-white px-5 py-4 rounded-xl text-sm font-semibold">
+                    <FaSearch className="inline-block" /> Search
                   </button>
                   <button
                     onClick={handleReset}
-                    className="cursor-pointer bg-[#E8DEF8] hover:bg-[#d1c3ea] px-4 py-4 rounded-xl text-sm font-semibold text-gray-700 flex items-center gap-1"
-                  >
+                    className="cursor-pointer bg-[#E8DEF8] hover:bg-[#d1c3ea] px-4 py-4 rounded-xl text-sm font-semibold text-gray-700 flex items-center gap-1">
                     <Image
                       src="/reset.svg"
                       alt="Reset Icon"
                       width={20}
                       height={20}
-                      className="object-contain"
-                    />
+                      className="object-contain"/>
                     Reset
                   </button>
-                  {defaultShow && <BulkModal />}  
+                  {defaultShow && <BulkModal />}
                 </div>
               </div>
             </div>
@@ -627,8 +623,7 @@ export default function StudentDataPage() {
           isOpen={showViewModal}
           onClose={() => setShowViewModal(false)}
           selectedStudent={selectedStudent}
-          selectedBatch={selectedBatch} 
-
+          selectedBatch={selectedBatch}
         />
       )}
 

@@ -1,7 +1,8 @@
-"use client";
+"use client"
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { FiChevronDown } from "react-icons/fi";
 import { RiCloseCircleLine } from "react-icons/ri";
+import { FaSearch } from "react-icons/fa"; 
 import { useDataContext } from "../context/dataContext"; 
 import { Toaster, toast } from "sonner";
 import Image from "next/image";
@@ -10,7 +11,15 @@ import { set } from "date-fns";
 const BatchChange = () => {
   // Track domain errors for each student row
   const [domainErrors, setDomainErrors] = useState({});
-  const {batchData,allBatchNames,allStudentData,updateStudent,batchChange,} = useDataContext(); //
+  const {
+    batchData,
+    allBatchNames,
+    liveBatchNames,
+    allStudentData,
+    updateStudent,
+    batchChange,
+    studentData,
+  } = useDataContext(); //
 
   const [fromBatch, setFromBatch] = useState("");
   const [showFromDropdown, setShowFromDropdown] = useState(false);
@@ -42,10 +51,18 @@ const BatchChange = () => {
     if (code.startsWith("DV")) return "DevOps";
     return "";
   };
+  const mergedStudents = useMemo(() => {
+    const all = [...allStudentData, ...studentData];
+    // Remove duplicates using bookingId
+    const uniqueByBookingId = new Map(all.map((s) => [s.bookingId, s]));
+    return Array.from(uniqueByBookingId.values());
+  }, [allStudentData, studentData]);
 
   const batchList = useMemo(() => {
-    return allBatchNames ? allBatchNames.sort() : [];
-  }, [allBatchNames]);
+    const combined = [...allBatchNames, ...liveBatchNames];
+    const uniqueSorted = [...new Set(combined)].sort();
+    return uniqueSorted;
+  }, [allBatchNames, liveBatchNames]);
 
   const filteredFromBatches = useMemo(() => {
     return batchList.filter(
@@ -66,10 +83,10 @@ const BatchChange = () => {
 
   const filteredStudents = useMemo(() => {
     if (!fromBatch) return [];
-    return allStudentData.filter(
+    return mergedStudents.filter(
       (s) => (s.batch || s.batchNo)?.toLowerCase() === fromBatch.toLowerCase()
     );
-  }, [allStudentData , toBatch]);
+  }, [mergedStudents, fromBatch]);
 
   const handleRefresh = () => {
     setFromBatch("");
@@ -84,9 +101,8 @@ const BatchChange = () => {
     setAttachmentError("");
     setIsAttachmentEmpty(false);
     setShowConfirmModal(false);
-    setSelectedStudents([]); 
+    setSelectedStudents([]);
   };
-
 
   const handleSearch = useCallback(() => {
     if (!fromBatch || !toBatch) {
@@ -108,6 +124,7 @@ const BatchChange = () => {
       }
     };
 
+  
     window.addEventListener("keydown", handleSearchGlobalKeyDown);
 
     return () => {
@@ -129,7 +146,7 @@ const BatchChange = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-   const confirmBatchChange = () => {
+  const confirmBatchChange = () => {
     // --- Validation ---
     if (!reason.trim() && !attachment) {
       toast.error(
@@ -140,28 +157,42 @@ const BatchChange = () => {
       setIsAttachmentEmpty(true);
       setAttachmentError("Please attach an image before submitting.");
       return;
-    } else if (!reason.trim()) {
+    }
+
+    if (!reason.trim()) {
       toast.error("Please enter a reason for the batch change.");
       setIsReasonEmpty(true);
       setReasonError("Please enter a reason for the batch change");
       return;
-    } else if (!attachment) {
+    }
+
+    if (!attachment) {
       toast.error("Please attach an image before submitting.");
       setIsAttachmentEmpty(true);
       setAttachmentError("Please attach an image before submitting.");
       return;
-    }else if (selectedStudents.length === 0) {
+    }
+
+    if (selectedStudents.length === 0) {
       toast.error("Please select at least one student to change the batch.");
       return;
-    }else{
-    setShowConfirmModal(true);
     }
-  }
 
+    const hasDomainError = Object.values(domainErrors).some(
+      (val) => val === true
+    );
+    if (hasDomainError) {
+      toast.error("Please fix domain mismatches before submitting.");
+      return;
+    }
 
-   const handleBatchchangeSubmit = () => {
+    //  All validations passed
+    setShowConfirmModal(true);
+  };
+
+  const handleBatchchangeSubmit = () => {
     selectedStudents.forEach((bookingId) => {
-      const studentToUpdate = filteredStudents.find(
+      const studentToUpdate = mergedStudents.find(
         (s) => s.bookingId === bookingId
       );
       if (studentToUpdate) {
@@ -170,18 +201,17 @@ const BatchChange = () => {
       }
     });
     toast.success("Batch change request submitted successfully!");
-    
+
     // Clear form fields
     setReason("");
     setAttachment(null);
-    
+
     // Clear errors
     handleRefresh();
     setReasonError("");
     setIsReasonEmpty(false);
     handleRefresh();
-
-  }
+  };
 
   const handleDiscard = () => {
     if (reason || attachment || selectedStudents.length > 0) {
@@ -203,6 +233,7 @@ const BatchChange = () => {
               type="text"
               id="from-batch"
               placeholder=" "
+              maxLength={16}
               value={fromBatch}
               onChange={(e) => {
                 setSearchTermFrom(e.target.value);
@@ -262,6 +293,7 @@ const BatchChange = () => {
               type="text"
               id="to-batch"
               placeholder=" "
+              maxLength={16}
               value={toBatch}
               onChange={(e) => {
                 setSearchTermTo(e.target.value);
@@ -321,7 +353,7 @@ const BatchChange = () => {
               className="cursor-pointer bg-[#6750a4] hover:bg-[#6650a4e7] text-white px-5 py-4 rounded-xl text-sm font-semibold"
               onClick={handleSearch}
             >
-              Search
+              <FaSearch className="inline-block" /> Search
             </button>
             <button
               onClick={handleRefresh}
@@ -425,7 +457,11 @@ const BatchChange = () => {
                               ? "border-red-500"
                               : "border-gray-300"
                           }`}
-                          value={(() => getDomainFromBatch(toBatch))()} // always show the correct one
+                          value={
+                            domainErrors[student.bookingId]
+                              ? domainErrors[student.bookingId + "-value"] || ""
+                              : getDomainFromBatch(toBatch)
+                          }
                           onChange={(e) => {
                             const selectedDomain = e.target.value;
                             const correctDomain = getDomainFromBatch(toBatch);
@@ -434,11 +470,13 @@ const BatchChange = () => {
                               setDomainErrors((prev) => ({
                                 ...prev,
                                 [student.bookingId]: true,
+                                [student.bookingId + "-value"]: selectedDomain,
                               }));
                             } else {
                               setDomainErrors((prev) => {
                                 const updated = { ...prev };
                                 delete updated[student.bookingId];
+                                delete updated[student.bookingId + "-value"];
                                 return updated;
                               });
                             }
@@ -452,11 +490,7 @@ const BatchChange = () => {
                             "SAP",
                             "DevOps",
                           ].map((option) => (
-                            <option
-                              key={option}
-                              value={option}
-                              disabled={option !== getDomainFromBatch(toBatch)}
-                            >
+                            <option key={option} value={option}>
                               {option}
                             </option>
                           ))}
@@ -504,14 +538,17 @@ const BatchChange = () => {
                 accept=".jpg,.jpeg,.png,.webp,.pdf"
                 onChange={(e) => {
                   const file = e.target.files[0];
-                  if (file && file.type.startsWith("image/")|| file.type === "application/pdf") {
+                  if (
+                    (file && file.type.startsWith("image/")) ||
+                    file.type === "application/pdf"
+                  ) {
                     setAttachment(file);
                     setIsAttachmentEmpty(false);
-                    setAttachmentError(""); 
+                    setAttachmentError("");
                   } else {
                     setAttachment(null);
                     setIsAttachmentEmpty(true);
-                    setAttachmentError("Please select a valid image file."); 
+                    setAttachmentError("Please select a valid image file.");
                   }
                 }}
                 onFocus={() => {
@@ -580,7 +617,10 @@ const BatchChange = () => {
               >
                 Cancel
               </button>
-              <button onClick={handleBatchchangeSubmit } className="cursor-pointer bg-[#6750a4] hover:bg-[#5f537d] text-white px-4 py-2.5 rounded-xl text-sm font-medium">
+              <button
+                onClick={handleBatchchangeSubmit}
+                className="cursor-pointer bg-[#6750a4] hover:bg-[#5f537d] text-white px-4 py-2.5 rounded-xl text-sm font-medium"
+              >
                 Confirm
               </button>
             </div>

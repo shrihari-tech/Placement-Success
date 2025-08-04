@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useMemo } from "react";
 import { usePathname } from "next/navigation";
 
 // Create the context
@@ -2114,6 +2114,10 @@ const DataProvider = ({ children }) => {
   const userName = loginUser.split("@")[0];
   const firstLetterUser = loginUser?.charAt(0).toUpperCase() || "";
 
+    const liveBatchNames = useMemo(() => {
+    return [...new Set(studentData.map((s) => s.batch).filter(Boolean))].sort();
+  }, [studentData]);
+
   //all batches names across domains
   useEffect(() => {
     const fullstack = fullstackData.map((b) => b.batchNo);
@@ -2168,26 +2172,32 @@ const DataProvider = ({ children }) => {
     switch (batchingvalue) {
       case "fullstack":
         setBatchHead("Full Stack Development");
+        setBatchesNames(fullstackData.map((b) => b.batchNo));
         setBatchData(fullstackData);
         break;
       case "dataanalytics":
         setBatchHead("Data Analytics & Science");
+        setBatchesNames(dataanalyticsData.map((b) => b.batchNo));
         setBatchData(dataanalyticsData);
         break;
       case "banking":
         setBatchHead("Banking & Financial Services");
+        setBatchesNames(bankingData.map((b) => b.batchNo));
         setBatchData(bankingData);
         break;
       case "marketing":
         setBatchHead("Digital Marketing");
+        setBatchesNames(marketingData.map((b) => b.batchNo));
         setBatchData(marketingData);
         break;
       case "sap":
         setBatchHead("SAP");
+        setBatchesNames(sapData.map((b) => b.batchNo));
         setBatchData(sapData);
         break;
       case "devops":
         setBatchHead("DevOps");
+        setBatchesNames(devopsData.map((b) => b.batchNo));
         setBatchData(devopsData);
         break;
       default:
@@ -2282,32 +2292,32 @@ const DataProvider = ({ children }) => {
     switch (studentBatchSelect) {
       case "fullstack":
         setBatchHead("Full Stack Development");
-        setBatchesNames(fullstackStudent.map((batch) => batch.batch));
+        // setBatchesNames(fullstackStudent.map((batch) => batch.batch));
         setStudentData(fullstackStudent);
         break;
       case "dataanalytics":
         setBatchHead("Data Analytics & Science");
-        setBatchesNames(dataanalyticsStudent.map((batch) => batch.batch));
+        // setBatchesNames(dataanalyticsStudent.map((batch) => batch.batch));
         setStudentData(dataanalyticsStudent);
         break;
       case "banking":
         setBatchHead("Banking & Financial Services");
-        setBatchesNames(bankingStudent.map((batch) => batch.batch));
+        // setBatchesNames(bankingStudent.map((batch) => batch.batch));
         setStudentData(bankingStudent);
         break;
       case "marketing":
         setBatchHead("Digital Marketing");
-        setBatchesNames(marketingStudent.map((batch) => batch.batch));
+        // setBatchesNames(marketingStudent.map((batch) => batch.batch));
         setStudentData(marketingStudent);
         break;
       case "sap":
         setBatchHead("SAP");
-        setBatchesNames(sapStudent.map((batch) => batch.batch));
+        // setBatchesNames(sapStudent.map((batch) => batch.batch));
         setStudentData(sapStudent);
         break;
       case "devops":
         setBatchHead("DevOps");
-        setBatchesNames(devopsStudent.map((batch) => batch.batch));
+        // setBatchesNames(devopsStudent.map((batch) => batch.batch));
         setStudentData(devopsStudent);
         break;
       default:
@@ -2395,8 +2405,7 @@ const DataProvider = ({ children }) => {
     }
   };
 
-  // 🔧 Update an existing batch by ID in current domain
-  // DataContext.jsx
+  // Update an existing batch by ID in current domain
   const updateBatch = (id, updatedFields) => {
     const updateList = (list) =>
       list.map((item) =>
@@ -2577,8 +2586,7 @@ const DataProvider = ({ children }) => {
       item.bookingId === bookingId ? updatedStudentData : item
     )
   );
-};
-
+  };
 
   const addOpportunity = (opportunity) => {
     if (!batchingvalue) {
@@ -2719,6 +2727,7 @@ const DataProvider = ({ children }) => {
         batchData,
         studentData,
         liveCounts,
+        liveBatchNames
       }}
     >
       {children}

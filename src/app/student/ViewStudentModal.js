@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import { RiCloseCircleLine } from "react-icons/ri"; 
+import { RiCloseCircleLine } from "react-icons/ri";
+import Image from "next/image";
 import { useDataContext } from "../context/dataContext";
-
 
 const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
   const [infoTab, setInfoTab] = useState("Domain");
@@ -10,7 +10,7 @@ const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
 
   const { batchData } = useDataContext();
 
-    const toDDMMYYYY = (d) => {
+  const toDDMMYYYY = (d) => {
     const date = d instanceof Date ? d : new Date(d);
     const day = String(date.getDate()).padStart(2, "0");
     const month = date.toLocaleString("en-US", { month: "short" }); // e.g., Jul
@@ -30,14 +30,22 @@ const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
 
   const formatDate = (str) => (str ? toDDMMYYYY(parseDate(str)) : "");
 
-useEffect(() => {
-  if(batchData && selectedStudent) {
-    const batchInfo = batchData.find(b => b.batchNo.trim() === selectedStudent.batch.trim());
-    if (batchInfo) {
-      setSectionData(batchInfo.sections);
+  useEffect(() => {
+    if (batchData && selectedStudent) {
+      const batchInfo = batchData.find(
+        (b) => b.batchNo.trim() === selectedStudent.batch.trim()
+      );
+      if (batchInfo) {
+        setSectionData(batchInfo.sections);
+      }
     }
-  }
-},[selectedStudent.batch])
+  }, [selectedStudent.batch]);
+
+  useEffect(() => {
+    if (isOpen) {
+      setInfoTab("Domain"); // Reset tab when modal opens
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (isOpen) {
@@ -49,7 +57,6 @@ useEffect(() => {
     return () => {
       document.body.style.overflow = "";
     };
-  
   }, [isOpen]);
 
   if (!isOpen || !selectedStudent) return null;
@@ -91,7 +98,9 @@ useEffect(() => {
       >
         {/* Modal Header */}
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold text-gray-700">Student Details</h2>
+          <h2 className="text-lg font-semibold text-gray-700">
+            Student Details
+          </h2>
           <button
             onClick={onClose} // Changed to use onClose prop
             className="cursor-pointer text-gray-500 hover:text-gray-700"
@@ -103,9 +112,11 @@ useEffect(() => {
         {/* Profile Section */}
         <div className="flex items-center gap-4 mb-6">
           {/* Profile Picture */}
-          <img
+          <Image
             src={selectedStudent.image || "/profile.png"}
             alt="Profile"
+            width={80}
+            height={80}
             className="w-20 h-20 rounded-full object-cover border"
           />
 
@@ -192,17 +203,26 @@ useEffect(() => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center text-sm sm:text-base">
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
                   <p className="text-gray-700 font-bold">Start Date:</p>
-                  <p className="text-gray-700"> {formatDate(sectionData.Domain?.startDate) || "N/A"}</p>
+                  <p className="text-gray-700">
+                    {" "}
+                    {formatDate(sectionData.Domain?.startDate) || "N/A"}
+                  </p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
                   <p className="text-gray-700 font-bold">End Date:</p>
-                  <p className="text-gray-700">{formatDate(sectionData.Domain?.endDate) || "N/A"}</p>
+                  <p className="text-gray-700">
+                    {formatDate(sectionData.Domain?.endDate) || "N/A"}
+                  </p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
                   <p className="text-gray-700 font-bold">Domain Status:</p>
-                  <p className="text-gray-700">{ new Date(sectionData.Domain?.endDate) < new Date() ? "Completed" : "Ongoing"}</p>
+                  <p className="text-gray-700">
+                    {new Date(sectionData.Domain?.endDate) < new Date()
+                      ? "Completed"
+                      : "Ongoing"}
+                  </p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
@@ -226,17 +246,25 @@ useEffect(() => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center text-sm sm:text-base">
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
                   <p className="text-gray-700 font-bold">Start Date:</p>
-                  <p className="text-gray-700">{formatDate(sectionData.Aptitude?.startDate) || "N/A"}</p>
+                  <p className="text-gray-700">
+                    {formatDate(sectionData.Aptitude?.startDate) || "N/A"}
+                  </p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
                   <p className="text-gray-700 font-bold">End Date:</p>
-                  <p className="text-gray-700">{formatDate(sectionData.Aptitude?.endDate) || "N/A"}</p>
+                  <p className="text-gray-700">
+                    {formatDate(sectionData.Aptitude?.endDate) || "N/A"}
+                  </p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
                   <p className="text-gray-700 font-bold">Aptitude Status:</p>
-                  <p className="text-gray-700">{ new Date(sectionData.Aptitude?.endDate) < new Date() ? "Completed" : "Ongoing"}</p>
+                  <p className="text-gray-700">
+                    {new Date(sectionData.Aptitude?.endDate) < new Date()
+                      ? "Completed"
+                      : "Ongoing"}
+                  </p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
@@ -259,19 +287,27 @@ useEffect(() => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center text-sm sm:text-base">
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
                   <p className="text-gray-700 font-bold">Start Date:</p>
-                  <p className="text-gray-700">{formatDate(sectionData.Communication?.startDate) || "N/A"}</p>
+                  <p className="text-gray-700">
+                    {formatDate(sectionData.Communication?.startDate) || "N/A"}
+                  </p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
                   <p className="text-gray-700 font-bold">End Date:</p>
-                  <p className="text-gray-700">{formatDate(sectionData.Communication.endDate) || "N/A"}</p>
+                  <p className="text-gray-700">
+                    {formatDate(sectionData.Communication.endDate) || "N/A"}
+                  </p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
                   <p className="text-gray-700 font-bold">
                     Communication Status:
                   </p>
-                  <p className="text-gray-700">{ new Date(sectionData.Communication?.endDate) < new Date() ? "Completed" : "Ongoing" }</p>
+                  <p className="text-gray-700">
+                    {new Date(sectionData.Communication?.endDate) < new Date()
+                      ? "Completed"
+                      : "Ongoing"}
+                  </p>
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
