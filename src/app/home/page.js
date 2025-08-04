@@ -9,7 +9,8 @@ import {ComposedChart,Line,Area,XAxis,YAxis,CartesianGrid,LabelList,ResponsiveCo
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { useDataContext } from "../context/dataContext";
 export default function HomePage() {
-const { userName, getStatsByBatch, setBatchingValue, liveCounts } = useDataContext();
+  const { userName, getStatsByBatch, setBatchingValue, liveCounts } =
+    useDataContext();
   const router = useRouter();
   const cardFlip = true;
   const [isMobile, setIsMobile] = useState(false);
@@ -426,17 +427,19 @@ const { userName, getStatsByBatch, setBatchingValue, liveCounts } = useDataConte
               </div>
             </div>
           </div>
-
-            {    cardFlip && (
-      <div className="index-0 mt-6 md:mt-15">
-        <div className="text-sm md:text-base text-gray-700 font-semibold mb-4 md:mb-8">
-          <h1>Domain</h1>
-        </div>
-        <div className="flex justify-center">
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-6 sm:grid-cols-3">
-            {cards.map((card) => {
-              const stats = getStatsByBatch(card.id) || {};
-              const isFlipped = isMobile ? flippedCardId === card.id : false;
+          {/* Domain Cards Section */}
+          {cardFlip && (
+            <div className="index-0 mt-6 md:mt-15">
+              <div className="text-sm md:text-base text-gray-700 font-semibold mb-4 md:mb-8">
+                <h1>Domain</h1>
+              </div>
+              <div className="flex justify-center">
+                <div className="flex flex-col gap-4 md:gap-4 md:flex-row">
+                  {cards.map((card,index) => {
+                    const stats = getStatsByBatch(card.id) || {};
+                    const isFlipped = isMobile
+                      ? flippedCardId === card.id
+                      : false;
 
                     const items = [
                       {
@@ -465,67 +468,117 @@ const { userName, getStatsByBatch, setBatchingValue, liveCounts } = useDataConte
                       },
                       { label: "Yet to Place", value: stats.yetToPlace || 0 },
                     ];
+                      const translateXClasses = [
+                'translate-x-[100px]',  // 1st card → +100px
+                'translate-x-[50px]',   // 2nd card → +50px
+                'translate-x-[10px]',   // 3rd card → +10px
+                '-translate-x-[10px]',  // 4th card → -10px
+                '-translate-x-[50px]',  // 5th card → -50px
+                '-translate-x-[100px]', // 6th card → -100px
+              ];
+              const hoverTranslateX = translateXClasses[index] || '';
 
                     const total = items.reduce(
                       (sum, item) => sum + item.value,
                       0
                     );
 
-              return (
-                <div
-                  key={card.id}
-                  className="transition-all duration-300"
-                  data-is-card="true"
-                  onClick={() => handleCardClick(card.id)}
-                >
-                  <FlipCard
-                    frontContent={
-                      <div className="flex flex-col items-center gap-10">
-                        <div>
-                          <Image
-                            src={card.image}
-                            alt={card.title}
-                            width={160}
-                            height={160}
-                          />
-                        </div>
-                        <span className="text-sm font-semibold">{card.title}</span>
-                      </div>
-                    }
-                    backContent={
-                      <div className="px-3 md:px-5 pb-4 md:pb-8 text-xs">
-                        <p className="text-xs md:text-sm font-bold pb-2 md:pb-3">
-                          {card.title}
-                        </p>
-                        {/* <div className="relative w-64 h-64 mx-auto">
-                          <Doughnut data={data} options={options} />
-                          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                            <p className="text-sm font-medium text-gray-600">Total</p>
-                            <p className="text-xl font-bold text-purple-700">{total}</p>
-                          </div>
-                        </div> */}
-                        {/* <div className="grid grid-cols-2 gap-2 mt-4">
-                          {items.map((item, idx) => (
-                            <div
-                              key={idx}
-                              className="flex items-center gap-2 text-xs bg-[#f5f3ff] px-2 py-1 rounded shadow-sm"
-                            >
-                              <span>{iconMap[item.label]}</span>
-                              <span className="font-medium text-gray-700">{item.label}</span>
+                    return (
+                      <div
+                        key={card.id}
+                        className="transition-all duration-300 "
+                        data-is-card="true"
+                        onClick={() => handleCardClick(card.id)}
+                      >
+                        <FlipCard
+                        hoverTranslateX={hoverTranslateX}
+                          frontContent={
+                            <div className="flex flex-col items-center gap-7">
+                              <div>
+                                <Image
+                                  src={card.image}
+                                  alt={card.title}
+                                  width={100}
+                                  height={100}
+                                />
+                              </div>
+                              <span className="text-[10px] text-gray-800 font-semibold">
+                                {card.title}
+                              </span>
                             </div>
-                          ))}
-                        </div> */}
+                          }
+                         backContent={
+                            <div className="relative w-65 h-100 p-1.5 rounded-xl overflow-hidden shadow bg-white">
+                              <svg
+                                className="absolute top-0 left-0 w-full h-full rounded-xl"
+                                viewBox="0 0 800 600"
+                                preserveAspectRatio="none"
+                              >
+                                <path
+                                  fill="#9076deff"
+                                  fillOpacity="0.6"
+                                  d="M 0 0 L 800 0 L 800 624 C 600 624, 440 624, 400 520 C 360 416, 440 364, 300 312 C 160 260, 240 208, 200 104 C 160 0, 0 0, 0 0 Z"
+                                />
+                              </svg>
+                              <div className="relative z-10 h-full w-full flex flex-col">
+                                {/* Tighter title */}
+                                <p className="text-sm font-bold text-white drop-shadow-md text-center pt-1">
+                                  {card.title}
+                                </p>
+                                {/* Tighter grid with less padding and gap */}
+                                <div className="grid grid-cols-2 gap-x-2 gap-y-1 p-1 flex-grow">
+                                  {/* Left side stats */}
+                                  <div className="space-y-1">
+                                    {/* Redesigned compact stat boxes */}
+                                    <div className="bg-white/80 px-1 py-0.5 rounded shadow text-center">
+                                      <div className="text-[11px] font-semibold leading-tight">Completed Batches</div>
+                                      <div className="text-[13px] text-[#6750A4] font-bold leading-tight">{stats.completedBatches || 0}</div>
+                                    </div>
+                                    <div className="bg-white/80 px-1 py-0.5 rounded shadow text-center">
+                                      <div className="text-[11px] font-semibold leading-tight">Completed Students</div>
+                                      <div className="text-[13px] text-[#6750A4] font-bold leading-tight">{stats.completedStudents || 0}</div>
+                                    </div>
+                                    <div className="bg-white/80 px-1 py-0.5 rounded shadow text-center">
+                                      <div className="text-[11px] font-semibold leading-tight">Placement Eligible</div>
+                                      <div className="text-[13px] text-[#6750A4] font-bold leading-tight">{stats.placementEligible || 0}</div>
+                                    </div>
+                                    <div className="bg-white/80 px-1 py-0.5 rounded shadow text-center">
+                                      <div className="text-[11px] font-semibold leading-tight">Yet to Place</div>
+                                      <div className="text-[13px] text-[#6750A4] font-bold leading-tight">{stats.yetToPlace || 0}</div>
+                                    </div>
+                                  </div>
+                                  {/* Right side stats */}
+                                  <div className="space-y-1">
+                                    <div className="bg-white/80 px-1 py-0.5 rounded shadow text-center">
+                                      <div className="text-[11px] font-semibold leading-tight">Ongoing Batches</div>
+                                      <div className="text-[13px] text-[#6750A4] font-bold leading-tight">{stats.ongoingBatches || 0}</div>
+                                    </div>
+                                    <div className="bg-white/80 px-1 py-0.5 rounded shadow text-center">
+                                      <div className="text-[11px] font-semibold leading-tight">Ongoing Students</div>
+                                      <div className="text-[13px] text-[#6750A4] font-bold leading-tight">{stats.ongoingStudents || 0}</div>
+                                    </div>
+                                    <div className="bg-white/80 px-1 py-0.5 rounded shadow text-center">
+                                      <div className="text-[11px] font-semibold leading-tight">Already Placed</div>
+                                      <div className="text-[13px] text-[#6750A4] font-bold leading-tight">{stats.alreadyPlaced || 0}</div>
+                                    </div>
+                                    <div className="bg-white/80 px-1 py-0.5 rounded shadow text-center">
+                                      <div className="text-[11px] font-semibold leading-tight">Total Students</div>
+                                      <div className="text-[13px] text-[#6750A4] font-bold leading-tight">{total}</div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          }
+                          isFlipped={isFlipped}
+                        />
                       </div>
-                    }
-                    isFlipped={isFlipped}
-                  />
+                    );
+                  })}
                 </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    )}
+              </div>
+            </div>
+          )}
         </div>
       </main>
     </div>
