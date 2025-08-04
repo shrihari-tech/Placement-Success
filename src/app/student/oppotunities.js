@@ -473,7 +473,7 @@ export default function StudentDataPage() {
                   className="relative bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-lg p-6 mb-4 border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex-1 min-w-[280px]"
                 >
                   {/* Decorative element */}
-                  <div className="absolute top-0 right-0 w-20 h-20 bg-[#6750A4]/5 rounded-bl-full"></div>
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-[#6750A4]/5 rounded-bl-full "></div>
                   {/* Company header */}
                   <div className="flex items-start justify-between mb-4">
                     <h2 className="text-xl font-bold text-gray-800 pr-6">
