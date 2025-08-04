@@ -435,7 +435,7 @@ export default function HomePage() {
               </div>
               <div className="flex justify-center">
                 <div className="flex flex-col gap-4 md:gap-4 md:flex-row">
-                  {cards.map((card) => {
+                  {cards.map((card,index) => {
                     const stats = getStatsByBatch(card.id) || {};
                     const isFlipped = isMobile
                       ? flippedCardId === card.id
@@ -468,6 +468,15 @@ export default function HomePage() {
                       },
                       { label: "Yet to Place", value: stats.yetToPlace || 0 },
                     ];
+                      const translateXClasses = [
+                'translate-x-[100px]',  // 1st card → +100px
+                'translate-x-[50px]',   // 2nd card → +50px
+                'translate-x-[10px]',   // 3rd card → +10px
+                '-translate-x-[10px]',  // 4th card → -10px
+                '-translate-x-[50px]',  // 5th card → -50px
+                '-translate-x-[100px]', // 6th card → -100px
+              ];
+              const hoverTranslateX = translateXClasses[index] || '';
 
                     const total = items.reduce(
                       (sum, item) => sum + item.value,
@@ -482,6 +491,7 @@ export default function HomePage() {
                         onClick={() => handleCardClick(card.id)}
                       >
                         <FlipCard
+                        hoverTranslateX={hoverTranslateX}
                           frontContent={
                             <div className="flex flex-col items-center gap-7">
                               <div>
