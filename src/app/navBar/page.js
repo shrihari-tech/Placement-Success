@@ -12,7 +12,7 @@ import { RiGraduationCapLine } from "react-icons/ri";
 // Import the new icon
 import { SiAlwaysdata } from "react-icons/si";
 // Import SME icon
-import { HiOutlineUserGroup } from "react-icons/hi";
+import { RiUserLocationLine } from "react-icons/ri";
 import { usePathname, useRouter } from 'next/navigation';
 import { useDataContext } from '../context/dataContext';
 import { TbLogout2 } from "react-icons/tb";
@@ -283,10 +283,10 @@ export default function NavBar() {
                     handleNavItemClick('sme');
                 }}
               >
-                <HiOutlineUserGroup size={20} />
+                <RiUserLocationLine  size={20} />
               </button>
               <span className={`text-xs font-semibold cursor-pointer ${activeNavItem === 'sme' ? 'text-[#9585bf]' : 'text-[#49454f]'}`}
-              >SME</span>
+              >Placement</span>
             </div>
           </nav>
         </div>
@@ -595,8 +595,8 @@ export default function NavBar() {
                 className={`flex items-center px-4 py-2 rounded-lg ${activeNavItem === 'sme' ? 'bg-[#6750A4] text-white' : 'text-black hover:bg-[#e0ccff]'}`}
                 onClick={handleSMEClick} // Toggle mobile SME subnav
               >
-                <HiOutlineUserGroup size={20} className="mr-3" />
-                <span>SME</span>
+                <RiUserLocationLine  size={20} className="mr-3" />
+                <span>Placement</span>
                 <FiChevronDown className="absolute right-8" size={25} />
               </button>
 
