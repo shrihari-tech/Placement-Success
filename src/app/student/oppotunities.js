@@ -70,7 +70,7 @@ export default function StudentDataPage() {
     }
   }, [opportunityDetails, studentData]);
 
-    const toDDMMYYYY = (d) => {
+  const toDDMMYYYY = (d) => {
     const date = d instanceof Date ? d : new Date(d);
     const day = String(date.getDate()).padStart(2, "0");
     const month = date.toLocaleString("en-US", { month: "short" }); // e.g., Jul
@@ -527,7 +527,9 @@ export default function StudentDataPage() {
                       </div>
                       <div>
                         <p className="text-xs text-gray-500">Drive Date</p>
-                        <p className="font-medium">{formatDate(opportunity.driveDate)}</p>
+                        <p className="font-medium">
+                          {formatDate(opportunity.driveDate)}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center">
@@ -1248,7 +1250,7 @@ export default function StudentDataPage() {
                   className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
                 >
                   <p className="text-sm p-1">
-                    <span className="font-semibold"> Date: </span>{" "}
+                    <span className="font-semibold"> Drive Date: </span>{" "}
                     {formatDate(viewOpportunityDetails.driveDate)}
                   </p>
                 </div>
