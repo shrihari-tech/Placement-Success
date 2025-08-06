@@ -1,9 +1,9 @@
 'use client';
-
 import React, { useState, useRef } from "react";
 import NavBar from "../navBar/page";
 import { Toaster } from "react-hot-toast";
 import Dashboard from "./dashboard/dashboard";
+import Upcoming from "./upcoming/upcoming";
 import { useDataContext } from "../context/dataContext";
 
 export default function SMEPage() {
@@ -62,7 +62,7 @@ export default function SMEPage() {
                     )}
 
                     {activeTab === "Upcoming" && (
-                      <p>Upcoming</p>
+                      <Upcoming />
                     )}
                 </div>
             </div>

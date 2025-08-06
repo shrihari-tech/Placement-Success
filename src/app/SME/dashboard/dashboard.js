@@ -164,6 +164,27 @@ export default function SMEPage() {
   const [showViewModal, setShowViewModal] = useState(false);
   const [viewOpportunityDetails, setViewOpportunityDetails] = useState(null);
 
+
+    const toDDMMYYYY = (d) => {
+    const date = d instanceof Date ? d : new Date(d);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = date.toLocaleString("en-US", { month: "short" }); // e.g., Jul
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
+  const parseDate = (str) => {
+    if (!str) return null;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return new Date(str);
+    if (/^\d{2}-\d{2}-\d{4}$/.test(str)) {
+      const [dd, mm, yyyy] = str.split("-");
+      return new Date(`${yyyy}-${mm}-${dd}`);
+    }
+    return new Date(str);
+  };
+
+  const formatDate = (str) => (str ? toDDMMYYYY(parseDate(str)) : "");
+
   // --- Fetch Opportunities from Context ---
   useEffect(() => {
     setCurrentPage(1); // Reset to first page when domain/batch changes
@@ -375,7 +396,7 @@ export default function SMEPage() {
                       </div>
                       <div>
                         <p className="text-xs text-gray-500">Drive Date</p>
-                        <p className="font-medium">{opportunity.driveDate}</p>
+                        <p className="font-medium">{formatDate(opportunity.driveDate)}</p>
                       </div>
                     </div>
                     <div className="flex items-center">
@@ -586,7 +607,7 @@ export default function SMEPage() {
               </div>
               <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>
                 <p className="text-sm p-1">
-                  <span className="font-semibold">Date:</span> {viewOpportunityDetails.driveDate}
+                  <span className="font-semibold">Date:</span> {formatDate(viewOpportunityDetails.driveDate)}
                 </p>
               </div>
               <div className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}>

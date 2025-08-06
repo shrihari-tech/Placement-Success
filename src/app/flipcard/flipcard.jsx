@@ -43,3 +43,5 @@ export default function FlipCard({ frontContent, backContent, isFlipped,hoverTra
     </div>
   );
 }
+
+
