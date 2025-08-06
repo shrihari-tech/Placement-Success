@@ -1250,7 +1250,7 @@ export default function StudentDataPage() {
                   className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
                 >
                   <p className="text-sm p-1">
-                    <span className="font-semibold"> Drive Date: </span>{" "}
+                    <span className="font-semibold"> Date: </span>{" "}
                     {formatDate(viewOpportunityDetails.driveDate)}
                   </p>
                 </div>
