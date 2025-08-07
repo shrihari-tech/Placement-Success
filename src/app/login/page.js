@@ -22,22 +22,35 @@ export default function Home() {
   const allowedDomains = ["gmail.com", "skac.ac.in"];
 
   // Validate only the email field (for onChange) 
-  const validateEmailField = (value) => {
-    if (!value.trim()) {
+const validateEmailField = (value) => {
+  if (!value.trim()) {
+    setEmailError("");
+    return;
+  }
+
+  const emailPattern = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i;
+  const prefix = value.split('@')[0];
+  const domain = value.split('@')[1];
+
+  if (!emailPattern.test(value)) {
+    setEmailError("Invalid email format");
+  } else if (prefix.length > 40) {
+    setEmailError("Email prefix should not exceed 40 characters");
+  } else {
+    const departmentDomains = ["fs", "da", "mk", "dv", "bk", "sap"];
+    const matchedDept = departmentDomains.find(dept => domain?.includes(`${dept}.`));
+
+    if (
+      (prefix.includes("sme") && matchedDept) ||
+      ["gmail.com", "skac.ac.in"].includes(domain)
+    ) {
       setEmailError("");
-    } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(value)) {
-      setEmailError("Invalid email format");
-    } else if (value.split('@')[0].length > 40) {
-      setEmailError("Email prefix should not exceed 40 characters");
     } else {
-      const emailDomain = value.split('@')[1];
-      if (emailDomain && !allowedDomains.includes(emailDomain)) {
-        setEmailError("Invalid email format");
-      } else {
-        setEmailError("");
-      }
+      setEmailError("Invalid email format");
     }
-  };
+  }
+};
+
 
   const passwordValidate = (value) => {
     if (value) {
@@ -46,47 +59,68 @@ export default function Home() {
   };
 
   // Full validation for onSubmit
-  const validate = () => {
-    let valid = true;
-    // Email validation
-    if (!email.trim()) {
-      setEmailError("Email is required");
-      valid = false;
-    } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(email)) {
+const validate = () => {
+  let valid = true;
+
+  // Email validation
+  if (!email.trim()) {
+    setEmailError("Email is required");
+    valid = false;
+  } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(email)) {
+    setEmailError("Invalid email format");
+    valid = false;
+  } else if (email.split('@')[0].length > 40) {
+    setEmailError("Email prefix should not exceed 40 characters");
+    valid = false;
+  } else {
+    const emailDomain = email.split('@')[1];
+    if (!emailDomain || (!allowedDomains.includes(emailDomain) && !emailDomain.includes("."))) {
       setEmailError("Invalid email format");
       valid = false;
-    } else if (email.split('@')[0].length > 40) {
-      setEmailError("Email prefix should not exceed 40 characters");
-      valid = false;
-    } else {
-      const emailDomain = email.split('@')[1];
-      if (!allowedDomains.includes(emailDomain)) {
-        setEmailError("Invalid email format");
-        valid = false;
-      }
     }
+  }
 
-    // Password validation
-    if (!password) {
-      setPasswordError("Password is required");
-      valid = false;
-    }
+  // Password validation
+  if (!password) {
+    setPasswordError("Password is required");
+    valid = false;
+  }
 
-    if (valid && email === 'admin@gmail.com' && password === '1234567') {
-      toast.success("Login successful! Redirecting...");
-      setLoginUser(email);
-      return valid;
-    }
-    else{
-      toast.error("Enter the valid Email and Password");
-    }
-  };
+if (valid) {
+  const prefix = email.split("@")[0];
+  const domain = email.split("@")[1];
+  const departmentDomains = ["fs", "da", "mk", "dv", "bk", "sap"];
+  const matchedDept = departmentDomains.find(dept => domain.includes(`${dept}.`));
+
+if (prefix.includes("sme") && matchedDept) {
+  if (password === "1234567") {
+    toast.success("SME login successful! Redirecting...");
+    setLoginUser(email);
+    localStorage.setItem("domainCode", matchedDept); 
+    setTimeout(() => router.push(`/smehome?domain=${matchedDept}`), 2000);
+    return true;
+  } else {
+    toast.error("Invalid SME password");
+    return false;
+  }
+} else if (email === "admin@gmail.com" && password === "1234567") {
+  toast.success("Login successful! Redirecting...");
+  setLoginUser(email);
+
+  setTimeout(() => router.push("/home"), 2000);
+  return true;
+} else {
+  toast.error("Enter the valid Email and Password");
+  return false;
+}
+}
+
+};
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (validate()) {
-      setTimeout(() => router.push('/home'), 2000);
-    }
+    validate();
   };
 
   return (

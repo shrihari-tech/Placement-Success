@@ -33,6 +33,8 @@ export default function NavBar() {
   const mobileMenuRef = useRef(null);
   const { setBatchingValue, firstLetterUser, setStudentBatchSelect } = useDataContext();
 
+  
+
   useEffect(() => {
     const storedSubNav = localStorage.getItem('activeSubNav');
     if (storedSubNav) {
