@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState, useRef } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useRouter } from "next/navigation";
@@ -15,108 +15,129 @@ export default function Home() {
   const [passwordError, setPasswordError] = useState("");
   const passwordRef = useRef(null);
   const router = useRouter();
+  const { setLoginUser } = useDataContext();
 
-  //usecontext variable 
-     const { setLoginUser } = useDataContext();
+  // Whitelisted users
+  const allowedUsers = [
+    // Full Stack Development
+    { email: "ravi.kumar@kgisl.microcollege.in", domain: "fullstack" },
+    { email: "sneha.nair@kgisl.microcollege.in", domain: "fullstack" },
+    { email: "arjun.t@kgcas.com", domain: "fullstack" },
+    { email: "priya.m@kgkite.com", domain: "fullstack" },
+    { email: "vijay.s@soi.kgkite.ac.in", domain: "fullstack" },
 
-  const allowedDomains = ["gmail.com", "skac.ac.in"];
+    // Data Analytics & Science
+    { email: "meena.r@kgisl.microcollege.in", domain: "dataanalytics" },
+    { email: "karan.s@kgcas.com", domain: "dataanalytics" },
+    { email: "lakshmi.p@kgkite.com", domain: "dataanalytics" },
+    { email: "dinesh.b@soi.kgkite.ac.in", domain: "dataanalytics" },
+    { email: "anitha.j@kgisl.microcollege.in", domain: "dataanalytics" },
 
-  // Validate only the email field (for onChange) 
-const validateEmailField = (value) => {
-  if (!value.trim()) {
-    setEmailError("");
-    return;
-  }
+    // Digital Marketing
+    { email: "rahul.m@kgcas.com", domain: "marketing" },
+    { email: "tejaswi.s@kgkite.com", domain: "marketing" },
+    { email: "naveen.d@soi.kgkite.ac.in", domain: "marketing" },
+    { email: "divya.r@kgisl.microcollege.in", domain: "marketing" },
+    { email: "akash.p@kgcas.com", domain: "marketing" },
 
-  const emailPattern = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i;
-  const prefix = value.split('@')[0];
-  const domain = value.split('@')[1];
+    // DevOps
+    { email: "vikram.r@kgkite.com", domain: "devops" },
+    { email: "sangeetha.d@soi.kgkite.ac.in", domain: "devops" },
+    { email: "harsha.m@kgisl.microcollege.in", domain: "devops" },
+    { email: "lalitha.d@kgcas.com", domain: "devops" },
+    { email: "deepak.r@kgkite.com", domain: "devops" },
 
-  if (!emailPattern.test(value)) {
-    setEmailError("Invalid email format");
-  } else if (prefix.length > 40) {
-    setEmailError("Email prefix should not exceed 40 characters");
-  } else {
-    const departmentDomains = ["fs", "da", "mk", "dv", "bk", "sap"];
-    const matchedDept = departmentDomains.find(dept => domain?.includes(`${dept}.`));
+    // Banking & Financial Services
+    { email: "amit.p@soi.kgkite.ac.in", domain: "banking" },
+    { email: "divya.v@kgisl.microcollege.in", domain: "banking" },
+    { email: "sathish.r@kgcas.com", domain: "banking" },
+    { email: "ajay.s@kgkite.com", domain: "banking" },
+    { email: "megha.n@soi.kgkite.ac.in", domain: "banking" },
 
-    if (
-      (prefix.includes("sme") && matchedDept) ||
-      ["gmail.com", "skac.ac.in"].includes(domain)
-    ) {
+    // SAP
+    { email: "ritika.n@kgisl.microcollege.in", domain: "sap" },
+    { email: "abhishek.r@kgcas.com", domain: "sap" },
+    { email: "trisha.d@kgkite.com", domain: "sap" },
+    { email: "kavitha.s@soi.kgkite.ac.in", domain: "sap" },
+    { email: "preethi.j@kgisl.microcollege.in", domain: "sap" },
+
+  
+
+    // Admin
+    { email: "admin@gmail.com", domain: "all", role: "admin" },
+  ];
+
+  const allowedEmails = allowedUsers.map(u => u.email);
+
+  const validateEmailField = (value) => {
+    if (!value.trim()) {
       setEmailError("");
-    } else {
-      setEmailError("Invalid email format");
+      return;
     }
-  }
-};
-
-
-  const passwordValidate = (value) => {
-    if (value) {
-      setPasswordError("");
+    const emailPattern = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i;
+    if (!emailPattern.test(value)) {
+      setEmailError("Invalid email format");
+    } else if (!allowedEmails.includes(value)) {
+      setEmailError("Unauthorized email. Contact admin.");
+    } else {
+      setEmailError("");
     }
   };
 
-  // Full validation for onSubmit
-const validate = () => {
-  let valid = true;
+  const passwordValidate = (value) => {
+    if (value) setPasswordError("");
+  };
 
-  // Email validation
-  if (!email.trim()) {
-    setEmailError("Email is required");
-    valid = false;
-  } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(email)) {
-    setEmailError("Invalid email format");
-    valid = false;
-  } else if (email.split('@')[0].length > 40) {
-    setEmailError("Email prefix should not exceed 40 characters");
-    valid = false;
-  } else {
-    const emailDomain = email.split('@')[1];
-    if (!emailDomain || (!allowedDomains.includes(emailDomain) && !emailDomain.includes("."))) {
+  const validate = () => {
+    let valid = true;
+    setEmailError("");
+    setPasswordError("");
+
+    // Email validation
+    if (!email.trim()) {
+      setEmailError("Email is required");
+      valid = false;
+    } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(email)) {
       setEmailError("Invalid email format");
       valid = false;
+    } else if (!allowedEmails.includes(email)) {
+      setEmailError("Unauthorized email. Contact admin.");
+      valid = false;
     }
-  }
 
-  // Password validation
-  if (!password) {
-    setPasswordError("Password is required");
-    valid = false;
-  }
+    // Password validation
+    if (!password) {
+      setPasswordError("Password is required");
+      valid = false;
+    }
 
-if (valid) {
-  const prefix = email.split("@")[0];
-  const domain = email.split("@")[1];
-  const departmentDomains = ["fs", "da", "mk", "dv", "bk", "sap"];
-  const matchedDept = departmentDomains.find(dept => domain.includes(`${dept}.`));
+    if (!valid) return false;
 
-if (prefix.includes("sme") && matchedDept) {
-  if (password === "1234567") {
-    toast.success("SME login successful! Redirecting...");
-    setLoginUser(email);
-    localStorage.setItem("domainCode", matchedDept); 
-    setTimeout(() => router.push(`/smehome?domain=${matchedDept}`), 2000);
-    return true;
-  } else {
-    toast.error("Invalid SME password");
+    if (password !== "1234567") {
+      toast.error("Incorrect password");
+      setPasswordError("Invalid password");
+      return false;
+    }
+
+    const user = allowedUsers.find(u => u.email === email);
+    if (user) {
+      if (user.role === "admin") {
+        toast.success("Admin login successful! Redirecting to Home...");
+        setLoginUser(email);
+        localStorage.setItem("domainCode", "all");
+        setTimeout(() => router.push("/home"), 2000);
+      } else {
+        toast.success("Login successful! Redirecting to SME Home...");
+        setLoginUser(email);
+        localStorage.setItem("domainCode", user.domain);
+        setTimeout(() => router.push(`/smehome?domain=${user.domain}`), 2000);
+      }
+      return true;
+    }
+
+    toast.error("Login failed. Please try again.");
     return false;
-  }
-} else if (email === "admin@gmail.com" && password === "1234567") {
-  toast.success("Login successful! Redirecting...");
-  setLoginUser(email);
-
-  setTimeout(() => router.push("/home"), 2000);
-  return true;
-} else {
-  toast.error("Enter the valid Email and Password");
-  return false;
-}
-}
-
-};
-
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -125,52 +146,33 @@ if (prefix.includes("sme") && matchedDept) {
 
   return (
     <div className="container mx-auto flex items-center justify-center h-screen px-2 overflow-hidden">
-      {/* Background Image at Top Left */}
+      {/* Background Image */}
       <div className="fixed top-0 left-0 z-0">
-        <Image
-          src="/Background.png"
-          alt="Background"
-          className="object-contain"
-          priority
-          width={650}
-          height={650}
-        />
+        <Image src="/Background.png" alt="Background" className="object-contain" priority width={650} height={650} />
       </div>
       <div>
-        <div>
-          <Toaster position="top-right"/>
-        </div>
+        <Toaster position="top-right" />
       </div>
-      {/* Logo Section */}
-      <div className="fixed top-35 md:top-6 md:right-6 z-20 ">
-        <Image
-          src='/logo1.webp'
-          className="h-20 w-40 md:h-16 md:w-44"
-          alt="Logo"
-          width={70}
-          height={50}
-        />
+
+      {/* Logo */}
+      <div className="fixed top-6 md:top-6 md:right-6 z-20">
+        <Image src='/logo1.webp' className="h-20 w-40 md:h-16 md:w-44" alt="Logo" width={70} height={50} />
       </div>
-      <div className="flex flex-col md:flex-row items-center justify-center gap-8 py-10 px-8 md:px-16 bg-blur-saturation mt-[105] w-full max-w-4xl z-10 fixed">
-        {/* Form Section */}
+
+      {/* Login Form */}
+      <div className="flex flex-col md:flex-row items-center justify-center gap-8 py-10 px-8 md:px-16 bg-blur-saturation mt-[105px] w-full max-w-4xl z-10 fixed">
         <div className="flex flex-col items-start justify-start w-full max-w-md">
           <div className="mb-5">
             <div className="flex flex-row gap-1">
-                <h1 className="font-bold text-3xl md:text-4xl">Welcome PSM!</h1>
-            <Image
-                src='/Rocket SVG Icon 1.svg' 
-                alt="Rocket image"
-                width={40}
-                height={40} 
-              />
+              <h1 className="font-bold text-3xl md:text-4xl">Welcome Placement Success Team!</h1>
+              <Image src='/Rocket SVG Icon 1.svg' alt="Rocket image" width={40} height={40} />
             </div>
-            {/* <h2 className="font-bold text-3xl md:text-4xl">PSM</h2> */}
           </div>
 
           <form noValidate className="flex flex-col items-center justify-center space-y-4 w-full" onSubmit={handleSubmit}>
             {/* Email Input */}
-                  <div className="relative w-full">
-                    <input
+            <div className="relative w-full">
+              <input
                 type="text"
                 id="email"
                 value={email}
@@ -179,27 +181,21 @@ if (prefix.includes("sme") && matchedDept) {
                   validateEmailField(e.target.value);
                 }}
                 placeholder="Enter your email"
-                className={`peer w-full p-3 rounded-sm border ${emailError ? "border-red-500" : "border-gray-300"} text-black 
-                  focus:border-[#3f2fb4] focus:border-2 focus:outline-none transition-all duration-200 
-                  placeholder-transparent`}
+                className={`peer w-full p-3 rounded-sm border ${emailError ? "border-red-500" : "border-gray-300"} text-black focus:border-[#3f2fb4] focus:border-2 focus:outline-none transition-all duration-200 placeholder-transparent`}
                 required
-                    />
-                    <label
-                    htmlFor="email"
-                    className={`absolute left-3 bg-[#F8FAFD] px-1 transition-all
-                      ${email ? "-top-2 text-sm text-[#3f2fb4]" : "top-3 text-base text-gray-400"}
-                      peer-focus:-top-3 peer-focus:text-sm peer-focus:text-[#3f2fb4]`}
-                    >
-                    Enter your email
-                    </label>
-                    {emailError && (
-                    <p className="text-red-600 text-sm mt-1">{emailError}</p>
-                    )}
-                  </div>
+              />
+              <label
+                htmlFor="email"
+                className={`absolute left-3 bg-[#F8FAFD] px-1 transition-all ${email ? "-top-2 text-sm text-[#3f2fb4]" : "top-3 text-base text-gray-400"} peer-focus:-top-3 peer-focus:text-sm peer-focus:text-[#3f2fb4]`}
+              >
+                Enter your email
+              </label>
+              {emailError && <p className="text-red-600 text-sm mt-1">{emailError}</p>}
+            </div>
 
-                  {/* Password Input */}
+            {/* Password Input */}
             <div className="relative w-full">
-               <input
+              <input
                 type={showPassword ? "text" : "password"}
                 id="password"
                 ref={passwordRef}
@@ -209,20 +205,15 @@ if (prefix.includes("sme") && matchedDept) {
                   passwordValidate(e.target.value);
                 }}
                 placeholder="Password"
-                className={`peer w-full p-3 pr-10 rounded-sm border ${passwordError ? "border-red-500" : "border-gray-300"} text-black 
-                  focus:border-[#3f2fb4] focus:border-2 focus:outline-none transition-all duration-200 
-                  placeholder-transparent`}
+                className={`peer w-full p-3 pr-10 rounded-sm border ${passwordError ? "border-red-500" : "border-gray-300"} text-black focus:border-[#3f2fb4] focus:border-2 focus:outline-none transition-all duration-200 placeholder-transparent`}
                 required
               />
               <label
                 htmlFor="password"
-                className={`absolute left-3 bg-[#F8FAFD] px-1 transition-all
-                  ${password ? "-top-2 text-sm text-[#3f2fb4]" : "top-3 text-base text-gray-400"}
-                  peer-focus:-top-3 peer-focus:text-sm peer-focus:text-[#3f2fb4]`}
+                className={`absolute left-3 bg-[#F8FAFD] px-1 transition-all ${password ? "-top-2 text-sm text-[#3f2fb4]" : "top-3 text-base text-gray-400"} peer-focus:-top-3 peer-focus:text-sm peer-focus:text-[#3f2fb4]`}
               >
                 Password
               </label>
-              {/* Eye Toggle */}
               <div
                 className="absolute right-3 top-4 text-xl text-gray-500 cursor-pointer"
                 onClick={() => {
@@ -238,28 +229,24 @@ if (prefix.includes("sme") && matchedDept) {
               >
                 {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
               </div>
-              {passwordError && (
-                <p className="text-red-600 text-sm mt-1">{passwordError}</p>
-              )}
+              {passwordError && <p className="text-red-600 text-sm mt-1">{passwordError}</p>}
             </div>
 
             {/* Submit Button */}
             <button
-            type="submit"
-            className={`w-full p-3 mt-6 cursor-pointer rounded-xl border-none ${email || password ? "bg-[#3f2fb4] text-white" : "bg-gray-300 text-gray-400"} font-bold 
-                        hover:text-white transition-colors duration-300`}
+              type="submit"
+              className={`w-full p-3 mt-6 cursor-pointer rounded-xl border-none ${email || password ? "bg-[#3f2fb4] text-white" : "bg-gray-300 text-gray-400"} font-bold hover:text-white transition-colors duration-300`}
             >
-            Login
+              Login
             </button>
 
-            {/* password forget & account creating */}
+            {/* Links */}
             <div className="mt-4 text-center space-y-2 w-full">
-              <p className="text-sm text-gray-500 mt-2">
+              <p className="text-sm text-gray-500">
                 <Link href="/passwordreset" className="text-[#3f2fb4] hover:underline">Forgot Password?</Link>
               </p>
-             <p className="text-sm text-gray-500 mt-2">
-                Don&apos;t have an account?
-                <Link href="/createaccount" className="text-[#3f2fb4] hover:underline"> Create one</Link>
+              <p className="text-sm text-gray-500">
+                Don&apos;t have an account? <Link href="/createaccount" className="text-[#3f2fb4] hover:underline">Create one</Link>
               </p>
             </div>
           </form>

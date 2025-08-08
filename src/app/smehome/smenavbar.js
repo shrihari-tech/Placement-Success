@@ -60,7 +60,7 @@ const SMENavbar = () => {
   return (
     <>
       {/* Mobile Header */}
-      <header className="md:hidden fixed top-0 left-0 w-full bg-[#eaddff] z-40 flex items-center justify-between p-3">
+      <header className="md:hidden fixed top-0 left-0 w-full bg-[#ebbec8] z-40 flex items-center justify-between p-3">
         <button
           className="flex items-center justify-center w-10 h-10 bg-black text-white rounded-2xl font-bold text-lg"
           onClick={() => router.push("/smehome")}
@@ -73,7 +73,7 @@ const SMENavbar = () => {
       </header>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex fixed top-0 left-0 h-screen w-[72px] bg-[#eaddff] flex-col justify-between items-center z-30">
+      <aside className="hidden md:flex fixed top-0 left-0 h-screen w-[72px] bg-[#f0ced6] flex-col justify-between items-center z-30">
         <div className="flex flex-col items-center w-full">
           <div className="flex flex-col items-center w-full mb-10 mt-7">
             <button
@@ -91,8 +91,8 @@ const SMENavbar = () => {
                 href="/smehome"
                 className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
                   activeNavItem === "home"
-                    ? "bg-[#6750A4] text-white"
-                    : "hover:bg-[#e0ccff] hover:text-black"
+                    ? "bg-[#cd5e77] text-white"
+                    : "hover:bg-[#f5dee3] hover:text-black"
                 }`}
                 onClick={() => handleNavItemClick("home")}
               >
@@ -100,7 +100,7 @@ const SMENavbar = () => {
               </Link>
               <span
                 className={`text-xs font-semibold cursor-pointer ${
-                  activeNavItem === "home" ? "text-[#9585bf]" : "text-[#49454f]"
+                  activeNavItem === "home" ? "text-[#cd5e77]" : "text-[#49454f]"
                 }`}
                 onClick={() => router.push("/smehome")}
               >
@@ -114,8 +114,8 @@ const SMENavbar = () => {
                 href="/smehome/batches"
                 className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
                   activeNavItem === "batches"
-                    ? "bg-[#6750A4] text-white"
-                    : "hover:bg-[#e0ccff] hover:text-black"
+                    ? "bg-[#cd5e77] text-white"
+                    : "hover:bg-[#f5dee3] hover:text-black"
                 }`}
                 onClick={() => handleNavItemClick("batches")}
               >
@@ -124,7 +124,7 @@ const SMENavbar = () => {
               <span
                 className={`text-xs font-semibold cursor-pointer ${
                   activeNavItem === "batches"
-                    ? "text-[#9585bf]"
+                    ? "text-[#cd5e77]"
                     : "text-[#49454f]"
                 }`}
                 onClick={() => router.push("/smehome/batches")}
@@ -139,8 +139,8 @@ const SMENavbar = () => {
                 href="/smehome/student"
                 className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
                   activeNavItem === "student"
-                    ? "bg-[#6750A4] text-white"
-                    : "hover:bg-[#e0ccff] hover:text-black"
+                    ? "bg-[#cd5e77] text-white"
+                    : "hover:bg-[#f5dee3] hover:text-black"
                 }`}
                 onClick={() => handleNavItemClick("student")}
               >
@@ -149,7 +149,7 @@ const SMENavbar = () => {
               <span
                 className={`text-xs font-semibold cursor-pointer ${
                   activeNavItem === "student"
-                    ? "text-[#9585bf]"
+                    ? "text-[#cd5e77]"
                     : "text-[#49454f]"
                 }`}
                 onClick={() => router.push("/smehome/student")}
@@ -164,8 +164,8 @@ const SMENavbar = () => {
                 href="/smehome/placement"
                 className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
                   activeNavItem === "sme"
-                    ? "bg-[#6750A4] text-white"
-                    : "hover:bg-[#e0ccff] hover:text-black"
+                    ? "bg-[#cd5e77] text-white"
+                    : "hover:bg-[#f5dee3] hover:text-black"
                 }`}
                 onClick={() => handleNavItemClick("sme")}
               >
@@ -173,7 +173,7 @@ const SMENavbar = () => {
               </Link>
               <span
                 className={`text-xs font-semibold cursor-pointer ${
-                  activeNavItem === "sme" ? "text-[#9585bf]" : "text-[#49454f]"
+                  activeNavItem === "sme" ? "text-[#cd5e77]" : "text-[#49454f]"
                 }`}
                 onClick={() => router.push("/smehome/placement")}
               >
@@ -187,14 +187,14 @@ const SMENavbar = () => {
           {/* Notification */}
           <div className="flex flex-col items-center w-full mb-5">
             <button
-              className="cursor-pointer flex flex-col items-center mb-1 px-3.5 py-1 text-black hover:bg-[#e0ccff] hover:text-black rounded-2xl"
+              className="cursor-pointer flex flex-col items-center mb-1 px-3.5 py-1 text-black hover:bg-[#f5dee3] hover:text-black rounded-2xl"
               onClick={() => {
                 setMobileMenuOpen(false); // Optional: add your logic
               }}
             >
               <MdOutlineNotifications size={20} />
             </button>
-            <span className="text-xs font-semibold text-[#49454f] mb-2">
+            <span className="cursor-pointer text-xs font-semibold text-[#49454f] mb-2">
               Notification
             </span>
           </div>
@@ -205,8 +205,8 @@ const SMENavbar = () => {
               href="/smehome/setting"
               className={`flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
                 activeNavItem === "settings"
-                  ? "bg-[#6750A4] text-white"
-                  : "text-black hover:bg-[#e0ccff] hover:text-black"
+                  ? "bg-[#cd5e77] text-white"
+                  : "text-black hover:bg-[#f5dee3] hover:text-black"
               }`}
               onClick={() => handleNavItemClick("settings")}
             >
@@ -215,7 +215,7 @@ const SMENavbar = () => {
             <span
               className={`text-xs font-semibold cursor-pointer mb-2 ${
                 activeNavItem === "settings"
-                  ? "text-[#9585bf]"
+                  ? "text-[#cd5e77]"
                   : "text-[#49454f]"
               }`}
               onClick={() => router.push("/smehome/setting")}
@@ -228,7 +228,7 @@ const SMENavbar = () => {
           <div className="flex flex-col items-center w-full mb-5">
             <Link
               href="/login"
-              className="flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl hover:bg-[#e0ccff] text-black"
+              className="flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl hover:bg-[#f5dee3] text-black"
             >
               <TbLogout2 size={20} />
             </Link>
@@ -243,7 +243,7 @@ const SMENavbar = () => {
       {mobileMenuOpen && (
         <div
           ref={mobileMenuRef}
-          className="md:hidden fixed top-16 left-0 w-full bg-[#eaddff] z-30 p-4 shadow-lg"
+          className="md:hidden fixed top-16 left-0 w-full bg-[#f0ced6] z-30 p-4 shadow-lg"
         >
           <div className="flex flex-col space-y-4">
             {/* Home */}
@@ -251,8 +251,8 @@ const SMENavbar = () => {
               href="/smehome"
               className={`flex items-center px-4 py-2 rounded-lg ${
                 activeNavItem === "home"
-                  ? "bg-[#6750A4] text-white"
-                  : "text-black hover:bg-[#e0ccff]"
+                  ? "bg-[#cd5e77] text-white"
+                  : "text-black hover:bg-[#f5dee3]"
               }`}
               onClick={() => handleNavItemClick("home")}
             >
@@ -265,8 +265,8 @@ const SMENavbar = () => {
               href="/smehome/batches"
               className={`flex items-center px-4 py-2 rounded-lg ${
                 activeNavItem === "batches"
-                  ? "bg-[#6750A4] text-white"
-                  : "text-black hover:bg-[#e0ccff]"
+                  ? "bg-[#cd5e77] text-white"
+                  : "text-black hover:bg-[#f5dee3]"
               }`}
               onClick={() => handleNavItemClick("batches")}
             >
@@ -279,8 +279,8 @@ const SMENavbar = () => {
               href="/smehome/student"
               className={`flex items-center px-4 py-2 rounded-lg ${
                 activeNavItem === "student"
-                  ? "bg-[#6750A4] text-white"
-                  : "text-black hover:bg-[#e0ccff]"
+                  ? "bg-[#cd5e77] text-white"
+                  : "text-black hover:bg-[#f5dee3]"
               }`}
               onClick={() => handleNavItemClick("student")}
             >
@@ -293,8 +293,8 @@ const SMENavbar = () => {
               href="/smehome/placement"
               className={`flex items-center px-4 py-2 rounded-lg ${
                 activeNavItem === "sme"
-                  ? "bg-[#6750A4] text-white"
-                  : "text-black hover:bg-[#e0ccff]"
+                  ? "bg-[#cd5e77] text-white"
+                  : "text-black hover:bg-[#f5dee3]"
               }`}
               onClick={() => handleNavItemClick("sme")}
             >
@@ -302,13 +302,26 @@ const SMENavbar = () => {
               <span>Placement</span>
             </Link>
 
+            {/* Notification */}
+            <Link
+              href="/smehome/notification"
+              className="flex items-center px-4 py-2 rounded-lg text-black hover:bg-[#f5dee3]"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                // Add your notification toggle/redirect logic here if needed
+              }}
+            >
+              <MdOutlineNotifications size={20} className="mr-3" />
+              <span>Notification</span>
+            </Link>
+
             {/* Settings */}
             <Link
               href="/smehome/setting"
               className={`flex items-center px-4 py-2 rounded-lg ${
                 activeNavItem === "settings"
-                  ? "bg-[#6750A4] text-white"
-                  : "text-black hover:bg-[#e0ccff]"
+                  ? "bg-[#cd5e77] text-white"
+                  : "text-black hover:bg-[#f5dee3]"
               }`}
               onClick={() => handleNavItemClick("settings")}
             >
@@ -319,7 +332,7 @@ const SMENavbar = () => {
             {/* Logout */}
             <Link
               href="/smehome"
-              className="flex items-center px-4 py-2 rounded-lg text-black hover:bg-[#e0ccff]"
+              className="flex items-center px-4 py-2 rounded-lg text-black hover:bg-[#f5dee3]"
               onClick={() => {
                 setActiveNavItem("");
                 setMobileMenuOpen(false);
