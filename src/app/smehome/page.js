@@ -34,6 +34,7 @@ export default function SMEHomePage() {
     devopsStudent = devopsStudentData,
     sapStudent = sapStudentData,
     bankingStudent = bankingStudentData,
+    setStudentBatchSelect, // ✅ now from context
   } = useDataContext();
 
   const [domainInfo, setDomainInfo] = useState(null);
@@ -68,35 +69,17 @@ export default function SMEHomePage() {
   const getDataFromContext = (code) => {
     switch (code) {
       case "fullstack":
-        return {
-          batches: fullstackData,
-          students: fullstackStudent,
-        };
+        return { batches: fullstackData, students: fullstackStudent };
       case "dataanalytics":
-        return {
-          batches: dataanalyticsData,
-          students: dataanalyticsStudent,
-        };
+        return { batches: dataanalyticsData, students: dataanalyticsStudent };
       case "marketing":
-        return {
-          batches: marketingData,
-          students: marketingStudent,
-        };
+        return { batches: marketingData, students: marketingStudent };
       case "devops":
-        return {
-          batches: devopsData,
-          students: devopsStudent,
-        };
+        return { batches: devopsData, students: devopsStudent };
       case "sap":
-        return {
-          batches: sapData,
-          students: sapStudent,
-        };
+        return { batches: sapData, students: sapStudent };
       case "banking":
-        return {
-          batches: bankingData,
-          students: bankingStudent,
-        };
+        return { batches: bankingData, students: bankingStudent };
       default:
         return { batches: [], students: [] };
     }
@@ -105,7 +88,6 @@ export default function SMEHomePage() {
   useEffect(() => {
     const rawDomainCode = localStorage.getItem("domainCode");
 
-    // Mapping full domain names to short codes
     const domainCodeMap = {
       fullstack: "fs",
       dataanalytics: "da",
@@ -123,10 +105,13 @@ export default function SMEHomePage() {
       return;
     }
 
-    // Set domain info for UI display
+    // ✅ Tell DataContext which domain to load
+    setStudentBatchSelect(actualCode);
+
+    // Set domain info for UI
     setDomainInfo(domainDetails[shortCode]);
 
-    // Get data from context
+    // Fetch data for overview cards
     const { batches: fetchedBatches = [], students: fetchedStudents = [] } =
       getDataFromContext(actualCode);
 
@@ -181,14 +166,14 @@ export default function SMEHomePage() {
     devopsStudent,
     sapStudent,
     bankingStudent,
+    setStudentBatchSelect, // ✅ dependency added
   ]);
 
   return (
-    <div className="overflow-hidden min-h-screen bg-gray-50">
+    <div className="overflow-y-auto min-h-screen bg-gray-50">
       <SMENavbar />
-
       <main className="mx-auto w-full">
-        {/* --- HEADER SECTION (UNCHANGED AS REQUESTED) --- */}
+        {/* --- HEADER SECTION --- */}
         <div className="border-b-2 border-gray-300 bg-white ps-10 pt-2 mb-2 md:mb-4">
           <p className="text-xl md:text-2xl text-gray-700 font-semibold mb-2 flex items-center">
             Hi {displayName}
@@ -208,31 +193,15 @@ export default function SMEHomePage() {
 
         <style jsx>{`
           @keyframes wave {
-            0% {
-              transform: rotate(0deg);
-            }
-            10% {
-              transform: rotate(14deg);
-            }
-            20% {
-              transform: rotate(-8deg);
-            }
-            30% {
-              transform: rotate(14deg);
-            }
-            40% {
-              transform: rotate(-4deg);
-            }
-            50% {
-              transform: rotate(10deg);
-            }
-            60%,
-            100% {
-              transform: rotate(0deg);
-            }
+            0% { transform: rotate(0deg); }
+            10% { transform: rotate(14deg); }
+            20% { transform: rotate(-8deg); }
+            30% { transform: rotate(14deg); }
+            40% { transform: rotate(-4deg); }
+            50% { transform: rotate(10deg); }
+            60%, 100% { transform: rotate(0deg); }
           }
         `}</style>
-        {/* --- END HEADER SECTION --- */}
 
         {/* --- MAIN CONTENT AREA (ENHANCED UI) --- */}
         <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto">
@@ -250,7 +219,7 @@ export default function SMEHomePage() {
                     {" "}
                     {/* Use flex for side-by-side layout */}
                     {/* Icon Container - Larger and on the left */}
-                    <div className="flex items-center justify-center bg-[#f5dee3] px-3 md:px-4">
+                    <div className="flex items-center justify-center bg-[#FAEFF1] px-3 md:px-4">
                       {" "}
                       {/* Adjust padding for width */}
                       <div className="p-2 md:p-3 rounded-lg text-[#cd5e77]">
@@ -308,7 +277,7 @@ export default function SMEHomePage() {
                       Placement
                     </h3>
                     <div className="grid grid-cols-2 gap-3 md:gap-4">
-                      <div className="bg-[#f5dfe4] rounded-lg md:rounded-xl p-3 md:p-4 text-center hover:bg-[#FAEFF1] transition-colors duration-200">
+                      <div className="bg-[#FAEFF1] rounded-lg md:rounded-xl p-3 md:p-4 text-center hover:bg-[#f5dfe4] transition-colors duration-200">
                         <p className="text-xs md:text-sm font-medium text-gray-600">
                           Placed
                         </p>
@@ -316,7 +285,7 @@ export default function SMEHomePage() {
                           {overviewData.placed}
                         </p>
                       </div>
-                      <div className="bg-[#f5dfe4] rounded-lg md:rounded-xl p-3 md:p-4 text-center hover:bg-[#FAEFF1] transition-colors duration-200">
+                      <div className="bg-[#FAEFF1] rounded-lg md:rounded-xl p-3 md:p-4 text-center hover:bg-[#f5dfe4] transition-colors duration-200">
                         <p className="text-xs md:text-sm font-medium text-gray-600">
                           Yet to Place
                         </p>
@@ -349,7 +318,7 @@ export default function SMEHomePage() {
                       Student Count
                     </h3>
                     <div className="grid grid-cols-2 gap-3 md:gap-4">
-                      <div className="bg-[#f5dfe4] rounded-lg md:rounded-xl p-3 md:p-4 text-center hover:bg-[#FAEFF1] transition-colors duration-200">
+                      <div className="bg-[#FAEFF1] rounded-lg md:rounded-xl p-3 md:p-4 text-center hover:bg-[#f5dfe4] transition-colors duration-200">
                         <p className="text-xs md:text-sm font-medium text-gray-600">
                           Ongoing
                         </p>
@@ -357,7 +326,7 @@ export default function SMEHomePage() {
                           {overviewData.ongoingCount}
                         </p>
                       </div>
-                      <div className="bg-[#f5dfe4] rounded-lg md:rounded-xl p-3 md:p-4 text-center hover:bg-[#FAEFF1] transition-colors duration-200">
+                      <div className="bg-[#FAEFF1] rounded-lg md:rounded-xl p-3 md:p-4 text-center hover:bg-[#f5dfe4] transition-colors duration-200">
                         <p className="text-xs md:text-sm font-medium text-gray-600">
                           Completed
                         </p>
@@ -397,7 +366,7 @@ export default function SMEHomePage() {
                           ([status, count]) => (
                             <div
                               key={status}
-                              className="bg-[#f5dee3] rounded-lg p-2 md:p-3 text-center hover:bg-[#faeef1] transition-colors duration-200 flex flex-col items-center justify-center min-h-[60px]"
+                              className="bg-[#FAEFF1] rounded-lg p-2 md:p-3 text-center hover:bg-[#faeef1] transition-colors duration-200 flex flex-col items-center justify-center min-h-[60px]"
                             >
                               {" "}
                               {/* Light Tint background, slightly lighter on hover */}
@@ -405,7 +374,7 @@ export default function SMEHomePage() {
                                 {status}
                               </p>{" "}
                               {/* Darker text for contrast */}
-                              <p className="text-base md:text-lg font-bold text-[#cd5e77] mt-1">
+                              <p className="text-base md:text-lg font-bold text-pink-700 mt-1">
                                 {count}
                               </p>{" "}
                               {/* Base Color for count */}
