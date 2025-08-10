@@ -60,6 +60,8 @@ export default function BatchListTab() {
   // Simplified: batchesNames from context is already filtered for the domain
   const filteredBatches = Array.isArray(batchesNames) ? batchesNames : [];
 
+  console.log(filteredBatches, batchesNames, "jjj");
+
   // 2. Get Epic Status data for the currently selected batch from DataContext
   // batchEpicStats[selectedBatch] will be an object like { Excellent: 5, Capable: 10, ... }
   // or undefined/{} if no data or batch not selected.
