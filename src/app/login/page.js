@@ -4,8 +4,8 @@ import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Toaster, toast } from 'sonner';
-import { useDataContext } from '../context/dataContext';
+import { Toaster, toast } from "sonner";
+import { useDataContext } from "../context/dataContext";
 
 export default function Home() {
   const [showPassword, setShowPassword] = useState(false);
@@ -61,13 +61,11 @@ export default function Home() {
     { email: "kavitha.s@soi.kgkite.ac.in", domain: "sap" },
     { email: "preethi.j@kgisl.microcollege.in", domain: "sap" },
 
-  
-
     // Admin
     { email: "admin@gmail.com", domain: "all", role: "admin" },
   ];
 
-  const allowedEmails = allowedUsers.map(u => u.email);
+  const allowedEmails = allowedUsers.map((u) => u.email);
 
   const validateEmailField = (value) => {
     if (!value.trim()) {
@@ -119,7 +117,7 @@ export default function Home() {
       return false;
     }
 
-    const user = allowedUsers.find(u => u.email === email);
+    const user = allowedUsers.find((u) => u.email === email);
     if (user) {
       if (user.role === "admin") {
         toast.success("Admin login successful! Redirecting to Home...");
@@ -148,7 +146,14 @@ export default function Home() {
     <div className="container mx-auto flex items-center justify-center h-screen px-2 overflow-hidden">
       {/* Background Image */}
       <div className="fixed top-0 left-0 z-0">
-        <Image src="/Background.png" alt="Background" className="object-contain" priority width={650} height={650} />
+        <Image
+          src="/Background.png"
+          alt="Background"
+          className="object-contain"
+          priority
+          width={650}
+          height={650}
+        />
       </div>
       <div>
         <Toaster position="top-right" />
@@ -156,7 +161,13 @@ export default function Home() {
 
       {/* Logo */}
       <div className="fixed top-6 md:top-6 md:right-6 z-20">
-        <Image src='/logo1.webp' className="h-20 w-40 md:h-16 md:w-44" alt="Logo" width={70} height={50} />
+        <Image
+          src="/logo1.webp"
+          className="h-20 w-40 md:h-16 md:w-44"
+          alt="Logo"
+          width={70}
+          height={50}
+        />
       </div>
 
       {/* Login Form */}
@@ -164,12 +175,23 @@ export default function Home() {
         <div className="flex flex-col items-start justify-start w-full max-w-md">
           <div className="mb-5">
             <div className="flex flex-row gap-1">
-              <h1 className="font-bold text-3xl md:text-4xl">Welcome Placement Success Team!</h1>
-              <Image src='/Rocket SVG Icon 1.svg' alt="Rocket image" width={40} height={40} />
+              <h1 className="font-bold text-3xl md:text-4xl">
+                Welcome Placement Success Team!
+              </h1>
+              <Image
+                src="/Rocket SVG Icon 1.svg"
+                alt="Rocket image"
+                width={40}
+                height={40}
+              />
             </div>
           </div>
 
-          <form noValidate className="flex flex-col items-center justify-center space-y-4 w-full" onSubmit={handleSubmit}>
+          <form
+            noValidate
+            className="flex flex-col items-center justify-center space-y-4 w-full"
+            onSubmit={handleSubmit}
+          >
             {/* Email Input */}
             <div className="relative w-full">
               <input
@@ -181,16 +203,24 @@ export default function Home() {
                   validateEmailField(e.target.value);
                 }}
                 placeholder="Enter your email"
-                className={`peer w-full p-3 rounded-sm border ${emailError ? "border-red-500" : "border-gray-300"} text-black focus:border-[#3f2fb4] focus:border-2 focus:outline-none transition-all duration-200 placeholder-transparent`}
+                className={`peer w-full p-3 rounded-sm border ${
+                  emailError ? "border-red-500" : "border-gray-300"
+                } text-black focus:border-[#3f2fb4] focus:border-2 focus:outline-none transition-all duration-200 placeholder-transparent`}
                 required
               />
               <label
                 htmlFor="email"
-                className={`absolute left-3 bg-[#F8FAFD] px-1 transition-all ${email ? "-top-2 text-sm text-[#3f2fb4]" : "top-3 text-base text-gray-400"} peer-focus:-top-3 peer-focus:text-sm peer-focus:text-[#3f2fb4]`}
+                className={`absolute left-3 bg-[#F8FAFD] px-1 transition-all ${
+                  email
+                    ? "-top-2 text-sm text-[#3f2fb4]"
+                    : "top-3 text-base text-gray-400"
+                } peer-focus:-top-3 peer-focus:text-sm peer-focus:text-[#3f2fb4]`}
               >
                 Enter your email
               </label>
-              {emailError && <p className="text-red-600 text-sm mt-1">{emailError}</p>}
+              {emailError && (
+                <p className="text-red-600 text-sm mt-1">{emailError}</p>
+              )}
             </div>
 
             {/* Password Input */}
@@ -205,12 +235,18 @@ export default function Home() {
                   passwordValidate(e.target.value);
                 }}
                 placeholder="Password"
-                className={`peer w-full p-3 pr-10 rounded-sm border ${passwordError ? "border-red-500" : "border-gray-300"} text-black focus:border-[#3f2fb4] focus:border-2 focus:outline-none transition-all duration-200 placeholder-transparent`}
+                className={`peer w-full p-3 pr-10 rounded-sm border ${
+                  passwordError ? "border-red-500" : "border-gray-300"
+                } text-black focus:border-[#3f2fb4] focus:border-2 focus:outline-none transition-all duration-200 placeholder-transparent`}
                 required
               />
               <label
                 htmlFor="password"
-                className={`absolute left-3 bg-[#F8FAFD] px-1 transition-all ${password ? "-top-2 text-sm text-[#3f2fb4]" : "top-3 text-base text-gray-400"} peer-focus:-top-3 peer-focus:text-sm peer-focus:text-[#3f2fb4]`}
+                className={`absolute left-3 bg-[#F8FAFD] px-1 transition-all ${
+                  password
+                    ? "-top-2 text-sm text-[#3f2fb4]"
+                    : "top-3 text-base text-gray-400"
+                } peer-focus:-top-3 peer-focus:text-sm peer-focus:text-[#3f2fb4]`}
               >
                 Password
               </label>
@@ -229,13 +265,19 @@ export default function Home() {
               >
                 {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
               </div>
-              {passwordError && <p className="text-red-600 text-sm mt-1">{passwordError}</p>}
+              {passwordError && (
+                <p className="text-red-600 text-sm mt-1">{passwordError}</p>
+              )}
             </div>
 
             {/* Submit Button */}
             <button
               type="submit"
-              className={`w-full p-3 mt-6 cursor-pointer rounded-xl border-none ${email || password ? "bg-[#3f2fb4] text-white" : "bg-gray-300 text-gray-400"} font-bold hover:text-white transition-colors duration-300`}
+              className={`w-full p-3 mt-6 cursor-pointer rounded-xl border-none ${
+                email || password
+                  ? "bg-[#3f2fb4] text-white"
+                  : "bg-gray-300 text-gray-400"
+              } font-bold hover:text-white transition-colors duration-300`}
             >
               Login
             </button>
@@ -243,10 +285,21 @@ export default function Home() {
             {/* Links */}
             <div className="mt-4 text-center space-y-2 w-full">
               <p className="text-sm text-gray-500">
-                <Link href="/passwordreset" className="text-[#3f2fb4] hover:underline">Forgot Password?</Link>
+                <Link
+                  href="/passwordreset"
+                  className="text-[#3f2fb4] hover:underline"
+                >
+                  Forgot Password?
+                </Link>
               </p>
               <p className="text-sm text-gray-500">
-                Don&apos;t have an account? <Link href="/createaccount" className="text-[#3f2fb4] hover:underline">Create one</Link>
+                Don&apos;t have an account?{" "}
+                <Link
+                  href="/createaccount"
+                  className="text-[#3f2fb4] hover:underline"
+                >
+                  Create one
+                </Link>
               </p>
             </div>
           </form>
