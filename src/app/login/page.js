@@ -119,16 +119,25 @@ export default function Home() {
 
     const user = allowedUsers.find((u) => u.email === email);
     if (user) {
+      // Store all necessary session data
+      localStorage.setItem("isAuthenticated", "true");
+      localStorage.setItem("loginUser", email);
+      localStorage.setItem("domainCode", user.domain || "all");
+      localStorage.setItem("userRole", user.role || "sme");
+
+      // Set expiration (optional)
+      const expiration = new Date();
+      expiration.setHours(expiration.getHours() + 8); // 8 hour session
+      localStorage.setItem("expiration", expiration.toISOString());
+
       if (user.role === "admin") {
         toast.success("Admin login successful! Redirecting to Home...");
         setLoginUser(email);
-        localStorage.setItem("domainCode", "all");
         setTimeout(() => router.push("/home"), 2000);
       } else {
         toast.success("Login successful! Redirecting to SME Home...");
         setLoginUser(email);
-        localStorage.setItem("domainCode", user.domain);
-        setTimeout(() => router.push(`/smehome?domain=${user.domain}`), 2000);
+        setTimeout(() => router.push(`/smehome`), 2000); // Removed query param since we're using localStorage
       }
       return true;
     }
