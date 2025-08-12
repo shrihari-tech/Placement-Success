@@ -28,6 +28,8 @@ const marketingOpportunitiesInitial = [];
 const digitalmarketingOpportunitiesInitial = [];
 const sapOpportunitiesInitial = [];
 const devopsOpportunitiesInitial = [];
+const bankingOpportunitiesInitial = [];
+
 
 // ===== Full‑Stack =====
 export const fullstackInitial = [
@@ -3845,6 +3847,7 @@ const DataProvider = ({ children }) => {
   const [devopsOpportunities, setDevopsOpportunities] = useState(
     devopsOpportunitiesInitial
   );
+  const [bankingOpportunities, setBankingOpportunities] = useState(bankingOpportunitiesInitial);
 
   const userName = loginUser.split("@")[0];
   const firstLetterUser = loginUser?.charAt(0).toUpperCase() || "";
@@ -4521,6 +4524,18 @@ const addOpportunity = (opportunity, domain) => { // Accept domain as an argumen
         liveBatchNames,
         batchEpicStats, 
         calculateBatchEpicStats,
+        fullstackOpportunities,
+      setFullstackOpportunities,
+      dataanalyticsOpportunities,
+      setDataanalyticsOpportunities,
+      marketingOpportunities,
+      setMarketingOpportunities,
+      sapOpportunities,
+      setSapOpportunities,
+      devopsOpportunities,
+      setDevopsOpportunities,
+      bankingOpportunities,
+      setBankingOpportunities,
 
       }}
     >
