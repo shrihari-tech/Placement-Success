@@ -30,8 +30,11 @@ export default function TrainerUpdateTab() {
   const [showEditModal, setShowEditModal] = useState(false);
 
   const [trainerEdit, setTrainerEdit] = useState({});
+  const [formData, setFormData] = useState({ trainer: "", timing: "" });
 
   const batchDropdownRef = useRef(null);
+
+  const allTrainerFW = ["Sundar P", "Sri Hari", "Suriya", "Sundar Raj K"];
 
   // --- Helper Functions ---
   const handleSearch = () => {
@@ -56,7 +59,7 @@ export default function TrainerUpdateTab() {
     setSelectedBatch("");
     setShowBatchDropdown(false);
     setFilteredStudents([]);
-     setTrainerEdit([]);
+    setTrainerEdit([]);
     setSearchInitiated(false);
     // Reset modal states if used
     // setSelectedStudent(null);
@@ -111,10 +114,28 @@ export default function TrainerUpdateTab() {
       );
 
       setFilteredStudents([results]);
-       setTrainerEdit([results]);
+      setTrainerEdit([results]);
     }
   }, [allFullstackTrainer, selectedBatch, searchInitiated]);
 
+  function formatTimeToAMPM(timeString) {
+    // Create a Date object using a fixed date and the provided time
+    const [hours, minutes] = timeString.split(":");
+    const date = new Date();
+    date.setHours(parseInt(hours));
+    date.setMinutes(parseInt(minutes));
+    date.setSeconds(0);
+
+    // Format options
+    const options = {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    };
+
+    // Use toLocaleTimeString for formatting
+    return date.toLocaleTimeString("en-US", options);
+  }
   // --- Rendering ---
   return (
     <>
@@ -300,20 +321,33 @@ export default function TrainerUpdateTab() {
                         <select
                           type="text"
                           className=" focus:outline-none  focus:border-red-400 focus:ring-0"
-                        >
-                          <option value={filteredStudents[0].trainer}>
-                            {filteredStudents[0].trainer}
-                          </option>
-                          {allFullstackTrainer
-                            .filter((item) => {
-                              console.log(filteredStudents, "111");
-                              return (
-                                item.trainer !== filteredStudents[0].trainer
-                              );
+                          onChange={(event) =>
+                            setFormData((prev) => {
+                              return { ...prev, trainer: event.target.value };
                             })
+                          }
+                          // COME HERE
+                        >
+                          {console.log(formData, "FORM DATA")}
+                          <option value={filteredStudents[0].trainer}>
+                            {
+                              filteredStudents[0].trainer[
+                                filteredStudents[0].trainer.length - 1
+                              ]
+                            }
+                          </option>
+
+                          {allTrainerFW
+                            .filter(
+                              (item) =>
+                                item !==
+                                filteredStudents[0].trainer[
+                                  filteredStudents[0].trainer.length - 1
+                                ]
+                            )
                             .map((item) => (
-                              <option value={item.trainer}>
-                                {item.trainer}
+                              <option value={item} key={item}>
+                                {item}
                               </option>
                             ))}
                           {/* {allFullstackTrainer.map((item) => (
@@ -321,18 +355,34 @@ export default function TrainerUpdateTab() {
                           ))} */}
                         </select>
                       ) : (
-                        student?.trainer
+                        student?.trainer[student.trainer.length - 1]
                       )}
                     </td>
                     <td className="px-5 py-3 text-center text-sm text-gray-500 whitespace-nowrap">
                       {editingStudent ? (
                         <div className="flex justify-center items-center">
-                          <input type="time" value={"09:30"} />
+                          <input
+                            type="time"
+                            onChange={(event) => {
+                              const formatTime = formatTimeToAMPM(
+                                event.target.value
+                              );
+                            }}
+                          />
                           <p className="pr-3">TO</p>
-                          <input type="time" value={"09:30"} />
+                          <input
+                            type="time"
+                            onChange={(event) => {
+                              const formatTime = formatTimeToAMPM(
+                                event.target.value
+                              );
+                            }}
+                          />
                         </div>
                       ) : (
-                        "9:30 AM - 11:30 AM"
+                        `${student.sTiming[student.sTiming.length - 1]} - ${
+                          student.eTiming[student.eTiming.length - 1]
+                        }`
                       )}
                     </td>
 
