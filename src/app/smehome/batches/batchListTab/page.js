@@ -103,6 +103,7 @@ export default function BatchListTab() {
     }
   }, [studentData, selectedBatch, searchInitiated]);
 
+
   // --- Rendering ---
   return (
     <>
@@ -330,7 +331,7 @@ export default function BatchListTab() {
       {/* 3. Epic Status Display Section - Shown after search and if data exists */}
 
       {searchInitiated && selectedBatch && (
-        <div className="mt-6 bg-white rounded-xl md:rounded-2xl shadow-sm md:shadow hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-200 w-full">
+        <div className="mt-6 bg-white rounded-xl md:rounded-2xl shadow-sm md:shadow hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-200 w-1/2">
           {" "}
           {/* Full width container */}
           <div className="p-4 md:p-5 h-full flex flex-col">
@@ -384,20 +385,16 @@ export default function BatchListTab() {
       {/* Edit Student Modal */}
       {showEditModal && editingStudent && (
         <EditStudentModal
-          student={editingStudent} // Pass the student data
+          student={editingStudent}
+          isOpen={showEditModal}
           onClose={() => {
-            setShowEditModal(false); // Close the modal
-            setEditingStudent(null); // Clear the student data
+            setShowEditModal(false);
+            setEditingStudent(null);
           }}
           onSave={() => {
-            // Optional: Perform actions after save, like re-fetching data or showing a toast
-            // For BatchListTab, re-running the search/filter is often desired to show updated data
-            // The handleSearch function will re-filter based on the current selectedBatch and context studentData
-            handleSearch(); // This will use the updated studentData from context
-            setShowEditModal(false); // Close the modal
-            setEditingStudent(null); // Clear the student data
-            // Optionally, show a success toast here if desired
-            // toast.success("Student updated successfully!");
+            handleSearch();
+            setShowEditModal(false);
+            setEditingStudent(null);
           }}
         />
       )}
