@@ -118,6 +118,44 @@ export const fullstackInitial = [
   },
 ];
 
+export const fullStatckTrailerInitial = [
+  {
+    id: 1,
+    batch: "FS02",
+    mode: "Offline",
+    trainer: "Sundar P",
+    timing: "09:30 AM - 11:30 AM",
+  },
+  {
+    id: 2,
+    batch: "FS01",
+    mode: "Offline",
+    trainer: "Sri Hari",
+    timing: "09:30 AM - 11:30 AM",
+  },
+  {
+    id: 3,
+    batch: "FS03",
+    mode: "Offline",
+    trainer: "Suriya",
+    timing: "09:30 AM - 11:30 AM",
+  },
+  {
+    id: 4,
+    batch: "FS04",
+    mode: "Offline",
+    trainer: "Sundar P",
+    timing: "09:30 AM - 11:30 AM",
+  },
+  {
+    id: 5,
+    batch: "FS04",
+    mode: "Offline",
+    trainer: "Sundar Raj K",
+    timing: "09:30 AM - 11:30 AM",
+  },
+];
+
 export const dataanalyticsInitial = [
   {
     id: 1,
@@ -3346,6 +3384,9 @@ const DataProvider = ({ children }) => {
   const [allBatchNames, setAllBatchNames] = useState([]); //all batch names across domains
   const [allStudentData, setAllStudentData] = useState([]); // for storing all student records
   const [batchEpicStats, setBatchEpicStats] = useState({});
+  const [allFullstackTrainer, setAllFullStackTrainer] = useState(
+    fullStatckTrailerInitial
+  );
 
   const [liveCounts, setLiveCounts] = useState({
     batch: 0,
@@ -3400,30 +3441,30 @@ const DataProvider = ({ children }) => {
     return [...new Set(studentData.map((s) => s.batch).filter(Boolean))].sort();
   }, [studentData]);
 
-const calculateBatchEpicStats = (studentsArray) => {
-  const stats = {};
-  studentsArray.forEach((student) => {
-    const batchName = student.batch; // Assuming the student object has a 'batch' property
-    const status = student.epicStatus; // Assuming the student object has an 'epicStatus' property
+  const calculateBatchEpicStats = (studentsArray) => {
+    const stats = {};
+    studentsArray.forEach((student) => {
+      const batchName = student.batch; // Assuming the student object has a 'batch' property
+      const status = student.epicStatus; // Assuming the student object has an 'epicStatus' property
 
-    // Initialize batch object if it doesn't exist
-    if (!stats[batchName]) {
-      stats[batchName] = {}; // Or initialize with all possible statuses if you want 0 counts initially
-    }
+      // Initialize batch object if it doesn't exist
+      if (!stats[batchName]) {
+        stats[batchName] = {}; // Or initialize with all possible statuses if you want 0 counts initially
+      }
 
-    // Increment the count for the specific status within the batch
-    // Handle cases where epicStatus might be missing or invalid
-    if (status && typeof status === 'string') {
+      // Increment the count for the specific status within the batch
+      // Handle cases where epicStatus might be missing or invalid
+      if (status && typeof status === "string") {
         stats[batchName][status] = (stats[batchName][status] || 0) + 1;
-    } else {
+      } else {
         // Optional: Handle students without a defined epicStatus
         // e.g., count them under 'Unknown' or skip
-        const unknownKey = 'Unknown';
+        const unknownKey = "Unknown";
         stats[batchName][unknownKey] = (stats[batchName][unknownKey] || 0) + 1;
-    }
-  });
-  return stats;
-};
+      }
+    });
+    return stats;
+  };
 
   //all batches names across domains
   useEffect(() => {
@@ -3549,54 +3590,75 @@ const calculateBatchEpicStats = (studentsArray) => {
   // 🔄 Update studentData and studentHead when batchingvalue changes
   useEffect(() => {
     switch (studentBatchSelect) {
-case "fullstack":
-  setBatchHead("Full Stack Development");
-  setBatchesNames([...new Set(fullstackStudent.map(s => s.batch).filter(Boolean))].sort());
-  setStudentData(fullstackStudent);
-  setBatchEpicStats(calculateBatchEpicStats(fullstackStudent));
-  break;
+      case "fullstack":
+        setBatchHead("Full Stack Development");
+        setBatchesNames(
+          [
+            ...new Set(fullstackStudent.map((s) => s.batch).filter(Boolean)),
+          ].sort()
+        );
+        setStudentData(fullstackStudent);
+        setBatchEpicStats(calculateBatchEpicStats(fullstackStudent));
+        break;
 
-case "dataanalytics":
-  setBatchHead("Data Analytics & Science");
-  setBatchesNames([...new Set(dataanalyticsStudent.map(s => s.batch).filter(Boolean))].sort());
-  setStudentData(dataanalyticsStudent);
-  setBatchEpicStats(calculateBatchEpicStats(dataanalyticsStudent));
-  break;
+      case "dataanalytics":
+        setBatchHead("Data Analytics & Science");
+        setBatchesNames(
+          [
+            ...new Set(
+              dataanalyticsStudent.map((s) => s.batch).filter(Boolean)
+            ),
+          ].sort()
+        );
+        setStudentData(dataanalyticsStudent);
+        setBatchEpicStats(calculateBatchEpicStats(dataanalyticsStudent));
+        break;
 
-case "marketing":
-  setBatchHead("Digital Marketing");
-  setBatchesNames([...new Set(marketingStudent.map(s => s.batch).filter(Boolean))].sort());
-  setStudentData(marketingStudent);
-  setBatchEpicStats(calculateBatchEpicStats(marketingStudent));
-  break;
+      case "marketing":
+        setBatchHead("Digital Marketing");
+        setBatchesNames(
+          [
+            ...new Set(marketingStudent.map((s) => s.batch).filter(Boolean)),
+          ].sort()
+        );
+        setStudentData(marketingStudent);
+        setBatchEpicStats(calculateBatchEpicStats(marketingStudent));
+        break;
 
-case "devops":
-  setBatchHead("DevOps");
-  setBatchesNames([...new Set(devopsStudent.map(s => s.batch).filter(Boolean))].sort());
-  setStudentData(devopsStudent);
-  setBatchEpicStats(calculateBatchEpicStats(devopsStudent));
-  break;
+      case "devops":
+        setBatchHead("DevOps");
+        setBatchesNames(
+          [...new Set(devopsStudent.map((s) => s.batch).filter(Boolean))].sort()
+        );
+        setStudentData(devopsStudent);
+        setBatchEpicStats(calculateBatchEpicStats(devopsStudent));
+        break;
 
-case "banking":
-  setBatchHead("Banking & Financial Services");
-  setBatchesNames([...new Set(bankingStudent.map(s => s.batch).filter(Boolean))].sort());
-  setStudentData(bankingStudent);
-  setBatchEpicStats(calculateBatchEpicStats(bankingStudent));
-  break;
+      case "banking":
+        setBatchHead("Banking & Financial Services");
+        setBatchesNames(
+          [
+            ...new Set(bankingStudent.map((s) => s.batch).filter(Boolean)),
+          ].sort()
+        );
+        setStudentData(bankingStudent);
+        setBatchEpicStats(calculateBatchEpicStats(bankingStudent));
+        break;
 
-case "sap":
-  setBatchHead("SAP");
-  setBatchesNames([...new Set(sapStudent.map(s => s.batch).filter(Boolean))].sort());
-  setStudentData(sapStudent);
-  setBatchEpicStats(calculateBatchEpicStats(sapStudent));
-  break;
+      case "sap":
+        setBatchHead("SAP");
+        setBatchesNames(
+          [...new Set(sapStudent.map((s) => s.batch).filter(Boolean))].sort()
+        );
+        setStudentData(sapStudent);
+        setBatchEpicStats(calculateBatchEpicStats(sapStudent));
+        break;
 
-default:
-  setBatchHead("");
-  setBatchesNames([]);
-  setStudentData([]);
-  setBatchEpicStats({});
-
+      default:
+        setBatchHead("");
+        setBatchesNames([]);
+        setStudentData([]);
+        setBatchEpicStats({});
     }
   }, [
     studentBatchSelect,
@@ -4050,9 +4112,10 @@ default:
         studentData,
         liveCounts,
         liveBatchNames,
-        batchEpicStats, 
+        batchEpicStats,
         calculateBatchEpicStats,
-
+        allFullstackTrainer,
+        setAllFullStackTrainer,
       }}
     >
       {children}

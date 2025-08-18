@@ -8,6 +8,7 @@ import { RiCloseCircleLine } from "react-icons/ri";
 import { FaSearch } from "react-icons/fa";
 import Image from "next/image";
 import EditStudentModal from "../batchListTab/EditStudentModal"; // Adjust the import path as needed
+import EditTrainerModal from "./EditTrainerModal";
 
 export default function TrainerUpdateTab() {
   // 1. Destructure necessary values from DataContext
@@ -17,14 +18,18 @@ export default function TrainerUpdateTab() {
     setSelectedBatch,
     studentData,
     batchEpicStats,
+    allFullstackTrainer,
+    setAllFullStackTrainer,
     // allStudentData,
   } = useDataContext();
-  // console.log(allStudentData, "hhh");
+  console.log(allFullstackTrainer, "hhh");
   const [showBatchDropdown, setShowBatchDropdown] = useState(false);
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [searchInitiated, setSearchInitiated] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
+
+  const [trainerEdit, setTrainerEdit] = useState({});
 
   const batchDropdownRef = useRef(null);
 
@@ -34,10 +39,13 @@ export default function TrainerUpdateTab() {
       alert("Please select a batch");
       return;
     }
-    const results = studentData.filter(
+    const results = allFullstackTrainer.filter(
       (student) => student.batch === selectedBatch
     );
+
+    console.log(results, "RESULT");
     setFilteredStudents(results);
+    setTrainerEdit(results);
     setSearchInitiated(true);
 
     // console.log(results, "jjj");
@@ -48,6 +56,7 @@ export default function TrainerUpdateTab() {
     setSelectedBatch("");
     setShowBatchDropdown(false);
     setFilteredStudents([]);
+     setTrainerEdit([]);
     setSearchInitiated(false);
     // Reset modal states if used
     // setSelectedStudent(null);
@@ -97,13 +106,14 @@ export default function TrainerUpdateTab() {
   // --- Effect to update filtered students when studentData or selectedBatch changes ---
   useEffect(() => {
     if (searchInitiated && selectedBatch) {
-      const results = studentData.find(
+      const results = allFullstackTrainer.find(
         (student) => student.batch === selectedBatch
       );
 
       setFilteredStudents([results]);
+       setTrainerEdit([results]);
     }
-  }, [studentData, selectedBatch, searchInitiated]);
+  }, [allFullstackTrainer, selectedBatch, searchInitiated]);
 
   // --- Rendering ---
   return (
@@ -240,7 +250,7 @@ export default function TrainerUpdateTab() {
         </div>
       </div>
 
-      {/* {console.log(selectedBatch, "ggg")} */}
+      {console.log(filteredStudents, "ggg")}
 
       {/* Student Table */}
       {searchInitiated && filteredStudents.length > 0 && (
@@ -286,30 +296,52 @@ export default function TrainerUpdateTab() {
                       {student?.mode}
                     </td>
                     <td className="px-5 py-3 text-center text-sm text-gray-500 whitespace-nowrap">
-                      {student?.name}
+                      {editingStudent ? (
+                        <select
+                          type="text"
+                          className=" focus:outline-none  focus:border-red-400 focus:ring-0"
+                        >
+                          <option value={filteredStudents[0].trainer}>
+                            {filteredStudents[0].trainer}
+                          </option>
+                          {allFullstackTrainer
+                            .filter((item) => {
+                              console.log(filteredStudents, "111");
+                              return (
+                                item.trainer !== filteredStudents[0].trainer
+                              );
+                            })
+                            .map((item) => (
+                              <option value={item.trainer}>
+                                {item.trainer}
+                              </option>
+                            ))}
+                          {/* {allFullstackTrainer.map((item) => (
+                            <option value={item.trainer}>{item.trainer}</option>
+                          ))} */}
+                        </select>
+                      ) : (
+                        student?.trainer
+                      )}
                     </td>
                     <td className="px-5 py-3 text-center text-sm text-gray-500 whitespace-nowrap">
-                      {"9:30 AM - 11:30 AM"}
+                      {editingStudent ? (
+                        <div className="flex justify-center items-center">
+                          <input type="time" value={"09:30"} />
+                          <p className="pr-3">TO</p>
+                          <input type="time" value={"09:30"} />
+                        </div>
+                      ) : (
+                        "9:30 AM - 11:30 AM"
+                      )}
                     </td>
 
                     <td className="px-5 py-3 text-sm whitespace-nowrap">
                       <div className="flex gap-1 items-center justify-center">
                         <button
                           type="button"
-                          className="p-1 hover:bg-gray-100 rounded cursor-pointer"
                           onClick={() => {
-                            setSelectedStudent(student);
-                            setShowViewModal(true);
-                          }}
-                          aria-label={`View details for ${student?.name}`}
-                        >
-                          <FiEye className="h-4 w-4" />
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setEditingStudent(student);
+                            setEditingStudent((prev) => !prev);
                             setShowEditModal(true);
                           }}
                           className="cursor-pointer p-1 hover:bg-gray-100 rounded"
@@ -317,6 +349,34 @@ export default function TrainerUpdateTab() {
                         >
                           <FiEdit className="h-4 w-4" />
                         </button>
+
+                        {editingStudent && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditingStudent((prev) => !prev);
+                              setShowEditModal(true);
+                            }}
+                            className="cursor-pointer p-1 hover:bg-gray-100 rounded"
+                            aria-label={`Edit ${student?.name}`}
+                          >
+                            Save
+                          </button>
+                        )}
+
+                        {editingStudent && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditingStudent((prev) => !prev);
+                              setShowEditModal(true);
+                            }}
+                            className="cursor-pointer p-1 hover:bg-red-100 text-red-500 rounded"
+                            aria-label={`Edit ${student?.name}`}
+                          >
+                            Cancel
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -330,25 +390,6 @@ export default function TrainerUpdateTab() {
       {/* 3. Epic Status Display Section - Shown after search and if data exists */}
 
       {/* Edit Student Modal */}
-      {showEditModal && editingStudent && (
-        <EditStudentModal
-          student={editingStudent} // Pass the student data
-          onClose={() => {
-            setShowEditModal(false); // Close the modal
-            setEditingStudent(null); // Clear the student data
-          }}
-          onSave={() => {
-            // Optional: Perform actions after save, like re-fetching data or showing a toast
-            // For BatchListTab, re-running the search/filter is often desired to show updated data
-            // The handleSearch function will re-filter based on the current selectedBatch and context studentData
-            handleSearch(); // This will use the updated studentData from context
-            setShowEditModal(false); // Close the modal
-            setEditingStudent(null); // Clear the student data
-            // Optionally, show a success toast here if desired
-            // toast.success("Student updated successfully!");
-          }}
-        />
-      )}
     </>
   );
 }
