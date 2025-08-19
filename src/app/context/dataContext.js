@@ -30,7 +30,6 @@ const sapOpportunitiesInitial = [];
 const devopsOpportunitiesInitial = [];
 const bankingOpportunitiesInitial = [];
 
-
 // ===== Full‑Stack =====
 export const fullstackInitial = [
   {
@@ -122,6 +121,49 @@ export const fullstackInitial = [
     studentsPlaced: 95,
     pending: 25,
     totalCount: 120,
+  },
+];
+
+export const fullStatckTrailerInitial = [
+  {
+    id: 1,
+    batch: "FS02",
+    mode: "Offline",
+    trainer: ["Sundar P"],
+    sTiming: ["09:30 AM"],
+    eTiming: ["12:30 AM"],
+  },
+  {
+    id: 2,
+    batch: "FS01",
+    mode: "Offline",
+    trainer: ["Sri Hari"],
+    sTiming: ["09:30 AM"],
+    eTiming: ["12:30 AM"],
+  },
+  {
+    id: 3,
+    batch: "FS03",
+    mode: "Offline",
+    trainer: ["Suriya"],
+    sTiming: ["09:30 AM"],
+    eTiming: ["12:30 AM"],
+  },
+  {
+    id: 4,
+    batch: "FS04",
+    mode: "Offline",
+    trainer: ["Sundar P"],
+    sTiming: ["09:30 AM"],
+    eTiming: ["12:30 AM"],
+  },
+  {
+    id: 5,
+    batch: "FS04",
+    mode: "Offline",
+    trainer: ["Sundar Raj K"],
+    sTiming: ["09:30 AM"],
+    eTiming: ["12:30 AM"],
   },
 ];
 
@@ -854,8 +896,8 @@ export const fullstackStudentData = [
     irc: 73,
     attendance: 94,
     status: "Completed",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -875,8 +917,8 @@ export const fullstackStudentData = [
     irc: 77,
     attendance: 71,
     status: "Completed",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -896,8 +938,8 @@ export const fullstackStudentData = [
     irc: 58,
     attendance: 86,
     status: "Ongoing",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -917,8 +959,8 @@ export const fullstackStudentData = [
     irc: 63,
     attendance: 75,
     status: "Completed",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -938,8 +980,8 @@ export const fullstackStudentData = [
     irc: 84,
     attendance: 77,
     status: "Ongoing",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -959,8 +1001,8 @@ export const fullstackStudentData = [
     irc: 80,
     attendance: 66,
     status: "Completed",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -980,8 +1022,8 @@ export const fullstackStudentData = [
     irc: 74,
     attendance: 58,
     status: "Completed",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1001,8 +1043,8 @@ export const fullstackStudentData = [
     irc: 68,
     attendance: 79,
     status: "Ongoing",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1022,8 +1064,8 @@ export const fullstackStudentData = [
     irc: 91,
     attendance: 63,
     status: "Completed",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1043,8 +1085,8 @@ export const fullstackStudentData = [
     irc: 88,
     attendance: 91,
     status: "Completed",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1064,8 +1106,8 @@ export const fullstackStudentData = [
     irc: 96,
     attendance: 89,
     status: "Ongoing",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1085,8 +1127,8 @@ export const fullstackStudentData = [
     irc: 70,
     attendance: 84,
     status: "Completed",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1106,8 +1148,8 @@ export const fullstackStudentData = [
     irc: 93,
     attendance: 73,
     status: "Ongoing",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1127,8 +1169,8 @@ export const fullstackStudentData = [
     irc: 87,
     attendance: 69,
     status: "Completed",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1148,8 +1190,8 @@ export const fullstackStudentData = [
     irc: 76,
     attendance: 90,
     status: "Ongoing",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1169,8 +1211,8 @@ export const fullstackStudentData = [
     irc: 85,
     attendance: 78,
     status: "Completed",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1190,8 +1232,8 @@ export const fullstackStudentData = [
     irc: 92,
     attendance: 95,
     status: "Ongoing",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1211,8 +1253,8 @@ export const fullstackStudentData = [
     irc: 69,
     attendance: 61,
     status: "Ongoing",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1232,8 +1274,8 @@ export const fullstackStudentData = [
     irc: 60,
     attendance: 87,
     status: "Completed",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1253,8 +1295,8 @@ export const fullstackStudentData = [
     irc: 82,
     attendance: 68,
     status: "Completed",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1274,8 +1316,8 @@ export const fullstackStudentData = [
     irc: 89,
     attendance: 93,
     status: "Ongoing",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1295,8 +1337,8 @@ export const fullstackStudentData = [
     irc: 94,
     attendance: 74,
     status: "Completed",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1316,8 +1358,8 @@ export const fullstackStudentData = [
     irc: 66,
     attendance: 85,
     status: "Ongoing",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1338,8 +1380,8 @@ export const fullstackStudentData = [
     irc: 72,
     attendance: 70,
     status: "Completed",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1362,8 +1404,8 @@ export const dataAnalyticsStudentData = [
     irc: 95,
     attendance: 76,
     status: "Completed",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1383,8 +1425,8 @@ export const dataAnalyticsStudentData = [
     irc: 85,
     attendance: 61,
     status: "Ongoing",
-        domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1404,8 +1446,8 @@ export const dataAnalyticsStudentData = [
     irc: 91,
     attendance: 79,
     status: "Completed",
-     domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
 
@@ -1426,8 +1468,8 @@ export const dataAnalyticsStudentData = [
     irc: 64,
     attendance: 68,
     status: "Ongoing",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1447,8 +1489,8 @@ export const dataAnalyticsStudentData = [
     irc: 93,
     attendance: 83,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
      trainerName: "Shri Hari",
     
@@ -1469,8 +1511,8 @@ export const dataAnalyticsStudentData = [
     irc: 86,
     attendance: 65,
     status: "Ongoing",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
      trainerName: "Shri Hari",
   },
@@ -1490,8 +1532,8 @@ export const dataAnalyticsStudentData = [
     irc: 77,
     attendance: 70,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
      trainerName: "Shri Hari",
   },
@@ -1511,8 +1553,8 @@ export const dataAnalyticsStudentData = [
     irc: 89,
     attendance: 88,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
      trainerName: "Shri Hari",
   },
@@ -1532,8 +1574,8 @@ export const dataAnalyticsStudentData = [
     irc: 66,
     attendance: 59,
     status: "Ongoing",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
      trainerName: "Shri Hari",
   },
@@ -1553,8 +1595,8 @@ export const dataAnalyticsStudentData = [
     irc: 94,
     attendance: 92,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1574,8 +1616,8 @@ export const dataAnalyticsStudentData = [
     irc: 71,
     attendance: 55,
     status: "Ongoing",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1595,8 +1637,8 @@ export const dataAnalyticsStudentData = [
     irc: 87,
     attendance: 82,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1616,8 +1658,8 @@ export const dataAnalyticsStudentData = [
     irc: 65,
     attendance: 64,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1637,8 +1679,8 @@ export const dataAnalyticsStudentData = [
     irc: 99,
     attendance: 91,
     status: "Ongoing",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1658,8 +1700,8 @@ export const dataAnalyticsStudentData = [
     irc: 73,
     attendance: 66,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1679,8 +1721,8 @@ export const dataAnalyticsStudentData = [
     irc: 90,
     attendance: 89,
     status: "Ongoing",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1700,8 +1742,8 @@ export const dataAnalyticsStudentData = [
     irc: 74,
     attendance: 60,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1721,8 +1763,8 @@ export const dataAnalyticsStudentData = [
     irc: 70,
     attendance: 71,
     status: "Ongoing",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1742,8 +1784,8 @@ export const dataAnalyticsStudentData = [
     irc: 95,
     attendance: 86,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1763,8 +1805,8 @@ export const dataAnalyticsStudentData = [
     irc: 60,
     attendance: 57,
     status: "Ongoing",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1784,8 +1826,8 @@ export const dataAnalyticsStudentData = [
     irc: 61,
     attendance: 52,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1805,8 +1847,8 @@ export const dataAnalyticsStudentData = [
     irc: 88,
     attendance: 85,
     status: "Ongoing",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1826,8 +1868,8 @@ export const dataAnalyticsStudentData = [
     irc: 98,
     attendance: 96,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1847,8 +1889,8 @@ export const dataAnalyticsStudentData = [
     irc: 69,
     attendance: 73,
     status: "Ongoing",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1868,8 +1910,8 @@ export const dataAnalyticsStudentData = [
     irc: 85,
     attendance: 84,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1892,8 +1934,8 @@ export const bankingStudentData = [
     irc: 75,
     attendance: 88,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1913,8 +1955,8 @@ export const bankingStudentData = [
     irc: 93,
     attendance: 67,
     status: "Ongoing",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1934,8 +1976,8 @@ export const bankingStudentData = [
     irc: 89,
     attendance: 81,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1955,8 +1997,8 @@ export const bankingStudentData = [
     irc: 84,
     attendance: 73,
     status: "Ongoing",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1976,8 +2018,8 @@ export const bankingStudentData = [
     irc: 95,
     attendance: 90,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -1997,8 +2039,8 @@ export const bankingStudentData = [
     irc: 91,
     attendance: 68,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2018,8 +2060,8 @@ export const bankingStudentData = [
     irc: 87,
     attendance: 72,
     status: "Ongoing",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2039,8 +2081,8 @@ export const bankingStudentData = [
     irc: 90,
     attendance: 76,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2060,8 +2102,8 @@ export const bankingStudentData = [
     irc: 63,
     attendance: 83,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2081,8 +2123,8 @@ export const bankingStudentData = [
     irc: 72,
     attendance: 59,
     status: "Ongoing",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2102,8 +2144,8 @@ export const bankingStudentData = [
     irc: 78,
     attendance: 85,
     status: "Ongoing",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2123,8 +2165,8 @@ export const bankingStudentData = [
     irc: 94,
     attendance: 65,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2144,8 +2186,8 @@ export const bankingStudentData = [
     irc: 88,
     attendance: 93,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2165,8 +2207,8 @@ export const bankingStudentData = [
     irc: 70,
     attendance: 71,
     status: "Ongoing",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2186,8 +2228,8 @@ export const bankingStudentData = [
     irc: 79,
     attendance: 86,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2207,8 +2249,8 @@ export const bankingStudentData = [
     irc: 73,
     attendance: 66,
     status: "Ongoing",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2228,8 +2270,8 @@ export const bankingStudentData = [
     irc: 76,
     attendance: 80,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2249,8 +2291,8 @@ export const bankingStudentData = [
     irc: 86,
     attendance: 69,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2270,8 +2312,8 @@ export const bankingStudentData = [
     irc: 85,
     attendance: 75,
     status: "Ongoing",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2291,8 +2333,8 @@ export const bankingStudentData = [
     irc: 92,
     attendance: 78,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2312,8 +2354,8 @@ export const bankingStudentData = [
     irc: 67,
     attendance: 82,
     status: "Ongoing",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2333,8 +2375,8 @@ export const bankingStudentData = [
     irc: 74,
     attendance: 74,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2354,8 +2396,8 @@ export const bankingStudentData = [
     irc: 83,
     attendance: 88,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2375,8 +2417,8 @@ export const bankingStudentData = [
     irc: 71,
     attendance: 63,
     status: "Ongoing",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2396,8 +2438,8 @@ export const bankingStudentData = [
     irc: 64,
     attendance: 70,
     status: "Completed",
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2419,8 +2461,8 @@ export const marketingStudentData = [
     mile3: 69,
     irc: 95,
     attendance: 84,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2439,8 +2481,8 @@ export const marketingStudentData = [
     mile3: 82,
     irc: 89,
     attendance: 71,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2459,8 +2501,8 @@ export const marketingStudentData = [
     mile3: 95,
     irc: 90,
     attendance: 69,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2479,8 +2521,8 @@ export const marketingStudentData = [
     mile3: 70,
     irc: 86,
     attendance: 80,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2499,8 +2541,8 @@ export const marketingStudentData = [
     mile3: 61,
     irc: 84,
     attendance: 65,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2519,8 +2561,8 @@ export const marketingStudentData = [
     mile3: 87,
     irc: 92,
     attendance: 63,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2539,8 +2581,8 @@ export const marketingStudentData = [
     mile3: 98,
     irc: 78,
     attendance: 77,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2559,8 +2601,8 @@ export const marketingStudentData = [
     mile3: 59,
     irc: 73,
     attendance: 58,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2579,8 +2621,8 @@ export const marketingStudentData = [
     mile3: 76,
     irc: 88,
     attendance: 69,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2599,8 +2641,8 @@ export const marketingStudentData = [
     mile3: 60,
     irc: 83,
     attendance: 90,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2619,8 +2661,8 @@ export const marketingStudentData = [
     mile3: 84,
     irc: 91,
     attendance: 68,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2639,8 +2681,8 @@ export const marketingStudentData = [
     mile3: 63,
     irc: 67,
     attendance: 66,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2659,8 +2701,8 @@ export const marketingStudentData = [
     mile3: 79,
     irc: 85,
     attendance: 72,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2679,8 +2721,8 @@ export const marketingStudentData = [
     mile3: 56,
     irc: 79,
     attendance: 64,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2699,8 +2741,8 @@ export const marketingStudentData = [
     mile3: 91,
     irc: 76,
     attendance: 86,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2719,8 +2761,8 @@ export const marketingStudentData = [
     mile3: 92,
     irc: 90,
     attendance: 73,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2739,8 +2781,8 @@ export const marketingStudentData = [
     mile3: 81,
     irc: 75,
     attendance: 59,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2759,8 +2801,8 @@ export const marketingStudentData = [
     mile3: 94,
     irc: 70,
     attendance: 75,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2779,8 +2821,8 @@ export const marketingStudentData = [
     mile3: 88,
     irc: 62,
     attendance: 62,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2799,8 +2841,8 @@ export const marketingStudentData = [
     mile3: 66,
     irc: 68,
     attendance: 79,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2819,8 +2861,8 @@ export const marketingStudentData = [
     mile3: 65,
     irc: 81,
     attendance: 87,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2839,8 +2881,8 @@ export const marketingStudentData = [
     mile3: 60,
     irc: 77,
     attendance: 60,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2859,8 +2901,8 @@ export const marketingStudentData = [
     mile3: 89,
     irc: 74,
     attendance: 61,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2879,8 +2921,8 @@ export const marketingStudentData = [
     mile3: 73,
     irc: 69,
     attendance: 67,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2899,8 +2941,8 @@ export const marketingStudentData = [
     mile3: 97,
     irc: 82,
     attendance: 70,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2922,8 +2964,8 @@ export const sapStudentData = [
     mile3: 69,
     irc: 80,
     attendance: 90,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2942,8 +2984,8 @@ export const sapStudentData = [
     mile3: 93,
     irc: 88,
     attendance: 95,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2962,8 +3004,8 @@ export const sapStudentData = [
     mile3: 70,
     irc: 75,
     attendance: 85,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -2982,8 +3024,8 @@ export const sapStudentData = [
     mile3: 80,
     irc: 83,
     attendance: 92,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3002,8 +3044,8 @@ export const sapStudentData = [
     mile3: 74,
     irc: 77,
     attendance: 88,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3022,8 +3064,8 @@ export const sapStudentData = [
     mile3: 91,
     irc: 90,
     attendance: 97,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3042,8 +3084,8 @@ export const sapStudentData = [
     mile3: 70,
     irc: 72,
     attendance: 80,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3062,8 +3104,8 @@ export const sapStudentData = [
     mile3: 70,
     irc: 74,
     attendance: 86,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3082,8 +3124,8 @@ export const sapStudentData = [
     mile3: 87,
     irc: 85,
     attendance: 90,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3102,8 +3144,8 @@ export const sapStudentData = [
     mile3: 89,
     irc: 90,
     attendance: 93,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3122,8 +3164,8 @@ export const sapStudentData = [
     mile3: 78,
     irc: 81,
     attendance: 89,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3142,8 +3184,8 @@ export const sapStudentData = [
     mile3: 72,
     irc: 76,
     attendance: 85,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3162,8 +3204,8 @@ export const sapStudentData = [
     mile3: 65,
     irc: 70,
     attendance: 83,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3182,8 +3224,8 @@ export const sapStudentData = [
     mile3: 88,
     irc: 86,
     attendance: 91,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3202,8 +3244,8 @@ export const sapStudentData = [
     mile3: 82,
     irc: 79,
     attendance: 87,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3222,8 +3264,8 @@ export const sapStudentData = [
     mile3: 92,
     irc: 93,
     attendance: 98,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3242,8 +3284,8 @@ export const sapStudentData = [
     mile3: 75,
     irc: 70,
     attendance: 84,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3262,8 +3304,8 @@ export const sapStudentData = [
     mile3: 76,
     irc: 82,
     attendance: 87,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3282,8 +3324,8 @@ export const sapStudentData = [
     mile3: 70,
     irc: 68,
     attendance: 79,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3302,8 +3344,8 @@ export const sapStudentData = [
     mile3: 79,
     irc: 81,
     attendance: 85,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3322,8 +3364,8 @@ export const sapStudentData = [
     mile3: 66,
     irc: 72,
     attendance: 82,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3342,8 +3384,8 @@ export const sapStudentData = [
     mile3: 90,
     irc: 94,
     attendance: 96,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3362,8 +3404,8 @@ export const sapStudentData = [
     mile3: 74,
     irc: 75,
     attendance: 86,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3382,8 +3424,8 @@ export const sapStudentData = [
     mile3: 81,
     irc: 84,
     attendance: 89,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3402,8 +3444,8 @@ export const sapStudentData = [
     mile3: 93,
     irc: 91,
     attendance: 95,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3425,8 +3467,8 @@ export const devopsStudentData = [
     mile3: 95,
     irc: 91,
     attendance: 96,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3445,8 +3487,8 @@ export const devopsStudentData = [
     mile3: 80,
     irc: 83,
     attendance: 89,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3465,8 +3507,8 @@ export const devopsStudentData = [
     mile3: 75,
     irc: 72,
     attendance: 84,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3485,8 +3527,8 @@ export const devopsStudentData = [
     mile3: 70,
     irc: 67,
     attendance: 80,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3505,8 +3547,8 @@ export const devopsStudentData = [
     mile3: 93,
     irc: 96,
     attendance: 98,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3525,8 +3567,8 @@ export const devopsStudentData = [
     mile3: 72,
     irc: 75,
     attendance: 85,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3545,8 +3587,8 @@ export const devopsStudentData = [
     mile3: 85,
     irc: 82,
     attendance: 88,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3565,8 +3607,8 @@ export const devopsStudentData = [
     mile3: 67,
     irc: 69,
     attendance: 79,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3585,8 +3627,8 @@ export const devopsStudentData = [
     mile3: 94,
     irc: 90,
     attendance: 95,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3605,8 +3647,8 @@ export const devopsStudentData = [
     mile3: 77,
     irc: 78,
     attendance: 86,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3625,8 +3667,8 @@ export const devopsStudentData = [
     mile3: 68,
     irc: 70,
     attendance: 82,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3645,8 +3687,8 @@ export const devopsStudentData = [
     mile3: 86,
     irc: 87,
     attendance: 90,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3665,8 +3707,8 @@ export const devopsStudentData = [
     mile3: 91,
     irc: 94,
     attendance: 96,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3685,8 +3727,8 @@ export const devopsStudentData = [
     mile3: 70,
     irc: 73,
     attendance: 83,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3705,8 +3747,8 @@ export const devopsStudentData = [
     mile3: 83,
     irc: 85,
     attendance: 89,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3725,8 +3767,8 @@ export const devopsStudentData = [
     mile3: 92,
     irc: 89,
     attendance: 94,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3745,8 +3787,8 @@ export const devopsStudentData = [
     mile3: 66,
     irc: 68,
     attendance: 80,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3785,8 +3827,8 @@ export const devopsStudentData = [
     mile3: 86,
     irc: 89,
     attendance: 91,
-    domainScore: 85, 
-    aptitudeScore: 78,  
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3805,8 +3847,8 @@ export const devopsStudentData = [
     mile3: 80,
     irc: 79,
     attendance: 86,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3825,8 +3867,8 @@ export const devopsStudentData = [
     mile3: 95,
     irc: 97,
     attendance: 99,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3845,8 +3887,8 @@ export const devopsStudentData = [
     mile3: 65,
     irc: 69,
     attendance: 81,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3865,8 +3907,8 @@ export const devopsStudentData = [
     mile3: 76,
     irc: 75,
     attendance: 84,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3885,8 +3927,8 @@ export const devopsStudentData = [
     mile3: 80,
     irc: 82,
     attendance: 88,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3905,8 +3947,8 @@ export const devopsStudentData = [
     mile3: 94,
     irc: 93,
     attendance: 97,
-    domainScore: 85, 
-    aptitudeScore: 78, 
+    domainScore: 85,
+    aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
   },
@@ -3980,6 +4022,9 @@ const DataProvider = ({ children }) => {
   const [allBatchNames, setAllBatchNames] = useState([]); //all batch names across domains
   const [allStudentData, setAllStudentData] = useState([]); // for storing all student records
   const [batchEpicStats, setBatchEpicStats] = useState({});
+  const [allFullstackTrainer, setAllFullStackTrainer] = useState(
+    fullStatckTrailerInitial
+  );
 
   const [liveCounts, setLiveCounts] = useState({
     batch: 0,
@@ -4026,7 +4071,9 @@ const DataProvider = ({ children }) => {
   const [devopsOpportunities, setDevopsOpportunities] = useState(
     devopsOpportunitiesInitial
   );
-  const [bankingOpportunities, setBankingOpportunities] = useState(bankingOpportunitiesInitial);
+  const [bankingOpportunities, setBankingOpportunities] = useState(
+    bankingOpportunitiesInitial
+  );
 
   const userName = loginUser.split("@")[0];
   const firstLetterUser = loginUser?.charAt(0).toUpperCase() || "";
@@ -4035,30 +4082,30 @@ const DataProvider = ({ children }) => {
     return [...new Set(studentData.map((s) => s.batch).filter(Boolean))].sort();
   }, [studentData]);
 
-const calculateBatchEpicStats = (studentsArray) => {
-  const stats = {};
-  studentsArray.forEach((student) => {
-    const batchName = student.batch; // Assuming the student object has a 'batch' property
-    const status = student.epicStatus; // Assuming the student object has an 'epicStatus' property
+  const calculateBatchEpicStats = (studentsArray) => {
+    const stats = {};
+    studentsArray.forEach((student) => {
+      const batchName = student.batch; // Assuming the student object has a 'batch' property
+      const status = student.epicStatus; // Assuming the student object has an 'epicStatus' property
 
-    // Initialize batch object if it doesn't exist
-    if (!stats[batchName]) {
-      stats[batchName] = {}; // Or initialize with all possible statuses if you want 0 counts initially
-    }
+      // Initialize batch object if it doesn't exist
+      if (!stats[batchName]) {
+        stats[batchName] = {}; // Or initialize with all possible statuses if you want 0 counts initially
+      }
 
-    // Increment the count for the specific status within the batch
-    // Handle cases where epicStatus might be missing or invalid
-    if (status && typeof status === 'string') {
+      // Increment the count for the specific status within the batch
+      // Handle cases where epicStatus might be missing or invalid
+      if (status && typeof status === "string") {
         stats[batchName][status] = (stats[batchName][status] || 0) + 1;
-    } else {
+      } else {
         // Optional: Handle students without a defined epicStatus
         // e.g., count them under 'Unknown' or skip
-        const unknownKey = 'Unknown';
+        const unknownKey = "Unknown";
         stats[batchName][unknownKey] = (stats[batchName][unknownKey] || 0) + 1;
-    }
-  });
-  return stats;
-};
+      }
+    });
+    return stats;
+  };
 
   //all batches names across domains
   useEffect(() => {
@@ -4184,54 +4231,75 @@ const calculateBatchEpicStats = (studentsArray) => {
   // 🔄 Update studentData and studentHead when batchingvalue changes
   useEffect(() => {
     switch (studentBatchSelect) {
-case "fullstack":
-  setBatchHead("Full Stack Development");
-  setBatchesNames([...new Set(fullstackStudent.map(s => s.batch).filter(Boolean))].sort());
-  setStudentData(fullstackStudent);
-  setBatchEpicStats(calculateBatchEpicStats(fullstackStudent));
-  break;
+      case "fullstack":
+        setBatchHead("Full Stack Development");
+        setBatchesNames(
+          [
+            ...new Set(fullstackStudent.map((s) => s.batch).filter(Boolean)),
+          ].sort()
+        );
+        setStudentData(fullstackStudent);
+        setBatchEpicStats(calculateBatchEpicStats(fullstackStudent));
+        break;
 
-case "dataanalytics":
-  setBatchHead("Data Analytics & Science");
-  setBatchesNames([...new Set(dataanalyticsStudent.map(s => s.batch).filter(Boolean))].sort());
-  setStudentData(dataanalyticsStudent);
-  setBatchEpicStats(calculateBatchEpicStats(dataanalyticsStudent));
-  break;
+      case "dataanalytics":
+        setBatchHead("Data Analytics & Science");
+        setBatchesNames(
+          [
+            ...new Set(
+              dataanalyticsStudent.map((s) => s.batch).filter(Boolean)
+            ),
+          ].sort()
+        );
+        setStudentData(dataanalyticsStudent);
+        setBatchEpicStats(calculateBatchEpicStats(dataanalyticsStudent));
+        break;
 
-case "marketing":
-  setBatchHead("Digital Marketing");
-  setBatchesNames([...new Set(marketingStudent.map(s => s.batch).filter(Boolean))].sort());
-  setStudentData(marketingStudent);
-  setBatchEpicStats(calculateBatchEpicStats(marketingStudent));
-  break;
+      case "marketing":
+        setBatchHead("Digital Marketing");
+        setBatchesNames(
+          [
+            ...new Set(marketingStudent.map((s) => s.batch).filter(Boolean)),
+          ].sort()
+        );
+        setStudentData(marketingStudent);
+        setBatchEpicStats(calculateBatchEpicStats(marketingStudent));
+        break;
 
-case "devops":
-  setBatchHead("DevOps");
-  setBatchesNames([...new Set(devopsStudent.map(s => s.batch).filter(Boolean))].sort());
-  setStudentData(devopsStudent);
-  setBatchEpicStats(calculateBatchEpicStats(devopsStudent));
-  break;
+      case "devops":
+        setBatchHead("DevOps");
+        setBatchesNames(
+          [...new Set(devopsStudent.map((s) => s.batch).filter(Boolean))].sort()
+        );
+        setStudentData(devopsStudent);
+        setBatchEpicStats(calculateBatchEpicStats(devopsStudent));
+        break;
 
-case "banking":
-  setBatchHead("Banking & Financial Services");
-  setBatchesNames([...new Set(bankingStudent.map(s => s.batch).filter(Boolean))].sort());
-  setStudentData(bankingStudent);
-  setBatchEpicStats(calculateBatchEpicStats(bankingStudent));
-  break;
+      case "banking":
+        setBatchHead("Banking & Financial Services");
+        setBatchesNames(
+          [
+            ...new Set(bankingStudent.map((s) => s.batch).filter(Boolean)),
+          ].sort()
+        );
+        setStudentData(bankingStudent);
+        setBatchEpicStats(calculateBatchEpicStats(bankingStudent));
+        break;
 
-case "sap":
-  setBatchHead("SAP");
-  setBatchesNames([...new Set(sapStudent.map(s => s.batch).filter(Boolean))].sort());
-  setStudentData(sapStudent);
-  setBatchEpicStats(calculateBatchEpicStats(sapStudent));
-  break;
+      case "sap":
+        setBatchHead("SAP");
+        setBatchesNames(
+          [...new Set(sapStudent.map((s) => s.batch).filter(Boolean))].sort()
+        );
+        setStudentData(sapStudent);
+        setBatchEpicStats(calculateBatchEpicStats(sapStudent));
+        break;
 
-default:
-  setBatchHead("");
-  setBatchesNames([]);
-  setStudentData([]);
-  setBatchEpicStats({});
-
+      default:
+        setBatchHead("");
+        setBatchesNames([]);
+        setStudentData([]);
+        setBatchEpicStats({});
     }
   }, [
     studentBatchSelect,
@@ -4546,53 +4614,59 @@ default:
   };
 
   // Inside DataContext.js
-const addOpportunity = (opportunity, domain) => { // Accept domain as an argument
-  // Use the passed domain, fallback to batchingvalue if not provided
-  // (Providing it explicitly is preferred, but fallback maintains some compatibility)
-  const targetDomain = domain || batchingvalue;
+  const addOpportunity = (opportunity, domain) => {
+    // Accept domain as an argument
+    // Use the passed domain, fallback to batchingvalue if not provided
+    // (Providing it explicitly is preferred, but fallback maintains some compatibility)
+    const targetDomain = domain || batchingvalue;
 
-  // Check the resolved targetDomain
-  if (!targetDomain) {
-    console.error("Domain is not set. Cannot add opportunity.");
-    // Assuming you have a toast notification system available in DataContext
-    // If not, you might need to handle this error differently (e.g., throw an error
-    // that the calling component can catch, or return a specific error code/object)
-    if (typeof toast !== 'undefined' && toast.error) {
+    // Check the resolved targetDomain
+    if (!targetDomain) {
+      console.error("Domain is not set. Cannot add opportunity.");
+      // Assuming you have a toast notification system available in DataContext
+      // If not, you might need to handle this error differently (e.g., throw an error
+      // that the calling component can catch, or return a specific error code/object)
+      if (typeof toast !== "undefined" && toast.error) {
         toast.error("Failed to add opportunity: Domain not specified.");
-    }
-    return;
-  }
-
-  // Add the determined domain to the opportunity object
-  const opportunityWithDomain = { ...opportunity, domain: targetDomain };
-
-  // Update the correct domain-specific opportunities array
-  switch (targetDomain) {
-    case "fullstack":
-      setFullstackOpportunities((prev) => [...prev, opportunityWithDomain]);
-      break;
-    case "dataanalytics":
-      setDataanalyticsOpportunities((prev) => [...prev, opportunityWithDomain]);
-      break;
-    case "banking":
-      setBankingOpportunities((prev) => [...prev, opportunityWithDomain]);
-      break;
-    case "marketing":
-      setMarketingOpportunities((prev) => [...prev, opportunityWithDomain]);
-      break;
-    case "sap":
-      setSapOpportunities((prev) => [...prev, opportunityWithDomain]);
-      break;
-    case "devops":
-      setDevopsOpportunities((prev) => [...prev, opportunityWithDomain]);
-      break;
-    default:
-      console.error("Unknown domain for adding opportunity:", targetDomain);
-      if (typeof toast !== 'undefined' && toast.error) {
-         toast.error(`Failed to add opportunity: Unknown domain '${targetDomain}'.`);
       }
-  }
-};
+      return;
+    }
+
+    // Add the determined domain to the opportunity object
+    const opportunityWithDomain = { ...opportunity, domain: targetDomain };
+
+    // Update the correct domain-specific opportunities array
+    switch (targetDomain) {
+      case "fullstack":
+        setFullstackOpportunities((prev) => [...prev, opportunityWithDomain]);
+        break;
+      case "dataanalytics":
+        setDataanalyticsOpportunities((prev) => [
+          ...prev,
+          opportunityWithDomain,
+        ]);
+        break;
+      case "banking":
+        setBankingOpportunities((prev) => [...prev, opportunityWithDomain]);
+        break;
+      case "marketing":
+        setMarketingOpportunities((prev) => [...prev, opportunityWithDomain]);
+        break;
+      case "sap":
+        setSapOpportunities((prev) => [...prev, opportunityWithDomain]);
+        break;
+      case "devops":
+        setDevopsOpportunities((prev) => [...prev, opportunityWithDomain]);
+        break;
+      default:
+        console.error("Unknown domain for adding opportunity:", targetDomain);
+        if (typeof toast !== "undefined" && toast.error) {
+          toast.error(
+            `Failed to add opportunity: Unknown domain '${targetDomain}'.`
+          );
+        }
+    }
+  };
 
   //  ➧  Fetch opportunities for the current domain
   const getOpportunitiesByDomain = (domain) => {
@@ -4701,21 +4775,22 @@ const addOpportunity = (opportunity, domain) => { // Accept domain as an argumen
         studentData,
         liveCounts,
         liveBatchNames,
-        batchEpicStats, 
+        batchEpicStats,
         calculateBatchEpicStats,
+        allFullstackTrainer,
+        setAllFullStackTrainer,
         fullstackOpportunities,
-      setFullstackOpportunities,
-      dataanalyticsOpportunities,
-      setDataanalyticsOpportunities,
-      marketingOpportunities,
-      setMarketingOpportunities,
-      sapOpportunities,
-      setSapOpportunities,
-      devopsOpportunities,
-      setDevopsOpportunities,
-      bankingOpportunities,
-      setBankingOpportunities,
-
+        setFullstackOpportunities,
+        dataanalyticsOpportunities,
+        setDataanalyticsOpportunities,
+        marketingOpportunities,
+        setMarketingOpportunities,
+        sapOpportunities,
+        setSapOpportunities,
+        devopsOpportunities,
+        setDevopsOpportunities,
+        bankingOpportunities,
+        setBankingOpportunities,
       }}
     >
       {children}
