@@ -6,6 +6,7 @@ import BatchListTab from "../batches/batchListTab/page";
 import TrainerUpdateTab from "../batches/trainerUpdateTab/page";
 import BatchHistoryTab from "../batches/batchHistoryTab/page";
 import QuickReport from "./components/QuickReport";
+import PlacedStudent from "./components/PlacedStudent";
 
 export default function BatchePage() {
   const { batchesNames } = useDataContext(); // ❌ removed getBatchHead
@@ -75,9 +76,10 @@ export default function BatchePage() {
         <h2 className="text-lg text-[#cd5e77] mb-3">Placement Report</h2>
 
         {activeTab === "Quick Report" && <QuickReport />}
-        {activeTab === "Placed Student" && <TrainerUpdateTab />}
+        {activeTab === "Placed Student" && <PlacedStudent />}
         {activeTab === "Placement" && <BatchHistoryTab />}
       </main>
+      {/* Edit Student Modal */}
     </div>
   );
 }
