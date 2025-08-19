@@ -603,71 +603,107 @@ export default function BatchModel() {
   };
 
   // First define handleSearch before any effects that use it
-  const handleSearch = useCallback(() => {
-    const hasSearchCriteria =
-      searchTerm || (mode && mode !== "Off") || startDate || endDate;
+  // const handleSearch = useCallback(() => {
+  //   const hasSearchCriteria =
+  //     searchTerm || (mode && mode !== "Off") || startDate || endDate;
 
-    if (!hasSearchCriteria) {
-      setSearchInitiated(false);
-      toast.error("Please enter at least one search criterion");
-      return;
-    }
+  //   if (!hasSearchCriteria) {
+  //     setSearchInitiated(false);
+  //     toast.error("Please enter at least one search criterion");
+  //     return;
+  //   }
 
-    if (searchDateError) {
-      toast.error("Please fix the date range error before searching");
-      return;
-    }
+  //   if (searchDateError) {
+  //     toast.error("Please fix the date range error before searching");
+  //     return;
+  //   }
 
-    let results = batches;
+  //   let results = batches;
 
-    // Search by Batch No
-    if (searchTerm) {
-      results = results.filter((batch) =>
-        batch.batchNo.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
+  //   // Search by Batch No
+  //   if (searchTerm) {
+  //     results = results.filter((batch) =>
+  //       batch.batchNo.toLowerCase().includes(searchTerm.toLowerCase())
+  //     );
+  //   }
 
-    // Search by Mode
-    if (mode && mode !== "Off") {
-      results = results.filter(
-        (batch) => batch.mode.toLowerCase() === mode.toLowerCase()
-      );
-    }
+  //   // Search by Mode
+  //   if (mode && mode !== "Off") {
+  //     results = results.filter(
+  //       (batch) => batch.mode.toLowerCase() === mode.toLowerCase()
+  //     );
+  //   }
 
-    // Normalize input dates
-    const start = startDate ? new Date(startDate) : null;
-    const end = endDate ? new Date(endDate) : null;
+  //   // Normalize input dates
+  //   const start = startDate ? new Date(startDate) : null;
+  //   const end = endDate ? new Date(endDate) : null;
 
-    // Filter based on section start/end dates
-    if (start || end) {
-      results = results.filter((batch) => {
-        const sectionDates = [
-          batch.sections?.Domain,
-          batch.sections?.Aptitude,
-          batch.sections?.Communication,
-        ].filter(Boolean);
+  //   // Filter based on section start/end dates
+  //   if (start || end) {
+  //     results = results.filter((batch) => {
+  //       const sectionDates = [
+  //         batch.sections?.Domain,
+  //         batch.sections?.Aptitude,
+  //         batch.sections?.Communication,
+  //       ].filter(Boolean);
 
-        return sectionDates.some((section) => {
-          const secStart = section.startDate
-            ? new Date(section.startDate)
-            : null;
-          const secEnd = section.endDate ? new Date(section.endDate) : null;
+  //       return sectionDates.some((section) => {
+  //         const secStart = section.startDate
+  //           ? new Date(section.startDate)
+  //           : null;
+  //         const secEnd = section.endDate ? new Date(section.endDate) : null;
 
-          if (start && end) {
-            return secStart <= end && secEnd >= start;
-          } else if (start) {
-            return secEnd >= start;
-          } else if (end) {
-            return secStart <= end;
-          }
-          return true;
-        });
-      });
-    }
+  //         if (start && end) {
+  //           return secStart <= end && secEnd >= start;
+  //         } else if (start) {
+  //           return secEnd >= start;
+  //         } else if (end) {
+  //           return secStart <= end;
+  //         }
+  //         return true;
+  //       });
+  //     });
+  //   }
 
-    setFilteredBatches(results);
+  //   setFilteredBatches(results);
+  //   setSearchInitiated(true);
+  // }, [batches, endDate, mode, searchDateError, searchTerm, startDate]);
+
+  const handleSearch = useCallback(async () => {
+  const hasSearchCriteria =
+    searchTerm || (mode && mode !== "Off") || startDate || endDate;
+
+  if (!hasSearchCriteria) {
+    setSearchInitiated(false);
+    toast.error("Please enter at least one search criterion");
+    return;
+  }
+
+  if (searchDateError) {
+    toast.error("Please fix the date range error before searching");
+    return;
+  }
+
+  try {
+    const queryParams = new URLSearchParams({
+      searchTerm,
+      mode,
+      startDate,
+      endDate,
+    });
+
+    const res = await fetch(`/api/batches?${queryParams.toString()}`);
+    if (!res.ok) throw new Error("Failed to fetch batches");
+
+    const data = await res.json();
+    setFilteredBatches(data);
     setSearchInitiated(true);
-  }, [batches, endDate, mode, searchDateError, searchTerm, startDate]);
+  } catch (error) {
+    console.error(error);
+    toast.error("Error fetching batches");
+  }
+}, [searchTerm, mode, startDate, endDate, searchDateError]);
+
 
   // Then use it in your useEffect
   useEffect(() => {
@@ -780,45 +816,123 @@ export default function BatchModel() {
     return isValid;
   };
 
-  const handleAddBatch = () => {
-    if (!validateForm()) return;
-    if (Object.values(modalDateErrors).some((e) => e)) {
-      toast.error("Please fix the date range errors before adding the batch");
-      return;
-    }
-    /* ⬇️ earliest / latest across sections */
-    const allSecs = Object.values(newBatch.sections);
-    const earliest = new Date(
-      Math.min(...allSecs.map((s) => new Date(s.startDate)))
-    );
-    const latest = new Date(
-      Math.max(...allSecs.map((s) => new Date(s.endDate)))
-    );
+  // const handleAddBatch = () => {
+  //   if (!validateForm()) return;
+  //   if (Object.values(modalDateErrors).some((e) => e)) {
+  //     toast.error("Please fix the date range errors before adding the batch");
+  //     return;
+  //   }
+  //   /* ⬇️ earliest / latest across sections */
+  //   const allSecs = Object.values(newBatch.sections);
+  //   const earliest = new Date(
+  //     Math.min(...allSecs.map((s) => new Date(s.startDate)))
+  //   );
+  //   const latest = new Date(
+  //     Math.max(...allSecs.map((s) => new Date(s.endDate)))
+  //   );
 
-    /* convert every section date to DD-MM-YYYY */
-    const sectionCopy = {};
+  //   /* convert every section date to DD-MM-YYYY */
+  //   const sectionCopy = {};
+  //   for (const [k, s] of Object.entries(newBatch.sections)) {
+  //     sectionCopy[k] = {
+  //       startDate: toDDMMYYYY(parseDate(s.startDate)),
+  //       endDate: toDDMMYYYY(parseDate(s.endDate)),
+  //     };
+  //   }
+
+  //   const newBatchEntry = {
+  //     id: batches.length + 1,
+  //     batchNo: newBatch.batchNo,
+  //     status: newBatch.status,
+  //     mode: newBatch.mode,
+  //     startDate: toDDMMYYYY(earliest),
+  //     endDate: toDDMMYYYY(latest),
+  //     sections: sectionCopy,
+  //   };
+
+  //   addBatch(newBatchEntry);
+  //   setShowModal(false);
+  //   resetForm();
+  //   toast.success("Batch added successfully");
+  // };
+
+  const handleAddBatch = async () => {
+  if (!validateForm()) return;
+  if (Object.values(modalDateErrors).some((e) => e)) {
+    toast.error("Please fix the date range errors before adding the batch");
+    return;
+  }
+
+  const allSecs = Object.values(newBatch.sections);
+  const earliest = new Date(
+    Math.min(...allSecs.map((s) => new Date(s.startDate)))
+  );
+  const latest = new Date(
+    Math.max(...allSecs.map((s) => new Date(s.endDate)))
+  );
+
+  // const sectionCopy = {};
+  // for (const [k, s] of Object.entries(newBatch.sections)) {
+  //   sectionCopy[k] = {
+  //     startDate: toDDMMYYYY(parseDate(s.startDate)),
+  //     endDate: toDDMMYYYY(parseDate(s.endDate)),
+  //   };
+  // }
+
+  // const newBatchEntry = {
+  //   batchNo: newBatch.batchNo,
+  //   status: newBatch.status,
+  //   mode: newBatch.mode,
+  //   startDate: toDDMMYYYY(earliest),
+  //   endDate: toDDMMYYYY(latest),
+  //   sections: sectionCopy,
+  // };
+  const sectionCopy = {};
     for (const [k, s] of Object.entries(newBatch.sections)) {
       sectionCopy[k] = {
-        startDate: toDDMMYYYY(parseDate(s.startDate)),
-        endDate: toDDMMYYYY(parseDate(s.endDate)),
+        startDate: new Date(s.startDate).toISOString().slice(0, 10),
+        endDate: new Date(s.endDate).toISOString().slice(0, 10),
       };
     }
 
     const newBatchEntry = {
-      id: batches.length + 1,
       batchNo: newBatch.batchNo,
       status: newBatch.status,
       mode: newBatch.mode,
-      startDate: toDDMMYYYY(earliest),
-      endDate: toDDMMYYYY(latest),
+      startDate: earliest.toISOString().slice(0, 10),
+      endDate: latest.toISOString().slice(0, 10),
       sections: sectionCopy,
     };
 
-    addBatch(newBatchEntry);
+  try {
+    const res = await fetch("/api/batches", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newBatchEntry),
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      toast.error(err.error || "Failed to add batch");
+      return;
+    }
+
+    const data = await res.json();
+    addBatch({
+      id: data.id, // returned from DB
+      ...newBatchEntry,
+    });
+
     setShowModal(false);
     resetForm();
     toast.success("Batch added successfully");
-  };
+
+  } catch (error) {
+    console.error(error);
+    toast.error("Something went wrong while saving to the database");
+  }
+};
+
 
   // 👇 runs on each onChange
   const validateBatchNumber = (value) => {

@@ -15,12 +15,14 @@
     "@mui/material": "^7.2.0",
     "@mui/x-date-pickers": "^8.8.0",
     "antd": "^5.26.5",
+    "bcrypt": "^6.0.0",
     "chart.js": "^4.5.0",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "framer-motion": "^12.23.6",
     "lucide": "^0.525.0",
     "lucide-react": "^0.525.0",
+    "mysql2": "^3.14.3",
     "next": "^15.4.2",
     "react": "^19.0.0",
     "react-calendar": "^6.0.0",
@@ -38,6 +40,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/node": "24.2.0",
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
     "tailwindcss": "^4"

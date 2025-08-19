@@ -49,8 +49,6 @@ export default function SMEPage() {
                     ))}
                 </div>
 
-
-
                 {/* ====== TAB CONTENT ====== */}
                 <div className="mt-6">
                     {activeTab === "Dashboard" && (
