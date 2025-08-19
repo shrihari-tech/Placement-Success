@@ -30,7 +30,11 @@ export default function TrainerUpdateTab() {
   const [showEditModal, setShowEditModal] = useState(false);
 
   const [trainerEdit, setTrainerEdit] = useState({});
-  const [formData, setFormData] = useState({ trainer: "", timing: "" });
+  const [formData, setFormData] = useState({
+    trainer: "",
+    sTiming: "",
+    eTiming: "",
+  });
 
   const batchDropdownRef = useRef(null);
 
@@ -359,6 +363,7 @@ export default function TrainerUpdateTab() {
                       )}
                     </td>
                     <td className="px-5 py-3 text-center text-sm text-gray-500 whitespace-nowrap">
+                      {console.log(filteredStudents, "1")}
                       {editingStudent ? (
                         <div className="flex justify-center items-center">
                           <input
@@ -367,6 +372,9 @@ export default function TrainerUpdateTab() {
                               const formatTime = formatTimeToAMPM(
                                 event.target.value
                               );
+                              // COME HERE
+                              console.log(formatTime, "iii");
+                              setFormData({ ...formData, sTiming: formatTime });
                             }}
                           />
                           <p className="pr-3">TO</p>
@@ -376,6 +384,8 @@ export default function TrainerUpdateTab() {
                               const formatTime = formatTimeToAMPM(
                                 event.target.value
                               );
+
+                              setFormData({ ...formData, eTiming: formatTime });
                             }}
                           />
                         </div>
@@ -406,6 +416,42 @@ export default function TrainerUpdateTab() {
                             onClick={() => {
                               setEditingStudent((prev) => !prev);
                               setShowEditModal(true);
+                              if (
+                                formData.trainer ||
+                                (formData.sTiming && formData.eTiming)
+                              ) {
+                                console.log("inside if");
+                                if (formData.trainer) {
+                                  filteredStudents[0].trainer = [
+                                    ...filteredStudents[0].trainer,
+                                    formData.trainer,
+                                  ];
+                                }
+
+                                if (formData.sTiming && formData.eTiming) {
+                                  filteredStudents[0].sTiming = [
+                                    ...filteredStudents[0].sTiming,
+                                    formData.sTiming,
+                                  ];
+                                  filteredStudents[0].eTiming = [
+                                    ...filteredStudents[0].eTiming,
+                                    formData.eTiming,
+                                  ];
+                                }
+                                const dataReady = allFullstackTrainer.filter(
+                                  (item) => item.id !== filteredStudents[0].id
+                                );
+
+                                const final = [
+                                  ...dataReady,
+                                  {
+                                    ...student,
+                                    eTiming: [...filteredStudents[0].eTiming],
+                                    sTiming: [...filteredStudents[0].sTiming],
+                                  },
+                                ];
+                                setAllFullStackTrainer(final);
+                              }
                             }}
                             className="cursor-pointer p-1 hover:bg-gray-100 rounded"
                             aria-label={`Edit ${student?.name}`}
