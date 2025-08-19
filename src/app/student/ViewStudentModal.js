@@ -4,11 +4,18 @@ import { RiCloseCircleLine } from "react-icons/ri";
 import Image from "next/image";
 import { useDataContext } from "../context/dataContext";
 
-const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
+const ViewStudentModal = ({
+  isOpen,
+  onClose,
+  selectedStudent,
+  selectedBatch,
+}) => {
   const [infoTab, setInfoTab] = useState("Domain");
   const [sectionData, setSectionData] = useState({});
 
   const { batchData } = useDataContext();
+
+  // const studentBatch = batchData.find(batch => batch.batchNo === selectedStudent.batch);
 
   const toDDMMYYYY = (d) => {
     const date = d instanceof Date ? d : new Date(d);
@@ -232,7 +239,13 @@ const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
                   <p className="text-gray-700 font-bold">Domain Trainer:</p>
-                  <p className="text-gray-700">Shri Hari</p>
+                  {selectedStudent?.trainerName ? (
+                    <p className="text-gray-700">
+                      {selectedStudent.trainerName}
+                    </p>
+                  ) : (
+                    <p className="text-gray-400">Not assigned</p>
+                  )}
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
@@ -274,7 +287,13 @@ const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
                   <p className="text-gray-700 font-bold">Aptitude Trainer:</p>
-                  <p className="text-gray-700">Shri Hari</p>
+                  {selectedStudent?.trainerName ? (
+                    <p className="text-gray-700">
+                      {selectedStudent.trainerName}
+                    </p>
+                  ) : (
+                    <p className="text-gray-400">Not assigned</p>
+                  )}
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
@@ -321,7 +340,13 @@ const ViewStudentModal = ({ isOpen, onClose, selectedStudent }) => {
                   <p className="text-gray-700 font-bold">
                     Communication Trainer:
                   </p>
-                  <p className="text-gray-700">Shri Hari</p>
+                  {selectedStudent?.trainerName ? (
+                    <p className="text-gray-700">
+                      {selectedStudent.trainerName}
+                    </p>
+                  ) : (
+                    <p className="text-gray-400">Not assigned</p>
+                  )}
                 </div>
 
                 <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">

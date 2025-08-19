@@ -40,6 +40,7 @@ export const fullstackInitial = [
     status: "Completed",
     startDate: "2024-01-03",
     endDate: "2024-06-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: { startDate: "2024-01-03", endDate: "2024-02-28" },
       Aptitude: { startDate: "2024-03-01", endDate: "2024-04-25" },
@@ -57,6 +58,7 @@ export const fullstackInitial = [
     status: "Completed",
     startDate: "2024-02-05",
     endDate: "2024-08-02",
+    trainerName: "Shri Hari",
     sections: {
       Domain: { startDate: "2024-02-05", endDate: "2024-03-30" },
       Aptitude: { startDate: "2024-04-01", endDate: "2024-06-02" },
@@ -74,6 +76,7 @@ export const fullstackInitial = [
     status: "Completed",
     startDate: "2024-03-04",
     endDate: "2024-09-01",
+    trainerName: "Shri Hari",
     sections: {
       Domain: { startDate: "2024-03-04", endDate: "2024-04-29" },
       Aptitude: { startDate: "2024-04-30", endDate: "2024-06-25" },
@@ -91,6 +94,7 @@ export const fullstackInitial = [
     status: "Completed",
     startDate: "2024-04-05",
     endDate: "2024-10-04",
+    trainerName: "Shri Hari",
     sections: {
       Domain: { startDate: "2024-04-05", endDate: "2024-06-05" },
       Aptitude: { startDate: "2024-06-06", endDate: "2024-08-05" },
@@ -108,6 +112,7 @@ export const fullstackInitial = [
     status: "Completed",
     startDate: "2024-05-06",
     endDate: "2024-11-04",
+    trainerName: "Shri Hari",
     sections: {
       Domain: { startDate: "2024-05-06", endDate: "2024-07-01" },
       Aptitude: { startDate: "2024-07-02", endDate: "2024-09-02" },
@@ -128,6 +133,7 @@ export const dataanalyticsInitial = [
     status: "Completed",
     startDate: "2024-01-01",
     endDate: "2024-06-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -154,6 +160,7 @@ export const dataanalyticsInitial = [
     status: "Completed",
     startDate: "2024-02-01",
     endDate: "2024-07-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -180,6 +187,7 @@ export const dataanalyticsInitial = [
     status: "Completed",
     startDate: "2024-03-01",
     endDate: "2024-08-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -206,6 +214,7 @@ export const dataanalyticsInitial = [
     status: "Completed",
     startDate: "2024-04-01",
     endDate: "2024-09-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -232,6 +241,7 @@ export const dataanalyticsInitial = [
     status: "Completed",
     startDate: "2024-05-01",
     endDate: "2024-10-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -261,6 +271,7 @@ export const bankingInitial = [
     status: "Completed",
     startDate: "2024-01-01",
     endDate: "2024-06-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -287,6 +298,7 @@ export const bankingInitial = [
     status: "Completed",
     startDate: "2024-02-01",
     endDate: "2024-07-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -313,6 +325,7 @@ export const bankingInitial = [
     status: "Completed",
     startDate: "2024-03-01",
     endDate: "2024-08-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -339,6 +352,7 @@ export const bankingInitial = [
     status: "Completed",
     startDate: "2024-04-01",
     endDate: "2024-09-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -365,6 +379,7 @@ export const bankingInitial = [
     status: "Completed",
     startDate: "2024-05-01",
     endDate: "2024-10-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -394,6 +409,7 @@ export const marketingInitial = [
     status: "Completed",
     startDate: "2024-01-01",
     endDate: "2024-06-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -420,6 +436,7 @@ export const marketingInitial = [
     status: "Completed",
     startDate: "2024-02-01",
     endDate: "2024-07-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -446,6 +463,7 @@ export const marketingInitial = [
     status: "Completed",
     startDate: "2024-03-01",
     endDate: "2024-08-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -472,6 +490,7 @@ export const marketingInitial = [
     status: "Completed",
     startDate: "2024-04-01",
     endDate: "2024-09-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -498,6 +517,7 @@ export const marketingInitial = [
     status: "Completed",
     startDate: "2024-05-01",
     endDate: "2024-10-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -527,6 +547,7 @@ export const devopsInitial = [
     status: "Completed",
     startDate: "2024-01-01",
     endDate: "2024-06-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -553,6 +574,7 @@ export const devopsInitial = [
     status: "Completed",
     startDate: "2024-02-01",
     endDate: "2024-07-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -579,6 +601,7 @@ export const devopsInitial = [
     status: "Completed",
     startDate: "2024-03-01",
     endDate: "2024-08-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -605,6 +628,7 @@ export const devopsInitial = [
     status: "Completed",
     startDate: "2024-04-01",
     endDate: "2024-09-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -631,6 +655,7 @@ export const devopsInitial = [
     status: "Completed",
     startDate: "2024-05-01",
     endDate: "2024-10-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -660,6 +685,7 @@ export const sapInitial = [
     status: "Completed",
     startDate: "2024-01-01",
     endDate: "2024-06-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -686,6 +712,7 @@ export const sapInitial = [
     status: "Completed",
     startDate: "2024-02-01",
     endDate: "2024-07-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -712,6 +739,7 @@ export const sapInitial = [
     status: "Completed",
     startDate: "2024-03-01",
     endDate: "2024-08-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -738,6 +766,7 @@ export const sapInitial = [
     status: "Completed",
     startDate: "2024-04-01",
     endDate: "2024-09-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -764,6 +793,7 @@ export const sapInitial = [
     status: "Completed",
     startDate: "2024-05-01",
     endDate: "2024-10-28",
+    trainerName: "Shri Hari",
     sections: {
       Domain: {
         startDate: "2024-01-01",
@@ -806,6 +836,7 @@ export const fullstackStudentData = [
     domainScore: 85,
     aptitudeScore: 78,
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -826,6 +857,7 @@ export const fullstackStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -846,6 +878,7 @@ export const fullstackStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -866,6 +899,7 @@ export const fullstackStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -886,6 +920,7 @@ export const fullstackStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 1,
@@ -906,6 +941,7 @@ export const fullstackStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -926,6 +962,7 @@ export const fullstackStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -946,6 +983,7 @@ export const fullstackStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -966,6 +1004,7 @@ export const fullstackStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -986,6 +1025,7 @@ export const fullstackStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 1,
@@ -1006,6 +1046,7 @@ export const fullstackStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -1026,6 +1067,7 @@ export const fullstackStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -1046,6 +1088,7 @@ export const fullstackStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -1066,6 +1109,7 @@ export const fullstackStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -1086,6 +1130,7 @@ export const fullstackStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 1,
@@ -1106,6 +1151,7 @@ export const fullstackStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -1126,6 +1172,7 @@ export const fullstackStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -1146,6 +1193,7 @@ export const fullstackStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -1166,6 +1214,7 @@ export const fullstackStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -1186,6 +1235,7 @@ export const fullstackStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 1,
@@ -1206,6 +1256,7 @@ export const fullstackStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -1226,6 +1277,7 @@ export const fullstackStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -1246,6 +1298,7 @@ export const fullstackStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -1266,6 +1319,7 @@ export const fullstackStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
 
   {
@@ -1287,6 +1341,7 @@ export const fullstackStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
 ];
 
@@ -1310,6 +1365,7 @@ export const dataAnalyticsStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -1330,6 +1386,7 @@ export const dataAnalyticsStudentData = [
         domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -1350,6 +1407,7 @@ export const dataAnalyticsStudentData = [
      domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
 
   },
   {
@@ -1371,6 +1429,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -1391,6 +1450,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+     trainerName: "Shri Hari",
     
   },
   {
@@ -1412,6 +1472,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+     trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -1432,6 +1493,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+     trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -1452,6 +1514,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+     trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -1472,6 +1535,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+     trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -1492,6 +1556,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 1,
@@ -1512,6 +1577,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -1532,6 +1598,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -1552,6 +1619,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -1572,6 +1640,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -1592,6 +1661,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 1,
@@ -1612,6 +1682,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -1632,6 +1703,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -1652,6 +1724,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -1672,6 +1745,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -1692,6 +1766,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 1,
@@ -1712,6 +1787,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -1732,6 +1808,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -1752,6 +1829,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -1772,6 +1850,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -1792,6 +1871,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
 ];
 
@@ -1815,6 +1895,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -1835,6 +1916,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -1855,6 +1937,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -1875,6 +1958,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -1895,6 +1979,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 1,
@@ -1915,6 +2000,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -1935,6 +2021,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -1955,6 +2042,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -1975,6 +2063,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -1995,6 +2084,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 1,
@@ -2015,6 +2105,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -2035,6 +2126,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -2055,6 +2147,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -2075,6 +2168,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -2095,6 +2189,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 1,
@@ -2115,6 +2210,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -2135,6 +2231,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -2155,6 +2252,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -2175,6 +2273,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -2195,6 +2294,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 1,
@@ -2215,6 +2315,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -2235,6 +2336,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -2255,6 +2357,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -2275,6 +2378,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -2295,6 +2399,7 @@ export const bankingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
 ];
 
@@ -2317,6 +2422,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -2336,6 +2442,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -2355,6 +2462,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -2374,6 +2482,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -2393,6 +2502,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 1,
@@ -2412,6 +2522,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -2431,6 +2542,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -2450,6 +2562,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -2469,6 +2582,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -2488,6 +2602,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 1,
@@ -2507,6 +2622,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -2526,6 +2642,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -2545,6 +2662,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -2564,6 +2682,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -2583,6 +2702,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 1,
@@ -2602,6 +2722,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -2621,6 +2742,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -2640,6 +2762,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -2659,6 +2782,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -2678,6 +2802,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 1,
@@ -2697,6 +2822,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -2716,6 +2842,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -2735,6 +2862,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -2754,6 +2882,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -2773,6 +2902,7 @@ export const marketingStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
 ];
 
@@ -2795,6 +2925,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -2814,6 +2945,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -2833,6 +2965,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -2852,6 +2985,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -2871,6 +3005,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 1,
@@ -2890,6 +3025,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -2909,6 +3045,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -2928,6 +3065,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -2947,6 +3085,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -2966,6 +3105,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 1,
@@ -2985,6 +3125,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -3004,6 +3145,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -3023,6 +3165,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -3042,6 +3185,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -3061,6 +3205,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 1,
@@ -3080,6 +3225,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -3099,6 +3245,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -3118,6 +3265,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -3137,6 +3285,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -3156,6 +3305,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 1,
@@ -3175,6 +3325,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -3194,6 +3345,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -3213,6 +3365,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -3232,6 +3385,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -3251,6 +3405,7 @@ export const sapStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
 ];
 
@@ -3273,6 +3428,7 @@ export const devopsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -3292,6 +3448,7 @@ export const devopsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -3311,6 +3468,7 @@ export const devopsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -3330,6 +3488,7 @@ export const devopsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -3349,6 +3508,7 @@ export const devopsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 1,
@@ -3368,6 +3528,7 @@ export const devopsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -3387,6 +3548,7 @@ export const devopsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -3406,6 +3568,7 @@ export const devopsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -3425,6 +3588,7 @@ export const devopsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -3444,6 +3608,7 @@ export const devopsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 1,
@@ -3463,6 +3628,7 @@ export const devopsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -3482,6 +3648,7 @@ export const devopsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -3501,6 +3668,7 @@ export const devopsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -3520,6 +3688,7 @@ export const devopsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -3539,6 +3708,7 @@ export const devopsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 1,
@@ -3558,6 +3728,7 @@ export const devopsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -3577,6 +3748,7 @@ export const devopsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -3596,6 +3768,7 @@ export const devopsStudentData = [
     domainScore: 85,
     aptitudeScore: 78,
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -3615,6 +3788,7 @@ export const devopsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78,  
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -3634,6 +3808,7 @@ export const devopsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 1,
@@ -3653,6 +3828,7 @@ export const devopsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -3672,6 +3848,7 @@ export const devopsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -3691,6 +3868,7 @@ export const devopsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -3710,6 +3888,7 @@ export const devopsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -3729,9 +3908,9 @@ export const devopsStudentData = [
     domainScore: 85, 
     aptitudeScore: 78, 
     communicationScore: 80,
+    trainerName: "Shri Hari",
   },
 ];
-
 const batchStatsData = {
   fullstack: {
     completedBatches: 18,

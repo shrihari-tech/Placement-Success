@@ -59,6 +59,7 @@ export default function BatchModel() {
   const [deleteError, setDeleteError] = useState("");
   const [ongoingCount, setOngoingCount] = useState(0);
   const [completedCount, setCompletedCount] = useState(0);
+  const [selectedDomain, setSelectedDomain] = useState("");
   const {
     batchHead,
     batchData,
@@ -620,6 +621,11 @@ export default function BatchModel() {
 
     let results = batches;
 
+    // ✅ Domain filter
+    if (selectedDomain) {
+      results = results.filter((batch) => batch.domain === selectedDomain);
+    }
+
     // Search by Batch No
     if (searchTerm) {
       results = results.filter((batch) =>
@@ -811,7 +817,12 @@ export default function BatchModel() {
       mode: newBatch.mode,
       startDate: toDDMMYYYY(earliest),
       endDate: toDDMMYYYY(latest),
+      studentsPlaced: 0, // Add these
+      pending: 0,
+      trainerName: "", // Add these
+      epicData: {},
       sections: sectionCopy,
+      
     };
 
     addBatch(newBatchEntry);
@@ -2168,9 +2179,15 @@ export default function BatchModel() {
                     <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
                       Trainer Name
                     </h3>
-                    <p className="text-sm font-medium text-gray-600">
-                      Shri Hari
-                    </p>
+                    {selectedBatch?.trainerName ? (
+                      <p className="text-sm font-medium text-gray-600">
+                        {selectedBatch.trainerName}
+                      </p>
+                    ) : (
+                      <p className="text-sm font-medium text-gray-400">
+                        Not assigned
+                      </p>
+                    )}
                   </div>
                   <div className="w-full col-span-full bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
                     <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-3">
@@ -2243,9 +2260,15 @@ export default function BatchModel() {
                     <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
                       Trainer Name
                     </h3>
-                    <p className="text-sm font-medium text-gray-600">
-                      Shri Hari
-                    </p>
+                    {selectedBatch?.trainerName ? (
+                      <p className="text-sm font-medium text-gray-600">
+                        {selectedBatch.trainerName}
+                      </p>
+                    ) : (
+                      <p className="text-sm font-medium text-gray-400">
+                        Not assigned
+                      </p>
+                    )}
                   </div>
                   <div className="w-full col-span-full bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
                     <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-3">
@@ -2319,9 +2342,15 @@ export default function BatchModel() {
                     <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
                       Trainer Name
                     </h3>
-                    <p className="text-sm font-medium text-gray-600">
-                      Shri Hari
-                    </p>
+                    {selectedBatch?.trainerName ? (
+                      <p className="text-sm font-medium text-gray-600">
+                        {selectedBatch.trainerName}
+                      </p>
+                    ) : (
+                      <p className="text-sm font-medium text-gray-400">
+                        Not assigned
+                      </p>
+                    )}
                   </div>
                   <div className="w-full col-span-full bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
                     <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-3">
