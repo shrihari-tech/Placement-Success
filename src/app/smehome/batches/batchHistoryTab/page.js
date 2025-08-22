@@ -18,6 +18,7 @@ export default function BatchHistoryTab() {
     studentData,
     batchEpicStats,
     // allStudentData,
+    allFullstackTrainer,
   } = useDataContext();
   // console.log(allStudentData, "hhh");
   const [showBatchDropdown, setShowBatchDropdown] = useState(false);
@@ -34,7 +35,7 @@ export default function BatchHistoryTab() {
       alert("Please select a batch");
       return;
     }
-    const results = studentData.filter(
+    const results = allFullstackTrainer.filter(
       (student) => student.batch === selectedBatch
     );
     setFilteredStudents(results);
@@ -97,13 +98,13 @@ export default function BatchHistoryTab() {
   // --- Effect to update filtered students when studentData or selectedBatch changes ---
   useEffect(() => {
     if (searchInitiated && selectedBatch) {
-      const results = studentData.find(
+      const results = allFullstackTrainer.find(
         (student) => student.batch === selectedBatch
       );
 
       setFilteredStudents([results]);
     }
-  }, [studentData, selectedBatch, searchInitiated]);
+  }, [allFullstackTrainer, selectedBatch, searchInitiated]);
 
   // --- Rendering ---
   return (
@@ -259,14 +260,10 @@ export default function BatchHistoryTab() {
                     Mode
                   </th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Trainer
+                    Trainer History
                   </th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Timing
-                  </th>
-
-                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
+                    Timing History
                   </th>
                 </tr>
               </thead>
@@ -286,38 +283,32 @@ export default function BatchHistoryTab() {
                       {student?.mode}
                     </td>
                     <td className="px-5 py-3 text-center text-sm text-gray-500 whitespace-nowrap">
-                      {student?.name}
+                      <select
+                        value={student?.trainer[student.trainer.length - 1]}
+                      >
+                        {[...student?.trainer].reverse().map((item, index) => (
+                          <option key={index} value={item}>
+                            {item}
+                          </option>
+                        ))}
+                      </select>
+                      {/* {student?.trainer[student.trainer.length - 1]} */}
                     </td>
                     <td className="px-5 py-3 text-center text-sm text-gray-500 whitespace-nowrap">
-                      {"9:30 AM - 11:30 AM"}
-                    </td>
-
-                    <td className="px-5 py-3 text-sm whitespace-nowrap">
-                      <div className="flex gap-1 items-center justify-center">
-                        <button
-                          type="button"
-                          className="p-1 hover:bg-gray-100 rounded cursor-pointer"
-                          onClick={() => {
-                            setSelectedStudent(student);
-                            setShowViewModal(true);
-                          }}
-                          aria-label={`View details for ${student?.name}`}
-                        >
-                          <FiEye className="h-4 w-4" />
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setEditingStudent(student);
-                            setShowEditModal(true);
-                          }}
-                          className="cursor-pointer p-1 hover:bg-gray-100 rounded"
-                          aria-label={`Edit ${student?.name}`}
-                        >
-                          <FiEdit className="h-4 w-4" />
-                        </button>
-                      </div>
+                      <select
+                        value={`${
+                          student.sTiming[student.sTiming.length - 1]
+                        } - ${student.eTiming[student.eTiming.length - 1]}`}
+                      >
+                        {[...student.sTiming].reverse().map((start, index) => {
+                          const end = [...student.eTiming].reverse()[index];
+                          return (
+                            <option key={index} value={`${start} - ${end}`}>
+                              {`${start} - ${end}`}
+                            </option>
+                          );
+                        })}
+                      </select>
                     </td>
                   </tr>
                 ))}
@@ -330,25 +321,6 @@ export default function BatchHistoryTab() {
       {/* 3. Epic Status Display Section - Shown after search and if data exists */}
 
       {/* Edit Student Modal */}
-      {showEditModal && editingStudent && (
-        <EditStudentModal
-          student={editingStudent} // Pass the student data
-          onClose={() => {
-            setShowEditModal(false); // Close the modal
-            setEditingStudent(null); // Clear the student data
-          }}
-          onSave={() => {
-            // Optional: Perform actions after save, like re-fetching data or showing a toast
-            // For BatchListTab, re-running the search/filter is often desired to show updated data
-            // The handleSearch function will re-filter based on the current selectedBatch and context studentData
-            handleSearch(); // This will use the updated studentData from context
-            setShowEditModal(false); // Close the modal
-            setEditingStudent(null); // Clear the student data
-            // Optionally, show a success toast here if desired
-            // toast.success("Student updated successfully!");
-          }}
-        />
-      )}
     </>
   );
 }
