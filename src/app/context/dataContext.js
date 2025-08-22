@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, useMemo } from "react";
+import { createContext, useContext, useState, useEffect, useMemo, useCallback } from "react";
 import { usePathname } from "next/navigation";
 
 // Create the context
@@ -1450,7 +1450,6 @@ export const dataAnalyticsStudentData = [
     aptitudeScore: 78,
     communicationScore: 80,
     trainerName: "Shri Hari",
-
   },
   {
     sno: 4,
@@ -1492,8 +1491,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85,
     aptitudeScore: 78,
     communicationScore: 80,
-     trainerName: "Shri Hari",
-    
+    trainerName: "Shri Hari",
   },
   {
     sno: 1,
@@ -1514,7 +1512,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85,
     aptitudeScore: 78,
     communicationScore: 80,
-     trainerName: "Shri Hari",
+    trainerName: "Shri Hari",
   },
   {
     sno: 2,
@@ -1535,7 +1533,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85,
     aptitudeScore: 78,
     communicationScore: 80,
-     trainerName: "Shri Hari",
+    trainerName: "Shri Hari",
   },
   {
     sno: 3,
@@ -1556,7 +1554,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85,
     aptitudeScore: 78,
     communicationScore: 80,
-     trainerName: "Shri Hari",
+    trainerName: "Shri Hari",
   },
   {
     sno: 4,
@@ -1577,7 +1575,7 @@ export const dataAnalyticsStudentData = [
     domainScore: 85,
     aptitudeScore: 78,
     communicationScore: 80,
-     trainerName: "Shri Hari",
+    trainerName: "Shri Hari",
   },
   {
     sno: 5,
@@ -4107,6 +4105,48 @@ const DataProvider = ({ children }) => {
     return stats;
   };
 
+  const calculateTotalBatchesPerDomain = useCallback(() => {
+    // console.log("Calculating total batches..."); // Optional debug log
+    // console.log("fullstackData inside calc:", fullstackData); // Optional debug log
+    return {
+      fullstack: fullstackData?.length ?? 0,
+      data: dataanalyticsData?.length ?? 0, // Key 'data' maps to 'dataanalyticsData'
+      marketing: marketingData?.length ?? 0,
+      sap: sapData?.length ?? 0,
+      banking: bankingData?.length ?? 0,
+      devops: devopsData?.length ?? 0,
+    };
+  }, [
+    fullstackData,
+    dataanalyticsData,
+    marketingData,
+    sapData,
+    bankingData,
+    devopsData,
+  ]);
+
+  const calculateUpcomingBatchesPerDomain = useCallback(() => {
+    // console.log("Calculating upcoming batches..."); // Optional debug log
+    return {
+      fullstack:
+        fullstackData?.filter((b) => b?.status === "Ongoing")?.length ?? 0,
+      data:
+        dataanalyticsData?.filter((b) => b?.status === "Ongoing")?.length ?? 0, // Key 'data'
+      marketing:
+        marketingData?.filter((b) => b?.status === "Ongoing")?.length ?? 0,
+      sap: sapData?.filter((b) => b?.status === "Ongoing")?.length ?? 0,
+      banking: bankingData?.filter((b) => b?.status === "Ongoing")?.length ?? 0,
+      devops: devopsData?.filter((b) => b?.status === "Ongoing")?.length ?? 0,
+    };
+  }, [
+    fullstackData,
+    dataanalyticsData,
+    marketingData,
+    sapData,
+    bankingData,
+    devopsData,
+  ]);
+
   //all batches names across domains
   useEffect(() => {
     const fullstack = fullstackData.map((b) => b.batchNo);
@@ -4791,6 +4831,8 @@ const DataProvider = ({ children }) => {
         setDevopsOpportunities,
         bankingOpportunities,
         setBankingOpportunities,
+        calculateTotalBatchesPerDomain,
+        calculateUpcomingBatchesPerDomain,
       }}
     >
       {children}
