@@ -72,10 +72,10 @@ const TLCardGrid = ({ teamLeaders, onViewDetails }) => {
     return (
       <div className="col-span-full w-full py-12">
         <div className="text-center">
-          <div className="inline-block p-4 bg-[#FAEFF1] rounded-full mb-4">
+          <div className="inline-block p-4 bg-[#f3e9f5] rounded-full mb-4">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-12 w-12 text-[#CD5E77]"
+              className="h-12 w-12 text-[#9025a1]"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -131,7 +131,7 @@ const TLCardGrid = ({ teamLeaders, onViewDetails }) => {
             className={`p-2 rounded-full ${
               currentPage === 1
                 ? "text-gray-400 cursor-not-allowed"
-                : "text-[#cd5e77] hover:bg-[#f0ced6]" // Match TL color scheme
+                : "text-[#9025a1] hover:bg-[#ddbde2]" // Match TL color scheme
             }`}
             aria-label="Previous Page"
           >
@@ -153,8 +153,8 @@ const TLCardGrid = ({ teamLeaders, onViewDetails }) => {
                   onClick={() => handlePageChange(pageNumber)}
                   className={`px-4 py-2 rounded-md text-sm font-medium ${
                     currentPage === pageNumber
-                      ? "bg-[#cd5e77] text-white" // Active page
-                      : "text-[#cd5e77] hover:bg-[#f0ced6]" // Inactive page
+                      ? "bg-[#9025a1] text-white" // Active page
+                      : "text-[#9025a1] hover:bg-[#ddbde2]" // Inactive page
                   }`}
                 >
                   {pageNumber}
@@ -184,7 +184,7 @@ const TLCardGrid = ({ teamLeaders, onViewDetails }) => {
             className={`p-2 rounded-full ${
               currentPage === totalPages
                 ? "text-gray-400 cursor-not-allowed"
-                : "text-[#cd5e77] hover:bg-[#f0ced6]" // Match TL color scheme
+                : "text-[#9025a1] hover:bg-[#ddbde2]" // Match TL color scheme
             }`}
             aria-label="Next Page"
           >

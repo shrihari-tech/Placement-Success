@@ -210,7 +210,7 @@ const CreateUserModal = ({ isOpen, onClose, onSave }) => {
                     id="create-name"
                     className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 ${
                       errors.name ? "border-red-500" : "border-gray-400"
-                    } appearance-none focus:outline-none focus:border-[#cd5e77] peer`}
+                    } appearance-none focus:outline-none focus:border-[#9025a1] peer`}
                     placeholder=" "
                     value={newUser.name}
                     onChange={(e) => handleChange("name", e.target.value)}
@@ -219,7 +219,7 @@ const CreateUserModal = ({ isOpen, onClose, onSave }) => {
                     htmlFor="create-name"
                     className={`absolute px-2 text-sm ${
                       errors.name ? "text-red-500" : "text-gray-500"
-                    } duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#cd5e77] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                    } duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#9025a1] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                   >
                     Name <span className="text-red-500">*</span>
                   </label>
@@ -245,7 +245,7 @@ const CreateUserModal = ({ isOpen, onClose, onSave }) => {
                     id="create-email"
                     className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 ${
                       errors.email ? "border-red-500" : "border-gray-400"
-                    } appearance-none focus:outline-none focus:border-[#cd5e77] peer`}
+                    } appearance-none focus:outline-none focus:border-[#9025a1] peer`}
                     placeholder=" "
                     value={newUser.email}
                     onChange={(e) => handleChange("email", e.target.value)}
@@ -254,7 +254,7 @@ const CreateUserModal = ({ isOpen, onClose, onSave }) => {
                     htmlFor="create-email"
                     className={`absolute px-2 text-sm ${
                       errors.email ? "text-red-500" : "text-gray-500"
-                    } duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#cd5e77] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                    } duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#9025a1] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                   >
                     Email <span className="text-red-500">*</span>
                   </label>
@@ -280,7 +280,7 @@ const CreateUserModal = ({ isOpen, onClose, onSave }) => {
                     id="create-phone"
                     className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 ${
                       errors.phone ? "border-red-500" : "border-gray-400"
-                    } appearance-none focus:outline-none focus:border-[#cd5e77] peer`}
+                    } appearance-none focus:outline-none focus:border-[#9025a1] peer`}
                     placeholder=" "
                     value={newUser.phone}
                     onChange={(e) => handleChange("phone", e.target.value)} // Use handleChange which filters digits
@@ -292,7 +292,7 @@ const CreateUserModal = ({ isOpen, onClose, onSave }) => {
                     htmlFor="create-phone"
                     className={`absolute px-2 text-sm ${
                       errors.phone ? "text-red-500" : "text-gray-500"
-                    } duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#cd5e77] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                    } duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#9025a1] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                   >
                     Phone <span className="text-red-500">*</span>
                   </label>
@@ -338,7 +338,7 @@ const CreateUserModal = ({ isOpen, onClose, onSave }) => {
                     id="create-password"
                     className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 ${
                       errors.password ? "border-red-500" : "border-gray-400"
-                    } appearance-none focus:outline-none focus:border-[#cd5e77] peer`}
+                    } appearance-none focus:outline-none focus:border-[#9025a1] peer`}
                     placeholder=" "
                     value={newUser.password}
                     onChange={(e) => handleChange("password", e.target.value)}
@@ -347,7 +347,7 @@ const CreateUserModal = ({ isOpen, onClose, onSave }) => {
                     htmlFor="create-password"
                     className={`absolute px-2 text-sm ${
                       errors.password ? "text-red-500" : "text-gray-500"
-                    } duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#cd5e77] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                    } duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#9025a1] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                   >
                     Password <span className="text-red-500">*</span>{" "}
                     {/* (Default: welcome123) - Optional hint */}
@@ -388,7 +388,7 @@ const CreateUserModal = ({ isOpen, onClose, onSave }) => {
               <button
                 type="button"
                 onClick={handleSaveClick}
-                className="px-4 py-2 bg-[#cd5e77] text-white rounded-md hover:bg-[#b9556b] focus:outline-none focus:ring-1 focus:ring-[#a44b5f]"
+                className="px-4 py-2 bg-[#9025a1] text-white rounded-md hover:bg-[#731d80] focus:outline-none focus:ring-1 focus:ring-[#731d80]"
               >
                 Submit
               </button>

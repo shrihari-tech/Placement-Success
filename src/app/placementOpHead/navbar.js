@@ -61,7 +61,7 @@ const Navbar = () => {
   return (
     <>
       {/* Mobile Header */}
-      <header className="md:hidden fixed top-0 left-0 w-full bg-[#ebbec8] z-40 flex items-center justify-between p-3">
+      <header className="md:hidden fixed top-0 left-0 w-full bg-[#efb2f7] z-40 flex items-center justify-between p-3">
         <button
           className="flex items-center justify-center w-10 h-10 bg-black text-white rounded-2xl font-bold text-lg"
           onClick={() => router.push("/placementOpHead/ophome")}
@@ -74,7 +74,7 @@ const Navbar = () => {
       </header>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex fixed top-0 left-0 h-screen w-[72px] bg-[#f0ced6] flex-col justify-between items-center z-30">
+      <aside className="hidden md:flex fixed top-0 left-0 h-screen w-[72px] bg-[#d3a8d9] flex-col justify-between items-center z-30">
         <div className="flex flex-col items-center w-full">
           <div className="flex flex-col items-center w-full mb-10 mt-7">
             <button
@@ -92,8 +92,8 @@ const Navbar = () => {
                 href="/placementOpHead/ophome"
                 className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
                   activeNavItem === "home"
-                    ? "bg-[#cd5e77] text-white"
-                    : "hover:bg-[#f5dee3] hover:text-black"
+                    ? "bg-[#9025a1] text-white"
+                    : "hover:bg-[#e8d3ec] hover:text-black"
                 }`}
                 onClick={() => handleNavItemClick("home")}
               >
@@ -101,7 +101,7 @@ const Navbar = () => {
               </Link>
               <span
                 className={`text-xs font-semibold cursor-pointer ${
-                  activeNavItem === "home" ? "text-[#cd5e77]" : "text-[#49454f]"
+                  activeNavItem === "home" ? "text-[#9025a1]" : "text-[#49454f]"
                 }`}
                 onClick={() => router.push("/placementOpHead/ophome")}
               >
@@ -115,8 +115,8 @@ const Navbar = () => {
                 href="/placementOpHead/tl"
                 className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
                   activeNavItem === "tl"
-                    ? "bg-[#cd5e77] text-white"
-                    : "hover:bg-[#f5dee3] hover:text-black"
+                    ? "bg-[#9025a1] text-white"
+                    : "hover:bg-[#e8d3ec] hover:text-black"
                 }`}
                 onClick={() => handleNavItemClick("tl")}
               >
@@ -125,7 +125,7 @@ const Navbar = () => {
               <span
                 className={`text-xs font-semibold cursor-pointer ${
                   activeNavItem === "tl"
-                    ? "text-[#cd5e77]"
+                    ? "text-[#9025a1]"
                     : "text-[#49454f]"
                 }`}
                 onClick={() => router.push("/placementOpHead/tl")}
@@ -140,8 +140,8 @@ const Navbar = () => {
                 href="/placementOpHead/student"
                 className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
                   activeNavItem === "student"
-                    ? "bg-[#cd5e77] text-white"
-                    : "hover:bg-[#f5dee3] hover:text-black"
+                    ? "bg-[#9025a1] text-white"
+                    : "hover:bg-[#e8d3ec] hover:text-black"
                 }`}
                 onClick={() => handleNavItemClick("student")}
               >
@@ -150,7 +150,7 @@ const Navbar = () => {
               <span
                 className={`text-xs font-semibold cursor-pointer ${
                   activeNavItem === "student"
-                    ? "text-[#cd5e77]"
+                    ? "text-[#9025a1]"
                     : "text-[#49454f]"
                 }`}
                 onClick={() => router.push("/placementOpHead/student")}
@@ -165,8 +165,8 @@ const Navbar = () => {
                 href="/placementOpHead/placement"
                 className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
                   activeNavItem === "placement"
-                    ? "bg-[#cd5e77] text-white"
-                    : "hover:bg-[#f5dee3] hover:text-black"
+                    ? "bg-[#9025a1] text-white"
+                    : "hover:bg-[#e8d3ec] hover:text-black"
                 }`}
                 onClick={() => handleNavItemClick("placement")}
               >
@@ -175,7 +175,7 @@ const Navbar = () => {
               <span
                 className={`text-xs font-semibold cursor-pointer ${
                   activeNavItem === "placement"
-                    ? "text-[#cd5e77]"
+                    ? "text-[#9025a1]"
                     : "text-[#49454f]"
                 }`}
                 onClick={() => router.push("/placementOpHead/placement")}
@@ -191,7 +191,7 @@ const Navbar = () => {
           <div className="flex flex-col items-center w-full mb-5">
             <Link
               href="/placementOpHead/notification"
-              className="cursor-pointer flex flex-col items-center mb-1 px-3.5 py-1 text-black hover:bg-[#f5dee3] hover:text-black rounded-2xl"
+              className="cursor-pointer flex flex-col items-center mb-1 px-3.5 py-1 text-black hover:bg-[#e8d3ec] hover:text-black rounded-2xl"
               onClick={() => {
                 setMobileMenuOpen(false);
               }}
@@ -209,8 +209,8 @@ const Navbar = () => {
               href="/placementOpHead/settings"
               className={`flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
                 activeNavItem === "settings"
-                  ? "bg-[#cd5e77] text-white"
-                  : "text-black hover:bg-[#f5dee3] hover:text-black"
+                  ? "bg-[#9025a1] text-white"
+                  : "text-black hover:bg-[#e8d3ec] hover:text-black"
               }`}
               onClick={() => handleNavItemClick("settings")}
             >
@@ -219,7 +219,7 @@ const Navbar = () => {
             <span
               className={`text-xs font-semibold cursor-pointer mb-2 ${
                 activeNavItem === "settings"
-                  ? "text-[#cd5e77]"
+                  ? "text-[#9025a1]"
                   : "text-[#49454f]"
               }`}
               onClick={() => router.push("/placementOpHead/settings")}
@@ -232,7 +232,7 @@ const Navbar = () => {
           <div className="flex flex-col items-center w-full mb-5">
             <Link
               href="/login"
-              className="flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl hover:bg-[#f5dee3] text-black"
+              className="flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl hover:bg-[#e8d3ec] text-black"
             >
               <TbLogout2 size={20} />
             </Link>
@@ -247,7 +247,7 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div
           ref={mobileMenuRef}
-          className="md:hidden fixed top-16 left-0 w-full bg-[#f0ced6] z-30 p-4 shadow-lg"
+          className="md:hidden fixed top-16 left-0 w-full bg-[#d3a8d9] z-30 p-4 shadow-lg"
         >
           <div className="flex flex-col space-y-4">
             {/* Home */}
@@ -255,8 +255,8 @@ const Navbar = () => {
               href="/placementOpHead/ophome"
               className={`flex items-center px-4 py-2 rounded-lg ${
                 activeNavItem === "home"
-                  ? "bg-[#cd5e77] text-white"
-                  : "text-black hover:bg-[#f5dee3]"
+                  ? "bg-[#9025a1] text-white"
+                  : "text-black hover:bg-[#e8d3ec]"
               }`}
               onClick={() => handleNavItemClick("home")}
             >
@@ -269,8 +269,8 @@ const Navbar = () => {
               href="/placementOpHead/tl"
               className={`flex items-center px-4 py-2 rounded-lg ${
                 activeNavItem === "tl"
-                  ? "bg-[#cd5e77] text-white"
-                  : "text-black hover:bg-[#f5dee3]"
+                  ? "bg-[#9025a1] text-white"
+                  : "text-black hover:bg-[#e8d3ec]"
               }`}
               onClick={() => handleNavItemClick("tl")}
             >
@@ -283,8 +283,8 @@ const Navbar = () => {
               href="/placementOpHead/student"
               className={`flex items-center px-4 py-2 rounded-lg ${
                 activeNavItem === "student"
-                  ? "bg-[#cd5e77] text-white"
-                  : "text-black hover:bg-[#f5dee3]"
+                  ? "bg-[#9025a1] text-white"
+                  : "text-black hover:bg-[#e8d3ec]"
               }`}
               onClick={() => handleNavItemClick("student")}
             >
@@ -297,8 +297,8 @@ const Navbar = () => {
               href="/placementOpHead/placement"
               className={`flex items-center px-4 py-2 rounded-lg ${
                 activeNavItem === "placement"
-                  ? "bg-[#cd5e77] text-white"
-                  : "text-black hover:bg-[#f5dee3]"
+                  ? "bg-[#9025a1] text-white"
+                  : "text-black hover:bg-[#e8d3ec]"
               }`}
               onClick={() => handleNavItemClick("placement")}
             >
@@ -309,7 +309,7 @@ const Navbar = () => {
             {/* Notification */}
             <Link
               href="/placementOpHead/notification"
-              className="flex items-center px-4 py-2 rounded-lg text-black hover:bg-[#f5dee3]"
+              className="flex items-center px-4 py-2 rounded-lg text-black hover:bg-[#e8d3ec]"
               onClick={() => {
                 setMobileMenuOpen(false);
               }}
@@ -323,8 +323,8 @@ const Navbar = () => {
               href="/placementOpHead/settings"
               className={`flex items-center px-4 py-2 rounded-lg ${
                 activeNavItem === "settings"
-                  ? "bg-[#cd5e77] text-white"
-                  : "text-black hover:bg-[#f5dee3]"
+                  ? "bg-[#9025a1] text-white"
+                  : "text-black hover:bg-[#e8d3ec]"
               }`}
               onClick={() => handleNavItemClick("settings")}
             >
@@ -335,7 +335,7 @@ const Navbar = () => {
             {/* Logout */}
             <Link
               href="/login"
-              className="flex items-center px-4 py-2 rounded-lg text-black hover:bg-[#f5dee3]"
+              className="flex items-center px-4 py-2 rounded-lg text-black hover:bg-[#e8d3ec]"
               onClick={() => {
                 setActiveNavItem("");
                 setMobileMenuOpen(false);

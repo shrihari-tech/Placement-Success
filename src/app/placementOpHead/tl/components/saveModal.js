@@ -44,7 +44,7 @@ const SaveConfirmationModal = ({
           </button>
           <button
             onClick={onConfirm} // Confirm save button
-            className="cursor-pointer bg-[#cd5e77] hover:bg-[#b9556b] text-white px-4 py-2.5 rounded-xl text-sm font-medium"
+            className="cursor-pointer bg-[#9025a1] hover:bg-[#731d80] text-white px-4 py-2.5 rounded-xl text-sm font-medium"
           >
             Confirm
           </button>

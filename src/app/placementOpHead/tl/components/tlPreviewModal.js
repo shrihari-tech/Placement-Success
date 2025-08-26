@@ -181,20 +181,22 @@ const TLPreviewModal = ({
 
   return (
     <>
-      {/* Main Preview/Edit Modal Backdrop */}
+            {/* Main Preview/Edit Modal Backdrop */}
       <div
         className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
         onClick={onClose} // Clicking the backdrop closes the main modal
       >
-        {/* Main Modal Container */}
+        {/* Main Modal Container - Dynamically sized based on mode */}
         <div
-          className="bg-white rounded-lg shadow-xl w-full max-w-sm max-h-[90vh]"
+          className={`bg-white rounded-lg shadow-xl w-full ${
+            isEditMode ? 'max-w-2xl' : 'max-w-sm max-h-[90vh]'
+          }`}
           onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
         >
           {/* Modal Content Container - Reduced padding */}
-          <div className="p-4 flex flex-col h-full max-h-[90vh]">
+          <div className="p-4 flex flex-col h-full ">
             {/* Header - Reduced bottom margin */}
-            <div className="flex justify-between items-center mb-2">
+            <div className="flex justify-between items-center mb-2 ">
               {/* Modal Title */}
               <h2 className="text-xl text-gray-700 font-bold">
                 {isEditMode ? "Edit Team Leader" : "Team Leader Details"}
@@ -207,7 +209,7 @@ const TLPreviewModal = ({
                     {/* Edit Icon */}
                     <button
                       onClick={() => setIsEditMode(true)} // Switch to edit mode
-                      className="text-gray-500 hover:text-[#cd5e77] cursor-pointer"
+                      className="text-gray-500 hover:text-[#9025a1] cursor-pointer"
                       aria-label="Edit"
                     >
                       <RiEdit2Fill size={20} />
@@ -215,7 +217,7 @@ const TLPreviewModal = ({
                     {/* Delete Icon */}
                     <button
                       onClick={handleDeleteClick} // Show delete confirmation
-                      className="text-gray-500 hover:text-[#cd5e77] cursor-pointer"
+                      className="text-gray-500 hover:text-[#9025a1] cursor-pointer"
                       aria-label="Delete"
                     >
                       <RiDeleteBin6Line size={20} />
@@ -252,7 +254,7 @@ const TLPreviewModal = ({
                       id="edit-name"
                       className={`block px-3 pb-2 pt-4 w-full text-sm text-gray-900 bg-white rounded-sm border-2 ${
                         errors.name ? "border-red-500" : "border-gray-400"
-                      } appearance-none focus:outline-none focus:border-[#cd5e77] peer`} /* Reduced px, pt */
+                      } appearance-none focus:outline-none focus:border-[#9025a1] peer`} /* Reduced px, pt */
                       placeholder=" "
                       value={editData.name}
                       onChange={(e) => handleChange("name", e.target.value)}
@@ -261,7 +263,7 @@ const TLPreviewModal = ({
                       htmlFor="edit-name"
                       className={`absolute px-2 text-sm ${
                         errors.name ? "text-red-500" : "text-gray-500"
-                      } duration-300 bg-white transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#cd5e77] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`} /* Adjusted top, left */
+                      } duration-300 bg-white transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#9025a1] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`} /* Adjusted top, left */
                     >
                       Name <span className="text-red-500">*</span>
                     </label>
@@ -288,7 +290,7 @@ const TLPreviewModal = ({
                       id="edit-email"
                       className={`block px-3 pb-2 pt-4 w-full text-sm text-gray-900 bg-white rounded-sm border-2 ${
                         errors.email ? "border-red-500" : "border-gray-400"
-                      } appearance-none focus:outline-none focus:border-[#cd5e77] peer`} /* Reduced px, pt */
+                      } appearance-none focus:outline-none focus:border-[#9025a1] peer`} /* Reduced px, pt */
                       placeholder=" "
                       value={editData.email}
                       onChange={(e) => handleChange("email", e.target.value)}
@@ -297,7 +299,7 @@ const TLPreviewModal = ({
                       htmlFor="edit-email"
                       className={`absolute px-2 text-sm ${
                         errors.email ? "text-red-500" : "text-gray-500"
-                      } duration-300 bg-white transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#cd5e77] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`} /* Adjusted top, left */
+                      } duration-300 bg-white transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#9025a1] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`} /* Adjusted top, left */
                     >
                       Email <span className="text-red-500">*</span>
                     </label>
@@ -326,7 +328,7 @@ const TLPreviewModal = ({
                       id="edit-phone"
                       className={`block px-3 pb-2 pt-4 w-full text-sm text-gray-900 bg-white rounded-sm border-2 ${
                         errors.phone ? "border-red-500" : "border-gray-400"
-                      } appearance-none focus:outline-none focus:border-[#cd5e77] peer`} /* Reduced px, pt */
+                      } appearance-none focus:outline-none focus:border-[#9025a1] peer`} /* Reduced px, pt */
                       placeholder=" "
                       value={editData.phone}
                       onChange={(e) => {
@@ -341,7 +343,7 @@ const TLPreviewModal = ({
                       htmlFor="edit-phone"
                       className={`absolute px-2 text-sm ${
                         errors.phone ? "text-red-500" : "text-gray-500"
-                      } duration-300 bg-white transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#cd5e77] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`} /* Adjusted top, left */
+                      } duration-300 bg-white transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#9025a1] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`} /* Adjusted top, left */
                     >
                       Phone <span className="text-red-500">*</span>
                     </label>
@@ -388,7 +390,7 @@ const TLPreviewModal = ({
                       id="edit-password"
                       className={`block px-3 pb-2 pt-4 w-full text-sm text-gray-900 bg-white rounded-sm border-2 ${
                         errors.password ? "border-red-500" : "border-gray-400"
-                      } appearance-none focus:outline-none focus:border-[#cd5e77] peer`} /* Reduced px, pt */
+                      } appearance-none focus:outline-none focus:border-[#9025a1] peer`} /* Reduced px, pt */
                       placeholder=" "
                       value={editData.password}
                       onChange={(e) => handleChange("password", e.target.value)}
@@ -397,7 +399,7 @@ const TLPreviewModal = ({
                       htmlFor="edit-password"
                       className={`absolute px-2 text-sm ${
                         errors.password ? "text-red-500" : "text-gray-500"
-                      } duration-300 bg-white transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#cd5e77] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`} /* Adjusted top, left */
+                      } duration-300 bg-white transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#9025a1] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`} /* Adjusted top, left */
                     >
                       New Password
                     </label>
@@ -428,7 +430,7 @@ const TLPreviewModal = ({
                         errors.confirmPassword
                           ? "border-red-500"
                           : "border-gray-400"
-                      } appearance-none focus:outline-none focus:border-[#cd5e77] peer`} /* Reduced px, pt */
+                      } appearance-none focus:outline-none focus:border-[#9025a1] peer`} /* Reduced px, pt */
                       placeholder=" "
                       value={editData.confirmPassword}
                       onChange={(e) =>
@@ -441,7 +443,7 @@ const TLPreviewModal = ({
                         errors.confirmPassword
                           ? "text-red-500"
                           : "text-gray-500"
-                      } duration-300 bg-white transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#cd5e77] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`} /* Adjusted top, left */
+                      } duration-300 bg-white transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#9025a1] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`} /* Adjusted top, left */
                     >
                       Confirm New Password
                     </label>
@@ -471,10 +473,10 @@ const TLPreviewModal = ({
                   <div className="flex items-center p-2 bg-gray-50 rounded-lg">
                     {" "}
                     {/* Reduced p */}
-                    <div className="w-10 h-10 rounded-full bg-[#f0ced6] flex items-center justify-center mr-3">
+                    <div className="w-10 h-10 rounded-full bg-[#ddbde2] flex items-center justify-center mr-3">
                       {" "}
                       {/* Reduced mr */}
-                      <FiUser className="h-5 w-5 text-[#cd5e77]" />
+                      <FiUser className="h-5 w-5 text-[#9025a1]" />
                     </div>
                     <div>
                       <p className="text-xs text-gray-500">Name</p>
@@ -487,10 +489,10 @@ const TLPreviewModal = ({
                   <div className="flex items-center p-2 bg-gray-50 rounded-lg">
                     {" "}
                     {/* Reduced p */}
-                    <div className="w-10 h-10 rounded-full bg-[#f0ced6] flex items-center justify-center mr-3">
+                    <div className="w-10 h-10 rounded-full bg-[#ddbde2] flex items-center justify-center mr-3">
                       {" "}
                       {/* Reduced mr */}
-                      <FiMail className="h-5 w-5 text-[#cd5e77]" />
+                      <FiMail className="h-5 w-5 text-[#9025a1]" />
                     </div>
                     <div>
                       <p className="text-xs text-gray-500">Email</p>
@@ -503,10 +505,10 @@ const TLPreviewModal = ({
                   <div className="flex items-center p-2 bg-gray-50 rounded-lg">
                     {" "}
                     {/* Reduced p */}
-                    <div className="w-10 h-10 rounded-full bg-[#f0ced6] flex items-center justify-center mr-3">
+                    <div className="w-10 h-10 rounded-full bg-[#ddbde2] flex items-center justify-center mr-3">
                       {" "}
                       {/* Reduced mr */}
-                      <FiPhone className="h-5 w-5 text-[#cd5e77]" />
+                      <FiPhone className="h-5 w-5 text-[#9025a1]" />
                     </div>
                     <div>
                       <p className="text-xs text-gray-500">Phone</p>
@@ -519,10 +521,10 @@ const TLPreviewModal = ({
                   <div className="flex items-center p-2 bg-gray-50 rounded-lg">
                     {" "}
                     {/* Reduced p */}
-                    <div className="w-10 h-10 rounded-full bg-[#f0ced6] flex items-center justify-center mr-3">
+                    <div className="w-10 h-10 rounded-full bg-[#ddbde2] flex items-center justify-center mr-3">
                       {" "}
                       {/* Reduced mr */}
-                      <FiBriefcase className="h-5 w-5 text-[#cd5e77]" />
+                      <FiBriefcase className="h-5 w-5 text-[#9025a1]" />
                     </div>
                     <div>
                       <p className="text-xs text-gray-500">Role</p>
@@ -535,10 +537,10 @@ const TLPreviewModal = ({
                   <div className="flex items-center p-2 bg-gray-50 rounded-lg">
                     {" "}
                     {/* Reduced p */}
-                    <div className="w-10 h-10 rounded-full bg-[#f0ced6] flex items-center justify-center mr-3">
+                    <div className="w-10 h-10 rounded-full bg-[#ddbde2] flex items-center justify-center mr-3">
                       {" "}
                       {/* Reduced mr */}
-                      <FiLock className="h-5 w-5 text-[#cd5e77]" />{" "}
+                      <FiLock className="h-5 w-5 text-[#9025a1]" />{" "}
                       {/* Added FiLock import if not already present */}
                     </div>
                     <div>
@@ -570,7 +572,7 @@ const TLPreviewModal = ({
                 <button
                   type="button"
                   onClick={handleSaveChanges} // Trigger save logic
-                  className="px-3 py-1.5 bg-[#cd5e77] text-white rounded-md hover:bg-[#b9556b] focus:outline-none focus:ring-1 focus:ring-[#a44b5f] text-sm" /* Reduced px, py */
+                  className="px-3 py-1.5 bg-[#9025a1] text-white rounded-md hover:bg-[#731d80] focus:outline-none focus:ring-1 focus:ring-[#731d80] text-sm" /* Reduced px, py */
                 >
                   Save Changes
                 </button>
@@ -625,7 +627,7 @@ const TLPreviewModal = ({
                 <button
                   type="button"
                   onClick={handleConfirmDelete} // Confirm delete
-                  className="px-3 py-1.5 bg-[#cd5e77] text-white rounded-xl hover:bg-[#b9556b] focus:outline-none focus:ring-1 focus:bg-[#cd5e77] text-sm" /* Reduced px, py, rounded */
+                  className="px-3 py-1.5 bg-[#9025a1] text-white rounded-xl hover:bg-[#731d80] focus:outline-none focus:ring-1 focus:bg-[#9025a1] text-sm" /* Reduced px, py, rounded */
                 >
                   Delete
                 </button>
