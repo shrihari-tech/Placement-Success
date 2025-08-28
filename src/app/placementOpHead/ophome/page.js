@@ -7,21 +7,18 @@ import Image from "next/image";
 import { useDataContext } from "../../context/dataContext";
 
 export default function Home() {
-  // Get user name from localStorage
   const storedUserName = localStorage.getItem("loginUser") || "";
   const namePart = storedUserName.split("@")[0]?.split(".")[1] || "";
   const displayName = namePart
     ? namePart.charAt(0).toUpperCase() + namePart.slice(1)
     : "User";
 
-  // Use context to get data - this is the data calling in page.js
   const {
     calculateTotalBatchesPerDomain,
     calculateUpcomingBatchesPerDomain,
     batchStatsData = {},
   } = useDataContext();
 
-  // Calculate all stats data in page.js
   const statsData = useMemo(() => {
     const totalBatchesPerDomain = calculateTotalBatchesPerDomain();
     const upcomingBatchesPerDomain = calculateUpcomingBatchesPerDomain();
@@ -52,7 +49,6 @@ export default function Home() {
     };
   }, [calculateTotalBatchesPerDomain, calculateUpcomingBatchesPerDomain, batchStatsData]);
 
-  // Graph data
   const graphData = {
     previousData: [
       { name: "2", value: 8 },
@@ -74,10 +70,10 @@ export default function Home() {
 
   return (
     <div className="overflow-y-auto min-h-screen bg-gray-50">
-      {/* Navbar */}
       <Navbar />
 
-      <main className="mx-auto w-full">
+      {/* Added pt-16 for mobile header height and pt-0 for desktop */}
+      <main className="mx-auto w-full pt-16 md:pt-0">
         {/* --- HEADER SECTION --- */}
         <div className="border-b-2 border-gray-300 bg-white ps-10 pt-2 mb-2 md:mb-4">
           <p className="text-xl md:text-2xl text-gray-700 font-semibold mb-2 flex items-center">

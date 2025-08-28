@@ -5,9 +5,9 @@ import Link from "next/link";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { LuLayoutGrid } from "react-icons/lu";
 import { MdOutlineGroups } from "react-icons/md";
-import { RiGraduationCapLine, RiUserLocationLine } from "react-icons/ri";
 import { MdOutlineNotifications, MdOutlineSettings } from "react-icons/md";
 import { TbLogout2 } from "react-icons/tb";
+import { BsWindow } from "react-icons/bs";
 import { usePathname, useRouter } from "next/navigation";
 import { useDataContext } from "../context/dataContext";
 
@@ -21,14 +21,15 @@ const Navbar = () => {
 
   useEffect(() => {
     // Match paths correctly for your current structure
-    if (pathname === "/placementOpHead/ophome" || pathname === "/placementOpHead/ophome/") {
+    if (
+      pathname === "/placementOpHead/ophome" ||
+      pathname === "/placementOpHead/ophome/"
+    ) {
       setActiveNavItem("home");
     } else if (pathname === "/placementOpHead/tl") {
       setActiveNavItem("tl");
-    } else if (pathname === "/placementOpHead/student") {
-      setActiveNavItem("student");
-    } else if (pathname === "/placementOpHead/placement") {
-      setActiveNavItem("placement");
+    } else if (pathname === "/placementOpHead/jd") {
+      setActiveNavItem("jd");
     } else {
       setActiveNavItem("");
     }
@@ -87,7 +88,7 @@ const Navbar = () => {
 
           <nav className="flex flex-col items-center w-full">
             {/* Home */}
-            <div className="flex flex-col items-center w-full mb-5">
+            <div className="flex flex-col items-center w-full mb-7">
               <Link
                 href="/placementOpHead/ophome"
                 className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
@@ -110,7 +111,7 @@ const Navbar = () => {
             </div>
 
             {/* tl */}
-            <div className="flex flex-col items-center w-full mb-5">
+            <div className="flex flex-col items-center w-full mb-7">
               <Link
                 href="/placementOpHead/tl"
                 className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
@@ -124,9 +125,7 @@ const Navbar = () => {
               </Link>
               <span
                 className={`text-xs font-semibold cursor-pointer ${
-                  activeNavItem === "tl"
-                    ? "text-[#9025a1]"
-                    : "text-[#49454f]"
+                  activeNavItem === "tl" ? "text-[#9025a1]" : "text-[#49454f]"
                 }`}
                 onClick={() => router.push("/placementOpHead/tl")}
               >
@@ -134,112 +133,83 @@ const Navbar = () => {
               </span>
             </div>
 
-            {/* Student */}
-            <div className="flex flex-col items-center w-full mb-5">
+            {/* JD Dashboard */}
+            <div className="flex flex-col items-center w-full mb-7">
               <Link
-                href="/placementOpHead/student"
+                href="/placementOpHead/jd"
                 className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
-                  activeNavItem === "student"
+                  activeNavItem === "jd"
                     ? "bg-[#9025a1] text-white"
                     : "hover:bg-[#e8d3ec] hover:text-black"
                 }`}
-                onClick={() => handleNavItemClick("student")}
+                onClick={() => handleNavItemClick("jd")}
               >
-                <RiGraduationCapLine size={20} />
+                <BsWindow size={20} />
               </Link>
               <span
-                className={`text-xs font-semibold cursor-pointer ${
-                  activeNavItem === "student"
-                    ? "text-[#9025a1]"
-                    : "text-[#49454f]"
+                className={`text-xs font-semibold text-center cursor-pointer ${
+                  activeNavItem === "jd" ? "text-[#9025a1]" : "text-[#49454f]"
                 }`}
-                onClick={() => router.push("/placementOpHead/student")}
+                onClick={() => router.push("/placementOpHead/jd")}
               >
-                Student
+                JD Dashboard
               </span>
             </div>
 
-            {/* Placement */}
-            <div className="flex flex-col items-center w-full mb-5">
+            {/* Notification */}
+            <div className="flex flex-col items-center w-full mb-7">
               <Link
-                href="/placementOpHead/placement"
-                className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
-                  activeNavItem === "placement"
-                    ? "bg-[#9025a1] text-white"
-                    : "hover:bg-[#e8d3ec] hover:text-black"
-                }`}
-                onClick={() => handleNavItemClick("placement")}
+                href="/placementOpHead/notification"
+                className="cursor-pointer flex flex-col items-center mb-1 px-3.5 py-1 text-black hover:bg-[#e8d3ec] hover:text-black rounded-2xl"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                }}
               >
-                <RiUserLocationLine size={20} />
+                <MdOutlineNotifications size={20} />
+              </Link>
+              <span className="cursor-pointer text-xs font-semibold text-[#49454f] mb-2">
+                Notification
+              </span>
+            </div>
+
+            {/* Settings */}
+            <div className="flex flex-col items-center w-full mb-7">
+              <Link
+                href="/placementOpHead/settings"
+                className={`flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
+                  activeNavItem === "settings"
+                    ? "bg-[#9025a1] text-white"
+                    : "text-black hover:bg-[#e8d3ec] hover:text-black"
+                }`}
+                onClick={() => handleNavItemClick("settings")}
+              >
+                <MdOutlineSettings size={20} />
               </Link>
               <span
-                className={`text-xs font-semibold cursor-pointer ${
-                  activeNavItem === "placement"
+                className={`text-xs font-semibold cursor-pointer mb-2 ${
+                  activeNavItem === "settings"
                     ? "text-[#9025a1]"
                     : "text-[#49454f]"
                 }`}
-                onClick={() => router.push("/placementOpHead/placement")}
+                onClick={() => router.push("/placementOpHead/settings")}
               >
-                Placement
+                Settings
+              </span>
+            </div>
+
+            {/* Logout */}
+            <div className="flex flex-col items-center w-full mb-7">
+              <Link
+                href="/login"
+                className="flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl hover:bg-[#e8d3ec] text-black"
+              >
+                <TbLogout2 size={20} />
+              </Link>
+              <span className="text-xs font-semibold mb-2 text-[#49454f]">
+                Logout
               </span>
             </div>
           </nav>
-        </div>
-
-        <div className="flex flex-col items-center w-full mb-5">
-          {/* Notification */}
-          <div className="flex flex-col items-center w-full mb-5">
-            <Link
-              href="/placementOpHead/notification"
-              className="cursor-pointer flex flex-col items-center mb-1 px-3.5 py-1 text-black hover:bg-[#e8d3ec] hover:text-black rounded-2xl"
-              onClick={() => {
-                setMobileMenuOpen(false);
-              }}
-            >
-              <MdOutlineNotifications size={20} />
-            </Link>
-            <span className="cursor-pointer text-xs font-semibold text-[#49454f] mb-2">
-              Notification
-            </span>
-          </div>
-
-          {/* Settings */}
-          <div className="flex flex-col items-center w-full mb-5">
-            <Link
-              href="/placementOpHead/settings"
-              className={`flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
-                activeNavItem === "settings"
-                  ? "bg-[#9025a1] text-white"
-                  : "text-black hover:bg-[#e8d3ec] hover:text-black"
-              }`}
-              onClick={() => handleNavItemClick("settings")}
-            >
-              <MdOutlineSettings size={20} />
-            </Link>
-            <span
-              className={`text-xs font-semibold cursor-pointer mb-2 ${
-                activeNavItem === "settings"
-                  ? "text-[#9025a1]"
-                  : "text-[#49454f]"
-              }`}
-              onClick={() => router.push("/placementOpHead/settings")}
-            >
-              Settings
-            </span>
-          </div>
-
-          {/* Logout */}
-          <div className="flex flex-col items-center w-full mb-5">
-            <Link
-              href="/login"
-              className="flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl hover:bg-[#e8d3ec] text-black"
-            >
-              <TbLogout2 size={20} />
-            </Link>
-            <span className="text-xs font-semibold mb-2 text-[#49454f]">
-              Logout
-            </span>
-          </div>
         </div>
       </aside>
 
@@ -278,32 +248,18 @@ const Navbar = () => {
               <span>TL</span>
             </Link>
 
-            {/* Student */}
+            {/* JD Dashboard */}
             <Link
-              href="/placementOpHead/student"
+              href="/placementOpHead/jd"
               className={`flex items-center px-4 py-2 rounded-lg ${
-                activeNavItem === "student"
+                activeNavItem === "jd"
                   ? "bg-[#9025a1] text-white"
                   : "text-black hover:bg-[#e8d3ec]"
               }`}
-              onClick={() => handleNavItemClick("student")}
+              onClick={() => handleNavItemClick("jd")}
             >
-              <RiGraduationCapLine size={20} className="mr-3" />
-              <span>Student</span>
-            </Link>
-
-            {/* Placement */}
-            <Link
-              href="/placementOpHead/placement"
-              className={`flex items-center px-4 py-2 rounded-lg ${
-                activeNavItem === "placement"
-                  ? "bg-[#9025a1] text-white"
-                  : "text-black hover:bg-[#e8d3ec]"
-              }`}
-              onClick={() => handleNavItemClick("placement")}
-            >
-              <RiUserLocationLine size={20} className="mr-3" />
-              <span>Placement</span>
+              <BsWindow size={20} className="mr-3" />
+              <span>JD Dashboard</span>
             </Link>
 
             {/* Notification */}
