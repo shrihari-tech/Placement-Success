@@ -59,6 +59,7 @@ export default function BatchModel() {
   const [deleteError, setDeleteError] = useState("");
   const [ongoingCount, setOngoingCount] = useState(0);
   const [completedCount, setCompletedCount] = useState(0);
+  const [selectedDomain, setSelectedDomain] = useState("");
   const {
     batchHead,
     batchData,
@@ -603,107 +604,76 @@ export default function BatchModel() {
   };
 
   // First define handleSearch before any effects that use it
-  // const handleSearch = useCallback(() => {
-  //   const hasSearchCriteria =
-  //     searchTerm || (mode && mode !== "Off") || startDate || endDate;
+  const handleSearch = useCallback(() => {
+    const hasSearchCriteria =
+      searchTerm || (mode && mode !== "Off") || startDate || endDate;
 
-  //   if (!hasSearchCriteria) {
-  //     setSearchInitiated(false);
-  //     toast.error("Please enter at least one search criterion");
-  //     return;
-  //   }
+    if (!hasSearchCriteria) {
+      setSearchInitiated(false);
+      toast.error("Please enter at least one search criterion");
+      return;
+    }
 
-  //   if (searchDateError) {
-  //     toast.error("Please fix the date range error before searching");
-  //     return;
-  //   }
+    if (searchDateError) {
+      toast.error("Please fix the date range error before searching");
+      return;
+    }
 
-  //   let results = batches;
+    let results = batches;
 
-  //   // Search by Batch No
-  //   if (searchTerm) {
-  //     results = results.filter((batch) =>
-  //       batch.batchNo.toLowerCase().includes(searchTerm.toLowerCase())
-  //     );
-  //   }
+    // ✅ Domain filter
+    if (selectedDomain) {
+      results = results.filter((batch) => batch.domain === selectedDomain);
+    }
 
-  //   // Search by Mode
-  //   if (mode && mode !== "Off") {
-  //     results = results.filter(
-  //       (batch) => batch.mode.toLowerCase() === mode.toLowerCase()
-  //     );
-  //   }
+    // Search by Batch No
+    if (searchTerm) {
+      results = results.filter((batch) =>
+        batch.batchNo.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
 
-  //   // Normalize input dates
-  //   const start = startDate ? new Date(startDate) : null;
-  //   const end = endDate ? new Date(endDate) : null;
+    // Search by Mode
+    if (mode && mode !== "Off") {
+      results = results.filter(
+        (batch) => batch.mode.toLowerCase() === mode.toLowerCase()
+      );
+    }
 
-  //   // Filter based on section start/end dates
-  //   if (start || end) {
-  //     results = results.filter((batch) => {
-  //       const sectionDates = [
-  //         batch.sections?.Domain,
-  //         batch.sections?.Aptitude,
-  //         batch.sections?.Communication,
-  //       ].filter(Boolean);
+    // Normalize input dates
+    const start = startDate ? new Date(startDate) : null;
+    const end = endDate ? new Date(endDate) : null;
 
-  //       return sectionDates.some((section) => {
-  //         const secStart = section.startDate
-  //           ? new Date(section.startDate)
-  //           : null;
-  //         const secEnd = section.endDate ? new Date(section.endDate) : null;
+    // Filter based on section start/end dates
+    if (start || end) {
+      results = results.filter((batch) => {
+        const sectionDates = [
+          batch.sections?.Domain,
+          batch.sections?.Aptitude,
+          batch.sections?.Communication,
+        ].filter(Boolean);
 
-  //         if (start && end) {
-  //           return secStart <= end && secEnd >= start;
-  //         } else if (start) {
-  //           return secEnd >= start;
-  //         } else if (end) {
-  //           return secStart <= end;
-  //         }
-  //         return true;
-  //       });
-  //     });
-  //   }
+        return sectionDates.some((section) => {
+          const secStart = section.startDate
+            ? new Date(section.startDate)
+            : null;
+          const secEnd = section.endDate ? new Date(section.endDate) : null;
 
-  //   setFilteredBatches(results);
-  //   setSearchInitiated(true);
-  // }, [batches, endDate, mode, searchDateError, searchTerm, startDate]);
+          if (start && end) {
+            return secStart <= end && secEnd >= start;
+          } else if (start) {
+            return secEnd >= start;
+          } else if (end) {
+            return secStart <= end;
+          }
+          return true;
+        });
+      });
+    }
 
-  const handleSearch = useCallback(async () => {
-  const hasSearchCriteria =
-    searchTerm || (mode && mode !== "Off") || startDate || endDate;
-
-  if (!hasSearchCriteria) {
-    setSearchInitiated(false);
-    toast.error("Please enter at least one search criterion");
-    return;
-  }
-
-  if (searchDateError) {
-    toast.error("Please fix the date range error before searching");
-    return;
-  }
-
-  try {
-    const queryParams = new URLSearchParams({
-      searchTerm,
-      mode,
-      startDate,
-      endDate,
-    });
-
-    const res = await fetch(`/api/batches?${queryParams.toString()}`);
-    if (!res.ok) throw new Error("Failed to fetch batches");
-
-    const data = await res.json();
-    setFilteredBatches(data);
+    setFilteredBatches(results);
     setSearchInitiated(true);
-  } catch (error) {
-    console.error(error);
-    toast.error("Error fetching batches");
-  }
-}, [searchTerm, mode, startDate, endDate, searchDateError]);
-
+  }, [batches, endDate, mode, searchDateError, searchTerm, startDate]);
 
   // Then use it in your useEffect
   useEffect(() => {
@@ -816,123 +786,50 @@ export default function BatchModel() {
     return isValid;
   };
 
-  // const handleAddBatch = () => {
-  //   if (!validateForm()) return;
-  //   if (Object.values(modalDateErrors).some((e) => e)) {
-  //     toast.error("Please fix the date range errors before adding the batch");
-  //     return;
-  //   }
-  //   /* ⬇️ earliest / latest across sections */
-  //   const allSecs = Object.values(newBatch.sections);
-  //   const earliest = new Date(
-  //     Math.min(...allSecs.map((s) => new Date(s.startDate)))
-  //   );
-  //   const latest = new Date(
-  //     Math.max(...allSecs.map((s) => new Date(s.endDate)))
-  //   );
+  const handleAddBatch = () => {
+    if (!validateForm()) return;
+    if (Object.values(modalDateErrors).some((e) => e)) {
+      toast.error("Please fix the date range errors before adding the batch");
+      return;
+    }
+    /* ⬇️ earliest / latest across sections */
+    const allSecs = Object.values(newBatch.sections);
+    const earliest = new Date(
+      Math.min(...allSecs.map((s) => new Date(s.startDate)))
+    );
+    const latest = new Date(
+      Math.max(...allSecs.map((s) => new Date(s.endDate)))
+    );
 
-  //   /* convert every section date to DD-MM-YYYY */
-  //   const sectionCopy = {};
-  //   for (const [k, s] of Object.entries(newBatch.sections)) {
-  //     sectionCopy[k] = {
-  //       startDate: toDDMMYYYY(parseDate(s.startDate)),
-  //       endDate: toDDMMYYYY(parseDate(s.endDate)),
-  //     };
-  //   }
-
-  //   const newBatchEntry = {
-  //     id: batches.length + 1,
-  //     batchNo: newBatch.batchNo,
-  //     status: newBatch.status,
-  //     mode: newBatch.mode,
-  //     startDate: toDDMMYYYY(earliest),
-  //     endDate: toDDMMYYYY(latest),
-  //     sections: sectionCopy,
-  //   };
-
-  //   addBatch(newBatchEntry);
-  //   setShowModal(false);
-  //   resetForm();
-  //   toast.success("Batch added successfully");
-  // };
-
-  const handleAddBatch = async () => {
-  if (!validateForm()) return;
-  if (Object.values(modalDateErrors).some((e) => e)) {
-    toast.error("Please fix the date range errors before adding the batch");
-    return;
-  }
-
-  const allSecs = Object.values(newBatch.sections);
-  const earliest = new Date(
-    Math.min(...allSecs.map((s) => new Date(s.startDate)))
-  );
-  const latest = new Date(
-    Math.max(...allSecs.map((s) => new Date(s.endDate)))
-  );
-
-  // const sectionCopy = {};
-  // for (const [k, s] of Object.entries(newBatch.sections)) {
-  //   sectionCopy[k] = {
-  //     startDate: toDDMMYYYY(parseDate(s.startDate)),
-  //     endDate: toDDMMYYYY(parseDate(s.endDate)),
-  //   };
-  // }
-
-  // const newBatchEntry = {
-  //   batchNo: newBatch.batchNo,
-  //   status: newBatch.status,
-  //   mode: newBatch.mode,
-  //   startDate: toDDMMYYYY(earliest),
-  //   endDate: toDDMMYYYY(latest),
-  //   sections: sectionCopy,
-  // };
-  const sectionCopy = {};
+    /* convert every section date to DD-MM-YYYY */
+    const sectionCopy = {};
     for (const [k, s] of Object.entries(newBatch.sections)) {
       sectionCopy[k] = {
-        startDate: new Date(s.startDate).toISOString().slice(0, 10),
-        endDate: new Date(s.endDate).toISOString().slice(0, 10),
+        startDate: toDDMMYYYY(parseDate(s.startDate)),
+        endDate: toDDMMYYYY(parseDate(s.endDate)),
       };
     }
 
     const newBatchEntry = {
+      id: batches.length + 1,
       batchNo: newBatch.batchNo,
       status: newBatch.status,
       mode: newBatch.mode,
-      startDate: earliest.toISOString().slice(0, 10),
-      endDate: latest.toISOString().slice(0, 10),
+      startDate: toDDMMYYYY(earliest),
+      endDate: toDDMMYYYY(latest),
+      studentsPlaced: 0, // Add these
+      pending: 0,
+      trainerName: "", // Add these
+      epicData: {},
       sections: sectionCopy,
+      
     };
 
-  try {
-    const res = await fetch("/api/batches", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newBatchEntry),
-    });
-
-    if (!res.ok) {
-      const err = await res.json();
-      toast.error(err.error || "Failed to add batch");
-      return;
-    }
-
-    const data = await res.json();
-    addBatch({
-      id: data.id, // returned from DB
-      ...newBatchEntry,
-    });
-
+    addBatch(newBatchEntry);
     setShowModal(false);
     resetForm();
     toast.success("Batch added successfully");
-
-  } catch (error) {
-    console.error(error);
-    toast.error("Something went wrong while saving to the database");
-  }
-};
-
+  };
 
   // 👇 runs on each onChange
   const validateBatchNumber = (value) => {
@@ -2282,9 +2179,15 @@ export default function BatchModel() {
                     <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
                       Trainer Name
                     </h3>
-                    <p className="text-sm font-medium text-gray-600">
-                      Shri Hari
-                    </p>
+                    {selectedBatch?.trainerName ? (
+                      <p className="text-sm font-medium text-gray-600">
+                        {selectedBatch.trainerName}
+                      </p>
+                    ) : (
+                      <p className="text-sm font-medium text-gray-400">
+                        Not assigned
+                      </p>
+                    )}
                   </div>
                   <div className="w-full col-span-full bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
                     <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-3">
@@ -2357,9 +2260,15 @@ export default function BatchModel() {
                     <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
                       Trainer Name
                     </h3>
-                    <p className="text-sm font-medium text-gray-600">
-                      Shri Hari
-                    </p>
+                    {selectedBatch?.trainerName ? (
+                      <p className="text-sm font-medium text-gray-600">
+                        {selectedBatch.trainerName}
+                      </p>
+                    ) : (
+                      <p className="text-sm font-medium text-gray-400">
+                        Not assigned
+                      </p>
+                    )}
                   </div>
                   <div className="w-full col-span-full bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
                     <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-3">
@@ -2433,9 +2342,15 @@ export default function BatchModel() {
                     <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
                       Trainer Name
                     </h3>
-                    <p className="text-sm font-medium text-gray-600">
-                      Shri Hari
-                    </p>
+                    {selectedBatch?.trainerName ? (
+                      <p className="text-sm font-medium text-gray-600">
+                        {selectedBatch.trainerName}
+                      </p>
+                    ) : (
+                      <p className="text-sm font-medium text-gray-400">
+                        Not assigned
+                      </p>
+                    )}
                   </div>
                   <div className="w-full col-span-full bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
                     <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-3">

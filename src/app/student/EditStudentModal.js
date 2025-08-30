@@ -58,34 +58,47 @@ export default function EditStudentModal({ student, onClose, onSave }) {
     };
   }, []);
 
-  const validateFields = () => {
-    let tempErrors = {};
-    // Name
-    if (!editingStudent.name || !editingStudent.name.trim()) tempErrors.name = "Name is required";
-    // Email
-    if (!editingStudent.email || !editingStudent.email.trim()) {
-      tempErrors.email = "Email is required";
-    } else if (!/^\S+@\S+\.\S+$/.test(editingStudent.email)) {
-      tempErrors.email = "Email is invalid";
-    }
-    // Phone
-    if (!editingStudent.phone || !editingStudent.phone.trim()) {
+const validateFields = () => {
+  let tempErrors = {};
+  
+  // Name
+  if (!editingStudent.name || !editingStudent.name.trim()) tempErrors.name = "Name is required";
+  
+  // Email
+  if (!editingStudent.email || !editingStudent.email.trim()) {
+    tempErrors.email = "Email is required";
+  } else if (!/^\S+@\S+\.\S+$/.test(editingStudent.email)) {
+    tempErrors.email = "Email is invalid";
+  }
+  
+  // Phone - Most robust approach
+  const phoneValue = editingStudent.phone;
+  if (phoneValue === null || phoneValue === undefined || phoneValue === '') {
+    tempErrors.phone = "Phone is required";
+  } else {
+    const phoneStr = String(phoneValue).trim();
+    if (phoneStr.length === 0) {
       tempErrors.phone = "Phone is required";
-    } else if (!/^\d{10}$/.test(editingStudent.phone)) {
+    } else if (!/^\d{10}$/.test(phoneStr)) {
       tempErrors.phone = "Phone must be 10 digits";
     }
-    // Batch
-    if (!editingStudent.batch || !editingStudent.batch.trim()) tempErrors.batch = "Batch is required";
-    // EPIC Status
-    if (!editingStudent.epicStatus || !editingStudent.epicStatus.trim()) tempErrors.epicStatus = "EPIC Status is required";
-    // Placement
-    if (!editingStudent.placement || !editingStudent.placement.trim()) tempErrors.placement = "Placement Status is required";
-    // Mode
-    if (!editingStudent.mode || !editingStudent.mode.trim()) tempErrors.mode = "Mode of Study is required";
+  }
+  
+  // Batch
+  if (!editingStudent.batch || !editingStudent.batch.trim()) tempErrors.batch = "Batch is required";
+  
+  // EPIC Status
+  if (!editingStudent.epicStatus || !editingStudent.epicStatus.trim()) tempErrors.epicStatus = "EPIC Status is required";
+  
+  // Placement
+  if (!editingStudent.placement || !editingStudent.placement.trim()) tempErrors.placement = "Placement Status is required";
+  
+  // Mode
+  if (!editingStudent.mode || !editingStudent.mode.trim()) tempErrors.mode = "Mode of Study is required";
 
-    setErrors(tempErrors);
-    return Object.keys(tempErrors).length === 0;
-  };
+  setErrors(tempErrors);
+  return Object.keys(tempErrors).length === 0;
+};
 
   const handleChange = (field, value) => {
     setEditingStudent(prev => ({ ...prev, [field]: value }));
@@ -175,7 +188,7 @@ export default function EditStudentModal({ student, onClose, onSave }) {
         <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] " onClick={(e) => e.stopPropagation()}>
           <div className="p-6">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Edit Student</h2>
+              <h2 className="text-xl text-gray-700 font-bold">Edit Student</h2>
               <button onClick={() => changesMade ? setEditDiscarddModel(true) : onClose()} className="text-gray-500 hover:text-gray-700">
                 <RiCloseCircleLine size={24} />
               </button>

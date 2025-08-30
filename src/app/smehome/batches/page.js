@@ -1,15 +1,24 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import SMENavbar from "../smenavbar";
 import { useDataContext } from "../../context/dataContext";
 import BatchListTab from "../batches/batchListTab/page";
 import TrainerUpdateTab from "../batches/trainerUpdateTab/page";
 import BatchHistoryTab from "../batches/batchHistoryTab/page";
+import { useRouter } from "next/navigation";
 
 export default function BatchePage() {
-  const { batchesNames } = useDataContext(); // ❌ removed getBatchHead
+  const {
+    batchesNames,
+    setBatchesNames,
+    studentBatchSelect,
+    setStudentBatchSelect,
+  } = useDataContext();
   const [domainInfo, setDomainInfo] = useState(null);
   const [activeTab, setActiveTab] = useState("Batch List");
+  const [isLoading, setIsLoading] = useState(true);
+  const [lastDomain, setLastDomain] = useState(null);
+  const router = useRouter();
 
   const domainDetails = {
     fs: { name: "Full Stack Development", icon: "/computer.svg" },
@@ -20,7 +29,7 @@ export default function BatchePage() {
     sap: { name: "SAP", icon: "/device_hub.svg" },
   };
 
-  useEffect(() => {
+  const loadDomainData = useCallback(() => {
     const rawDomainCode = localStorage.getItem("domainCode");
     const domainCodeMap = {
       fullstack: "fs",
@@ -34,14 +43,70 @@ export default function BatchePage() {
     const shortCode = domainCodeMap[rawDomainCode];
     if (shortCode) {
       setDomainInfo(domainDetails[shortCode]);
-      // ✅ no fetching here — batchesNames is already in context
+
+      // Set the domain in context to trigger data loading
+      if (studentBatchSelect !== rawDomainCode) {
+        setStudentBatchSelect(rawDomainCode);
+      }
+
+      setLastDomain(rawDomainCode);
     }
-  }, []);
+  }, [studentBatchSelect, setStudentBatchSelect]);
+
+  useEffect(() => {
+    // Check authentication first
+    const checkAuth = () => {
+      const isAuthenticated = localStorage.getItem("isAuthenticated");
+      const domainCode = localStorage.getItem("domainCode");
+
+      if (!isAuthenticated || !domainCode) {
+        router.push("/"); // Redirect to login if not authenticated
+        return;
+      }
+
+      // Check if session expired
+      const expiration = localStorage.getItem("expiration");
+      if (expiration && new Date(expiration) < new Date()) {
+        localStorage.clear();
+        router.push("/");
+        return;
+      }
+
+      setIsLoading(false);
+    };
+
+    checkAuth();
+  }, [router]);
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    loadDomainData();
+  }, [isLoading, loadDomainData]);
+
+  // Handle domain changes (if needed)
+  useEffect(() => {
+    if (!isLoading && lastDomain) {
+      const currentDomain = localStorage.getItem("domainCode");
+      if (currentDomain && currentDomain !== lastDomain) {
+        loadDomainData();
+      }
+    }
+  }, [isLoading, lastDomain, loadDomainData]);
+
+  // If loading, show spinner
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#3f2fb4]"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-col h-screen"> 
+    <div className="flex flex-col h-screen">
       <SMENavbar />
-      <main className="flex-grow overflow-y-auto ml-[25px] p-6"> 
+      <main className="flex-grow overflow-y-auto ml-[25px] p-6">
         <h2 className="text-xl md:text-2xl font-bold text-gray-700 mb-4">
           {domainInfo?.name}
         </h2>
@@ -72,7 +137,6 @@ export default function BatchePage() {
         </div>
 
         {activeTab === "Batch List" && (
-          
           <BatchListTab domainName={domainInfo?.name} />
         )}
         {activeTab === "Trainer Update" && <TrainerUpdateTab />}

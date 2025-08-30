@@ -577,6 +577,7 @@ export default function StudentDataPage() {
                                 className="p-1 hover:bg-gray-100 rounded cursor-pointer"
                                 onClick={() => {
                                   setSelectedStudent(student);
+                                  
                                   setShowViewModal(true);
                                 }}
                               >

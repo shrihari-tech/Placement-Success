@@ -18,8 +18,10 @@ import {
   sapStudentData,
   bankingStudentData,
 } from "../context/dataContext";
+import { useRouter } from "next/navigation";
 
 export default function SMEHomePage() {
+  const router = useRouter();
   const {
     userName,
     fullstackData = fullstackInitial,
@@ -34,11 +36,12 @@ export default function SMEHomePage() {
     devopsStudent = devopsStudentData,
     sapStudent = sapStudentData,
     bankingStudent = bankingStudentData,
-    setStudentBatchSelect, // ✅ now from context
+    setStudentBatchSelect,
   } = useDataContext();
 
   const [domainInfo, setDomainInfo] = useState(null);
   const [overviewData, setOverviewData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const domainDetails = {
     fs: { name: "Full Stack Development", icon: "/computer.svg" },
@@ -85,7 +88,35 @@ export default function SMEHomePage() {
     }
   };
 
+  // Add this effect to handle page refresh
   useEffect(() => {
+    const checkAuth = () => {
+      const isAuthenticated = localStorage.getItem("isAuthenticated");
+      const domainCode = localStorage.getItem("domainCode");
+      const expiration = localStorage.getItem("expiration");
+
+      if (!isAuthenticated || !domainCode) {
+        router.push("/"); // Redirect to login if not authenticated
+        return;
+      }
+
+      // Check if session expired
+      if (expiration && new Date(expiration) < new Date()) {
+        localStorage.clear();
+        router.push("/");
+        return;
+      }
+
+      setIsLoading(false);
+    };
+
+    checkAuth();
+  }, [router]);
+
+  // Main data loading effect
+  useEffect(() => {
+    if (isLoading) return; // Wait until auth check completes
+
     const rawDomainCode = localStorage.getItem("domainCode");
 
     const domainCodeMap = {
@@ -105,7 +136,7 @@ export default function SMEHomePage() {
       return;
     }
 
-    // ✅ Tell DataContext which domain to load
+    // Tell DataContext which domain to load
     setStudentBatchSelect(actualCode);
 
     // Set domain info for UI
@@ -154,6 +185,7 @@ export default function SMEHomePage() {
       epicCountMap,
     });
   }, [
+    isLoading,
     fullstackData,
     dataanalyticsData,
     marketingData,
@@ -166,8 +198,16 @@ export default function SMEHomePage() {
     devopsStudent,
     sapStudent,
     bankingStudent,
-    setStudentBatchSelect, // ✅ dependency added
+    setStudentBatchSelect,
   ]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#3f2fb4]"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="overflow-y-auto min-h-screen bg-gray-50">
@@ -193,13 +233,28 @@ export default function SMEHomePage() {
 
         <style jsx>{`
           @keyframes wave {
-            0% { transform: rotate(0deg); }
-            10% { transform: rotate(14deg); }
-            20% { transform: rotate(-8deg); }
-            30% { transform: rotate(14deg); }
-            40% { transform: rotate(-4deg); }
-            50% { transform: rotate(10deg); }
-            60%, 100% { transform: rotate(0deg); }
+            0% {
+              transform: rotate(0deg);
+            }
+            10% {
+              transform: rotate(14deg);
+            }
+            20% {
+              transform: rotate(-8deg);
+            }
+            30% {
+              transform: rotate(14deg);
+            }
+            40% {
+              transform: rotate(-4deg);
+            }
+            50% {
+              transform: rotate(10deg);
+            }
+            60%,
+            100% {
+              transform: rotate(0deg);
+            }
           }
         `}</style>
 

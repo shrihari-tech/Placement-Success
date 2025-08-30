@@ -86,96 +86,65 @@ export default function Home() {
     if (value) setPasswordError("");
   };
 
-  // const validate = () => {
-  //   let valid = true;
-  //   setEmailError("");
-  //   setPasswordError("");
+  const validate = () => {
+    let valid = true;
+    setEmailError("");
+    setPasswordError("");
 
-  //   // Email validation
-  //   if (!email.trim()) {
-  //     setEmailError("Email is required");
-  //     valid = false;
-  //   } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(email)) {
-  //     setEmailError("Invalid email format");
-  //     valid = false;
-  //   } else if (!allowedEmails.includes(email)) {
-  //     setEmailError("Unauthorized email. Contact admin.");
-  //     valid = false;
-  //   }
-
-  //   // Password validation
-  //   if (!password) {
-  //     setPasswordError("Password is required");
-  //     valid = false;
-  //   }
-
-  //   if (!valid) return false;
-
-  //   if (password !== "1234567") {
-  //     toast.error("Incorrect password");
-  //     setPasswordError("Invalid password");
-  //     return false;
-  //   }
-
-  //   const user = allowedUsers.find((u) => u.email === email);
-  //   if (user) {
-  //     if (user.role === "admin") {
-  //       toast.success("Admin login successful! Redirecting to Home...");
-  //       setLoginUser(email);
-  //       localStorage.setItem("domainCode", "all");
-  //       setTimeout(() => router.push("/home"), 2000);
-  //     } else {
-  //       toast.success("Login successful! Redirecting to SME Home...");
-  //       setLoginUser(email);
-  //       localStorage.setItem("domainCode", user.domain);
-  //       setTimeout(() => router.push(`/smehome?domain=${user.domain}`), 2000);
-  //     }
-  //     return true;
-  //   }
-
-  //   toast.error("Login failed. Please try again.");
-  //   return false;
-  // };
-
-  const validate = async () => {
-  setEmailError("");
-  setPasswordError("");
-
-  if (!email) {
-    setEmailError("Email is required");
-    return;
-  }
-  if (!password) {
-    setPasswordError("Password is required");
-    return;
-  }
-
-  try {
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password })
-    });
-
-    const data = await res.json();
-    if (!res.ok) {
-      toast.error(data.error || "Login failed");
-      return;
+    // Email validation
+    if (!email.trim()) {
+      setEmailError("Email is required");
+      valid = false;
+    } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(email)) {
+      setEmailError("Invalid email format");
+      valid = false;
+    } else if (!allowedEmails.includes(email)) {
+      setEmailError("Unauthorized email. Contact admin.");
+      valid = false;
     }
 
-    toast.success("Login successful!");
-    setLoginUser(email);
-    localStorage.setItem("domainCode", data.domain);
-
-    if (data.role === "admin") {
-      router.push("/home");
-    } else {
-      router.push(`/smehome?domain=${data.domain}`);
+    // Password validation
+    if (!password) {
+      setPasswordError("Password is required");
+      valid = false;
     }
-  } catch {
-    toast.error("Server error");
-  }
-};
+
+    if (!valid) return false;
+
+    if (password !== "1234567") {
+      toast.error("Incorrect password");
+      setPasswordError("Invalid password");
+      return false;
+    }
+
+    const user = allowedUsers.find((u) => u.email === email);
+    if (user) {
+      // Store all necessary session data
+      localStorage.setItem("isAuthenticated", "true");
+      localStorage.setItem("loginUser", email);
+      localStorage.setItem("domainCode", user.domain || "all");
+      localStorage.setItem("userRole", user.role || "sme");
+
+      // Set expiration (optional)
+      const expiration = new Date();
+      expiration.setHours(expiration.getHours() + 8); // 8 hour session
+      localStorage.setItem("expiration", expiration.toISOString());
+
+      if (user.role === "admin") {
+        toast.success("Admin login successful! Redirecting to Home...");
+        setLoginUser(email);
+        setTimeout(() => router.push("/home"), 2000);
+      } else {
+        toast.success("Login successful! Redirecting to SME Home...");
+        setLoginUser(email);
+        setTimeout(() => router.push(`/smehome`), 2000); // Removed query param since we're using localStorage
+      }
+      return true;
+    }
+
+    toast.error("Login failed. Please try again.");
+    return false;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
