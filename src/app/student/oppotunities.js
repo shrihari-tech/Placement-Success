@@ -25,6 +25,11 @@ export default function StudentDataPage() {
     batchingvalue,
     getOpportunitiesByDomain,
   } = useDataContext();
+
+  // --- State for persisted opportunities ---
+  const [persistedOpportunities, setPersistedOpportunities] = useState([]);
+  // --- End of new state ---
+
   const [searchInitiated, setSearchInitiated] = useState(false);
   const [selectedBatch, setSelectedBatch] = useState("");
   const [showBatchDropdown, setShowBatchDropdown] = useState(false);
@@ -50,12 +55,37 @@ export default function StudentDataPage() {
   const [showViewModal, setShowViewModal] = useState(false);
   const [viewOpportunityDetails, setViewOpportunityDetails] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 4;
-
+  const itemsPerPage = 6;
   const batchDropdownRef = useRef(null);
   const statusDropdownRef = useRef(null);
   const placementDropdownRef = useRef(null);
   const searchContainerRef = useRef(null);
+
+  // --- Load persisted opportunities from localStorage on mount ---
+  useEffect(() => {
+    const savedOpportunities = localStorage.getItem('persistedOpportunities');
+    if (savedOpportunities) {
+      try {
+        setPersistedOpportunities(JSON.parse(savedOpportunities));
+      } catch (error) {
+        console.error("Failed to parse persisted opportunities from localStorage", error);
+        setPersistedOpportunities([]); // Fallback to empty array on error
+      }
+    }
+  }, []);
+  // --- End of load logic ---
+
+  // --- Save persisted opportunities to localStorage whenever it changes ---
+  useEffect(() => {
+    if (persistedOpportunities.length > 0) { // Only save if there are opportunities
+      localStorage.setItem('persistedOpportunities', JSON.stringify(persistedOpportunities));
+    } else if (localStorage.getItem('persistedOpportunities')) {
+      // If the array becomes empty, remove the key from localStorage
+       localStorage.removeItem('persistedOpportunities');
+    }
+  }, [persistedOpportunities]);
+  // --- End of save logic ---
+
 
   useEffect(() => {
     if (opportunityDetails?.selectedBatch) {
@@ -162,35 +192,47 @@ export default function StudentDataPage() {
     studentSelectModelDiscard,
   ]);
 
-  const handleSearch = useCallback(() => {
-    const term = searchTerm.trim().toLowerCase();
-    const allOpportunities =
-      getOpportunitiesByDomain(batchingvalue)?.filter(
-        (opportunity) => opportunity.createdDomain === batchHead
-      ) || [];
-    const sortedOpportunities = [...allOpportunities].sort(
-      (a, b) => (b.id || 0) - (a.id || 0)
-    );
+// Replace your existing handleSearch function with this one
+const handleSearch = useCallback(() => {
+  // --- Calculate 'term' correctly within the function scope ---
+  const term = searchTerm.trim().toLowerCase();
+  // --- End of change ---
 
-    if (term) {
-      const results = sortedOpportunities.filter((opportunity) =>
-        opportunity.companyName.toLowerCase().includes(term)
-      );
-      setSearchResults(results);
-      setSearchInitiated(true);
-      setCurrentPage(1);
-    } else {
-      setSearchResults(sortedOpportunities);
-      setSearchInitiated(true);
-      setCurrentPage(1);
-    }
-  }, [searchTerm, batchingvalue, batchHead, getOpportunitiesByDomain]);
+  // --- Use persisted opportunities for search base ---
+  const baseOpportunitiesForSearch = [
+    ...(getOpportunitiesByDomain(batchingvalue)?.filter(
+      (opportunity) => opportunity.createdDomain === batchHead
+    ) || []),
+    ...persistedOpportunities // Include persisted opportunities
+  ];
+  const allOpportunities = baseOpportunitiesForSearch.filter(
+    (opportunity) => opportunity.createdDomain === batchHead
+  ) || [];
+  // --- End of change ---
+
+  const sortedOpportunities = [...allOpportunities].sort(
+    (a, b) => (b.id || 0) - (a.id || 0)
+  );
+
+  if (term) { // Now 'term' is defined
+    const results = sortedOpportunities.filter((opportunity) =>
+      opportunity.companyName.toLowerCase().includes(term) // Use 'term'
+    );
+    setSearchResults(results);
+    setSearchInitiated(true);
+    setCurrentPage(1);
+  } else {
+    setSearchResults(sortedOpportunities);
+    setSearchInitiated(true);
+    setCurrentPage(1);
+  }
+}, [searchTerm, batchingvalue, batchHead, getOpportunitiesByDomain, persistedOpportunities]); // Added searchTerm and persistedOpportunities to dependencies
+
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       handleSearch();
     }, 500);
-
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm, handleSearch]);
 
@@ -239,7 +281,6 @@ export default function StudentDataPage() {
     e.preventDefault();
     const errors = {};
     let isValid = true;
-
     if (!assignFormData.companyName.trim()) {
       errors.companyName = "Company Name is required.";
       isValid = false;
@@ -265,13 +306,11 @@ export default function StudentDataPage() {
       errors.selectedBatch = "Please select a batch.";
       isValid = false;
     }
-
     if (!isValid) {
       setAssignErrors(errors);
       toast.error("Please fix the errors in the form.");
       return;
     }
-
     setOpportunityDetails(assignFormData);
     setShowStudentSelectModal(true);
   };
@@ -343,9 +382,18 @@ export default function StudentDataPage() {
       );
       return;
     }
-    const existingOpportunities = getOpportunitiesByDomain(batchingvalue) || [];
-    const maxId = Math.max(...existingOpportunities.map((o) => o.id || 0), 0);
 
+    // --- Use persisted opportunities for ID calculation ---
+    const baseOpportunitiesForId = [
+      ...(getOpportunitiesByDomain(batchingvalue) || []),
+      ...persistedOpportunities
+    ];
+    const existingOpportunities = baseOpportunitiesForId.filter(
+      (opportunity) => opportunity.createdDomain === batchHead
+    ) || [];
+    // --- End of change ---
+
+    const maxId = Math.max(...existingOpportunities.map((o) => o.id || 0), 0);
     const opportunity = {
       id: maxId + 1,
       ...opportunityDetails,
@@ -354,7 +402,10 @@ export default function StudentDataPage() {
       createdDomain: batchHead || "",
     };
 
-    addOpportunity(opportunity);
+    // --- Add to persisted opportunities instead of context ---
+    setPersistedOpportunities(prev => [...prev, opportunity]);
+    // --- End of change ---
+
     setShowAssignModal(false);
     setShowStudentSelectModal(false);
     setSelectedStudents([]);
@@ -393,13 +444,21 @@ export default function StudentDataPage() {
     return batchesNames;
   };
 
-  const baseOpportunities =
-    getOpportunitiesByDomain(batchingvalue)?.filter(
+  // --- Combine context and persisted opportunities for display ---
+  const baseOpportunities = [
+    ...(getOpportunitiesByDomain(batchingvalue)?.filter(
       (opportunity) => opportunity.createdDomain === batchHead
-    ) || [];
+    ) || []),
+    ...persistedOpportunities.filter(
+      (opportunity) => opportunity.createdDomain === batchHead
+    )
+  ];
+  // --- End of change ---
+
   const sortedBaseOpportunities = [...baseOpportunities].sort(
     (a, b) => (b.id || 0) - (a.id || 0)
   );
+
   const opportunitiesToDisplay = searchInitiated
     ? searchResults
     : sortedBaseOpportunities;
@@ -410,6 +469,7 @@ export default function StudentDataPage() {
     indexOfFirstItem,
     indexOfLastItem
   );
+
   const totalPages = Math.ceil(opportunitiesToDisplay.length / itemsPerPage);
 
   const handlePageChange = (pageNumber) => {
@@ -473,7 +533,6 @@ export default function StudentDataPage() {
               Reset
             </button>
           </div>
-
           <div>
             <button
               onClick={handleOpenAssignModal}
@@ -647,7 +706,6 @@ export default function StudentDataPage() {
               </div>
             )}
           </div>
-
           {/* --- Pagination Controls --- */}
           {totalPages > 1 && (
             <div className="flex justify-center items-center my-6 space-x-2">
@@ -663,7 +721,6 @@ export default function StudentDataPage() {
               >
                 <FiChevronLeft size={20} />
               </button>
-
               {/* Page Numbers */}
               {[...Array(totalPages)].map((_, index) => {
                 const pageNumber = index + 1;
@@ -705,7 +762,6 @@ export default function StudentDataPage() {
                 }
                 return null;
               })}
-
               <button
                 onClick={handleNextPage}
                 disabled={currentPage === totalPages}
@@ -721,7 +777,6 @@ export default function StudentDataPage() {
             </div>
           )}
         </div>
-
         {/* --- New Assign Modal --- */}
         {showAssignModal && (
           <div

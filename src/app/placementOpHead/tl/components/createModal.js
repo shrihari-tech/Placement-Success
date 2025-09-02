@@ -2,6 +2,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { RiCloseCircleLine } from "react-icons/ri";
+import { notification } from 'antd';
 import DiscardConfirmationModal from "./discardModal";
 import SaveConfirmationModal from "./saveModal";
 
@@ -17,6 +18,7 @@ const CreateUserModal = ({ isOpen, onClose, onSave }) => {
   const [errors, setErrors] = useState({});
   const [showDiscardModal, setShowDiscardModal] = useState(false);
   const [showConfirmSaveModal, setShowConfirmSaveModal] = useState(false);
+  const [api, contextHolder] = notification.useNotification();
 
   const changesMade = Boolean(
     newUser.name ||
@@ -65,11 +67,6 @@ const CreateUserModal = ({ isOpen, onClose, onSave }) => {
       val = value.replace(/[^0-9]/g, "");
     }
 
-    // Handle name input (only letters and spaces)
-    if (field === "name") {
-      val = value.replace(/[^a-zA-Z\s]/g, "");
-    }
-
     setNewUser((prev) => ({ ...prev, [field]: val }));
 
     // Clear error for the field being edited
@@ -105,25 +102,132 @@ const CreateUserModal = ({ isOpen, onClose, onSave }) => {
         }
         break;
       case "email":
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!value.trim()) {
+        // Trim whitespace
+        const trimmedValue = value.trim();
+
+        if (!trimmedValue) {
           error = "Email is required";
-        } else if (!emailRegex.test(value)) {
-          error = "Invalid email format";
+        } else {
+          // Basic format check
+          const basicRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+          if (!basicRegex.test(trimmedValue)) {
+            error = "Invalid email format";
+          } else {
+            // Split into local and domain parts
+            const [localPart, domainPart] = trimmedValue.split("@");
+
+            // Local part validation
+            if (!localPart || localPart.length > 64) {
+              error = "Invalid email format";
+            }
+            // Local part must start with a letter
+            else if (!/^[a-zA-Z]/.test(localPart)) {
+              error = "Email local part must start with a letter";
+            }
+            // Local part valid characters
+            else if (!/^[a-zA-Z][a-zA-Z0-9._-]*$/.test(localPart)) {
+              error = "Invalid characters in email";
+            }
+            // Domain part validation
+            else if (!domainPart || domainPart.length > 253) {
+              error = "Invalid email format";
+            } else {
+              // Split domain into labels
+              const domainLabels = domainPart.split(".");
+
+              // Check if we have at least domain and TLD
+              if (domainLabels.length < 2) {
+                error = "Invalid email format";
+              } else {
+                // Validate each domain label
+                for (let i = 0; i < domainLabels.length; i++) {
+                  const label = domainLabels[i];
+
+                  // Label cannot be empty
+                  if (!label) {
+                    error = "Invalid email format";
+                    break;
+                  }
+
+                  // Label length check
+                  if (label.length > 63) {
+                    error = "Invalid email format";
+                    break;
+                  }
+
+                  // First label (subdomain) validation
+                  if (i === 0) {
+                    // First label cannot start with number
+                    if (/^[0-9]/.test(label)) {
+                      error = "Invalid email format";
+                      break;
+                    }
+                    // First label valid characters
+                    if (
+                      !/^[a-zA-Z0-9]([a-zA-Z0-9-])*[a-zA-Z0-9]$|^[a-zA-Z0-9]$/.test(
+                        label
+                      )
+                    ) {
+                      error = "Invalid email format";
+                      break;
+                    }
+                  }
+                  // Last label (TLD) validation
+                  else if (i === domainLabels.length - 1) {
+                    // TLD must be at least 2 characters
+                    if (label.length < 2) {
+                      error = "Invalid email format";
+                      break;
+                    }
+                    // TLD cannot be all numbers
+                    if (/^[0-9]+$/.test(label)) {
+                      error = "Invalid email format";
+                      break;
+                    }
+                    // TLD valid characters (letters only recommended)
+                    if (!/^[a-zA-Z]+$/.test(label)) {
+                      error = "Invalid email format";
+                      break;
+                    }
+                  }
+                  // Middle labels (subdomains) validation
+                  else {
+                    // Middle labels cannot start with number
+                    if (/^[0-9]/.test(label)) {
+                      error = "Invalid email format";
+                      break;
+                    }
+                    // Middle labels valid characters
+                    if (
+                      !/^[a-zA-Z0-9]([a-zA-Z0-9-])*[a-zA-Z0-9]$|^[a-zA-Z0-9]$/.test(
+                        label
+                      )
+                    ) {
+                      error = "Invalid email format";
+                      break;
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
         break;
       case "phone":
-        const phoneRegex = /^[6-9]\d{9}$/;
         if (!value.trim()) {
-          error = "Phone is required";
-        } else if (!phoneRegex.test(value)) {
-          error = "Phone must start with 6,7,8,9 and be 10 digits";
+          error = "Phone Number is required";
+        } else if (!/^\d+$/.test(value)) {
+          error = "Invalid phone number format";
+        } else if (!/^[6-9]/.test(value)) {
+          error = "Invalid phone number format";
+        } else if (value.length !== 10) {
+          error = "Invalid phone number format";
         }
         break;
       case "password":
-        if (!value) {
-          error = "Password is required";
-        } else if (value.length < 6) {
+        // Only validate password if it's been modified and not empty
+        if (value && value.trim() !== "" && value !== "welcome123" && value.length < 6) {
           error = "Password must be at least 6 characters";
         }
         break;
@@ -135,7 +239,9 @@ const CreateUserModal = ({ isOpen, onClose, onSave }) => {
 
   const validateForm = () => {
     const newErrors = {};
-    const fieldsToValidate = ["name", "email", "phone", "password"];
+    // Always validate these required fields
+    const fieldsToValidate = ["name", "email", "phone"];
+    
     let isValid = true;
 
     fieldsToValidate.forEach((field) => {
@@ -146,6 +252,20 @@ const CreateUserModal = ({ isOpen, onClose, onSave }) => {
       }
     });
 
+    // Check required fields are not empty
+    if (!newUser.name.trim()) {
+      newErrors.name = "Name is required";
+      isValid = false;
+    }
+    if (!newUser.email.trim()) {
+      newErrors.email = "Email is required";
+      isValid = false;
+    }
+    if (!newUser.phone.trim()) {
+      newErrors.phone = "Phone Number is required";
+      isValid = false;
+    }
+
     setErrors(newErrors);
     return isValid;
   };
@@ -153,11 +273,32 @@ const CreateUserModal = ({ isOpen, onClose, onSave }) => {
   const handleSaveClick = () => {
     if (validateForm()) {
       setShowConfirmSaveModal(true);
+    } else {
+      api.error({
+        message: 'Validation Error',
+        description: 'Fill all the fields before submitting',
+        placement: 'topRight',
+        duration: 3,
+        showProgress: true,
+        pauseOnHover: true,
+        closeIcon: <RiCloseCircleLine className="text-[#9025a1] hover:text-[#731d80]" size={20} />,
+      });
     }
   };
 
   const handleConfirmSave = () => {
-    onSave(newUser);
+    // Prepare the data to send
+    const userDataToSend = { ...newUser };
+    
+    // Handle password field - only send if it's been meaningfully changed
+    if (!userDataToSend.password || 
+        userDataToSend.password.trim() === "" || 
+        userDataToSend.password === "welcome123") {
+      // Don't send password field at all - this preserves existing password
+      delete userDataToSend.password;
+    }
+    
+    onSave(userDataToSend);
     setShowConfirmSaveModal(false);
     onClose();
   };
@@ -188,6 +329,34 @@ const CreateUserModal = ({ isOpen, onClose, onSave }) => {
 
   return (
     <>
+<style jsx global>{`
+        /* Custom notification styles */
+        .ant-notification-notice-error {
+          border-color: #9025a1 !important;
+        }
+        .ant-notification-notice-error .ant-notification-notice-icon {
+          color: #9025a1 !important;
+        }
+        .ant-notification-notice-error .ant-notification-notice-message {
+          color: #9025a1 !important;
+        }
+        .ant-notification-notice-close:hover {
+          background-color: #9025a1 !important;
+          color: white !important;
+        }
+        .ant-notification-notice-progress-bar {
+          background: #9025a1 !important;
+        }
+        /* Custom close icon styling */
+        .ant-notification-notice-close {
+          transition: all 0.3s ease;
+        }
+        /* Ensure progress bar container also uses the color */
+        .ant-notification-notice-progress {
+          background: rgba(144, 37, 161, 0.1) !important;
+        }
+      `}</style>
+      {contextHolder}
       {/* Main Create User Modal */}
       <div
         className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
@@ -385,14 +554,14 @@ const CreateUserModal = ({ isOpen, onClose, onSave }) => {
               <button
                 type="button"
                 onClick={handleCancelClick}
-                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-gray-500"
+                className="cursor-pointer px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-gray-500"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleSaveClick}
-                className="px-4 py-2 bg-[#9025a1] text-white rounded-md hover:bg-[#731d80] focus:outline-none focus:ring-1 focus:ring-[#731d80]"
+                className="cursor-pointer px-4 py-2 bg-[#9025a1] text-white rounded-md hover:bg-[#731d80] focus:outline-none focus:ring-1 focus:ring-[#731d80]"
               >
                 Submit
               </button>
@@ -414,6 +583,11 @@ const CreateUserModal = ({ isOpen, onClose, onSave }) => {
         onClose={() => setShowConfirmSaveModal(false)}
         onConfirm={handleConfirmSave}
         tlName={newUser.name}
+        userData={{
+          ...newUser,
+          // Pass the actual password value to the modal
+          password: newUser.password
+        }}
       />
     </>
   );
