@@ -35,7 +35,7 @@ export default function placedTab() {
 
   // Filter all students to get only 'Placed' ones for the OverallCard
   const placedStudentsData = allStudentData.filter(
-    (s) => s.placement && s.placement === "Placed" // Exact match for "Placed"
+    (s) => s.placement && s.placement === "placed" // Exact match for "Placed"
   );
 
   // Search function for the table

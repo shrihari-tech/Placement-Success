@@ -4,8 +4,8 @@ import React, { useState } from "react";
 import Navbar from "../navbar"; // Correct default import
 import Image from "next/image";
 import Tabs from "../components/tab";
-import PlacedTab from "./placedTab";
-import YetToBeTab from "./yetToBeTab";
+import PlacedTab from "./PlacedTab";
+import YetToBeTab from "./YetToBeTab";
 
 export default function Home() {
   const storedUserName = localStorage.getItem("loginUser") || "";
@@ -15,10 +15,9 @@ export default function Home() {
     : "User";
 
   const [activeTab, setActiveTab] = useState("Placed Student");
-
   return (
     <div className="overflow-y-auto min-h-screen bg-gray-50">
-      <Navbar /> 
+      <Navbar />
       {/* Added pt-16 for mobile header height and pt-0 for desktop */}
       <main className="mx-auto w-full pt-16 md:pt-0">
         {/* --- HEADER SECTION --- */}
@@ -74,7 +73,7 @@ export default function Home() {
             tabs={["Placed Student", "Yet to be Placed"]}
             className="mt-6"
           />
-          
+
           {/* Tab Content */}
           <div className="bg-white rounded-lg shadow-md p-6 mt-4">
             {activeTab === "Placed Student" ? <PlacedTab /> : <YetToBeTab />}
