@@ -1,5 +1,5 @@
 // placedTab.jsx
-'use client';
+"use client";
 import React, { useState } from "react";
 import Navbar from "../navbar";
 import OverallCard from "../components/overallCard"; // Make sure the path is correct
@@ -32,10 +32,9 @@ export default function PlacedTab() {
     sap: "SAP", // Corrected based on your data
     devops: "DV",
   };
-
   // Filter all students to get only 'Placed' ones for the OverallCard
   const placedStudentsData = allStudentData.filter(
-    (s) => s.placement && s.placement === "placed" // Exact match for "Placed"
+    (s) => s.placement && s.placement === "Placed" // Exact match for "Placed"
   );
 
   // Search function for the table
@@ -44,7 +43,8 @@ export default function PlacedTab() {
 
     if (selectedDomain) {
       const prefix = domainPrefixMap[selectedDomain];
-      if (prefix) { // Check if prefix exists
+      if (prefix) {
+        // Check if prefix exists
         filteredStudents = filteredStudents.filter((s) =>
           s.batch?.startsWith(prefix)
         );
@@ -116,23 +116,47 @@ export default function PlacedTab() {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">S.No</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Company</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Designation</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Batch</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      S.No
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Name
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Phone
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Company
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Designation
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Batch
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {searchResults.map((s, i) => (
                     <tr key={s.bookingId || i} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{i + 1}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{s.name}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{s.phone}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{s.company || "-"}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{s.designation || "-"}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{s.batch}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {i + 1}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {s.name}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {s.phone}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {s.company || "-"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {s.designation || "-"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {s.batch}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -143,7 +167,9 @@ export default function PlacedTab() {
 
         {showTable && searchResults.length === 0 && (
           <div className="bg-white rounded-lg shadow-md p-6 text-center mt-6">
-            <p className="text-gray-600">No placed students found for the selected criteria.</p>
+            <p className="text-gray-600">
+              No placed students found for the selected criteria.
+            </p>
           </div>
         )}
       </main>
