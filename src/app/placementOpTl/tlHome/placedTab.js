@@ -14,7 +14,7 @@ import {
   devopsInitial,
 } from "../../context/dataContext"; // Make sure the path is correct
 
-export default function placedTab() {
+export default function PlacedTab() {
   const { allStudentData } = useDataContext(); // Get all student data
 
   // State for search filters
