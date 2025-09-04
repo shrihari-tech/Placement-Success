@@ -39,7 +39,7 @@ export default function CompanySPOCTab() {
   return (
     <div className="h-screen overflow-hidden">
       <Navbar />
-      <main className="ml-[10px] p-6">
+      <main className="ml-[5px] p-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-700">Company SPOC</h1>
           <CreateButton onClick={() => setIsModalOpen(true)} />

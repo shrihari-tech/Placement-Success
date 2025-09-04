@@ -194,7 +194,7 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div
           ref={mobileMenuRef}
-          className="md:hidden fixed top-16 left-0 w-full bg-[#d3a8d9] z-30 p-4 shadow-lg"
+          className="md:hidden fixed top-16 left-0 w-full bg-[#fff2cc] z-30 p-4 shadow-lg"
         >
           <div className="flex flex-col space-y-4">
             {/* Home */}
@@ -221,8 +221,8 @@ const Navbar = () => {
               }`}
               onClick={() => handleNavItemClick("placement")}
             >
-              <SiAlwaysdata size={20} className="mr-3" />{" "}
-              {/* Changed icon to SiAlwaysdata */}
+              <RiUserLocationLine size={20}  className="mr-3" />
+             
               <span>Placement</span>
             </Link>
 

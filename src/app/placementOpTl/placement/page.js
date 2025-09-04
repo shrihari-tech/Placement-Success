@@ -35,9 +35,9 @@ export default function PlacementPage() {
   return (
     <div className="h-screen overflow-hidden">
       <Navbar />
-      <main className="ml-[5px] p-6">
+      <main className="ml-[0px] p-6">
         <h1 className="text-2xl font-bold text-gray-700 mb-4">Placement</h1>
-        {/* <p className="text-gray-600">This is the Placement page content.</p> */}{" "}
+       
         {/* Optional: Remove placeholder */}
         <div className="container mx-auto  ">
           {/* ✅ Pass the necessary props to the Tabs component */}
