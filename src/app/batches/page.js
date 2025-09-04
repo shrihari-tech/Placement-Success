@@ -16,6 +16,7 @@ import { RiCloseCircleLine } from "react-icons/ri";
 import React, { useState, useEffect } from "react";
 import { useDataContext } from "../context/dataContext";
 import { useRef, useCallback } from "react";
+import Tabs from "./components/tab";
 
 // Inside your component
 
@@ -822,7 +823,6 @@ export default function BatchModel() {
       trainerName: "", // Add these
       epicData: {},
       sections: sectionCopy,
-      
     };
 
     addBatch(newBatchEntry);
@@ -926,7 +926,7 @@ export default function BatchModel() {
 
       {/* Main model  */}
       <div
-        className={`px-3 pt-20 flex-1 bg-[#F8FAFD] mb-12 ${
+        className={`px-3 pt-20 flex-1 bg-[#ffffff] mb-12 ${
           showModal || showDeleteModal ? "pointer-events-none" : ""
         }`}
       >
@@ -1008,7 +1008,7 @@ export default function BatchModel() {
           {/* ====== SEARCH SECTION ====== */}
           <div
             id="search-container"
-            className="bg-[#F4F3FF] py-3 rounded-xl"
+            className="bg-[#ffffff] py-3 rounded-xl"
             tabIndex={0}
           >
             <div className="flex flex-row flex-wrap justify-center gap-3 px-2 py-3">
@@ -1017,7 +1017,7 @@ export default function BatchModel() {
                 <input
                   type="text"
                   id="batch-id"
-                  className={`block px-4 pb-2 pt-5 w-[175px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
+                  className={`block px-4 pb-2 pt-5 w-[175px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
                   placeholder=" "
                   value={searchTerm}
                   onKeyDown={(e) => {
@@ -1032,7 +1032,7 @@ export default function BatchModel() {
                 />
                 <label
                   htmlFor="batch-id"
-                  className="absolute px-1 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-3 scale-75 top-3.5 z-5 origin-[0] left-1 peer-focus:text-xs peer-focus:text-[#6750a4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#efeeff]"
+                  className="absolute px-1 text-sm text-gray-500 duration-300 bg-[#ffffff] transform -translate-y-3 scale-75 top-3.5 z-5 origin-[0] left-1 peer-focus:text-xs peer-focus:text-[#6750a4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#efeeff]"
                 >
                   Search by Batch Name
                 </label>
@@ -1059,11 +1059,11 @@ export default function BatchModel() {
                     }
                   }}
                   onChange={(e) => handleSearchStartDateChange(e.target.value)}
-                  className="cursor-pointer block px-4 pb-2 pt-5 w-[170px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+                  className="cursor-pointer block px-4 pb-2 pt-5 w-[170px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
                 />
                 <label
                   htmlFor="start-date"
-                  className={`absolute px-3 pb-2 mt-1 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform z-5 origin-[0] left-4 ${
+                  className={`absolute px-3 pb-2 mt-1 text-sm text-gray-500 duration-300 bg-[#ffffff] transform z-5 origin-[0] left-4 ${
                     startDate
                       ? "top-2 -translate-y-3 scale-75 text-[#6750A4] font-medium "
                       : "top-6 -translate-y-1/2 scale-100"
@@ -1086,11 +1086,11 @@ export default function BatchModel() {
                     }
                   }}
                   onChange={(e) => handleSearchEndDateChange(e.target.value)}
-                  className="cursor-pointer block px-4 pb-2 pt-5 w-[170px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
+                  className="cursor-pointer block px-4 pb-2 pt-5 w-[170px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer"
                 />
                 <label
                   htmlFor="end-date"
-                  className={`absolute px-3.5 pb-2 mt-1 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform z-5 origin-[0] left-4 ${
+                  className={`absolute px-3.5 pb-2 mt-1 text-sm text-gray-500 duration-300 bg-[#ffffff] transform z-5 origin-[0] left-4 ${
                     endDate
                       ? "top-2 -translate-y-3 scale-75 text-[#6750A4] font-medium"
                       : "top-6 -translate-y-1/2 scale-100"
@@ -1114,11 +1114,11 @@ export default function BatchModel() {
                   placeholder=" "
                   value={mode === "Off" ? "" : mode}
                   onClick={() => setShowModeDropdown(!showModeDropdown)}
-                  className="block px-4 pb-2 pt-5 w-[170px] text-sm text-gray-900 bg-[#F4F3FF]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+                  className="block px-4 pb-2 pt-5 w-[170px] text-sm text-gray-900 bg-[#ffffff]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
                 />
                 <label
                   htmlFor="mode"
-                  className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+                  className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ffffff] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
                 >
                   Mode
                 </label>
@@ -1361,7 +1361,7 @@ export default function BatchModel() {
               <input
                 type="text"
                 id="batch-number"
-                className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${
+                className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 ${
                   formErrors.batchNo ? " border-red-500" : "border-gray-400"
                 } ${
                   setFormErrors
@@ -2022,7 +2022,9 @@ export default function BatchModel() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-lg font-medium">Batch Details</h2>
+              <h2 className="text-lg font-medium text-gray-700">
+                Batch Details
+              </h2>
               <button
                 onClick={() => setShowViewModal(false)}
                 className="cursor-pointer text-gray-500 hover:text-gray-700"
@@ -2031,425 +2033,394 @@ export default function BatchModel() {
               </button>
             </div>
 
-            {/* Tabs */}
-            <div className="w-full">
-              {/* Tab Buttons */}
-              <div className="flex justify-between bg-[#F8FAFD] rounded-t-md relative">
-                {[
-                  "Basic Info",
-                  "Batch Details",
-                  "Domain",
-                  "Aptitude",
-                  "Communication",
-                  "Placement",
-                ].map((tab) => (
-                  <button
-                    key={tab}
-                    onClick={() => setInfoTab(tab)}
-                    className={`cursor-pointer flex-1 py-2 text-xs sm:text-sm font-medium transition duration-300 ${
-                      infoTab === tab ? "text-[#6750A4]" : "text-gray-700"
-                    }`}
-                  >
-                    {tab}
-                  </button>
-                ))}
-                {/* Active Tab Underline */}
-                <div
-                  className="absolute bottom-0 h-[3px] bg-[#6750A4] transition-all duration-300"
-                  style={{
-                    width: `${100 / 6}%`,
-                    transform: `translateX(${
-                      [
-                        "Basic Info",
-                        "Batch Details",
-                        "Domain",
-                        "Aptitude",
-                        "Communication",
-                        "Placement",
-                      ].indexOf(infoTab) * 100
-                    }%)`,
-                  }}
-                />
+            <Tabs
+              activeTab={infoTab}
+              setActiveTab={setInfoTab}
+              tabs={[
+                "Basic Info",
+                "Batch Details",
+                "Domain",
+                "Aptitude",
+                "Communication",
+                "Placement",
+              ]}
+            />
+
+            {/* Modal Content */}
+            {/*Basic info tab*/}
+            {infoTab === "Basic Info" && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8 font-sans text-gray-800">
+                {/* Batch No */}
+                <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
+                    Batch No
+                  </h3>
+                  <p className="text-sm font-medium text-gray-600">
+                    {selectedBatch.batchNo}
+                  </p>
+                </div>
+
+                {/* Status */}
+                <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
+                    Status
+                  </h3>
+                  <p className="text-sm font-medium text-gray-600">
+                    {selectedBatch?.status}
+                  </p>
+                </div>
+
+                {/* Mode */}
+                <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md col-span-full mx-auto w-full sm:w-2/3 lg:w-1/2">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
+                    Mode
+                  </h3>
+                  <p className="text-sm font-medium text-gray-600">
+                    {selectedBatch?.mode}
+                  </p>
+                </div>
               </div>
+            )}
+            {/* Batch Details tab*/}
+            {infoTab === "Batch Details" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 font-sans text-gray-800">
+                <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
+                    Mode
+                  </h3>
+                  <p className="text-sm font-medium text-gray-600">
+                    {selectedBatch?.mode}
+                  </p>
+                </div>
 
-              {/* Modal Content */}
-              {/*Basic info tab*/}
-              {infoTab === "Basic Info" && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8 font-sans text-gray-800">
-                  {/* Batch No */}
-                  <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                      Batch No
-                    </h3>
+                <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
+                    Session
+                  </h3>
+                  <p className="text-sm font-medium text-gray-600">
+                    Interview Session
+                  </p>
+                </div>
+
+                <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md md:col-span-2 md:mx-auto md:w-1/2">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
+                    Student Count
+                  </h3>
+                  <p className="text-sm font-medium text-gray-600">40</p>
+                </div>
+              </div>
+            )}
+            {/* Domain */}
+            {infoTab === "Domain" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 font-sans text-gray-800">
+                <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md space-y-2">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
+                    Domain Dates
+                  </h3>
+                  <p className="text-sm font-semibold text-[#6b21a8] tracking-wide">
+                    Start -{" "}
+                    <span className="text-sm font-medium text-gray-600">
+                      {formatDate(selectedBatch.sections?.Domain?.startDate)}
+                    </span>
+                  </p>
+
+                  <p className="text-sm font-semibold text-[#6b21a8] tracking-wide">
+                    End -{" "}
+                    <span className="text-sm font-medium text-gray-600">
+                      {formatDate(selectedBatch.sections?.Domain?.endDate)}
+                    </span>
+                  </p>
+                </div>
+                <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
+                    Status
+                  </h3>
+                  <p className="text-sm font-medium text-gray-600">
+                    {selectedBatch?.status}
+                  </p>
+                </div>
+
+                <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
+                    Batch Progress
+                  </h3>
+                  <p className="text-sm font-medium text-gray-600">
+                    IRC Completed
+                  </p>
+                </div>
+
+                <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
+                    Trainer Name
+                  </h3>
+                  {selectedBatch?.trainerName ? (
                     <p className="text-sm font-medium text-gray-600">
-                      {selectedBatch.batchNo}
+                      {selectedBatch.trainerName}
                     </p>
-                  </div>
-
-                  {/* Status */}
-                  <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                      Status
-                    </h3>
-                    <p className="text-sm font-medium text-gray-600">
-                      {selectedBatch?.status}
+                  ) : (
+                    <p className="text-sm font-medium text-gray-400">
+                      Not assigned
                     </p>
-                  </div>
-
-                  {/* Mode */}
-                  <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md col-span-full mx-auto w-full sm:w-2/3 lg:w-1/2">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                      Mode
-                    </h3>
-                    <p className="text-sm font-medium text-gray-600">
-                      {selectedBatch?.mode}
+                  )}
+                </div>
+                <div className="w-full col-span-full bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-3">
+                    EPIC Data
+                  </h3>
+                  <div className="flex flex-wrap justify-between gap-4 text-sm font-medium text-gray-600">
+                    <p>
+                      <span className="text-[#6b21a8] font-bold">E</span>
+                      xcellent - 10
+                    </p>
+                    <p>
+                      <span className="text-[#6b21a8] font-bold">P</span>
+                      roficient - 10
+                    </p>
+                    <p>
+                      <span className="text-[#6b21a8] font-bold">I</span>deal -
+                      10
+                    </p>
+                    <p>
+                      <span className="text-[#6b21a8] font-bold">C</span>
+                      apable - 10
                     </p>
                   </div>
                 </div>
-              )}
-              {/* Batch Details tab*/}
-              {infoTab === "Batch Details" && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 font-sans text-gray-800">
-                  <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                      Mode
-                    </h3>
-                    <p className="text-sm font-medium text-gray-600">
-                      {selectedBatch?.mode}
-                    </p>
-                  </div>
+              </div>
+            )}
+            {/* Aptitude */}
+            {infoTab === "Aptitude" && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 font-sans text-gray-800">
+                <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md space-y-2">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
+                    Apptitude Dates
+                  </h3>
+                  <p className="text-sm font-semibold text-[#6b21a8] tracking-wide">
+                    Start -{" "}
+                    <span className="text-sm font-medium text-gray-600">
+                      {formatDate(selectedBatch.sections?.Aptitude?.startDate)}
+                    </span>
+                  </p>
 
-                  <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                      Session
-                    </h3>
-                    <p className="text-sm font-medium text-gray-600">
-                      Interview Session
-                    </p>
-                  </div>
+                  <p className="text-sm font-semibold text-[#6b21a8] tracking-wide">
+                    End -{" "}
+                    <span className="text-sm font-medium text-gray-600">
+                      {formatDate(selectedBatch.sections?.Aptitude?.endDate)}
+                    </span>
+                  </p>
+                </div>
 
-                  <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md md:col-span-2 md:mx-auto md:w-1/2">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                      Student Count
-                    </h3>
-                    <p className="text-sm font-medium text-gray-600">40</p>
+                <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
+                    Status
+                  </h3>
+                  <p className="text-sm font-medium text-gray-600">
+                    {selectedBatch?.status}
+                  </p>
+                </div>
+
+                <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
+                    Batch Progress
+                  </h3>
+                  <p className="text-sm font-medium text-gray-600">
+                    Capstone Project
+                  </p>
+                </div>
+
+                <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
+                    Trainer Name
+                  </h3>
+                  {selectedBatch?.trainerName ? (
+                    <p className="text-sm font-medium text-gray-600">
+                      {selectedBatch.trainerName}
+                    </p>
+                  ) : (
+                    <p className="text-sm font-medium text-gray-400">
+                      Not assigned
+                    </p>
+                  )}
+                </div>
+                <div className="w-full col-span-full bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-3">
+                    EPIC Data
+                  </h3>
+                  <div className="flex flex-wrap justify-between gap-4 text-sm font-medium text-gray-600">
+                    <p>
+                      <span className="text-[#6b21a8] font-bold">E</span>
+                      xcellent - 10
+                    </p>
+                    <p>
+                      <span className="text-[#6b21a8] font-bold">P</span>
+                      roficient - 10
+                    </p>
+                    <p>
+                      <span className="text-[#6b21a8] font-bold">I</span>deal -
+                      10
+                    </p>
+                    <p>
+                      <span className="text-[#6b21a8] font-bold">C</span>
+                      apable - 10
+                    </p>
                   </div>
                 </div>
-              )}
-              {/* Domain */}
-              {infoTab === "Domain" && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 font-sans text-gray-800">
-                  <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md space-y-2">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                      Domain Dates
-                    </h3>
-                    <p className="text-sm font-semibold text-[#6b21a8] tracking-wide">
-                      Start -{" "}
-                      <span className="text-sm font-medium text-gray-600">
-                        {formatDate(selectedBatch.sections?.Domain?.startDate)}
-                      </span>
-                    </p>
+              </div>
+            )}
+            {/* Communication */}
+            {infoTab === "Communication" && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8 font-sans text-gray-800">
+                <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md space-y-2">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
+                    Communication Dates
+                  </h3>
+                  <p className="text-sm font-semibold text-[#6b21a8] tracking-wide">
+                    Start -{" "}
+                    <span className="text-sm font-medium text-gray-600">
+                      {formatDate(
+                        selectedBatch.sections?.Communication?.startDate
+                      )}
+                    </span>
+                  </p>
 
-                    <p className="text-sm font-semibold text-[#6b21a8] tracking-wide">
-                      End -{" "}
-                      <span className="text-sm font-medium text-gray-600">
-                        {formatDate(selectedBatch.sections?.Domain?.endDate)}
-                      </span>
-                    </p>
-                  </div>
-                  <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                      Status
-                    </h3>
+                  <p className="text-sm font-semibold text-[#6b21a8] tracking-wide">
+                    End -{" "}
+                    <span className="text-sm font-medium text-gray-600">
+                      {formatDate(
+                        selectedBatch.sections?.Communication?.endDate
+                      )}
+                    </span>
+                  </p>
+                </div>
+                <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
+                    Status
+                  </h3>
+                  <p className="text-sm font-medium text-gray-600">
+                    {selectedBatch?.status}
+                  </p>
+                </div>
+
+                <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
+                    Batch Progress
+                  </h3>
+                  <p className="text-sm font-medium text-gray-600">
+                    Initial Stage
+                  </p>
+                </div>
+
+                <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md ">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
+                    Trainer Name
+                  </h3>
+                  {selectedBatch?.trainerName ? (
                     <p className="text-sm font-medium text-gray-600">
-                      {selectedBatch?.status}
+                      {selectedBatch.trainerName}
                     </p>
-                  </div>
-
-                  <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                      Batch Progress
-                    </h3>
-                    <p className="text-sm font-medium text-gray-600">
-                      IRC Completed
+                  ) : (
+                    <p className="text-sm font-medium text-gray-400">
+                      Not assigned
                     </p>
-                  </div>
-
-                  <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                      Trainer Name
-                    </h3>
-                    {selectedBatch?.trainerName ? (
-                      <p className="text-sm font-medium text-gray-600">
-                        {selectedBatch.trainerName}
-                      </p>
-                    ) : (
-                      <p className="text-sm font-medium text-gray-400">
-                        Not assigned
-                      </p>
-                    )}
-                  </div>
-                  <div className="w-full col-span-full bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-3">
-                      EPIC Data
-                    </h3>
-                    <div className="flex flex-wrap justify-between gap-4 text-sm font-medium text-gray-600">
-                      <p>
-                        <span className="text-[#6b21a8] font-bold">E</span>
-                        xcellent - 10
-                      </p>
-                      <p>
-                        <span className="text-[#6b21a8] font-bold">P</span>
-                        roficient - 10
-                      </p>
-                      <p>
-                        <span className="text-[#6b21a8] font-bold">I</span>deal
-                        - 10
-                      </p>
-                      <p>
-                        <span className="text-[#6b21a8] font-bold">C</span>
-                        apable - 10
-                      </p>
-                    </div>
+                  )}
+                </div>
+                <div className="w-full col-span-full bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-3">
+                    EPIC Data
+                  </h3>
+                  <div className="flex flex-wrap justify-between gap-4 text-sm font-medium text-gray-600">
+                    <p>
+                      <span className="text-[#6b21a8] font-bold">E</span>
+                      xcellent - 10
+                    </p>
+                    <p>
+                      <span className="text-[#6b21a8] font-bold">P</span>
+                      roficient - 10
+                    </p>
+                    <p>
+                      <span className="text-[#6b21a8] font-bold">I</span>deal -
+                      10
+                    </p>
+                    <p>
+                      <span className="text-[#6b21a8] font-bold">C</span>
+                      apable - 10
+                    </p>
                   </div>
                 </div>
-              )}
-              {/* Aptitude */}
-              {infoTab === "Aptitude" && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 font-sans text-gray-800">
-                  <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md space-y-2">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                      Apptitude Dates
-                    </h3>
-                    <p className="text-sm font-semibold text-[#6b21a8] tracking-wide">
-                      Start -{" "}
-                      <span className="text-sm font-medium text-gray-600">
-                        {formatDate(
-                          selectedBatch.sections?.Aptitude?.startDate
-                        )}
-                      </span>
-                    </p>
+              </div>
+            )}
 
-                    <p className="text-sm font-semibold text-[#6b21a8] tracking-wide">
-                      End -{" "}
-                      <span className="text-sm font-medium text-gray-600">
-                        {formatDate(selectedBatch.sections?.Aptitude?.endDate)}
-                      </span>
-                    </p>
-                  </div>
-
-                  <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                      Status
-                    </h3>
-                    <p className="text-sm font-medium text-gray-600">
-                      {selectedBatch?.status}
-                    </p>
-                  </div>
-
-                  <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                      Batch Progress
-                    </h3>
-                    <p className="text-sm font-medium text-gray-600">
-                      Capstone Project
-                    </p>
-                  </div>
-
-                  <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                      Trainer Name
-                    </h3>
-                    {selectedBatch?.trainerName ? (
-                      <p className="text-sm font-medium text-gray-600">
-                        {selectedBatch.trainerName}
-                      </p>
-                    ) : (
-                      <p className="text-sm font-medium text-gray-400">
-                        Not assigned
-                      </p>
-                    )}
-                  </div>
-                  <div className="w-full col-span-full bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-3">
-                      EPIC Data
-                    </h3>
-                    <div className="flex flex-wrap justify-between gap-4 text-sm font-medium text-gray-600">
-                      <p>
-                        <span className="text-[#6b21a8] font-bold">E</span>
-                        xcellent - 10
-                      </p>
-                      <p>
-                        <span className="text-[#6b21a8] font-bold">P</span>
-                        roficient - 10
-                      </p>
-                      <p>
-                        <span className="text-[#6b21a8] font-bold">I</span>deal
-                        - 10
-                      </p>
-                      <p>
-                        <span className="text-[#6b21a8] font-bold">C</span>
-                        apable - 10
-                      </p>
-                    </div>
-                  </div>
+            {/* Placement */}
+            {infoTab === "Placement" && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 font-sans text-gray-800">
+                {/* First 6 boxes */}
+                <div className="bg-[#ece6f0] rounded-xl p-4 border-t-4 border-[#6b21a8] shadow-md">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
+                    Not Required
+                  </h3>
+                  <p className="text-sm font-bold text-gray-600">5</p>
                 </div>
-              )}
-              {/* Communication */}
-              {infoTab === "Communication" && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8 font-sans text-gray-800">
-                  <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md space-y-2">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                      Communication Dates
-                    </h3>
-                    <p className="text-sm font-semibold text-[#6b21a8] tracking-wide">
-                      Start -{" "}
-                      <span className="text-sm font-medium text-gray-600">
-                        {formatDate(
-                          selectedBatch.sections?.Communication?.startDate
-                        )}
-                      </span>
-                    </p>
 
-                    <p className="text-sm font-semibold text-[#6b21a8] tracking-wide">
-                      End -{" "}
-                      <span className="text-sm font-medium text-gray-600">
-                        {formatDate(
-                          selectedBatch.sections?.Communication?.endDate
-                        )}
-                      </span>
-                    </p>
-                  </div>
-                  <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                      Status
-                    </h3>
-                    <p className="text-sm font-medium text-gray-600">
-                      {selectedBatch?.status}
-                    </p>
-                  </div>
-
-                  <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                      Batch Progress
-                    </h3>
-                    <p className="text-sm font-medium text-gray-600">
-                      Initial Stage
-                    </p>
-                  </div>
-
-                  <div className="bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md ">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                      Trainer Name
-                    </h3>
-                    {selectedBatch?.trainerName ? (
-                      <p className="text-sm font-medium text-gray-600">
-                        {selectedBatch.trainerName}
-                      </p>
-                    ) : (
-                      <p className="text-sm font-medium text-gray-400">
-                        Not assigned
-                      </p>
-                    )}
-                  </div>
-                  <div className="w-full col-span-full bg-[#ece6f0] rounded-xl p-6 border-t-4 border-[#6b21a8] shadow-md">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-3">
-                      EPIC Data
-                    </h3>
-                    <div className="flex flex-wrap justify-between gap-4 text-sm font-medium text-gray-600">
-                      <p>
-                        <span className="text-[#6b21a8] font-bold">E</span>
-                        xcellent - 10
-                      </p>
-                      <p>
-                        <span className="text-[#6b21a8] font-bold">P</span>
-                        roficient - 10
-                      </p>
-                      <p>
-                        <span className="text-[#6b21a8] font-bold">I</span>deal
-                        - 10
-                      </p>
-                      <p>
-                        <span className="text-[#6b21a8] font-bold">C</span>
-                        apable - 10
-                      </p>
-                    </div>
-                  </div>
+                <div className="bg-[#ece6f0] rounded-xl p-4 border-t-4 border-[#6b21a8] shadow-md">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
+                    Ready For Placement
+                  </h3>
+                  <p className="text-sm font-bold text-gray-600">4</p>
                 </div>
-              )}
 
-              {/* Placement */}
-              {infoTab === "Placement" && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8 font-sans text-gray-800">
-                  {/* First 6 boxes */}
-                  <div className="bg-[#ece6f0] rounded-xl p-4 border-t-4 border-[#6b21a8] shadow-md">
+                <div className="bg-[#ece6f0] rounded-xl p-4 border-t-4 border-[#6b21a8] shadow-md">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
+                    KGM Placed
+                  </h3>
+                  <p className="text-sm font-bold text-gray-600">11</p>
+                </div>
+
+                <div className="bg-[#ece6f0] rounded-xl p-4 border-t-4 border-[#6b21a8] shadow-md">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
+                    Self Placed
+                  </h3>
+                  <p className="text-sm font-bold text-gray-600">4</p>
+                </div>
+
+                <div className="bg-[#ece6f0] rounded-xl p-4 border-t-4 border-[#6b21a8] shadow-md">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
+                    Yet to be Placed
+                  </h3>
+                  <p className="text-sm font-bold text-gray-600">5</p>
+                </div>
+
+                <div className="bg-[#ece6f0] rounded-xl p-4 border-t-4 border-[#6b21a8] shadow-md">
+                  <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
+                    Success Rate
+                  </h3>
+                  <p className="text-sm font-bold text-gray-600">62.5%</p>
+                </div>
+
+                <div className="lg:col-span-3 flex justify-center gap-6">
+                  <div className="bg-[#ece6f0] rounded-xl p-4 border-t-4 border-[#6b21a8] shadow-md flex-1 max-w-[300px]">
                     <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                      Not Required
+                      Not Eligible for Placement
                     </h3>
                     <p className="text-sm font-bold text-gray-600">5</p>
                   </div>
 
-                  <div className="bg-[#ece6f0] rounded-xl p-4 border-t-4 border-[#6b21a8] shadow-md">
+                  <div className="bg-[#ece6f0] rounded-xl p-4 border-t-4 border-[#6b21a8] shadow-md flex-1 max-w-[300px]">
                     <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                      Ready For Placement
+                      Placement Successful Candidate
                     </h3>
-                    <p className="text-sm font-bold text-gray-600">4</p>
-                  </div>
-
-                  <div className="bg-[#ece6f0] rounded-xl p-4 border-t-4 border-[#6b21a8] shadow-md">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                      KGM Placed
-                    </h3>
-                    <p className="text-sm font-bold text-gray-600">11</p>
-                  </div>
-
-                  <div className="bg-[#ece6f0] rounded-xl p-4 border-t-4 border-[#6b21a8] shadow-md">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                      Self Placed
-                    </h3>
-                    <p className="text-sm font-bold text-gray-600">4</p>
-                  </div>
-
-                  <div className="bg-[#ece6f0] rounded-xl p-4 border-t-4 border-[#6b21a8] shadow-md">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                      Yet to be Placed
-                    </h3>
-                    <p className="text-sm font-bold text-gray-600">5</p>
-                  </div>
-
-                  <div className="bg-[#ece6f0] rounded-xl p-4 border-t-4 border-[#6b21a8] shadow-md">
-                    <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                      Success Rate
-                    </h3>
-                    <p className="text-sm font-bold text-gray-600">62.5%</p>
-                  </div>
-
-                  <div className="lg:col-span-3 flex justify-center gap-6">
-                    <div className="bg-[#ece6f0] rounded-xl p-4 border-t-4 border-[#6b21a8] shadow-md flex-1 max-w-[300px]">
-                      <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                        Not Eligible for Placement
-                      </h3>
-                      <p className="text-sm font-bold text-gray-600">5</p>
-                    </div>
-
-                    <div className="bg-[#ece6f0] rounded-xl p-4 border-t-4 border-[#6b21a8] shadow-md flex-1 max-w-[300px]">
-                      <h3 className="text-base font-semibold text-[#6b21a8] tracking-wide mb-1">
-                        Placement Successful Candidate
-                      </h3>
-                      <p className="text-sm font-bold text-gray-600">15</p>
-                    </div>
+                    <p className="text-sm font-bold text-gray-600">15</p>
                   </div>
                 </div>
-              )}
-              {/* Close Button */}
-              <div className="flex justify-end mt-6">
-                <button
-                  onClick={() => setShowViewModal(false)}
-                  className="cursor-pointer bg-[#6750A4] text-white px-4 py-2.5 rounded-2xl text-sm font-medium"
-                >
-                  Close
-                </button>
               </div>
+            )}
+            {/* Close Button */}
+            <div className="flex justify-end mt-6">
+              <button
+                onClick={() => setShowViewModal(false)}
+                className="cursor-pointer bg-[#6750A4] text-white px-4 py-2.5 rounded-2xl text-sm font-medium"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>

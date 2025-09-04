@@ -12,6 +12,7 @@ import EditStudentModal from "./EditStudentModal";
 import ViewStudentModal from "./ViewStudentModal";
 import BatchChange from "./BatchChange";
 import Scores from "./scores";
+import Tabs from "./components/tab";
 
 export default function StudentDataPage() {
   const { studentData, batchHead, batchesNames , batchData, deleteStudent } = useDataContext();
@@ -207,39 +208,18 @@ export default function StudentDataPage() {
         ref={searchContainerRef}
       >
         {/* ====== TABS ====== */}
-        <div className="flex bg-[#ECE6F0] rounded-xl py-2 mb-4 relative mt-5">
-          <div
-            className={`absolute top-1 bottom-1 py-2 bg-[#F8FAFD] rounded-lg shadow-sm transition-all
-            duration-300 ease-in-out z-0
-            ${
-              activeTab === "Student Data"
-                ? "left-1 w-[calc(25%-0.5rem)] py-2"
-                : activeTab === "Scores"
-                ? "left-[calc(25%+0.25rem)] md:left-[calc(25%+0.25rem)] w-[calc(25%-0.8rem)] md:w-[calc(25%-0.5rem)]"
-                : activeTab === "Opportunities"
-                ? "left-[calc(50%-0.5rem)] md:left-[calc(50%-0.25rem)] w-[calc(25%+0.7rem)] md:w-[calc(25%-0.5rem)]"
-                : "left-[calc(75%+0.25rem)] w-[calc(25%-0.5rem)]"
-            }`}
-          />
-          {["Student Data", "Scores", "Opportunities", "Batch Change"].map(
-            (label) => (
-              <span
-                key={label}
-                className={`flex-1 cursor-pointer items-center text-gray-700 text-center py-2 text-xs font-semibold select-none relative z-10
-                ${activeTab === label ? "text-indigo-600" : "text-gray-700"}`}
-                onClick={() => setActiveTab(label)}
-              >
-                {label}
-              </span>
-            )
-          )}
-        </div>
+
+<Tabs
+  activeTab={activeTab}
+  setActiveTab={setActiveTab}
+  tabs={["Student Data", "Scores", "Opportunities", "Batch Change"]}
+/>
         {activeTab === "Student Data" ? (
           <div className="mb-4">
             {/* ====== SEARCH SECTION ====== */}
             <div
               id="search-container"
-              className="bg-[#F4F3FF] py-3 rounded-xl"
+              className="bg-[#ffffff] py-3 rounded-xl"
               tabIndex={0}
             >
               <div className="flex flex-row justify-center flex-wrap gap-5 py-3">
@@ -256,12 +236,12 @@ export default function StudentDataPage() {
                       setShowBatchDropdown(true);
                     }}
                     onClick={() => setShowBatchDropdown(!showBatchDropdown)}
-                    className="block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+                    className="block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
                     autoComplete="off"
                   />
                   <label
                     htmlFor="batch-select"
-                    className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+                    className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ffffff] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
                   >
                     Batch
                   </label>
@@ -345,11 +325,11 @@ export default function StudentDataPage() {
                     placeholder=" "
                     value={selectedStatus || ""}
                     onClick={() => setShowStatusDropdown(!showStatusDropdown)}
-                    className="block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+                    className="block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
                   />
                   <label
                     htmlFor="status-select"
-                    className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+                    className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ffffff] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
                   >
                     Status
                   </label>
@@ -424,11 +404,11 @@ export default function StudentDataPage() {
                     onClick={() =>
                       setShowPlacementDropdown(!showPlacementDropdown)
                     }
-                    className="block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+                    className="block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
                   />
                   <label
                     htmlFor="placement-select"
-                    className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+                    className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ffffff] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
                   >
                     Placement
                   </label>
@@ -551,7 +531,7 @@ export default function StudentDataPage() {
                       {filteredStudents.map((student, index) => (
                         <tr
                           key={student.bookingId}
-                          className="hover:bg-[#F4F3FF] hover:text-gray-900   text-gray-500"
+                          className="hover:bg-[#ffffff] hover:text-gray-900   text-gray-500"
                         >
                           <td className="px-5 text-gray-700 text-center py-3 text-sm whitespace-nowrap">
                             {index + 1}

@@ -4,6 +4,7 @@ import "./globals.css";
 import NavWrapper from "./NavWrapper";
 import DataProvider from "./context/dataContext";
 
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

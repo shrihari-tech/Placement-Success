@@ -1,10 +1,10 @@
 "use client";
-
 import { useState, useEffect, useMemo, useRef } from "react";
 import { FiChevronDown } from "react-icons/fi";
 import { RiCloseCircleLine } from "react-icons/ri";
 import { useDataContext } from "../../../context/dataContext"; // Ensure this path is correct for your project structure
 import { toast } from "sonner";
+import Tabs from "../../components/tab";
 
 export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
   // Destructure opportunities data from context
@@ -112,12 +112,10 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
   const validateField = (field, value) => {
     setErrors((prevErrors) => {
       const newErrors = { ...prevErrors };
-
       if (field === "name") {
         if (!value || !value.trim()) newErrors.name = "Name is required";
         else delete newErrors.name;
       }
-
       if (field === "email") {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!value || !value.trim()) newErrors.email = "Email is required";
@@ -125,7 +123,6 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
           newErrors.email = "Invalid email format";
         else delete newErrors.email;
       }
-
       if (field === "phone") {
         const phoneRegex = /^[0-9]{10}$/;
         if (!value || !value.trim()) newErrors.phone = "Phone is required";
@@ -133,46 +130,38 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
           newErrors.phone = "Phone must be 10 digits";
         else delete newErrors.phone;
       }
-
       if (field === "batch") {
         if (!value || !value.trim()) newErrors.batch = "Batch is required";
         else delete newErrors.batch;
       }
-
       if (field === "epicStatus") {
         if (!value || !value.trim())
           newErrors.epicStatus = "EPIC Status is required";
         else delete newErrors.epicStatus;
       }
-
       if (field === "placement") {
         if (!value || !value.trim())
           newErrors.placement = "Placement Status is required";
         else delete newErrors.placement;
       }
-
       if (field === "mode") {
         if (!value || !value.trim())
           newErrors.mode = "Mode of Study is required";
         else delete newErrors.mode;
       }
-
       // Validation for other fields if needed (Address, UG, PG, Experience, Attendance)
       if (field === "address") {
         if (!value || !value.trim()) newErrors.address = "Address is required";
         else delete newErrors.address;
       }
-
       if (field === "ug") {
         if (!value || !value.trim()) newErrors.ug = "U.G is required";
         else delete newErrors.ug;
       }
-
       if (field === "pg") {
         if (!value || !value.trim()) newErrors.pg = "P.G is required";
         else delete newErrors.pg;
       }
-
       if (field === "experience") {
         const num = parseFloat(value);
         if (value === "" || isNaN(num) || num < 0) {
@@ -181,7 +170,6 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
           delete newErrors.experience;
         }
       }
-
       if (field === "attendance") {
         const num = parseFloat(value);
         if (value === "" || isNaN(num) || num < 0 || num > 100) {
@@ -190,7 +178,6 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
           delete newErrors.attendance;
         }
       }
-
       // If all errors are gone, clear all
       if (Object.keys(newErrors).length === 0) return {};
       return newErrors;
@@ -212,7 +199,6 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
       "experience",
       "attendance",
     ];
-
     requiredFields.forEach((field) => {
       validateField(field, editingStudent[field]);
       if (
@@ -232,12 +218,10 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
         }
       }
     });
-
     // Also check for any existing errors in the errors state
     if (Object.keys(errors).length > 0) {
       isValid = false;
     }
-
     return isValid;
   };
 
@@ -334,33 +318,31 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
     setShowConfirmModal(false);
     onClose();
   };
+
   const clearField = (field) => {
     handleChange(field, "");
   };
 
-useEffect(() => {
-  if (isOpen) {
-    // Store scroll position
-    const scrollY = window.scrollY;
-    
-    // Apply scroll lock
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.width = '100%';
-    document.body.style.overflow = 'hidden';
-
-    return () => {
-      // Restore styles
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      document.body.style.overflow = '';
-      
-      // Restore scroll position
-      window.scrollTo(0, scrollY);
-    };
-  }
-}, [isOpen]);
+  useEffect(() => {
+    if (isOpen) {
+      // Store scroll position
+      const scrollY = window.scrollY;
+      // Apply scroll lock
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
+      return () => {
+        // Restore styles
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.body.style.overflow = '';
+        // Restore scroll position
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [isOpen]);
 
   return (
     <>
@@ -387,34 +369,12 @@ useEffect(() => {
               </button>
             </div>
 
-            {/* Tabs */}
-            <div className="w-full mt-4 mb-6">
-              <div className="relative">
-                <div className="flex">
-                  {tabs.map((tab) => (
-                    <button
-                      key={tab}
-                      type="button"
-                      onClick={() => setActiveTab(tab)}
-                      className={`flex-1 py-2 text-sm sm:text-base font-medium text-center transition-all duration-300 ${
-                        activeTab === tab ? "text-[#cd5e77]" : "text-gray-600"
-                      }`}
-                    >
-                      {tab}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Animated underline */}
-                <div
-                  className="absolute bottom-0 left-0 h-[3px] bg-[#cd5e77] transition-all duration-300 ease-in-out"
-                  style={{
-                    width: `${100 / tabs.length}%`,
-                    transform: `translateX(${tabs.indexOf(activeTab) * 100}%)`,
-                  }}
-                />
-              </div>
-            </div>
+            {/* Tabs - Updated to Bootstrap nav-tabs style */}
+        <Tabs 
+          activeTab={activeTab} 
+          setActiveTab={setActiveTab} 
+          tabs={tabs} 
+        />
 
             {/* Scrollable Content Area */}
             <div className="flex-1 overflow-y-auto px-1 pb-4">
@@ -547,7 +507,6 @@ useEffect(() => {
                       Booking ID <span className="text-red-500">*</span>
                     </label>
                   </div>
-
                   {/* Mode of Study Dropdown */}
                   <div className="relative mb-4" ref={modeDropdownRef}>
                     <input
@@ -656,7 +615,6 @@ useEffect(() => {
                       </p>
                     )}
                   </div>
-
                   {/* Address */}
                   <div className="relative mb-4 md:col-span-2">
                     <textarea
@@ -692,7 +650,6 @@ useEffect(() => {
                       </p>
                     )}
                   </div>
-
                   {/* U.G (Under Graduation) */}
                   <div className="relative mb-4">
                     <input
@@ -726,7 +683,6 @@ useEffect(() => {
                       <p className="text-red-500 text-xs mt-1">{errors.ug}</p>
                     )}
                   </div>
-
                   {/* P.G (Post Graduation) */}
                   <div className="relative mb-4">
                     <input
@@ -760,7 +716,6 @@ useEffect(() => {
                       <p className="text-red-500 text-xs mt-1">{errors.pg}</p>
                     )}
                   </div>
-
                   {/* Experience */}
                   <div className="relative mb-4">
                     <input
@@ -802,7 +757,6 @@ useEffect(() => {
                   </div>
                 </div>
               )}
-
               {/* Score Card Tab Content */}
               {/* Score Card Tab Content */}
               {activeTab === "Score Card" && (
@@ -847,7 +801,6 @@ useEffect(() => {
                       </p>
                     )}
                   </div>
-
                   {/* Domain Score Input */}
                   <div className="relative mb-4">
                     <input
@@ -890,7 +843,6 @@ useEffect(() => {
                       </p>
                     )}
                   </div>
-
                   {/* Aptitude Score Input */}
                   <div className="relative mb-4">
                     <input
@@ -933,7 +885,6 @@ useEffect(() => {
                       </p>
                     )}
                   </div>
-
                   {/* Communication Score Input */}
                   <div className="relative mb-4">
                     <input
@@ -980,14 +931,12 @@ useEffect(() => {
                   </div>
                 </div>
               )}
-
               {/* Placement Tab Content - Updated/Added */}
               {activeTab === "Placement" && (
                 <div className="p-1">
                   <h3 className="text-lg font-medium text-gray-700 mb-3">
                     Opportunities Assigned
                   </h3>
-
                   {assignedOpportunities.length > 0 ? (
                     <div className="overflow-x-auto">
                       <table className="min-w-full divide-y divide-gray-200">
@@ -1029,7 +978,6 @@ useEffect(() => {
                 </div>
               )}
             </div>
-
             {/* Footer Buttons */}
             <div className="flex justify-end space-x-3 mt-4 pt-4 border-t border-gray-200">
               <button
@@ -1092,7 +1040,6 @@ useEffect(() => {
           </div>
         </div>
       )}
-
       {/* Discard Confirmation Modal */}
       {EditDiscarddModel && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">

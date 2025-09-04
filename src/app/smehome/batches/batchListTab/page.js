@@ -110,7 +110,7 @@ export default function BatchListTab() {
       {/* Search Filters */}
       <div
         id="search-container"
-        className="bg-[#fff5f6] py-3 rounded-xl"
+        className="bg-[#ffffff] py-3 rounded-xl"
         tabIndex={0}
       >
         <div className="flex flex-row justify-center flex-wrap gap-5 py-3">
@@ -132,14 +132,14 @@ export default function BatchListTab() {
                   setShowBatchDropdown(false);
                 }
               }}
-              className="block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#fff5f6] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#cd5e77] peer cursor-pointer"
+              className="block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#cd5e77] peer cursor-pointer"
               autoComplete="off"
               aria-haspopup="listbox"
               aria-expanded={showBatchDropdown}
             />
             <label
               htmlFor="batch-select"
-              className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#fff5f6] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#cd5e77] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+              className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ffffff] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#cd5e77] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
             >
               Batch
             </label>

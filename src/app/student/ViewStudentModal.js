@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { RiCloseCircleLine } from "react-icons/ri";
 import Image from "next/image";
 import { useDataContext } from "../context/dataContext";
+import Tabs from "./components/tab"; // Fixed import path
 
 const ViewStudentModal = ({
   isOpen,
@@ -14,8 +15,6 @@ const ViewStudentModal = ({
   const [sectionData, setSectionData] = useState({});
 
   const { batchData } = useDataContext();
-
-  // const studentBatch = batchData.find(batch => batch.batchNo === selectedStudent.batch);
 
   const toDDMMYYYY = (d) => {
     const date = d instanceof Date ? d : new Date(d);
@@ -90,14 +89,11 @@ const ViewStudentModal = ({
         return "Unknown";
     }
   };
-  //   const domainSection = fullBatch?.sections?.Domain || {};
-  // const aptitudeSection = fullBatch?.sections?.Aptitude || {};
-  // const communicationSection = fullBatch?.sections?.Communication || {};
 
   return (
     <div
       className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
-      onClick={onClose} // Changed to use onClose prop
+      onClick={onClose}
     >
       <div
         className="relative w-[700px] bg-[#F8FAFD] rounded-[10px] p-6 overflow-hidden"
@@ -109,7 +105,7 @@ const ViewStudentModal = ({
             Student Details
           </h2>
           <button
-            onClick={onClose} // Changed to use onClose prop
+            onClick={onClose}
             className="cursor-pointer text-gray-500 hover:text-gray-700"
           >
             <RiCloseCircleLine size={20} />
@@ -175,196 +171,174 @@ const ViewStudentModal = ({
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="w-full mt-4">
-          <div className="cursor-pointer relative ">
-            <div className="flex">
-              {["Domain", "Aptitude", "Communication"].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setInfoTab(tab)}
-                  className={`cursor-pointer flex-1 py-2 text-sm sm:text-base font-medium text-center transition-all duration-300 ${
-                    infoTab === tab ? "text-[#6750A4]" : "text-gray-600"
-                  }`}
-                >
-                  {tab}
-                </button>
-              ))}
+        {/* Tabs - Using the reusable component */}
+        <Tabs
+          activeTab={infoTab}
+          setActiveTab={setInfoTab}
+          tabs={["Domain", "Aptitude", "Communication"]}
+        />
+
+        {/* Tab Content */}
+        <div className="mt-4 text-sm">
+          {infoTab === "Domain" && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center text-sm sm:text-base">
+              <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
+                <p className="text-gray-700 font-bold">Start Date:</p>
+                <p className="text-gray-700">
+                  {" "}
+                  {formatDate(sectionData.Domain?.startDate) || "N/A"}
+                </p>
+              </div>
+
+              <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
+                <p className="text-gray-700 font-bold">End Date:</p>
+                <p className="text-gray-700">
+                  {formatDate(sectionData.Domain?.endDate) || "N/A"}
+                </p>
+              </div>
+
+              <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
+                <p className="text-gray-700 font-bold">Domain Status:</p>
+                <p className="text-gray-700">
+                  {new Date(sectionData.Domain?.endDate) < new Date()
+                    ? "Completed"
+                    : "Ongoing"}
+                </p>
+              </div>
+
+              <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
+                <p className="text-gray-700 font-bold">Domain Progress:</p>
+                <p className="text-gray-700">Initial Phase</p>
+              </div>
+
+              <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
+                <p className="text-gray-700 font-bold">Domain Trainer:</p>
+                {selectedStudent?.trainerName ? (
+                  <p className="text-gray-700">
+                    {selectedStudent.trainerName}
+                  </p>
+                ) : (
+                  <p className="text-gray-400">Not assigned</p>
+                )}
+              </div>
+
+              <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
+                <p className="text-gray-700 font-bold">EPIC:</p>
+                <p className="text-gray-700">{selectedStudent.epicStatus}</p>
+              </div>
             </div>
+          )}
 
-            {/* Animated underline */}
-            <div
-              className="cursor-pointer absolute bottom-0 left-0 h-[3px] bg-[#6750A4] transition-all duration-300 ease-in-out"
-              style={{
-                width: "33.3333%",
-                transform: `translateX(${
-                  ["Domain", "Aptitude", "Communication"].indexOf(infoTab) * 100
-                }%)`,
-              }}
-            />
-          </div>
-
-          {/* Tab Content */}
-          <div className="mt-4 text-sm">
-            {infoTab === "Domain" && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center text-sm sm:text-base">
-                <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-700 font-bold">Start Date:</p>
-                  <p className="text-gray-700">
-                    {" "}
-                    {formatDate(sectionData.Domain?.startDate) || "N/A"}
-                  </p>
-                </div>
-
-                <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-700 font-bold">End Date:</p>
-                  <p className="text-gray-700">
-                    {formatDate(sectionData.Domain?.endDate) || "N/A"}
-                  </p>
-                </div>
-
-                <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-700 font-bold">Domain Status:</p>
-                  <p className="text-gray-700">
-                    {new Date(sectionData.Domain?.endDate) < new Date()
-                      ? "Completed"
-                      : "Ongoing"}
-                  </p>
-                </div>
-
-                <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-700 font-bold">Domain Progress:</p>
-                  <p className="text-gray-700">Initial Phase</p>
-                </div>
-
-                <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-700 font-bold">Domain Trainer:</p>
-                  {selectedStudent?.trainerName ? (
-                    <p className="text-gray-700">
-                      {selectedStudent.trainerName}
-                    </p>
-                  ) : (
-                    <p className="text-gray-400">Not assigned</p>
-                  )}
-                </div>
-
-                <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-700 font-bold">EPIC:</p>
-                  <p className="text-gray-700">{selectedStudent.epicStatus}</p>
-                </div>
+          {infoTab === "Aptitude" && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center text-sm sm:text-base">
+              <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
+                <p className="text-gray-700 font-bold">Start Date:</p>
+                <p className="text-gray-700">
+                  {formatDate(sectionData.Aptitude?.startDate) || "N/A"}
+                </p>
               </div>
-            )}
 
-            {infoTab === "Aptitude" && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center text-sm sm:text-base">
-                <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-700 font-bold">Start Date:</p>
-                  <p className="text-gray-700">
-                    {formatDate(sectionData.Aptitude?.startDate) || "N/A"}
-                  </p>
-                </div>
-
-                <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-700 font-bold">End Date:</p>
-                  <p className="text-gray-700">
-                    {formatDate(sectionData.Aptitude?.endDate) || "N/A"}
-                  </p>
-                </div>
-
-                <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-700 font-bold">Aptitude Status:</p>
-                  <p className="text-gray-700">
-                    {new Date(sectionData.Aptitude?.endDate) < new Date()
-                      ? "Completed"
-                      : "Ongoing"}
-                  </p>
-                </div>
-
-                <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-700 font-bold">Aptitude Progress:</p>
-                  <p className="text-gray-700">Capstone Project</p>
-                </div>
-
-                <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-700 font-bold">Aptitude Trainer:</p>
-                  {selectedStudent?.trainerName ? (
-                    <p className="text-gray-700">
-                      {selectedStudent.trainerName}
-                    </p>
-                  ) : (
-                    <p className="text-gray-400">Not assigned</p>
-                  )}
-                </div>
-
-                <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-700 font-bold">EPIC:</p>
-                  <p className="text-gray-700">{selectedStudent.epicStatus}</p>
-                </div>
+              <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
+                <p className="text-gray-700 font-bold">End Date:</p>
+                <p className="text-gray-700">
+                  {formatDate(sectionData.Aptitude?.endDate) || "N/A"}
+                </p>
               </div>
-            )}
-            {infoTab === "Communication" && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center text-sm sm:text-base">
-                <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-700 font-bold">Start Date:</p>
-                  <p className="text-gray-700">
-                    {formatDate(sectionData.Communication?.startDate) || "N/A"}
-                  </p>
-                </div>
 
-                <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-700 font-bold">End Date:</p>
-                  <p className="text-gray-700">
-                    {formatDate(sectionData.Communication.endDate) || "N/A"}
-                  </p>
-                </div>
-
-                <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-700 font-bold">
-                    Communication Status:
-                  </p>
-                  <p className="text-gray-700">
-                    {new Date(sectionData.Communication?.endDate) < new Date()
-                      ? "Completed"
-                      : "Ongoing"}
-                  </p>
-                </div>
-
-                <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-700 font-bold">
-                    Communication Progress:
-                  </p>
-                  <p className="text-gray-700">IRC Completed</p>
-                </div>
-
-                <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-700 font-bold">
-                    Communication Trainer:
-                  </p>
-                  {selectedStudent?.trainerName ? (
-                    <p className="text-gray-700">
-                      {selectedStudent.trainerName}
-                    </p>
-                  ) : (
-                    <p className="text-gray-400">Not assigned</p>
-                  )}
-                </div>
-
-                <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
-                  <p className="text-gray-700 font-bold">EPIC:</p>
-                  <p className="text-gray-700">{selectedStudent.epicStatus}</p>
-                </div>
+              <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
+                <p className="text-gray-700 font-bold">Aptitude Status:</p>
+                <p className="text-gray-700">
+                  {new Date(sectionData.Aptitude?.endDate) < new Date()
+                    ? "Completed"
+                    : "Ongoing"}
+                </p>
               </div>
-            )}
-          </div>
-          {/* Close Button */}
-          <div className="flex justify-end mt-6">
-            <button
-              onClick={onClose}
-              className="cursor-pointer bg-[#6750A4] text-white px-4 py-2.5 rounded-2xl text-sm font-medium"
-            >
-              Close
-            </button>
-          </div>
+
+              <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
+                <p className="text-gray-700 font-bold">Aptitude Progress:</p>
+                <p className="text-gray-700">Capstone Project</p>
+              </div>
+
+              <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
+                <p className="text-gray-700 font-bold">Aptitude Trainer:</p>
+                {selectedStudent?.trainerName ? (
+                  <p className="text-gray-700">
+                    {selectedStudent.trainerName}
+                  </p>
+                ) : (
+                  <p className="text-gray-400">Not assigned</p>
+                )}
+              </div>
+
+              <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
+                <p className="text-gray-700 font-bold">EPIC:</p>
+                <p className="text-gray-700">{selectedStudent.epicStatus}</p>
+              </div>
+            </div>
+          )}
+          {infoTab === "Communication" && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center text-sm sm:text-base">
+              <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
+                <p className="text-gray-700 font-bold">Start Date:</p>
+                <p className="text-gray-700">
+                  {formatDate(sectionData.Communication?.startDate) || "N/A"}
+                </p>
+              </div>
+
+              <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
+                <p className="text-gray-700 font-bold">End Date:</p>
+                <p className="text-gray-700">
+                  {formatDate(sectionData.Communication.endDate) || "N/A"}
+                </p>
+              </div>
+
+              <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
+                <p className="text-gray-700 font-bold">
+                  Communication Status:
+                </p>
+                <p className="text-gray-700">
+                  {new Date(sectionData.Communication?.endDate) < new Date()
+                    ? "Completed"
+                    : "Ongoing"}
+                </p>
+              </div>
+
+              <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
+                <p className="text-gray-700 font-bold">
+                  Communication Progress:
+                </p>
+                <p className="text-gray-700">IRC Completed</p>
+              </div>
+
+              <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
+                <p className="text-gray-700 font-bold">
+                  Communication Trainer:
+                </p>
+                {selectedStudent?.trainerName ? (
+                  <p className="text-gray-700">
+                    {selectedStudent.trainerName}
+                  </p>
+                ) : (
+                  <p className="text-gray-400">Not assigned</p>
+                )}
+              </div>
+
+              <div className="bg-[#ece6f0] rounded-xl p-4 border-t-3 border-[#6750A4] shadow-md w-[280px] mx-auto">
+                <p className="text-gray-700 font-bold">EPIC:</p>
+                <p className="text-gray-700">{selectedStudent.epicStatus}</p>
+              </div>
+            </div>
+          )}
+        </div>
+        
+        {/* Close Button */}
+        <div className="flex justify-end mt-6">
+          <button
+            onClick={onClose}
+            className="cursor-pointer bg-[#6750A4] text-white px-4 py-2.5 rounded-2xl text-sm font-medium"
+          >
+            Close
+          </button>
         </div>
       </div>
     </div>

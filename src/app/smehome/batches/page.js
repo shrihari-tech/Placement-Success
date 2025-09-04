@@ -6,6 +6,7 @@ import BatchListTab from "../batches/batchListTab/page";
 import TrainerUpdateTab from "../batches/trainerUpdateTab/page";
 import BatchHistoryTab from "../batches/batchHistoryTab/page";
 import { useRouter } from "next/navigation";
+import Tabs from "../components/tab"; 
 
 export default function BatchePage() {
   const {
@@ -103,6 +104,9 @@ export default function BatchePage() {
     );
   }
 
+  // Define tabs array for reusability
+  const tabs = ["Batch List", "Trainer Update", "Batch History"];
+
   return (
     <div className="flex flex-col h-screen">
       <SMENavbar />
@@ -111,30 +115,12 @@ export default function BatchePage() {
           {domainInfo?.name}
         </h2>
 
-        {/* Tabs */}
-        <div className="flex bg-[#fdeff1] rounded-xl py-2 mb-4 relative mt-5">
-          <div
-            className={`absolute top-1 bottom-1 py-2 bg-[#f9f9f9] rounded-lg shadow-sm transition-all
-            duration-300 ease-in-out z-0
-            ${
-              activeTab === "Batch List"
-                ? "left-1 w-[calc(33%-0.5rem)]"
-                : activeTab === "Trainer Update"
-                ? "left-[calc(33%+0.25rem)] w-[calc(33%-0.5rem)]"
-                : "left-[calc(66%+0.25rem)] w-[calc(33%-0.5rem)]"
-            }`}
-          />
-          {["Batch List", "Trainer Update", "Batch History"].map((label) => (
-            <span
-              key={label}
-              className={`flex-1 cursor-pointer items-center text-center py-2 text-xs font-semibold select-none relative z-10
-              ${activeTab === label ? "text-indigo-600" : "text-gray-700"}`}
-              onClick={() => setActiveTab(label)}
-            >
-              {label}
-            </span>
-          ))}
-        </div>
+        {/* Tabs - Using the reusable component */}
+        <Tabs 
+          activeTab={activeTab} 
+          setActiveTab={setActiveTab} 
+          tabs={tabs} 
+        />
 
         {activeTab === "Batch List" && (
           <BatchListTab domainName={domainInfo?.name} />

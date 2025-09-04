@@ -25,11 +25,6 @@ export default function StudentDataPage() {
     batchingvalue,
     getOpportunitiesByDomain,
   } = useDataContext();
-
-  // --- State for persisted opportunities ---
-  const [persistedOpportunities, setPersistedOpportunities] = useState([]);
-  // --- End of new state ---
-
   const [searchInitiated, setSearchInitiated] = useState(false);
   const [selectedBatch, setSelectedBatch] = useState("");
   const [showBatchDropdown, setShowBatchDropdown] = useState(false);
@@ -56,36 +51,11 @@ export default function StudentDataPage() {
   const [viewOpportunityDetails, setViewOpportunityDetails] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
+
   const batchDropdownRef = useRef(null);
   const statusDropdownRef = useRef(null);
   const placementDropdownRef = useRef(null);
   const searchContainerRef = useRef(null);
-
-  // --- Load persisted opportunities from localStorage on mount ---
-  useEffect(() => {
-    const savedOpportunities = localStorage.getItem('persistedOpportunities');
-    if (savedOpportunities) {
-      try {
-        setPersistedOpportunities(JSON.parse(savedOpportunities));
-      } catch (error) {
-        console.error("Failed to parse persisted opportunities from localStorage", error);
-        setPersistedOpportunities([]); // Fallback to empty array on error
-      }
-    }
-  }, []);
-  // --- End of load logic ---
-
-  // --- Save persisted opportunities to localStorage whenever it changes ---
-  useEffect(() => {
-    if (persistedOpportunities.length > 0) { // Only save if there are opportunities
-      localStorage.setItem('persistedOpportunities', JSON.stringify(persistedOpportunities));
-    } else if (localStorage.getItem('persistedOpportunities')) {
-      // If the array becomes empty, remove the key from localStorage
-       localStorage.removeItem('persistedOpportunities');
-    }
-  }, [persistedOpportunities]);
-  // --- End of save logic ---
-
 
   useEffect(() => {
     if (opportunityDetails?.selectedBatch) {
@@ -192,47 +162,35 @@ export default function StudentDataPage() {
     studentSelectModelDiscard,
   ]);
 
-// Replace your existing handleSearch function with this one
-const handleSearch = useCallback(() => {
-  // --- Calculate 'term' correctly within the function scope ---
-  const term = searchTerm.trim().toLowerCase();
-  // --- End of change ---
-
-  // --- Use persisted opportunities for search base ---
-  const baseOpportunitiesForSearch = [
-    ...(getOpportunitiesByDomain(batchingvalue)?.filter(
-      (opportunity) => opportunity.createdDomain === batchHead
-    ) || []),
-    ...persistedOpportunities // Include persisted opportunities
-  ];
-  const allOpportunities = baseOpportunitiesForSearch.filter(
-    (opportunity) => opportunity.createdDomain === batchHead
-  ) || [];
-  // --- End of change ---
-
-  const sortedOpportunities = [...allOpportunities].sort(
-    (a, b) => (b.id || 0) - (a.id || 0)
-  );
-
-  if (term) { // Now 'term' is defined
-    const results = sortedOpportunities.filter((opportunity) =>
-      opportunity.companyName.toLowerCase().includes(term) // Use 'term'
+  const handleSearch = useCallback(() => {
+    const term = searchTerm.trim().toLowerCase();
+    const allOpportunities =
+      getOpportunitiesByDomain(batchingvalue)?.filter(
+        (opportunity) => opportunity.createdDomain === batchHead
+      ) || [];
+    const sortedOpportunities = [...allOpportunities].sort(
+      (a, b) => (b.id || 0) - (a.id || 0)
     );
-    setSearchResults(results);
-    setSearchInitiated(true);
-    setCurrentPage(1);
-  } else {
-    setSearchResults(sortedOpportunities);
-    setSearchInitiated(true);
-    setCurrentPage(1);
-  }
-}, [searchTerm, batchingvalue, batchHead, getOpportunitiesByDomain, persistedOpportunities]); // Added searchTerm and persistedOpportunities to dependencies
 
+    if (term) {
+      const results = sortedOpportunities.filter((opportunity) =>
+        opportunity.companyName.toLowerCase().includes(term)
+      );
+      setSearchResults(results);
+      setSearchInitiated(true);
+      setCurrentPage(1);
+    } else {
+      setSearchResults(sortedOpportunities);
+      setSearchInitiated(true);
+      setCurrentPage(1);
+    }
+  }, [searchTerm, batchingvalue, batchHead, getOpportunitiesByDomain]);
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       handleSearch();
     }, 500);
+
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm, handleSearch]);
 
@@ -281,6 +239,7 @@ const handleSearch = useCallback(() => {
     e.preventDefault();
     const errors = {};
     let isValid = true;
+
     if (!assignFormData.companyName.trim()) {
       errors.companyName = "Company Name is required.";
       isValid = false;
@@ -306,11 +265,13 @@ const handleSearch = useCallback(() => {
       errors.selectedBatch = "Please select a batch.";
       isValid = false;
     }
+
     if (!isValid) {
       setAssignErrors(errors);
       toast.error("Please fix the errors in the form.");
       return;
     }
+
     setOpportunityDetails(assignFormData);
     setShowStudentSelectModal(true);
   };
@@ -382,18 +343,9 @@ const handleSearch = useCallback(() => {
       );
       return;
     }
-
-    // --- Use persisted opportunities for ID calculation ---
-    const baseOpportunitiesForId = [
-      ...(getOpportunitiesByDomain(batchingvalue) || []),
-      ...persistedOpportunities
-    ];
-    const existingOpportunities = baseOpportunitiesForId.filter(
-      (opportunity) => opportunity.createdDomain === batchHead
-    ) || [];
-    // --- End of change ---
-
+    const existingOpportunities = getOpportunitiesByDomain(batchingvalue) || [];
     const maxId = Math.max(...existingOpportunities.map((o) => o.id || 0), 0);
+
     const opportunity = {
       id: maxId + 1,
       ...opportunityDetails,
@@ -402,10 +354,7 @@ const handleSearch = useCallback(() => {
       createdDomain: batchHead || "",
     };
 
-    // --- Add to persisted opportunities instead of context ---
-    setPersistedOpportunities(prev => [...prev, opportunity]);
-    // --- End of change ---
-
+    addOpportunity(opportunity);
     setShowAssignModal(false);
     setShowStudentSelectModal(false);
     setSelectedStudents([]);
@@ -444,21 +393,13 @@ const handleSearch = useCallback(() => {
     return batchesNames;
   };
 
-  // --- Combine context and persisted opportunities for display ---
-  const baseOpportunities = [
-    ...(getOpportunitiesByDomain(batchingvalue)?.filter(
+  const baseOpportunities =
+    getOpportunitiesByDomain(batchingvalue)?.filter(
       (opportunity) => opportunity.createdDomain === batchHead
-    ) || []),
-    ...persistedOpportunities.filter(
-      (opportunity) => opportunity.createdDomain === batchHead
-    )
-  ];
-  // --- End of change ---
-
+    ) || [];
   const sortedBaseOpportunities = [...baseOpportunities].sort(
     (a, b) => (b.id || 0) - (a.id || 0)
   );
-
   const opportunitiesToDisplay = searchInitiated
     ? searchResults
     : sortedBaseOpportunities;
@@ -469,7 +410,6 @@ const handleSearch = useCallback(() => {
     indexOfFirstItem,
     indexOfLastItem
   );
-
   const totalPages = Math.ceil(opportunitiesToDisplay.length / itemsPerPage);
 
   const handlePageChange = (pageNumber) => {
@@ -492,14 +432,14 @@ const handleSearch = useCallback(() => {
     <div className="flex min-h-screen">
       <Toaster position="top-right" />
       <div className={`flex-1 bg-[#F8FAFD]`} ref={searchContainerRef}>
-        <div className="bg-[#F4F3FF] w-full flex flex-col md:flex-row justify-center rounded-xl gap-5 py-6 px-5">
+        <div className="bg-[#ffffff] w-full flex flex-col md:flex-row justify-center rounded-xl gap-5 py-6 px-5">
           <div>
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search by Company Name"
-              className="px-2 py-3.5 w-[250px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] cursor-pointer"
+              className="px-2 py-3.5 w-[250px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] cursor-pointer"
             />
             {searchTerm && (
               <button
@@ -533,6 +473,7 @@ const handleSearch = useCallback(() => {
               Reset
             </button>
           </div>
+
           <div>
             <button
               onClick={handleOpenAssignModal}
@@ -706,6 +647,7 @@ const handleSearch = useCallback(() => {
               </div>
             )}
           </div>
+
           {/* --- Pagination Controls --- */}
           {totalPages > 1 && (
             <div className="flex justify-center items-center my-6 space-x-2">
@@ -721,6 +663,7 @@ const handleSearch = useCallback(() => {
               >
                 <FiChevronLeft size={20} />
               </button>
+
               {/* Page Numbers */}
               {[...Array(totalPages)].map((_, index) => {
                 const pageNumber = index + 1;
@@ -762,6 +705,7 @@ const handleSearch = useCallback(() => {
                 }
                 return null;
               })}
+
               <button
                 onClick={handleNextPage}
                 disabled={currentPage === totalPages}
@@ -777,6 +721,7 @@ const handleSearch = useCallback(() => {
             </div>
           )}
         </div>
+
         {/* --- New Assign Modal --- */}
         {showAssignModal && (
           <div
@@ -1505,3 +1450,5 @@ const handleSearch = useCallback(() => {
     </div>
   );
 }
+
+
