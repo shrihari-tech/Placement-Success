@@ -1,6 +1,6 @@
 // placementOpTl/placement/companySPOC.js
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../navbar";
 import CreateButton from "../components/createButton";
 import CreateModal from "../components/createModal";
@@ -9,9 +9,22 @@ import PreviewModal from "../components/previewModal";
 
 export default function CompanySPOCTab() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [spocs, setSpocs] = useState([]);
+
+  const [spocs, setSpocs] = useState(() => {
+    if (typeof window !== "undefined") {
+      const savedSpocs = localStorage.getItem("companySpocs");
+      return savedSpocs ? JSON.parse(savedSpocs) : [];
+    }
+    return [];
+  });
   const [selectedSPOC, setSelectedSPOC] = useState(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("companySpocs", JSON.stringify(spocs));
+    }
+  }, [spocs]);
 
   const handleAddSPOC = (spoc) => {
     const newSPOC = { ...spoc, id: Date.now() };
@@ -53,7 +66,6 @@ export default function CompanySPOCTab() {
             phone: "",
           }}
           validateField={(field, value) => {
-            // Add null/undefined guard
             if (!value && value !== "")
               return `${
                 field.charAt(0).toUpperCase() + field.slice(1)

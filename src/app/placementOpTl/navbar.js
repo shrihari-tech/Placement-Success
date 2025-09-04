@@ -4,10 +4,8 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { LuLayoutGrid } from "react-icons/lu";
-import { MdOutlineGroups } from "react-icons/md";
 import { MdOutlineNotifications, MdOutlineSettings } from "react-icons/md";
 import { TbLogout2 } from "react-icons/tb";
-import { BsWindow } from "react-icons/bs";
 import { SiAlwaysdata } from "react-icons/si";
 import { usePathname, useRouter } from "next/navigation";
 import { useDataContext } from "../context/dataContext";
@@ -22,16 +20,13 @@ const Navbar = () => {
   const mobileMenuRef = useRef(null);
 
   useEffect(() => {
-    // Match paths correctly for your current structure
     if (
       pathname === "/placementOpTl/tlHome" ||
       pathname === "/placementOpTl/tlHome/"
     ) {
       setActiveNavItem("home");
     } else if (pathname === "/placementOpTl/placement") {
-      setActiveNavItem("placement"); // Changed from "tl" to "placement"
-    } else if (pathname === "/placementOpTl/jd") {
-      setActiveNavItem("jd");
+      setActiveNavItem("placement");
     } else {
       setActiveNavItem("");
     }
@@ -79,7 +74,7 @@ const Navbar = () => {
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex fixed top-0 left-0 h-screen w-[72px] bg-[#fff2cc] flex-col justify-between items-center z-30">
         <div className="flex flex-col items-center w-full">
-          <div className="flex flex-col items-center w-full mb-10 mt-7">
+          <div className="flex flex-col items-center w-full mb-12 mt-7">
             <button
               className="flex items-center justify-center w-10 h-10 bg-black text-white rounded-2xl font-bold text-lg"
               onClick={() => router.push("/placementOpTl/tlHome")}
@@ -90,7 +85,7 @@ const Navbar = () => {
 
           <nav className="flex flex-col items-center w-full">
             {/* Home */}
-            <div className="flex flex-col items-center w-full mb-7">
+            <div className="flex flex-col items-center w-full mb-12">
               <Link
                 href="/placementOpTl/tlHome"
                 className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
@@ -113,7 +108,7 @@ const Navbar = () => {
             </div>
 
             {/* Placement (replaced TL) */}
-            <div className="flex flex-col items-center w-full mb-7">
+            <div className="flex flex-col items-center w-full mb-12">
               <Link
                 href="/placementOpTl/placement"
                 className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
@@ -123,11 +118,14 @@ const Navbar = () => {
                 }`}
                 onClick={() => handleNavItemClick("placement")}
               >
-                <RiUserLocationLine size={20} /> {/* Changed icon to SiAlwaysdata */}
+                <RiUserLocationLine size={20} />{" "}
+                {/* Changed icon to SiAlwaysdata */}
               </Link>
               <span
                 className={`text-xs font-semibold cursor-pointer ${
-                  activeNavItem === "placement" ? "text-[#e6a901]" : "text-[#49454f]"
+                  activeNavItem === "placement"
+                    ? "text-[#e6a901]"
+                    : "text-[#49454f]"
                 }`}
                 onClick={() => router.push("/placementOpTl/placement")}
               >
@@ -135,31 +133,8 @@ const Navbar = () => {
               </span>
             </div>
 
-            {/* JD Dashboard */}
-            <div className="flex flex-col items-center w-full mb-7">
-              <Link
-                href="/placementOpTl/jd"
-                className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
-                  activeNavItem === "jd"
-                    ? "bg-[#e6a901] text-white"
-                    : "hover:bg-[#ffde80] hover:text-black"
-                }`}
-                onClick={() => handleNavItemClick("jd")}
-              >
-                <BsWindow size={20} />
-              </Link>
-              <span
-                className={`text-xs font-semibold text-center cursor-pointer ${
-                  activeNavItem === "jd" ? "text-[#e6a901]" : "text-[#49454f]"
-                }`}
-                onClick={() => router.push("/placementOpTl/jd")}
-              >
-                JD Dashboard
-              </span>
-            </div>
-
             {/* Notification */}
-            <div className="flex flex-col items-center w-full mb-7">
+            <div className="flex flex-col items-center w-full mb-12">
               <Link
                 href="/placementOpTl/notification"
                 className="cursor-pointer flex flex-col items-center mb-1 px-3.5 py-1 text-black hover:bg-[#ffde80] hover:text-black rounded-2xl"
@@ -175,7 +150,7 @@ const Navbar = () => {
             </div>
 
             {/* Settings */}
-            <div className="flex flex-col items-center w-full mb-7">
+            <div className="flex flex-col items-center w-full mb-12">
               <Link
                 href="/placementOpTl/settings"
                 className={`flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
@@ -200,7 +175,7 @@ const Navbar = () => {
             </div>
 
             {/* Logout */}
-            <div className="flex flex-col items-center w-full mb-7">
+            <div className="flex flex-col items-center w-full mb-12">
               <Link
                 href="/login"
                 className="flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl hover:bg-[#ffde80] text-black"
@@ -246,22 +221,9 @@ const Navbar = () => {
               }`}
               onClick={() => handleNavItemClick("placement")}
             >
-              <SiAlwaysdata size={20} className="mr-3" /> {/* Changed icon to SiAlwaysdata */}
+              <SiAlwaysdata size={20} className="mr-3" />{" "}
+              {/* Changed icon to SiAlwaysdata */}
               <span>Placement</span>
-            </Link>
-
-            {/* JD Dashboard */}
-            <Link
-              href="/placementOpTl/jd"
-              className={`flex items-center px-4 py-2 rounded-lg ${
-                activeNavItem === "jd"
-                  ? "bg-[#e6a901] text-white"
-                  : "text-black hover:bg-[#ffde80]"
-              }`}
-              onClick={() => handleNavItemClick("jd")}
-            >
-              <BsWindow size={20} className="mr-3" />
-              <span>JD Dashboard</span>
             </Link>
 
             {/* Notification */}
