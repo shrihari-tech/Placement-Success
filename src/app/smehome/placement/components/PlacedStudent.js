@@ -7,7 +7,7 @@ import { FaSearch } from "react-icons/fa";
 import { RiCloseCircleLine } from "react-icons/ri";
 import Image from "next/image";
 import PlacedStudentModal from "./PlacedStudentModal";
-import EditStudentModal from "@/app/student/EditStudentModal";
+
 import EditPlacementModal from "./EditPlacementModel";
 
 export default function PlacedListTab() {
