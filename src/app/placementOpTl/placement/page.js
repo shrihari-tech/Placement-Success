@@ -6,7 +6,7 @@ import Tabs from "../components/tab"; // Make sure this component exists and wor
 import CompanySPOCTab from "@/app/placementOpTl/placement/companySPOCTab"; // ✅ Corrected import path
 import ShortListedStudentsTab from "@/app/placementOpTl/placement/shortListedStudentsTab"; // ✅ Corrected typo in import name
 import PlacementOpportunitiesTab from "./PlacementOpportunitiesTab"
-
+import Test from "./Test"
 export default function PlacementPage() {
   // ✅ Add state for active tab
   const [activeTab, setActiveTab] = useState("Company SPOC");
