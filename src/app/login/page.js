@@ -65,7 +65,17 @@ export default function Home() {
     { email: "admin@gmail.com", domain: "all", role: "admin" },
   ];
 
+  // PlacementOpHead users (5 specific users)
+  const placementOpHeadUsers = [
+    { email: "placement.op.head@kgisl.com", role: "placementOpHead" },
+    { email: "placement.head@kgisl.com", role: "placementOpHead" },
+    { email: "op.head@kgisl.com", role: "placementOpHead" },
+    { email: "head.placement@kgisl.com", role: "placementOpHead" },
+    { email: "placement.team@kgisl.com", role: "placementOpHead" },
+  ];
+
   const allowedEmails = allowedUsers.map((u) => u.email);
+  const placementOpHeadEmails = placementOpHeadUsers.map((u) => u.email);
 
   const validateEmailField = (value) => {
     if (!value.trim()) {
@@ -75,7 +85,7 @@ export default function Home() {
     const emailPattern = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i;
     if (!emailPattern.test(value)) {
       setEmailError("Invalid email format");
-    } else if (!allowedEmails.includes(value)) {
+    } else if (!allowedEmails.includes(value) && !placementOpHeadEmails.includes(value)) {
       setEmailError("Unauthorized email. Contact admin.");
     } else {
       setEmailError("");
@@ -98,7 +108,7 @@ export default function Home() {
     } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(email)) {
       setEmailError("Invalid email format");
       valid = false;
-    } else if (!allowedEmails.includes(email)) {
+    } else if (!allowedEmails.includes(email) && !placementOpHeadEmails.includes(email)) {
       setEmailError("Unauthorized email. Contact admin.");
       valid = false;
     }
@@ -117,6 +127,27 @@ export default function Home() {
       return false;
     }
 
+    // Check if it's a PlacementOpHead user
+    const placementOpHeadUser = placementOpHeadUsers.find((u) => u.email === email);
+    if (placementOpHeadUser) {
+      // Store all necessary session data for PlacementOpHead
+      localStorage.setItem("isAuthenticated", "true");
+      localStorage.setItem("loginUser", email);
+      localStorage.setItem("domainCode", "all");
+      localStorage.setItem("userRole", "placementOpHead");
+
+      // Set expiration (optional)
+      const expiration = new Date();
+      expiration.setHours(expiration.getHours() + 8); // 8 hour session
+      localStorage.setItem("expiration", expiration.toISOString());
+
+      toast.success("Placement Op Head login successful! Redirecting...");
+      setLoginUser(email);
+      setTimeout(() => router.push("/placementOpHead/ophome"), 2000);
+      return true;
+    }
+
+    // Regular user login logic
     const user = allowedUsers.find((u) => u.email === email);
     if (user) {
       // Store all necessary session data
@@ -137,7 +168,7 @@ export default function Home() {
       } else {
         toast.success("Login successful! Redirecting to SME Home...");
         setLoginUser(email);
-        setTimeout(() => router.push(`/smehome`), 2000); // Removed query param since we're using localStorage
+        setTimeout(() => router.push(`/smehome`), 2000);
       }
       return true;
     }
