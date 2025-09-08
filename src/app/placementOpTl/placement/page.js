@@ -3,9 +3,9 @@
 import React, { useState } from "react"; // ✅ Import useState
 import Navbar from "../navbar";
 import Tabs from "../components/tab"; // Make sure this component exists and works as expected
-import CompanySPOCTab from "./CompanySPOCTab";
-import ShortListedStudentsTab from "./ShortListedStudentsTab"; // ✅ Corrected typo in import name
-import PlacementOpportunitiesTab from "./PlacementOpportunitiesTab";
+import CompanySPOCTab from "@/app/placementOpTl/placement/companySPOCTab"; // ✅ Corrected import path
+import ShortListedStudentsTab from "@/app/placementOpTl/placement/shortListedStudentsTab"; // ✅ Corrected typo in import name
+import PlacementOpportunitiesTab from "@/app/placementOpTl/placement/placementOpportunitiesTab"; // ✅ Corrected import path
 
 export default function PlacementPage() {
   // ✅ Add state for active tab
