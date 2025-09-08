@@ -7,7 +7,7 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 const TLCardGrid = ({ teamLeaders, onViewDetails }) => {
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 4; // Match opportunities
+  const itemsPerPage = 6; // Match opportunities
 
   // Calculate total pages and current items using useMemo for performance
   // teamLeaders is already sorted in TLPage (newest first)

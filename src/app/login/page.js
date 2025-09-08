@@ -1,3 +1,4 @@
+// placementOpTl/login/page.js
 "use client";
 import React, { useState, useRef } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
@@ -74,8 +75,18 @@ export default function Home() {
     { email: "placement.team@kgisl.com", role: "placementOpHead" },
   ];
 
+  // New PlacementOpTl users (5 new users)
+  const placementOpTlUsers = [
+    { email: "placement.op.tl1@kgisl.com", role: "placementOpTl" },
+    { email: "placement.op.tl2@kgisl.com", role: "placementOpTl" },
+    { email: "placement.op.tl3@kgisl.com", role: "placementOpTl" },
+    { email: "placement.op.tl4@kgisl.com", role: "placementOpTl" },
+    { email: "placement.op.tl5@kgisl.com", role: "placementOpTl" },
+  ];
+
   const allowedEmails = allowedUsers.map((u) => u.email);
   const placementOpHeadEmails = placementOpHeadUsers.map((u) => u.email);
+  const placementOpTlEmails = placementOpTlUsers.map((u) => u.email);
 
   const validateEmailField = (value) => {
     if (!value.trim()) {
@@ -85,7 +96,7 @@ export default function Home() {
     const emailPattern = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i;
     if (!emailPattern.test(value)) {
       setEmailError("Invalid email format");
-    } else if (!allowedEmails.includes(value) && !placementOpHeadEmails.includes(value)) {
+    } else if (!allowedEmails.includes(value) && !placementOpHeadEmails.includes(value) && !placementOpTlEmails.includes(value)) {
       setEmailError("Unauthorized email. Contact admin.");
     } else {
       setEmailError("");
@@ -108,7 +119,7 @@ export default function Home() {
     } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(email)) {
       setEmailError("Invalid email format");
       valid = false;
-    } else if (!allowedEmails.includes(email) && !placementOpHeadEmails.includes(email)) {
+    } else if (!allowedEmails.includes(email) && !placementOpHeadEmails.includes(email) && !placementOpTlEmails.includes(email)) {
       setEmailError("Unauthorized email. Contact admin.");
       valid = false;
     }
@@ -144,6 +155,26 @@ export default function Home() {
       toast.success("Placement Op Head login successful! Redirecting...");
       setLoginUser(email);
       setTimeout(() => router.push("/placementOpHead/ophome"), 2000);
+      return true;
+    }
+
+    // Check if it's a PlacementOpTl user
+    const placementOpTlUser = placementOpTlUsers.find((u) => u.email === email);
+    if (placementOpTlUser) {
+      // Store all necessary session data for PlacementOpTl
+      localStorage.setItem("isAuthenticated", "true");
+      localStorage.setItem("loginUser", email);
+      localStorage.setItem("domainCode", "all");
+      localStorage.setItem("userRole", "placementOpTl");
+
+      // Set expiration (optional)
+      const expiration = new Date();
+      expiration.setHours(expiration.getHours() + 8); // 8 hour session
+      localStorage.setItem("expiration", expiration.toISOString());
+
+      toast.success("Placement Op TL login successful! Redirecting...");
+      setLoginUser(email);
+      setTimeout(() => router.push("/placementOpTl/tlHome"), 2000);
       return true;
     }
 

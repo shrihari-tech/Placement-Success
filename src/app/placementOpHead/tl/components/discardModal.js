@@ -44,7 +44,7 @@ const DiscardConfirmationModal = ({ isOpen, onClose, onConfirm }) => {
             <button
               type="button"
               onClick={onConfirm} // Confirm discard button
-              className="px-4 py-2 bg-[#9025a1] text-white rounded-xl hover:bg-[#731d80] focus:outline-none focus:ring-1 focus:ring-red-500"
+              className="px-4 py-2 bg-[#9025a1] text-white rounded-xl hover:bg-[#731d80] focus:outline-none focus:ring-1 focus:ring-[#9025a1]"
             >
               Discard
             </button>

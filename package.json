@@ -9,13 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ant-design/v5-patch-for-react-19": "^1.0.3",
     "@date-io/dayjs": "^3.2.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/material": "^7.2.0",
     "@mui/x-date-pickers": "^8.8.0",
-    "antd": "^5.26.5",
-    "bcrypt": "^6.0.0",
+    "antd": "^5.27.1",
     "body-scroll-lock": "^4.0.0-beta.0",
     "chart.js": "^4.5.0",
     "date-fns": "^4.1.0",

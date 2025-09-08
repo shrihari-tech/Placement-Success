@@ -223,7 +223,7 @@ const confirmSave = () => {
                             top: rect.bottom
                             });
                         }}
-                        className="block px-2 text-sm w-[100px] text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+                        className="block px-2 text-sm w-[100px] text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
                         autoComplete="off"
                         />
                     {editEPIC && (
@@ -476,7 +476,7 @@ const handleDeleteScope = () => {
     return (
         <div>
             <Toaster position="top-right" />
-            <div className="bg-[#F4F3FF] py-3 rounded-xl" ref={tableRef}
+            <div className="bg-[#ffffff] py-3 rounded-xl" ref={tableRef}
               
             >
                 <div className="flex flex-row justify-center flex-wrap gap-5 py-3">
@@ -492,10 +492,10 @@ const handleDeleteScope = () => {
                                 setShowBatchDropdown(true);
                             }}
                             onClick={() => setShowBatchDropdown(!showBatchDropdown)}
-                            className="block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+                            className="block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
                             autoComplete="off"
                         />
-                        <label className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6">
+                        <label className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ffffff] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6">
                             Batch
                         </label>
                         <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
@@ -541,10 +541,10 @@ const handleDeleteScope = () => {
                                 setShowScopeDropdown(true);
                             }}
                             onClick={() => setShowScopeDropdown(!showScopeDropdown)}
-                            className="block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+                            className="block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
                             autoComplete="off"
                         />
-                        <label className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#F4F3FF] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6">
+                        <label className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ffffff] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6">
                             Score
                         </label>
                         {selectedScope && (

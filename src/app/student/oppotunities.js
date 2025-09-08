@@ -50,7 +50,7 @@ export default function StudentDataPage() {
   const [showViewModal, setShowViewModal] = useState(false);
   const [viewOpportunityDetails, setViewOpportunityDetails] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 4;
+  const itemsPerPage = 6;
 
   const batchDropdownRef = useRef(null);
   const statusDropdownRef = useRef(null);
@@ -432,14 +432,14 @@ export default function StudentDataPage() {
     <div className="flex min-h-screen">
       <Toaster position="top-right" />
       <div className={`flex-1 bg-[#F8FAFD]`} ref={searchContainerRef}>
-        <div className="bg-[#F4F3FF] w-full flex flex-col md:flex-row justify-center rounded-xl gap-5 py-6 px-5">
+        <div className="bg-[#ffffff] w-full flex flex-col md:flex-row justify-center rounded-xl gap-5 py-6 px-5">
           <div>
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search by Company Name"
-              className="px-2 py-3.5 w-[250px] text-sm text-gray-900 bg-[#F4F3FF] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] cursor-pointer"
+              className="px-2 py-3.5 w-[250px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] cursor-pointer"
             />
             {searchTerm && (
               <button
@@ -1450,3 +1450,5 @@ export default function StudentDataPage() {
     </div>
   );
 }
+
+
