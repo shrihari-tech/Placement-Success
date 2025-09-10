@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, useMemo, useCallback } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
 import { usePathname } from "next/navigation";
 
 // Create the context
@@ -1078,6 +1085,79 @@ export const fullstackStudentData = [
     attendance: 70,
     status: "Completed",
     trainerName: "Shri Hari",
+  },
+];
+
+export const placementFSDStudenData = [
+  {
+    sno: 1,
+    name: "Arun Kumar",
+    batch: "FS01",
+    ineligible: false,
+    notRequired: false,
+  },
+  {
+    sno: 2,
+    name: "Divya Sharma",
+    batch: "FS02",
+    ineligible: true,
+    notRequired: false,
+  },
+  {
+    sno: 3,
+    name: "Rahul Mehta",
+    batch: "FS03",
+    ineligible: false,
+    notRequired: true,
+  },
+  {
+    sno: 4,
+    name: "Sneha Reddy",
+    batch: "FS04",
+    ineligible: false,
+    notRequired: false,
+  },
+  {
+    sno: 5,
+    name: "Vikram Singh",
+    batch: "FS05",
+    ineligible: true,
+    notRequired: true,
+  },
+  {
+    sno: 6,
+    name: "Pooja Nair",
+    batch: "FS01",
+    ineligible: false,
+    notRequired: false,
+  },
+  {
+    sno: 7,
+    name: "Karan Patel",
+    batch: "FS02",
+    ineligible: false,
+    notRequired: true,
+  },
+  {
+    sno: 8,
+    name: "Meena Joshi",
+    batch: "FS03",
+    ineligible: true,
+    notRequired: false,
+  },
+  {
+    sno: 9,
+    name: "Rohit Das",
+    batch: "FS04",
+    ineligible: false,
+    notRequired: false,
+  },
+  {
+    sno: 10,
+    name: "Anjali Verma",
+    batch: "FS05",
+    ineligible: true,
+    notRequired: false,
   },
 ];
 
@@ -3845,12 +3925,12 @@ export const devopsStudentData = [
   },
 ];
 export const sstudentData = [
-  ...fullstackStudentData.map(s => ({ ...s, domain: "fullstack" })),
-  ...dataAnalyticsStudentData.map(s => ({ ...s, domain: "dataanalytics" })),
-  ...bankingStudentData.map(s => ({ ...s, domain: "banking" })),
-  ...marketingStudentData.map(s => ({ ...s, domain: "marketing" })),
-  ...sapStudentData.map(s => ({ ...s, domain: "sap" })),
-  ...devopsStudentData.map(s => ({ ...s, domain: "devops" })),
+  ...fullstackStudentData.map((s) => ({ ...s, domain: "fullstack" })),
+  ...dataAnalyticsStudentData.map((s) => ({ ...s, domain: "dataanalytics" })),
+  ...bankingStudentData.map((s) => ({ ...s, domain: "banking" })),
+  ...marketingStudentData.map((s) => ({ ...s, domain: "marketing" })),
+  ...sapStudentData.map((s) => ({ ...s, domain: "sap" })),
+  ...devopsStudentData.map((s) => ({ ...s, domain: "devops" })),
 ];
 
 const batchStatsData = {
@@ -3973,6 +4053,10 @@ const DataProvider = ({ children }) => {
   );
   const [bankingOpportunities, setBankingOpportunities] = useState(
     bankingOpportunitiesInitial
+  );
+
+  const [placementFSDStudents, setPlacementFSDStudents] = useState(
+    placementFSDStudenData
   );
 
   const userName = loginUser.split("@")[0];
@@ -4736,6 +4820,8 @@ const DataProvider = ({ children }) => {
         setBankingOpportunities,
         calculateTotalBatchesPerDomain,
         calculateUpcomingBatchesPerDomain,
+        placementFSDStudents,
+        setPlacementFSDStudents,
       }}
     >
       {children}
