@@ -9,7 +9,6 @@ import Tabs from "../components/tab"; // Make sure this component exists and wor
 import CompanySPOCTab from "./CompanySpocTab";
 import ShortListedStudentsTab from "./ShortListedStudentsTab";
 import PlacementOpportunitiesTab from "./PlacementOpportunitiesTab";
-import Test from "./Test"
 export default function PlacementPage() {
   // ✅ Add state for active tab
   const [activeTab, setActiveTab] = useState("Company SPOC");
