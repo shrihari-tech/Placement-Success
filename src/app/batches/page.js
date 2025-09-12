@@ -1,3 +1,4 @@
+//src/app/batches/page.js
 "use client";
 
 import {
@@ -21,7 +22,7 @@ import Tabs from "./components/tab";
 // Inside your component
 
 export default function BatchModel() {
-  const searchContainerRef = useRef(null);
+ 
 
   const [batches, setBatches] = useState([]);
   const [filteredBatches, setFilteredBatches] = useState([]);
@@ -53,6 +54,7 @@ export default function BatchModel() {
   // Store original batch number for confirmation modal
   const [originalBatchNo, setOriginalBatchNo] = useState("");
 
+  const [showBatchDropdown, setShowBatchDropdown] = useState(false);
   const [batchNameError, setBatchNameError] = useState(false);
 
   const [batchToDelete, setBatchToDelete] = useState(null);
@@ -78,7 +80,7 @@ export default function BatchModel() {
       Communication: "",
     },
   });
-
+const batchDropdownRef = useRef(null);
   const todayISO = new Date().toISOString().split("T")[0];
 
   const validateEdit = () => {
@@ -393,6 +395,7 @@ export default function BatchModel() {
   const handleCloseModelSelect = () => {
     setShowNewBatchModeDropdown(false);
   };
+   const searchContainerRef = useRef(null);
   const modeDropdownRef = useRef(null); // for filter section
   const newBatchDropdownRef = useRef(null); // for Add Batch Modal
   useEffect(() => {
@@ -1012,39 +1015,84 @@ export default function BatchModel() {
             tabIndex={0}
           >
             <div className="flex flex-row flex-wrap justify-center gap-3 px-2 py-3">
-              {/* Search by Batch number */}
-              <div className="relative">
-                <input
-                  type="text"
-                  id="batch-id"
-                  className={`block px-4 pb-2 pt-5 w-[175px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer`}
-                  placeholder=" "
-                  value={searchTerm}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleSearch();
-                    }
-                  }}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                  }}
-                />
-                <label
-                  htmlFor="batch-id"
-                  className="absolute px-1 text-sm text-gray-500 duration-300 bg-[#ffffff] transform -translate-y-3 scale-75 top-3.5 z-5 origin-[0] left-1 peer-focus:text-xs peer-focus:text-[#6750a4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#efeeff]"
-                >
-                  Search by Batch Name
-                </label>
-                {searchTerm && (
-                  <button
-                    onClick={() => setSearchTerm("")}
-                    className="cursor-pointer absolute top-4 right-3 text-gray-500 hover:text-gray-00"
-                  >
-                    <RiCloseCircleLine size={20} />
-                  </button>
-                )}
-              </div>
+{/* Search by Batch Name (Combobox styled like Mode dropdown) */}
+<div className="relative" ref={batchDropdownRef}>
+  <input
+    type="text"
+    id="batch-id"
+    readOnly={false}
+    placeholder=" "
+    value={searchTerm}
+    onClick={() => setShowBatchDropdown(true)}
+    onChange={(e) => {
+      setSearchTerm(e.target.value);
+      setShowBatchDropdown(true);
+    }}
+    onKeyDown={(e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleSearch();
+        setShowBatchDropdown(false);
+      } else if (e.key === "Escape") {
+        setShowBatchDropdown(false);
+      }
+    }}
+    className="block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#ffffff]/5 rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+  />
+  <label
+    htmlFor="batch-id"
+    className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ffffff] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6"
+  >
+    Search by Batch Name
+  </label>
+  <FiChevronDown
+    className="absolute top-5 right-3 text-gray-500 pointer-events-none"
+    size={16}
+  />
+  {searchTerm && (
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        setSearchTerm("");
+        setShowBatchDropdown(false);
+      }}
+      className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700"
+    >
+      <RiCloseCircleLine size={20} />
+    </button>
+  )}
+  {/* Dropdown List - Styled like Mode dropdown */}
+  {showBatchDropdown && batches.length > 0 && (
+    <div
+      className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto mt-1"
+    >
+      {batches
+        .filter(batch =>
+          batch.batchNo.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        .map((batch) => (
+          <div
+            key={batch.id}
+            tabIndex={0}
+            className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+            onClick={() => {
+              setSearchTerm(batch.batchNo);
+              setShowBatchDropdown(false);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                setSearchTerm(batch.batchNo);
+                setShowBatchDropdown(false);
+                handleSearch();
+              }
+            }}
+          >
+            {batch.batchNo}
+          </div>
+        ))}
+    </div>
+  )}
+</div>
 
               {/* Start Date Input */}
               <div className="relative">

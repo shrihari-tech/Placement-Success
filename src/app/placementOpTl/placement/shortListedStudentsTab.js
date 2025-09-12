@@ -1,6 +1,8 @@
 // placementOpTl/placement/shortListedStudents.js
 'use client';
 import React, { useState, useMemo } from 'react';
+import { notification } from 'antd'; // Import notification
+import { RiCloseCircleLine } from 'react-icons/ri'; // Import the icon
 import Navbar from '../navbar';
 import ShortlistedSearch from '../components/shortlistedSearch';
 import { useDataContext } from '../../context/dataContext';
@@ -16,7 +18,17 @@ import {
 // Helper function to get domain label from batch prefix
 const getDomainLabelFromBatch = (batch, domainPrefixMap, domains) => {
   if (!batch) return '-';
-  const prefix = batch.substring(0, batch.length > 2 && batch[2] !== '0' ? 3 : 2); // Handle SAP (3 chars) and others (2 chars)
+  // Handle SAP (3 chars like "SAP") and others (2 chars like "FS", "DA")
+  // This logic assumes batch names like "FS01", "DA02", "SAP01"
+  // Adjust substring logic if your batch naming is different.
+  let prefix = "";
+  if (batch.startsWith("SAP")) {
+     prefix = "SAP";
+  } else if (batch.length >= 2) {
+     prefix = batch.substring(0, 2); // Take first 2 characters for others
+  } else {
+     prefix = batch; // Fallback if batch name is unexpectedly short
+  }
   const domainKey = Object.keys(domainPrefixMap).find(key => domainPrefixMap[key] === prefix);
   return domainKey ? domains.find(d => d.key === domainKey)?.label || prefix : prefix;
 };
@@ -24,11 +36,15 @@ const getDomainLabelFromBatch = (batch, domainPrefixMap, domains) => {
 export default function ShortListedStudentsTab() {
   const { allStudentData } = useDataContext();
 
+  // State for search criteria
   const [selectedDomain, setSelectedDomain] = useState("");
   const [selectedBatch, setSelectedBatch] = useState("");
   const [selectedCompany, setSelectedCompany] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showTable, setShowTable] = useState(false);
+
+  // Notification hook
+  const [api, contextHolder] = notification.useNotification();
 
   const domainPrefixMap = {
     fullstack: "FS",
@@ -78,11 +94,27 @@ export default function ShortListedStudentsTab() {
 
   // --- Search Handler ---
   const handleSearch = () => {
+    // Check if at least one filter is selected
+    if (!selectedDomain && !selectedBatch && !selectedCompany) {
+      // Show error notification using the custom style with #e6a901
+      api.error({
+        message: 'Search Error',
+        description: 'Please select at least one filter (Domain, Batch, or Company) to search.',
+        placement: 'topRight',
+        duration: 4,
+        showProgress: true,
+        pauseOnHover: true,
+        closeIcon: <RiCloseCircleLine className="text-[#e6a901] hover:text-[#cc9601]" size={20} />,
+      });
+      return; // Stop the search if no criteria
+    }
+
     let filteredStudents = [...placedStudentsData];
 
     if (selectedDomain) {
       const prefix = domainPrefixMap[selectedDomain];
       if (prefix) {
+        // Ensure batch starts with the prefix (e.g., "FS", "DA")
         filteredStudents = filteredStudents.filter((s) =>
           s.batch?.startsWith(prefix)
         );
@@ -96,6 +128,7 @@ export default function ShortListedStudentsTab() {
     }
 
     if (selectedCompany) {
+      // Case-insensitive and trimmed comparison for company
       filteredStudents = filteredStudents.filter(
         (s) => s.company && s.company.toLowerCase().trim() === selectedCompany.toLowerCase().trim()
       );
@@ -116,10 +149,50 @@ export default function ShortListedStudentsTab() {
 
   return (
     <div className="h-screen overflow-auto">
+      {/* Include the context holder for notifications */}
+      {contextHolder}
+      {/* Add custom styles for notifications */}
+      <style jsx global>{`
+        /* Custom notification styles for #e6a901 */
+        .ant-notification-notice-success,
+        .ant-notification-notice-error,
+        .ant-notification-notice-warning,
+        .ant-notification-notice-info {
+          border-color: #e6a901 !important;
+        }
+        .ant-notification-notice-success .ant-notification-notice-icon,
+        .ant-notification-notice-error .ant-notification-notice-icon,
+        .ant-notification-notice-warning .ant-notification-notice-icon,
+        .ant-notification-notice-info .ant-notification-notice-icon {
+          color: #e6a901 !important;
+        }
+        .ant-notification-notice-success .ant-notification-notice-message,
+        .ant-notification-notice-error .ant-notification-notice-message,
+        .ant-notification-notice-warning .ant-notification-notice-message,
+        .ant-notification-notice-info .ant-notification-notice-message {
+          color: #e6a901 !important;
+        }
+        .ant-notification-notice-close:hover {
+          background-color: #e6a901 !important;
+          color: white !important;
+        }
+        .ant-notification-notice-progress-bar {
+          background: #e6a901 !important;
+        }
+        /* Custom close icon styling */
+        .ant-notification-notice-close {
+          transition: all 0.3s ease;
+        }
+        /* Ensure progress bar container also uses the color */
+        .ant-notification-notice-progress {
+          background: rgba(230, 169, 1, 0.1) !important; /* Light version of #e6a901 */
+        }
+      `}</style>
       <Navbar />
       <main className="ml-[5px] p-6"> {/* Kept ml-[5px] as in your original PlacedTab */}
         <h1 className="text-2xl font-bold text-gray-700 mb-4">Shortlisted Students</h1>
 
+        {/* Pass the notification API to ShortlistedSearch if it needs to show notifications */}
         <ShortlistedSearch
           domains={domains}
           batches={allBatches}
@@ -133,7 +206,8 @@ export default function ShortListedStudentsTab() {
           selectedCompany={selectedCompany}
           setSelectedCompany={setSelectedCompany}
           domainPrefixMap={domainPrefixMap}
-          // Optional: Customize validation messages if needed
+          notificationApi={api} // Pass the notification API
+          // Optional: Customize validation messages if needed in the component itself
           // searchValidationMessage="Please select a domain, batch, or company to shortlist students."
         />
 
@@ -152,7 +226,7 @@ export default function ShortListedStudentsTab() {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Domain</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Company</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Designation</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Package</th> 
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Package</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">

@@ -1450,5 +1450,3 @@ export default function StudentDataPage() {
     </div>
   );
 }
-
-

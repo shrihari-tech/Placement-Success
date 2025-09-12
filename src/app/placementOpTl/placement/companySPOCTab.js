@@ -1,34 +1,86 @@
 // placementOpTl/placement/companySPOC.js
 "use client";
 import React, { useState, useEffect } from "react";
+import { notification } from 'antd'; // Import notification
+import { RiCloseCircleLine } from 'react-icons/ri'; // Import the icon
 import Navbar from "../navbar";
 import CreateButton from "../components/createButton";
-import CreateModal from "../components/createModal";
+// Pass the notification API down to CreateModal
+import CreateModal from "../components/createModal"; 
 import CardGrid from "../components/cardGrid";
 import PreviewModal from "../components/previewModal";
+
 
 export default function CompanySPOCTab() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // State for SPOCs, initialized from localStorage or empty array
   const [spocs, setSpocs] = useState(() => {
     if (typeof window !== "undefined") {
-      const savedSpocs = localStorage.getItem("companySpocs");
-      return savedSpocs ? JSON.parse(savedSpocs) : [];
+      try {
+        const savedSpocs = localStorage.getItem("companySpocs");
+        return savedSpocs ? JSON.parse(savedSpocs) : [];
+      } catch (error) {
+        console.error("Failed to parse companySpocs from localStorage:", error);
+        // Show error notification on initial load failure
+        setTimeout(() => { // Delay to ensure api is ready
+           api.error({
+             message: 'Storage Error',
+             description: 'Failed to load SPOC data.',
+             placement: 'topRight',
+             duration: 5,
+             showProgress: true,
+             pauseOnHover: true,
+             closeIcon: <RiCloseCircleLine className="text-[#e6a901] hover:text-[#cc9601]" size={20} />,
+           });
+        }, 0);
+        return []; 
+      }
     }
-    return [];
+    return []; // Default for server-side rendering
   });
+
   const [selectedSPOC, setSelectedSPOC] = useState(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
+  // Notification hook
+  const [api, contextHolder] = notification.useNotification(); 
+
+  // Effect to save spocs to localStorage whenever the spocs state changes
   useEffect(() => {
     if (typeof window !== "undefined") {
-      localStorage.setItem("companySpocs", JSON.stringify(spocs));
+      try {
+        localStorage.setItem("companySpocs", JSON.stringify(spocs));
+      } catch (error) {
+        console.error("Failed to save companySpocs to localStorage:", error);
+        // Show error notification if saving fails using the custom style
+        api.error({
+          message: 'Storage Error',
+          description: 'Failed to save SPOC data. Changes might be lost on refresh.',
+          placement: 'topRight',
+          duration: 5,
+          showProgress: true,
+          pauseOnHover: true,
+          closeIcon: <RiCloseCircleLine className="text-[#e6a901] hover:text-[#cc9601]" size={20} />,
+        });
+      }
     }
-  }, [spocs]);
+  }, [spocs, api]); // Dependency array: run effect when 'spocs' or 'api' changes
 
   const handleAddSPOC = (spoc) => {
-    const newSPOC = { ...spoc, id: Date.now() };
+    const newSPOC = { ...spoc, id: Date.now() }; // Consider using a more robust ID generator
     setSpocs((prev) => [newSPOC, ...prev]);
+    
+    // Show success notification using the custom style with #e6a901
+    api.success({
+      message: 'Success',
+      description: 'Company SPOC added successfully!',
+      placement: 'topRight',
+      duration: 3,
+      showProgress: true,
+      pauseOnHover: true,
+      closeIcon: <RiCloseCircleLine className="text-[#e6a901] hover:text-[#cc9601]" size={20} />,
+    });
   };
 
   const handleViewDetails = (spoc) => {
@@ -36,8 +88,49 @@ export default function CompanySPOCTab() {
     setIsPreviewOpen(true);
   };
 
+  // Optional: Add error handling for JSON parsing/serialization if needed elsewhere
+
   return (
     <div className="h-screen overflow-hidden">
+      {/* Include the context holder for notifications */}
+      {contextHolder} 
+      {/* Add custom styles for notifications */}
+      <style jsx global>{`
+        /* Custom notification styles for #e6a901 */
+        .ant-notification-notice-success,
+        .ant-notification-notice-error,
+        .ant-notification-notice-warning,
+        .ant-notification-notice-info {
+          border-color: #e6a901 !important;
+        }
+        .ant-notification-notice-success .ant-notification-notice-icon,
+        .ant-notification-notice-error .ant-notification-notice-icon,
+        .ant-notification-notice-warning .ant-notification-notice-icon,
+        .ant-notification-notice-info .ant-notification-notice-icon {
+          color: #e6a901 !important;
+        }
+        .ant-notification-notice-success .ant-notification-notice-message,
+        .ant-notification-notice-error .ant-notification-notice-message,
+        .ant-notification-notice-warning .ant-notification-notice-message,
+        .ant-notification-notice-info .ant-notification-notice-message {
+          color: #e6a901 !important;
+        }
+        .ant-notification-notice-close:hover {
+          background-color: #e6a901 !important;
+          color: white !important;
+        }
+        .ant-notification-notice-progress-bar {
+          background: #e6a901 !important;
+        }
+        /* Custom close icon styling */
+        .ant-notification-notice-close {
+          transition: all 0.3s ease;
+        }
+        /* Ensure progress bar container also uses the color */
+        .ant-notification-notice-progress {
+          background: rgba(230, 169, 1, 0.1) !important; /* Light version of #e6a901 */
+        }
+      `}</style>
       <Navbar />
       <main className="ml-[5px] p-6">
         <div className="flex justify-between items-center mb-6">
@@ -45,12 +138,15 @@ export default function CompanySPOCTab() {
           <CreateButton onClick={() => setIsModalOpen(true)} />
         </div>
 
+        {/* Pass the spocs data to CardGrid */}
         <CardGrid items={spocs} onViewDetails={handleViewDetails} />
 
+        {/* Create Modal for adding new SPOCs, passing the notification API */}
         <CreateModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          onSave={handleAddSPOC}
+          onSave={handleAddSPOC} // Use the updated handleAddSPOC
+          notificationApi={api} // Pass the notification API
           fields={[
             { name: "name", label: "Name", required: true },
             { name: "company", label: "Company", required: true },
@@ -65,44 +161,57 @@ export default function CompanySPOCTab() {
             email: "",
             phone: "",
           }}
-          validateField={(field, value) => {
-            if (!value && value !== "")
-              return `${
-                field.charAt(0).toUpperCase() + field.slice(1)
-              } is required`;
+          validateField={(field, value, notifyError) => { // Accept notifyError function
+            if (!value) { // Simplified check, handles null, undefined, empty string
+              const errorMsg = `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
+              if (notifyError) notifyError(errorMsg); // Show notification if requested
+              return errorMsg; 
+            }
 
             const trimmedValue = value.trim();
+            let error = "";
 
             switch (field) {
               case "name":
               case "company":
               case "address":
-                return trimmedValue ? "" : "This field is required";
+                error = trimmedValue ? "" : "This field is required";
+                break;
               case "email":
-                if (!trimmedValue) return "Email is required";
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return emailRegex.test(trimmedValue)
-                  ? ""
-                  : "Invalid email format";
+                if (!trimmedValue) {
+                   error = "Email is required";
+                } else {
+                  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                  error = emailRegex.test(trimmedValue) ? "" : "Invalid email format";
+                }
+                break;
               case "phone":
-                if (!trimmedValue) return "Phone is required";
-                if (!/^[6-9]/.test(trimmedValue))
-                  return "Phone must start with 6-9";
-                if (trimmedValue.length !== 10)
-                  return "Phone must be 10 digits";
-                return /^\d{10}$/.test(trimmedValue)
-                  ? ""
-                  : "Invalid phone number";
+                if (!trimmedValue) {
+                   error = "Phone is required";
+                } else if (!/^[6-9]/.test(trimmedValue)) {
+                  error = "Phone must start with 6, 7, 8, or 9";
+                } else if (trimmedValue.length !== 10) {
+                  error = "Phone must be 10 digits";
+                } else if (!/^\d{10}$/.test(trimmedValue)) {
+                   error = "Invalid phone number";
+                }
+                break;
               default:
-                return "";
+                error = ""; // No validation error for other fields
             }
+
+            if (error && notifyError) {
+               notifyError(error); // Show notification if there's an error and requested
+            }
+            return error; 
           }}
         />
 
+        {/* Preview Modal for viewing SPOC details */}
         <PreviewModal
           isOpen={isPreviewOpen}
           onClose={() => setIsPreviewOpen(false)}
-          data={selectedSPOC}
+          data={selectedSPOC} // Pass the selected SPOC data
         />
       </main>
     </div>

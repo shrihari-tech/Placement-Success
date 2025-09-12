@@ -1,6 +1,8 @@
 // placedTab.jsx
 'use client';
 import React, { useState } from "react";
+import { notification } from 'antd'; // Import notification
+import { RiCloseCircleLine } from 'react-icons/ri'; // Import the icon
 import Navbar from "../navbar";
 import OverallCard from "../components/overallCard";
 import Search from "../components/search"; // Import the reusable Search
@@ -17,10 +19,14 @@ import {
 export default function PlacedTab() {
   const { allStudentData } = useDataContext();
 
+  // State for search criteria
   const [selectedDomain, setSelectedDomain] = useState("");
   const [selectedBatch, setSelectedBatch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showTable, setShowTable] = useState(false);
+
+  // Notification hook
+  const [api, contextHolder] = notification.useNotification();
 
   // Define domain prefixes specific to this tab
   const domainPrefixMap = {
@@ -36,37 +42,55 @@ export default function PlacedTab() {
   const placedStudentsData = allStudentData.filter(
     (s) => s.placement && (s.placement === "Placed" || s.placement === "placed") // Handle case variations
   );
-  console.log("PlacedTab - Filtered placedStudentsData:", placedStudentsData); // Debug log
+  // console.log("PlacedTab - Filtered placedStudentsData:", placedStudentsData); // Debug log - can be removed
 
+  // --- Search Handler ---
   const handleSearch = () => {
+    // Check if at least one filter is selected (Domain or Batch)
+    // Adjust condition based on your specific requirements (e.g., require domain OR batch)
+    if (!selectedDomain && !selectedBatch) {
+      // Show error notification using the custom style with #e6a901
+      api.error({
+        message: 'Search Error',
+        description: 'Please select at least one filter (Domain or Batch) to search for placed students.',
+        placement: 'topRight',
+        duration: 4,
+        showProgress: true,
+        pauseOnHover: true,
+        closeIcon: <RiCloseCircleLine className="text-[#e6a901] hover:text-[#cc9601]" size={20} />,
+      });
+      return; // Stop the search if no criteria
+    }
+
     let filteredStudents = placedStudentsData;
-    console.log("PlacedTab - Initial filteredStudents (placed only):", filteredStudents.length); // Debug log
+    // console.log("PlacedTab - Initial filteredStudents (placed only):", filteredStudents.length); // Debug log - can be removed
 
     if (selectedDomain) {
       const prefix = domainPrefixMap[selectedDomain];
-      console.log("PlacedTab - Domain prefix:", prefix); // Debug log
+      // console.log("PlacedTab - Domain prefix:", prefix); // Debug log - can be removed
       if (prefix) {
-        const initialCount = filteredStudents.length;
+        // const initialCount = filteredStudents.length; // Debug log - can be removed
         filteredStudents = filteredStudents.filter((s) =>
           s.batch?.startsWith(prefix)
         );
-        console.log(`PlacedTab - After domain filter (${prefix}):`, filteredStudents.length, `(removed ${initialCount - filteredStudents.length})`); // Debug log
+        // console.log(`PlacedTab - After domain filter (${prefix}):`, filteredStudents.length, `(removed ${initialCount - filteredStudents.length})`); // Debug log - can be removed
       }
     }
 
     if (selectedBatch) {
-      const initialCount = filteredStudents.length;
+      // const initialCount = filteredStudents.length; // Debug log - can be removed
       filteredStudents = filteredStudents.filter(
         (s) => s.batch === selectedBatch
       );
-      console.log(`PlacedTab - After batch filter (${selectedBatch}):`, filteredStudents.length, `(removed ${initialCount - filteredStudents.length})`); // Debug log
+      // console.log(`PlacedTab - After batch filter (${selectedBatch}):`, filteredStudents.length, `(removed ${initialCount - filteredStudents.length})`); // Debug log - can be removed
     }
 
-    console.log("PlacedTab - Final filteredStudents for table:", filteredStudents); // Debug log
+    // console.log("PlacedTab - Final filteredStudents for table:", filteredStudents); // Debug log - can be removed
     setSearchResults(filteredStudents);
     setShowTable(true);
   };
 
+  // --- Reset Handler ---
   const handleReset = () => {
     setSelectedDomain("");
     setSelectedBatch("");
@@ -96,6 +120,45 @@ export default function PlacedTab() {
 
   return (
     <div className="h-screen overflow-auto">
+      {/* Include the context holder for notifications */}
+      {contextHolder}
+      {/* Add custom styles for notifications */}
+      <style jsx global>{`
+        /* Custom notification styles for #e6a901 */
+        .ant-notification-notice-success,
+        .ant-notification-notice-error,
+        .ant-notification-notice-warning,
+        .ant-notification-notice-info {
+          border-color: #e6a901 !important;
+        }
+        .ant-notification-notice-success .ant-notification-notice-icon,
+        .ant-notification-notice-error .ant-notification-notice-icon,
+        .ant-notification-notice-warning .ant-notification-notice-icon,
+        .ant-notification-notice-info .ant-notification-notice-icon {
+          color: #e6a901 !important;
+        }
+        .ant-notification-notice-success .ant-notification-notice-message,
+        .ant-notification-notice-error .ant-notification-notice-message,
+        .ant-notification-notice-warning .ant-notification-notice-message,
+        .ant-notification-notice-info .ant-notification-notice-message {
+          color: #e6a901 !important;
+        }
+        .ant-notification-notice-close:hover {
+          background-color: #e6a901 !important;
+          color: white !important;
+        }
+        .ant-notification-notice-progress-bar {
+          background: #e6a901 !important;
+        }
+        /* Custom close icon styling */
+        .ant-notification-notice-close {
+          transition: all 0.3s ease;
+        }
+        /* Ensure progress bar container also uses the color */
+        .ant-notification-notice-progress {
+          background: rgba(230, 169, 1, 0.1) !important; /* Light version of #e6a901 */
+        }
+      `}</style>
       <Navbar />
       <main className="ml-[5px] p-6">
         <div className="mb-8">
@@ -106,6 +169,7 @@ export default function PlacedTab() {
         </div>
 
         {/* --- Reusable Search Component --- */}
+        {/* Pass the notification API to Search if it needs to show notifications */}
         <Search
           // --- Basic Props ---
           domains={domains}
@@ -116,9 +180,10 @@ export default function PlacedTab() {
           setSelectedDomain={setSelectedDomain}
           selectedBatch={selectedBatch}
           setSelectedBatch={setSelectedBatch}
-          // --- Reusability Props (using defaults mostly) ---
+          // --- Reusability Props ---
           domainPrefixMap={domainPrefixMap}
-          // Optional: Customize messages if needed
+          notificationApi={api} // Pass the notification API
+          // Optional: Customize messages if needed in the component itself
           // searchValidationMessage="Please select a domain to find placed students"
           // batchValidationMessage="Please select a domain first to choose a batch"
         />
