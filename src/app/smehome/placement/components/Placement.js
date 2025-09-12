@@ -206,8 +206,6 @@ export default function Placement() {
         </div>
       </div>
 
-      <div> Save </div>
-
       {/* Table */}
       {placementFSDStudents.length > 0 ? (
         <div className="bg-white rounded-2xl shadow-sm mt-6 w-full overflow-x-auto">

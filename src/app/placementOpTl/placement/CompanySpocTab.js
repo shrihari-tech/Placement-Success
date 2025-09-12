@@ -5,7 +5,6 @@ import { notification } from 'antd'; // Import notification
 import { RiCloseCircleLine } from 'react-icons/ri'; // Import the icon
 import Navbar from "../navbar";
 import CreateButton from "../components/createButton";
-// Pass the notification API down to CreateModal
 import CreateModal from "../components/createModal"; 
 import CardGrid from "../components/cardGrid";
 import PreviewModal from "../components/previewModal";
@@ -42,6 +41,7 @@ export default function CompanySPOCTab() {
 
   const [selectedSPOC, setSelectedSPOC] = useState(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isPreviewEditMode, setIsPreviewEditMode] = useState(false);
 
   // Notification hook
   const [api, contextHolder] = notification.useNotification(); 
@@ -82,6 +82,49 @@ export default function CompanySPOCTab() {
       closeIcon: <RiCloseCircleLine className="text-[#e6a901] hover:text-[#cc9601]" size={20} />,
     });
   };
+  // Handle updating an existing SPOC
+const handleUpdateSPOC = (updatedData) => {
+  setSpocs(prevSpocs =>
+    prevSpocs.map(spoc =>
+      spoc.id === updatedData.id ? { ...spoc, ...updatedData } : spoc
+    )
+  );
+
+  // Show success notification
+  api.success({
+    message: 'Success',
+    description: 'SPOC updated successfully!',
+    placement: 'topRight',
+    duration: 3,
+    showProgress: true,
+    pauseOnHover: true,
+    closeIcon: <RiCloseCircleLine className="text-[#e6a901] hover:text-[#cc9601]" size={20} />,
+  });
+
+  // Close modal after update
+  setIsPreviewOpen(false);
+  setIsPreviewEditMode(false);
+};
+
+// Handle deleting an SPOC
+const handleDeleteSPOC = (id) => {
+  setSpocs(prevSpocs => prevSpocs.filter(spoc => spoc.id !== id));
+
+  // Show success notification
+  api.success({
+    message: 'Deleted',
+    description: 'SPOC deleted successfully!',
+    placement: 'topRight',
+    duration: 3,
+    showProgress: true,
+    pauseOnHover: true,
+    closeIcon: <RiCloseCircleLine className="text-[#e6a901] hover:text-[#cc9601]" size={20} />,
+  });
+
+  // Close modal after delete
+  setIsPreviewOpen(false);
+  setIsPreviewEditMode(false);
+};
 
   const handleViewDetails = (spoc) => {
     setSelectedSPOC(spoc);
@@ -209,10 +252,17 @@ export default function CompanySPOCTab() {
 
         {/* Preview Modal for viewing SPOC details */}
         <PreviewModal
-          isOpen={isPreviewOpen}
-          onClose={() => setIsPreviewOpen(false)}
-          data={selectedSPOC} // Pass the selected SPOC data
-        />
+  isOpen={isPreviewOpen}
+  onClose={() => {
+    setIsPreviewOpen(false);
+    setIsPreviewEditMode(false); // Reset edit mode when closing
+  }}
+  data={selectedSPOC}
+  isEditMode={isPreviewEditMode}
+  setIsEditMode={setIsPreviewEditMode}
+  onDelete={handleDeleteSPOC}
+  onUpdate={handleUpdateSPOC}
+/>
       </main>
     </div>
   );

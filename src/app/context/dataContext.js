@@ -4766,6 +4766,52 @@ const DataProvider = ({ children }) => {
   const [selectedBatch, setSelectedBatch] = useState(null);
 
   const getStatsByBatch = (batchKey) => batchStatsData[batchKey];
+  const updateOpportunity = async (opportunityId, updates) => {
+  // Find which domain array the opportunity belongs to
+  let domainKey = null;
+  let opportunitiesArray = null;
+
+  if (fullstackOpportunities.some(opp => opp.id === opportunityId)) {
+    domainKey = 'fullstackOpportunities';
+    opportunitiesArray = fullstackOpportunities;
+  } else if (dataanalyticsOpportunities.some(opp => opp.id === opportunityId)) {
+    domainKey = 'dataanalyticsOpportunities';
+    opportunitiesArray = dataanalyticsOpportunities;
+  } else if (marketingOpportunities.some(opp => opp.id === opportunityId)) {
+    domainKey = 'marketingOpportunities';
+    opportunitiesArray = marketingOpportunities;
+  } else if (sapOpportunities.some(opp => opp.id === opportunityId)) {
+    domainKey = 'sapOpportunities';
+    opportunitiesArray = sapOpportunities;
+  } else if (devopsOpportunities.some(opp => opp.id === opportunityId)) {
+    domainKey = 'devopsOpportunities';
+    opportunitiesArray = devopsOpportunities;
+  } else if (bankingOpportunities.some(opp => opp.id === opportunityId)) {
+    domainKey = 'bankingOpportunities';
+    opportunitiesArray = bankingOpportunities;
+  }
+
+  if (!domainKey || !opportunitiesArray) {
+    console.error("Opportunity not found in any domain array");
+    return;
+  }
+
+  // Update the opportunity in the array
+  const updatedOpportunities = opportunitiesArray.map(opp =>
+    opp.id === opportunityId ? { ...opp, ...updates } : opp
+  );
+
+  // Update the state
+  setFullstackOpportunities(domainKey === 'fullstackOpportunities' ? updatedOpportunities : fullstackOpportunities);
+  setDataanalyticsOpportunities(domainKey === 'dataanalyticsOpportunities' ? updatedOpportunities : dataanalyticsOpportunities);
+  setMarketingOpportunities(domainKey === 'marketingOpportunities' ? updatedOpportunities : marketingOpportunities);
+  setSapOpportunities(domainKey === 'sapOpportunities' ? updatedOpportunities : sapOpportunities);
+  setDevopsOpportunities(domainKey === 'devopsOpportunities' ? updatedOpportunities : devopsOpportunities);
+  setBankingOpportunities(domainKey === 'bankingOpportunities' ? updatedOpportunities : bankingOpportunities);
+
+  // Optionally, persist the change to your backend API here
+  // await api.updateOpportunity(opportunityId, updates);
+};
 
   return (
     <DataContext.Provider
@@ -4822,6 +4868,7 @@ const DataProvider = ({ children }) => {
         calculateUpcomingBatchesPerDomain,
         placementFSDStudents,
         setPlacementFSDStudents,
+        updateOpportunity,
       }}
     >
       {children}

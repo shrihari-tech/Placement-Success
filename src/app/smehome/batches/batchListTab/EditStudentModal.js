@@ -1,6 +1,7 @@
 "use client";
-import { useState, useEffect, useMemo, useRef } from "react";
-import { FiChevronDown } from "react-icons/fi";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
+import { FiChevronDown, FiEdit } from "react-icons/fi";
+import { FaRegSave } from "react-icons/fa";
 import { RiCloseCircleLine } from "react-icons/ri";
 import { useDataContext } from "../../../context/dataContext"; // Ensure this path is correct for your project structure
 import { toast } from "sonner";
@@ -10,14 +11,22 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
   // Destructure opportunities data from context
   const {
     updateStudent,
+    updateOpportunity,
     batchesNames,
     batchData,
     fullstackOpportunities,
-    dataanalyticsOpportunities,
+    dataanalyticsOpportunities, // Also corrected to lowercase 'a' to match context
     marketingOpportunities,
     sapOpportunities,
     devopsOpportunities,
     bankingOpportunities,
+    // Import the student data arrays (correct names from context)
+    fullstackStudent,
+    dataanalyticsStudent, // Note: lowercase 'a'
+    bankingStudent,
+    marketingStudent,
+    sapStudent,
+    devopsStudent,
   } = useDataContext();
 
   const [editingStudent, setEditingStudent] = useState({
@@ -62,6 +71,12 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
   const [showEpicStatusDropdown, setShowEpicStatusDropdown] = useState(false);
   const [showPlacementDropdown, setShowPlacementDropdown] = useState(false);
   const [EditDiscarddModel, setEditDiscarddModel] = useState(false);
+  // Inside your EditStudentModal component, near your other useState declarations.
+  const [editingOpportunityId, setEditingOpportunityId] = useState(null); // Tracks which opportunity is being edited
+  const [editingField, setEditingField] = useState(null); // Tracks which field ('company' or 'status') is being edited
+  const [editedValue, setEditedValue] = useState(""); // The new value being typed/selected
+  const [openCompanyDropdown, setOpenCompanyDropdown] = useState(null); // Controls which company dropdown is open
+  const [openStatusDropdown, setOpenStatusDropdown] = useState(null); // Controls which status dropdown is open
 
   const batchDropdownRef = useRef(null);
   const epicDropdownRef = useRef(null);
@@ -252,7 +267,7 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
     switch (studentDomain) {
       case "fullstack":
         return fullstackOpportunities || [];
-      case "dataanalytics":
+      case "dataAnalytics":
         return dataanalyticsOpportunities || [];
       case "banking":
         return bankingOpportunities || [];
@@ -328,21 +343,104 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
       // Store scroll position
       const scrollY = window.scrollY;
       // Apply scroll lock
-      document.body.style.position = 'fixed';
+      document.body.style.position = "fixed";
       document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
-      document.body.style.overflow = 'hidden';
+      document.body.style.width = "100%";
+      document.body.style.overflow = "hidden";
       return () => {
         // Restore styles
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.width = '';
-        document.body.style.overflow = '';
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.width = "";
+        document.body.style.overflow = "";
         // Restore scroll position
         window.scrollTo(0, scrollY);
       };
     }
   }, [isOpen]);
+
+  // Function to start editing a specific field for a specific opportunity
+  const handleEditOpportunityClick = (opportunityId, field, currentValue) => {
+    setEditingOpportunityId(opportunityId);
+    setEditingField(field);
+    setEditedValue(currentValue || "");
+  };
+
+  // Function to save the edited value
+  const handleSaveOpportunityEdit = async (opportunityId, field) => {
+    // Find the opportunity in the relevant domain array
+    const opportunityToUpdate = relevantOpportunities.find(
+      (opp) => opp.id === opportunityId
+    );
+    if (!opportunityToUpdate) {
+      toast.error("Opportunity not found.");
+      return;
+    }
+
+    // Determine which field to update
+    let updatePayload = {};
+    if (field === "company") {
+      updatePayload.companyName = editedValue;
+    } else if (field === "status") {
+      updatePayload.status = editedValue;
+    }
+
+    // Call your context function to update the opportunity
+    // This assumes you have a function like `updateOpportunity` in your context.
+    // If you don't, you'll need to create one.
+    await updateOpportunity(opportunityId, updatePayload);
+
+    // Reset editing state
+    setEditingOpportunityId(null);
+    setEditingField(null);
+    setEditedValue("");
+
+    toast.success("Opportunity updated successfully");
+  };
+
+  // Function to cancel editing
+  const handleCancelOpportunityEdit = () => {
+    setEditingOpportunityId(null);
+    setEditingField(null);
+    setEditedValue("");
+  };
+
+  // Extract unique companies from all student data
+  const getUniqueCompanies = useCallback(() => {
+    const allCompanies = new Set();
+
+    // Add companies from all domain-specific student arrays
+    [
+      fullstackStudent,
+      dataanalyticsStudent, // Note: lowercase 'a'
+      bankingStudent,
+      marketingStudent,
+      sapStudent,
+      devopsStudent,
+    ].forEach((studentArray) => {
+      // Only proceed if the array is defined
+      if (!Array.isArray(studentArray)) return;
+      studentArray.forEach((student) => {
+        if (
+          student.company &&
+          typeof student.company === "string" &&
+          student.company.trim() !== ""
+        ) {
+          allCompanies.add(student.company.trim());
+        }
+      });
+    });
+
+    // Convert Set to sorted array
+    return Array.from(allCompanies).sort();
+  }, [
+    fullstackStudent,
+    dataanalyticsStudent, // Note: lowercase 'a'
+    bankingStudent,
+    marketingStudent,
+    sapStudent,
+    devopsStudent,
+  ]);
 
   return (
     <>
@@ -370,11 +468,11 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
             </div>
 
             {/* Tabs - Updated to Bootstrap nav-tabs style */}
-        <Tabs 
-          activeTab={activeTab} 
-          setActiveTab={setActiveTab} 
-          tabs={tabs} 
-        />
+            <Tabs
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              tabs={tabs}
+            />
 
             {/* Scrollable Content Area */}
             <div className="flex-1 overflow-y-auto px-1 pb-4">
@@ -529,7 +627,7 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
                       size={16}
                     />
                     {showModeDropdown && (
-                      <div className="absolute z-10 w-full bg-[#f3edf7] border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                      <div className="absolute z-10 w-full bg-[#faeff1] border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
                         {["Online", "Offline"].map((mode) => (
                           <div
                             key={mode}
@@ -582,7 +680,7 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
                       size={16}
                     />
                     {showPlacementDropdown && (
-                      <div className="absolute z-10 w-full bg-[#f3edf7] border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                      <div className="absolute z-10 w-full bg-[#faeff1] border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
                         {[
                           "Placed",
                           "Not Placed",
@@ -955,15 +1053,200 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                           {assignedOpportunities.map((opp, index) => (
-                            <tr key={opp.id}>
+                            <tr key={opp.id} className="hover:bg-gray-50">
+                              {/* S.No */}
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {index + 1}
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                {opp.companyName || "N/A"}{" "}
+
+                              {/* Company */}
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                {editingOpportunityId === opp.id &&
+                                editingField === "company" ? (
+                                  // Edit Mode
+                                  <div className="flex items-center gap-2">
+                                    <div
+                                      className="relative"
+                                      style={{ minWidth: "150px" }}
+                                    >
+                                      <input
+                                        type="text"
+                                        value={editedValue}
+                                        onChange={(e) =>
+                                          setEditedValue(e.target.value)
+                                        } // Allow typing
+                                        onFocus={() =>
+                                          setOpenCompanyDropdown(opp.id)
+                                        } // Show dropdown when focused
+                                        className="block w-full px-3 py-1 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-[#cd5e77]"
+                                      />
+                                      <FiChevronDown
+                                        className="absolute top-2 right-3 text-gray-500 pointer-events-none"
+                                        size={16}
+                                      />
+                                      {openCompanyDropdown === opp.id && (
+                                        <div className="absolute z-10 w-full bg-[#faeff1] border border-gray-300 rounded-md shadow-lg mt-1 max-h-60 overflow-auto">
+                                          {[
+                                            "Google",
+                                            "Microsoft",
+                                            "Amazon",
+                                            "Meta",
+                                            "Apple",
+                                            "Tesla",
+                                            "Netflix",
+                                            "Spotify",
+                                            "Adobe",
+                                            "IBM",
+                                            "Infosys",
+                                            "TCS",
+                                            "Wipro",
+                                            "Cognizant",
+                                            "HCL",
+                                            "Accenture",
+                                            "Capgemini",
+                                            "Tech Mahindra",
+                                            "Mindtree",
+                                            "Zoho",
+                                          ].map((companyName) => (
+                                            <div
+                                              key={companyName}
+                                              className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                              onClick={() => {
+                                                setEditedValue(companyName);
+                                                setOpenCompanyDropdown(null);
+                                              }}
+                                            >
+                                              {companyName}
+                                            </div>
+                                          ))}
+                                        </div>
+                                      )}
+                                    </div>
+                                    <button
+                                      className="cursor-pointer p-1 hover:bg-gray-100 rounded"
+                                      onClick={() =>
+                                        handleSaveOpportunityEdit(
+                                          opp.id,
+                                          "company"
+                                        )
+                                      }
+                                      title="Save"
+                                    >
+                                      <FaRegSave className="h-4 w-4 text-[#cd5e77]" />
+                                    </button>
+                                  </div>
+                                ) : (
+                                  // View Mode
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-sm font-medium text-gray-900">
+                                      {opp.companyName || "N/A"}
+                                    </span>
+                                    <button
+                                      className="cursor-pointer p-1 hover:bg-gray-100 rounded"
+                                      onClick={() =>
+                                        handleEditOpportunityClick(
+                                          opp.id,
+                                          "company",
+                                          opp.companyName
+                                        )
+                                      }
+                                      title="Edit Company"
+                                    >
+                                      <FiEdit className="h-4 w-4" />
+                                    </button>
+                                  </div>
+                                )}
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {opp.status || "Assigned"}
+
+                              {/* Status */}
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                {editingOpportunityId === opp.id &&
+                                editingField === "status" ? (
+                                  // Edit Mode
+                                  <div className="flex items-center gap-2">
+                                    <div
+                                      className="relative"
+                                      style={{ minWidth: "150px" }}
+                                    >
+                                      <input
+                                        type="text"
+                                        value={editedValue}
+                                        onChange={(e) =>
+                                          setEditedValue(e.target.value)
+                                        } // Allow typing
+                                        onFocus={() =>
+                                          setOpenStatusDropdown(opp.id)
+                                        } // Show dropdown when focused
+                                        className="block w-full px-3 py-1 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-[#cd5e77]"
+                                      />
+                                      <FiChevronDown
+                                        className="absolute top-2 right-3 text-gray-500 pointer-events-none"
+                                        size={16}
+                                      />
+                                      {openStatusDropdown === opp.id && (
+                                        <div className="absolute z-10 w-full bg-[#faeff1] border border-gray-300 rounded-md shadow-lg mt-1">
+                                          {[
+                                            "Assigned",
+                                            "Interview Scheduled",
+                                            "Selected",
+                                            "Rejected",
+                                          ]
+                                            .filter((statusOption) =>
+                                              statusOption
+                                                .toLowerCase()
+                                                .includes(
+                                                  editedValue.toLowerCase()
+                                                )
+                                            )
+                                            .map((statusOption) => (
+                                              <div
+                                                key={statusOption}
+                                                className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                                onClick={() => {
+                                                  setEditedValue(statusOption);
+                                                  setOpenStatusDropdown(null);
+                                                }}
+                                              >
+                                                {statusOption}
+                                              </div>
+                                            ))}
+                                        </div>
+                                      )}
+                                    </div>
+                                    <button
+                                      className="cursor-pointer p-1 hover:bg-gray-100 rounded"
+                                      onClick={() =>
+                                        handleSaveOpportunityEdit(
+                                          opp.id,
+                                          "status"
+                                        )
+                                      }
+                                      title="Save"
+                                    >
+                                      <FaRegSave className="h-4 w-4 text-[#cd5e77]" />
+                                    </button>
+                                  </div>
+                                ) : (
+                                  // View Mode
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-sm text-gray-500">
+                                      {opp.status || "Assigned"}
+                                    </span>
+                                    <button
+                                      className="cursor-pointer p-1 hover:bg-gray-100 rounded"
+                                      onClick={() =>
+                                        handleEditOpportunityClick(
+                                          opp.id,
+                                          "status",
+                                          opp.status
+                                        )
+                                      }
+                                      title="Edit Status"
+                                    >
+                                      <FiEdit className="h-4 w-4" />
+                                    </button>
+                                  </div>
+                                )}
                               </td>
                             </tr>
                           ))}

@@ -11,7 +11,7 @@ export default function Tabs({ activeTab, setActiveTab, tabs, className = "" }) 
               className={`nav-link block py-2 px-3 text-base font-bold transition-colors duration-200 capitalize w-full text-center cursor-pointer
                 ${
                   activeTab === label
-                    ? "bg-[#fff5f6] border border-gray-300 text-[#cd5e77] border-b-0 relative -bottom-px"
+                    ? "bg-[#fff5f6] border border-[#cd5e77] text-[#cd5e77] border-b-0 relative -bottom-px"
                     : "text-[#cd5e77] hover:text-[#b9556b] hover:border-b-2 hover:border-[#cd5e77] border-b-transparent"
                 }`}
               onClick={() => setActiveTab(label)}

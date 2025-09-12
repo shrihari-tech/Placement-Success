@@ -8,11 +8,15 @@ import BatchHistoryTab from "../batches/batchHistoryTab/page";
 import QuickReport from "./components/QuickReport";
 import PlacedStudent from "./components/PlacedStudent";
 import Placement from "./components/Placement";
+import Tabs from "../components/tab"; // ✅ Import the Tabs component
 
 export default function BatchePage() {
-  const { batchesNames } = useDataContext(); // ❌ removed getBatchHead
+  const { batchesNames } = useDataContext();
   const [domainInfo, setDomainInfo] = useState(null);
   const [activeTab, setActiveTab] = useState("Quick Report");
+
+  // ✅ Define the tabs array
+  const tabs = ["Quick Report", "Placed Student", "Placement"];
 
   const domainDetails = {
     fs: { name: "Full Stack Development", icon: "/computer.svg" },
@@ -37,7 +41,6 @@ export default function BatchePage() {
     const shortCode = domainCodeMap[rawDomainCode];
     if (shortCode) {
       setDomainInfo(domainDetails[shortCode]);
-      // ✅ no fetching here — batchesNames is already in context
     }
   }, []);
 
@@ -49,30 +52,14 @@ export default function BatchePage() {
           {domainInfo?.name}
         </h2>
 
-        {/* Tabs */}
-        <div className="flex bg-[#fdeff1] rounded-xl py-2 mb-4 relative mt-5">
-          <div
-            className={`absolute top-1 bottom-1 py-2 bg-[#f9f9f9] rounded-lg shadow-sm transition-all
-            duration-300 ease-in-out z-0
-            ${
-              activeTab === "Quick Report"
-                ? "left-1 w-[calc(33%-0.5rem)]"
-                : activeTab === "Placed Student"
-                ? "left-[calc(33%+0.25rem)] w-[calc(33%-0.5rem)]"
-                : "left-[calc(66%+0.25rem)] w-[calc(33%-0.5rem)]"
-            }`}
-          />
-          {["Quick Report", "Placed Student", "Placement"].map((label) => (
-            <span
-              key={label}
-              className={`flex-1 cursor-pointer items-center text-center py-2 text-xs font-semibold select-none relative z-10
-              ${activeTab === label ? "text-indigo-600" : "text-gray-700"}`}
-              onClick={() => setActiveTab(label)}
-            >
-              {label}
-            </span>
-          ))}
-        </div>
+        {/* ====== TABS ====== */}
+        {/* ✅ Use the imported Tabs component */}
+        <Tabs
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          tabs={tabs}
+          className="mb-4" // Optional: Add margin bottom for spacing
+        />
 
         <h2 className="text-lg text-[#cd5e77] mb-3">Placement Report</h2>
 
@@ -80,7 +67,6 @@ export default function BatchePage() {
         {activeTab === "Placed Student" && <PlacedStudent />}
         {activeTab === "Placement" && <Placement />}
       </main>
-      {/* Edit Student Modal */}
     </div>
   );
 }

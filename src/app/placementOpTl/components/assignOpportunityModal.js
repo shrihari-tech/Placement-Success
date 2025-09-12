@@ -258,7 +258,7 @@ const AssignOpportunityModal = ({ isOpen, onClose, onSubmit, formData, setFormDa
               onClick={() => setShowDomainDropdown(!showDomainDropdown)}
               className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${errors.domain ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#e6a901] peer cursor-pointer`}
             />
-            <label htmlFor="domain" className={`absolute px-2 text-sm ${errors.domain ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}>
+            <label htmlFor="domain" className={` px-2 text-sm ${errors.domain ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}>
               Select Domain <span className="text-red-500">*</span>
             </label>
             <FiChevronDown
@@ -319,7 +319,7 @@ const AssignOpportunityModal = ({ isOpen, onClose, onSubmit, formData, setFormDa
               className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${errors.selectedBatch ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#e6a901] peer cursor-pointer ${!localFormData.domain ? 'opacity-50 cursor-not-allowed' : ''}`}
               disabled={!localFormData.domain} // Disable if no domain selected
             />
-            <label htmlFor="selectedBatch" className={`absolute px-2 text-sm ${errors.selectedBatch ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}>
+            <label htmlFor="selectedBatch" className={` px-2 text-sm ${errors.selectedBatch ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}>
               Select Batch <span className="text-red-500">*</span>
             </label>
             <FiChevronDown
@@ -375,7 +375,7 @@ const AssignOpportunityModal = ({ isOpen, onClose, onSubmit, formData, setFormDa
               value={localFormData.companyName || ''}
               onChange={handleChange}
             />
-            <label htmlFor="companyName" className={`absolute px-2 text-sm ${errors.companyName ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}>
+            <label htmlFor="companyName" className={` px-2 text-sm  ${errors.companyName ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 pointer-events: none`}>
               Company Name <span className="text-red-500">*</span>
             </label>
             {errors.companyName && <p className="text-red-500 text-xs mt-1">{errors.companyName}</p>}
@@ -391,7 +391,7 @@ const AssignOpportunityModal = ({ isOpen, onClose, onSubmit, formData, setFormDa
               value={localFormData.driveDate || ''} 
               onChange={handleChange}
             />
-            <label htmlFor="driveDate" className={`absolute px-2 text-sm ${errors.driveDate ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}>
+            <label htmlFor="driveDate" className={` px-2 text-sm ${errors.driveDate ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}>
               Drive Date <span className="text-red-500">*</span>
             </label>
             {errors.driveDate && <p className="text-red-500 text-xs mt-1">{errors.driveDate}</p>}
@@ -407,7 +407,7 @@ const AssignOpportunityModal = ({ isOpen, onClose, onSubmit, formData, setFormDa
               value={localFormData.driveRole || ''}
               onChange={handleChange}
             />
-            <label htmlFor="driveRole" className={`absolute px-2 text-sm ${errors.driveRole ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}>
+            <label htmlFor="driveRole" className={` px-2 text-sm ${errors.driveRole ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}>
               Designation <span className="text-red-500">*</span>
             </label>
             {errors.driveRole && <p className="text-red-500 text-xs mt-1">{errors.driveRole}</p>}
@@ -423,7 +423,7 @@ const AssignOpportunityModal = ({ isOpen, onClose, onSubmit, formData, setFormDa
               value={localFormData.package || ''}
               onChange={handleChange}
             />
-            <label htmlFor="package" className={`absolute px-2 text-sm ${errors.package ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}>
+            <label htmlFor="package" className={` px-2 text-sm ${errors.package ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}>
               Package <span className="text-red-500">*</span>
             </label>
             {errors.package && <p className="text-red-500 text-xs mt-1">{errors.package}</p>}

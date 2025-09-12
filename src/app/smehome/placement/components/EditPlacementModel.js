@@ -212,7 +212,7 @@ export default function EditPlacementModal({ student, onClose, onSave }) {
             </button>
             <button
               onClick={handleSave}
-              className="px-4 py-2 bg-[#6750a4] text-white rounded-md hover:bg-[#5d498a]"
+              className="px-4 py-2 bg-[#cd5e77] text-white rounded-md hover:bg-[#cd5e78b0]"
             >
               Save Changes
             </button>
@@ -240,7 +240,7 @@ export default function EditPlacementModal({ student, onClose, onSave }) {
               </button>
               <button
                 onClick={handleConfirmSave}
-                className="px-4 py-2 bg-[#6750a4] text-white rounded-md"
+                className="px-4 py-2 bg-[#cd5e77] text-white rounded-md"
               >
                 Confirm
               </button>
@@ -269,7 +269,7 @@ export default function EditPlacementModal({ student, onClose, onSave }) {
               </button>
               <button
                 onClick={handleDiscard}
-                className="px-4 py-2 bg-[#6750a4] text-white rounded-md"
+                className="px-4 py-2 bg-[#cd5e77] text-white rounded-md"
               >
                 Discard
               </button>

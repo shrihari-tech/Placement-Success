@@ -527,7 +527,7 @@ export default function StudentDataPage() {
                       </div>
                       <div>
                         <p className="text-xs text-gray-500">Drive Date</p>
-                        <p className="font-medium">
+                        <p className="font-medium text-gray-700">
                           {formatDate(opportunity.driveDate)}
                         </p>
                       </div>
@@ -551,7 +551,7 @@ export default function StudentDataPage() {
                       </div>
                       <div>
                         <p className="text-xs text-gray-500">Role</p>
-                        <p className="font-medium">{opportunity.driveRole}</p>
+                        <p className="font-medium text-gray-700">{opportunity.driveRole}</p>
                       </div>
                     </div>
                     <div className="flex items-center">
@@ -573,7 +573,7 @@ export default function StudentDataPage() {
                       </div>
                       <div>
                         <p className="text-xs text-gray-500">Package</p>
-                        <p className="font-medium">{opportunity.package}</p>
+                        <p className="font-medium text-gray-700">{opportunity.package}</p>
                       </div>
                     </div>
                     <div className="flex items-center">
@@ -595,7 +595,7 @@ export default function StudentDataPage() {
                       </div>
                       <div>
                         <p className="text-xs text-gray-500">Batch</p>
-                        <p className="font-medium">
+                        <p className="font-medium text-gray-700">
                           {opportunity.selectedBatch}
                         </p>
                       </div>
@@ -733,7 +733,7 @@ export default function StudentDataPage() {
               onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
             >
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-medium">Assign Opportunity</h2>
+                <h2 className="text-lg font-medium text-gray-700">Assign Opportunity</h2>
                 <button
                   onClick={handleCloseAssignModal}
                   className="cursor-pointer text-gray-500 hover:text-gray-700"
@@ -1030,7 +1030,7 @@ export default function StudentDataPage() {
               onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
             >
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-medium">
+                <h2 className="text-lg font-medium text-gray-700">
                   Select Students for Opportunity
                 </h2>
                 <button
@@ -1046,7 +1046,7 @@ export default function StudentDataPage() {
                   className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
                 >
                   <p className="text-sm p-1">
-                    <span className="font-semibold">Company: </span>{" "}
+                    <span className="font-semibold text-gray-700">Company: </span>{" "}
                     {opportunityDetails.companyName}
                   </p>
                 </div>
@@ -1054,7 +1054,7 @@ export default function StudentDataPage() {
                   className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
                 >
                   <p className="text-sm p-1">
-                    <span className="font-semibold"> Date: </span>{" "}
+                    <span className="font-semibold text-gray-700"> Date: </span>{" "}
                     {opportunityDetails.driveDate}
                   </p>
                 </div>
@@ -1062,7 +1062,7 @@ export default function StudentDataPage() {
                   className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
                 >
                   <p className="text-sm p-1">
-                    <span className="font-semibold"> Role: </span>{" "}
+                    <span className="font-semibold text-gray-700"> Role: </span>{" "}
                     {opportunityDetails.driveRole}
                   </p>
                 </div>
@@ -1070,7 +1070,7 @@ export default function StudentDataPage() {
                   className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
                 >
                   <p className="text-sm p-1">
-                    <span className="font-semibold"> Package: </span>{" "}
+                    <span className="font-semibold text-gray-700"> Package: </span>{" "}
                     {opportunityDetails.package}
                   </p>
                 </div>
@@ -1078,7 +1078,7 @@ export default function StudentDataPage() {
                   className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
                 >
                   <p className="text-sm p-1">
-                    <span className="font-semibold"> Batch: </span>{" "}
+                    <span className="font-semibold text-gray-700"> Batch: </span>{" "}
                     {opportunityDetails.selectedBatch}
                   </p>
                 </div>
@@ -1228,7 +1228,7 @@ export default function StudentDataPage() {
               onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
             >
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-medium"> Opportunity Details </h2>
+                <h2 className="text-lg font-medium text-gray-700"> Opportunity Details </h2>
                 <button
                   onClick={handleCloseViewModal}
                   className="cursor-pointer text-gray-500 hover:text-gray-700"
@@ -1242,7 +1242,7 @@ export default function StudentDataPage() {
                   className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
                 >
                   <p className="text-sm p-1">
-                    <span className="font-semibold"> Company: </span>{" "}
+                    <span className="font-semibold text-gray-700"> Company: </span>{" "}
                     {viewOpportunityDetails.companyName}
                   </p>
                 </div>
@@ -1250,7 +1250,7 @@ export default function StudentDataPage() {
                   className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
                 >
                   <p className="text-sm p-1">
-                    <span className="font-semibold"> Date: </span>{" "}
+                    <span className="font-semibold text-gray-700"> Date: </span>{" "}
                     {formatDate(viewOpportunityDetails.driveDate)}
                   </p>
                 </div>
@@ -1258,7 +1258,7 @@ export default function StudentDataPage() {
                   className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
                 >
                   <p className="text-sm p-1">
-                    <span className="font-semibold"> Role: </span>{" "}
+                    <span className="font-semibold text-gray-700"> Role: </span>{" "}
                     {viewOpportunityDetails.driveRole}
                   </p>
                 </div>
@@ -1266,7 +1266,7 @@ export default function StudentDataPage() {
                   className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
                 >
                   <p className="text-sm p-1">
-                    <span className="font-semibold"> Package: </span>{" "}
+                    <span className="font-semibold text-gray-700"> Package: </span>{" "}
                     {viewOpportunityDetails.package}
                   </p>
                 </div>
@@ -1274,7 +1274,7 @@ export default function StudentDataPage() {
                   className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
                 >
                   <p className="text-sm p-1">
-                    <span className="font-semibold"> Batch: </span>{" "}
+                    <span className="font-semibold text-gray-700"> Batch: </span>{" "}
                     {viewOpportunityDetails.selectedBatch}
                   </p>
                 </div>

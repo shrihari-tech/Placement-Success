@@ -42,48 +42,48 @@ const PlacedStudentModal = ({ isOpen, onClose, selectedStudent }) => {
           <div className="flex flex-col sm:flex-row justify-between w-full gap-10 text-sm sm:text-base">
             <div className="space-y-1">
               <p>
-                <span className="font-semibold text-[#6750A4]">Name:</span>{" "}
+                <span className="font-semibold text-[#cd5e77]">Name:</span>{" "}
                 {selectedStudent.name}
               </p>
               <p>
-                <span className="font-semibold text-[#6750A4]">Email:</span>{" "}
+                <span className="font-semibold text-[#cd5e77]">Email:</span>{" "}
                 {selectedStudent.email}
               </p>
               <p>
-                <span className="font-semibold text-[#6750A4]">Mobile:</span>{" "}
+                <span className="font-semibold text-[#cd5e77]">Mobile:</span>{" "}
                 {selectedStudent.phone}
               </p>
               <p>
-                <span className="font-semibold text-[#6750A4]">Batch:</span>{" "}
+                <span className="font-semibold text-[#cd5e77]">Batch:</span>{" "}
                 {selectedStudent.batch}
               </p>
               <p>
-                <span className="font-semibold text-[#6750A4]">Mode:</span>{" "}
+                <span className="font-semibold text-[#cd5e77]">Mode:</span>{" "}
                 {selectedStudent.mode}
               </p>
             </div>
 
             <div className="space-y-1">
               <p>
-                <span className="font-semibold text-[#6750A4]">Placement:</span>{" "}
+                <span className="font-semibold text-[#cd5e77]">Placement:</span>{" "}
                 {selectedStudent.placement}
               </p>
               <p>
-                <span className="font-semibold text-[#6750A4]">Company:</span>{" "}
+                <span className="font-semibold text-[#cd5e77]">Company:</span>{" "}
                 {selectedStudent.company}
               </p>
               <p>
-                <span className="font-semibold text-[#6750A4]">
+                <span className="font-semibold text-[#cd5e77]">
                   Designation:
                 </span>{" "}
                 {selectedStudent.designation}
               </p>
               <p>
-                <span className="font-semibold text-[#6750A4]">Salary:</span>
+                <span className="font-semibold text-[#cd5e77]">Salary:</span>
                 {selectedStudent.salary}
               </p>
               <p>
-                <span className="font-semibold text-[#6750A4]">
+                <span className="font-semibold text-[#cd5e77]">
                   Placed Month:
                 </span>{" "}
                 {selectedStudent.placedMonth}
@@ -96,7 +96,7 @@ const PlacedStudentModal = ({ isOpen, onClose, selectedStudent }) => {
         <div className="flex justify-end mt-6">
           <button
             onClick={onClose}
-            className="cursor-pointer bg-[#6750A4] text-white px-4 py-2.5 rounded-2xl text-sm font-medium"
+            className="cursor-pointer bg-[#cd5e77] text-white px-4 py-2.5 rounded-2xl text-sm font-medium"
           >
             Close
           </button>

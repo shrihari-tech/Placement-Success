@@ -2,12 +2,15 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { useDataContext } from "../../../context/dataContext"; // Ensure this path is correct for your project structure
-import { FiEye, FiEdit, FiTrash2, FiChevronDown } from "react-icons/fi";
+import { useDataContext } from "../../../context/dataContext";
+import { FiEye, FiEdit, FiChevronDown } from "react-icons/fi";
 import { RiCloseCircleLine } from "react-icons/ri";
 import { FaSearch } from "react-icons/fa";
 import Image from "next/image";
-import EditStudentModal from "./EditStudentModal"; // Adjust the import path as needed
+import EditStudentModal from "./EditStudentModal";
+
+// Define fixed EPIC statuses to always display
+const EPIC_STATUSES = ["Excellent", "Proficient", "Ideal", "Capable"];
 
 export default function BatchListTab() {
   // 1. Destructure necessary values from DataContext
@@ -38,7 +41,6 @@ export default function BatchListTab() {
     );
     setFilteredStudents(results);
     setSearchInitiated(true);
-    // Note: Epic stats are now calculated in DataContext and accessed via batchEpicStats
   };
 
   const handleReset = () => {
@@ -46,27 +48,17 @@ export default function BatchListTab() {
     setShowBatchDropdown(false);
     setFilteredStudents([]);
     setSearchInitiated(false);
-    // Reset modal states if used
-    // setSelectedStudent(null);
-    // setShowViewModal(false);
-    // setEditingStudent(null);
-    // setDeletingStudent(null);
-    // setShowDeleteModal(false);
-    // setDeleteConfirmationInput("");
-    // setDeleteError("");
   };
 
   // --- Data Processing ---
-  // Simplified: batchesNames from context is already filtered for the domain
   const filteredBatches = Array.isArray(batchesNames) ? batchesNames : [];
 
-  console.log(filteredBatches, batchesNames, "jjj");
-
-  // 2. Get Epic Status data for the currently selected batch from DataContext
-  // batchEpicStats[selectedBatch] will be an object like { Excellent: 5, Capable: 10, ... }
-  // or undefined/{} if no data or batch not selected.
+  // Always show all EPIC statuses, defaulting to 0 if missing
   const epicStatsForSelectedBatch = selectedBatch
-    ? batchEpicStats[selectedBatch] || {}
+    ? EPIC_STATUSES.reduce((acc, status) => {
+        acc[status] = batchEpicStats[selectedBatch]?.[status] || 0;
+        return acc;
+      }, {})
     : {};
 
   // --- Effects ---
@@ -84,6 +76,7 @@ export default function BatchListTab() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
       setShowBatchDropdown(false);
@@ -93,7 +86,7 @@ export default function BatchListTab() {
     };
   }, []);
 
-  // --- Effect to update filtered students when studentData or selectedBatch changes ---
+  // Update filtered students when dependencies change
   useEffect(() => {
     if (searchInitiated && selectedBatch) {
       const results = studentData.filter(
@@ -102,7 +95,6 @@ export default function BatchListTab() {
       setFilteredStudents(results);
     }
   }, [studentData, selectedBatch, searchInitiated]);
-
 
   // --- Rendering ---
   return (
@@ -120,7 +112,7 @@ export default function BatchListTab() {
               type="text"
               id="batch-select"
               placeholder=" "
-              value={selectedBatch ?? ""} // Handles null/undefined
+              value={selectedBatch ?? ""}
               maxLength={16}
               onChange={(e) => {
                 setSelectedBatch(e.target.value);
@@ -153,7 +145,7 @@ export default function BatchListTab() {
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleReset(); // Use the reset function
+                  handleReset();
                 }}
                 className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700 focus:outline-none"
                 aria-label="Clear batch selection"
@@ -273,7 +265,7 @@ export default function BatchListTab() {
                 {filteredStudents.map((student, index) => (
                   <tr
                     key={student.bookingId}
-                    className="hover:bg-[#faeff1] hover:text-gray-900 text-gray-500 "
+                    className="hover:bg-[#faeff1] hover:text-gray-900 text-gray-500"
                   >
                     <td className="px-5 text-gray-700 text-center py-3 text-sm whitespace-nowrap">
                       {index + 1}
@@ -295,7 +287,8 @@ export default function BatchListTab() {
                     </td>
                     <td className="px-5 py-3 text-sm whitespace-nowrap">
                       <div className="flex gap-1 items-center justify-center">
-                        <button
+                        {/* ❌ Commented out since setSelectedStudent & setShowViewModal are not defined */}
+                        {/* <button
                           type="button"
                           className="p-1 hover:bg-gray-100 rounded cursor-pointer"
                           onClick={() => {
@@ -305,7 +298,7 @@ export default function BatchListTab() {
                           aria-label={`View details for ${student.name}`}
                         >
                           <FiEye className="h-4 w-4" />
-                        </button>
+                        </button> */}
 
                         <button
                           type="button"
@@ -328,12 +321,9 @@ export default function BatchListTab() {
         </div>
       )}
 
-      {/* 3. Epic Status Display Section - Shown after search and if data exists */}
-
+      {/* EPIC Status Display Section */}
       {searchInitiated && selectedBatch && (
         <div className="mt-6 bg-white rounded-xl md:rounded-2xl shadow-sm md:shadow hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-200 w-1/2">
-          {" "}
-          {/* Full width container */}
           <div className="p-4 md:p-5 h-full flex flex-col">
             <h3 className="text-base md:text-lg font-semibold text-gray-700 mb-3 md:mb-4 flex items-center flex-shrink-0">
               <svg
@@ -352,32 +342,21 @@ export default function BatchListTab() {
               <span className="text-[#cd5e77] ml-1">{selectedBatch}</span>
             </h3>
 
-            {Object.keys(epicStatsForSelectedBatch).length > 0 ? (
-              <div className="grid grid-cols-4 gap-2 md:gap-3 overflow-y-auto flex-grow">
-                {Object.entries(epicStatsForSelectedBatch).map(
-                  ([status, count]) => (
-                    <div
-                      key={status}
-                      // --- Use fixed background color #f5dee3 ---
-                      className="bg-[#faeef1] rounded-lg p-2 md:p-3 text-center hover:bg-[#f5dee3] transition-colors duration-200 flex flex-col items-center justify-center min-h-[60px]" // Removed dynamic color class
-                    >
-                      <p className="text-[0.65rem] md:text-xs font-semibold text-gray-700 truncate w-full">
-                        {status}
-                      </p>
-                      <p className="text-base md:text-lg font-bold text-[#cd5e77] mt-1">
-                        {" "}
-                        {/* Keep count color consistent */}
-                        {count}
-                      </p>
-                    </div>
-                  )
-                )}
-              </div>
-            ) : (
-              <p className="text-gray-500 italic py-3 md:py-4 text-center text-sm flex-grow flex items-center justify-center">
-                No EPIC data available for this batch.
-              </p>
-            )}
+            <div className="grid grid-cols-4 gap-2 md:gap-3 overflow-y-auto flex-grow">
+              {EPIC_STATUSES.map((status) => (
+                <div
+                  key={status}
+                  className="bg-[#faeef1] rounded-lg p-2 md:p-3 text-center hover:bg-[#f5dee3] transition-colors duration-200 flex flex-col items-center justify-center min-h-[60px]"
+                >
+                  <p className="text-[0.65rem] md:text-xs font-semibold text-gray-700 truncate w-full">
+                    {status}
+                  </p>
+                  <p className="text-base md:text-lg font-bold text-[#cd5e77] mt-1">
+                    {epicStatsForSelectedBatch[status] || 0}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}

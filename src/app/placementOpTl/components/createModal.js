@@ -266,7 +266,7 @@ const CreateModal = ({ isOpen, onClose, onSave }) => {
                   />
                   <label
                     htmlFor="spoc-name"
-                    className={`absolute px-2 text-sm ${
+                    className={`absolute px-2 text-sm  ${
                       errors.name ? "text-red-500" : "text-gray-500"
                     } duration-300 bg-white transform -translate-y-3 scale-75 top-4 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-7`}
                   >

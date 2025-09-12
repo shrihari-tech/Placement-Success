@@ -2,10 +2,7 @@
 "use client";
 import React, { useState } from "react"; // ✅ Import useState
 import Navbar from "../navbar";
-import Tabs from "../components/tab"; // Make sure this component exists and works as expected
-// import CompanySPOCTab from "@/app/placementOpTl/placement/CompanySpocTab";
-// import ShortListedStudentsTab from "@/app/placementOpTl/placement/ShortListedStudentsTab";
-// import PlacementOpportunitiesTab from "./PlacementOpportunitiesTab"
+import Tabs from "../components/tab"; 
 import CompanySPOCTab from "./CompanySpocTab";
 import ShortListedStudentsTab from "./ShortListedStudentsTab";
 import PlacementOpportunitiesTab from "./PlacementOpportunitiesTab";

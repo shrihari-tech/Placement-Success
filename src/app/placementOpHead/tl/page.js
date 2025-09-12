@@ -80,7 +80,7 @@ export default function TLPage() {
     <div className="h-screen overflow-hidden">
       <Navbar />
 
-      <main className="ml-0 md:ml-[10px] pt-16 md:pt-1 ps-0 h-full overflow-y-auto">
+      <main className="ml-0 h-full overflow-y-auto ">
         {/* Header Section with Bottom Border */}
         <div className="border-b-2 border-gray-300 bg-white ps-8 pt-2 mb-2 md:mb-4">
           <h1 className="text-xl md:text-2xl text-gray-700 font-semibold mb-2">
