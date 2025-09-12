@@ -38,7 +38,6 @@ export default function PlacementPage() {
     <div className="h-screen overflow-hidden">
 
       <Navbar />
-      <Test />
       <main className="ml-[0px] p-6">
         <h1 className="text-2xl font-bold text-gray-700 mb-4">Placement</h1>
        
