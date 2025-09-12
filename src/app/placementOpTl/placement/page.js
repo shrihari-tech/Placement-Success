@@ -3,10 +3,13 @@
 import React, { useState } from "react"; // ✅ Import useState
 import Navbar from "../navbar";
 import Tabs from "../components/tab"; // Make sure this component exists and works as expected
-import CompanySPOCTab from "./CompanySPOCTab";
-import ShortListedStudentsTab from "./ShortListedStudentsTab"; // ✅ Corrected typo in import name
+// import CompanySPOCTab from "@/app/placementOpTl/placement/CompanySpocTab";
+// import ShortListedStudentsTab from "@/app/placementOpTl/placement/ShortListedStudentsTab";
+// import PlacementOpportunitiesTab from "./PlacementOpportunitiesTab"
+import CompanySPOCTab from "./CompanySpocTab";
+import ShortListedStudentsTab from "./ShortListedStudentsTab";
 import PlacementOpportunitiesTab from "./PlacementOpportunitiesTab";
-
+import Test from "./Test"
 export default function PlacementPage() {
   // ✅ Add state for active tab
   const [activeTab, setActiveTab] = useState("Company SPOC");
@@ -34,7 +37,9 @@ export default function PlacementPage() {
 
   return (
     <div className="h-screen overflow-hidden">
+
       <Navbar />
+      <Test />
       <main className="ml-[0px] p-6">
         <h1 className="text-2xl font-bold text-gray-700 mb-4">Placement</h1>
        

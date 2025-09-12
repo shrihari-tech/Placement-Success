@@ -10,9 +10,17 @@ import PlacedStudentModal from "./PlacedStudentModal";
 
 import EditPlacementModal from "./EditPlacementModel";
 
-export default function PlacedListTab() {
-  const { batchesNames, selectedBatch, setSelectedBatch, studentData } =
-    useDataContext();
+export default function Placement() {
+  const {
+    batchesNames,
+    selectedBatch,
+    setSelectedBatch,
+    studentData,
+    placementFSDStudents,
+    setPlacementFSDStudents,
+  } = useDataContext();
+
+  console.log(placementFSDStudents, "lll");
 
   const [showBatchDropdown, setShowBatchDropdown] = useState(false);
   const [filteredStudents, setFilteredStudents] = useState([]);
@@ -79,6 +87,20 @@ export default function PlacedListTab() {
   // --- Final Data to Display ---
   const displayStudents =
     searchInitiated && selectedBatch ? filteredStudents : placedStudents;
+
+  const toggleCheckbox = (sno, field) => {
+    console.log(field, "llll", sno);
+    setPlacementFSDStudents((prev) =>
+      prev.map((s) => (s.sno === sno ? { ...s, [field]: !s[field] } : s))
+    );
+  };
+
+  const [selectedBatchPlacement, setSelectedBatchPlacement] = useState("All");
+
+  const filteredStudentsPlacement =
+    selectedBatch === "All"
+      ? placementFSDStudents
+      : placementFSDStudents.filter((s) => s.batch === selectedBatch);
 
   return (
     <>
@@ -184,8 +206,10 @@ export default function PlacedListTab() {
         </div>
       </div>
 
+      <div> Save </div>
+
       {/* Table */}
-      {displayStudents.length > 0 ? (
+      {placementFSDStudents.length > 0 ? (
         <div className="bg-white rounded-2xl shadow-sm mt-6 w-full overflow-x-auto">
           <div className="w-full max-w-full overflow-hidden">
             <table className="min-w-full divide-y divide-gray-200">
@@ -198,18 +222,18 @@ export default function PlacedListTab() {
                     Name
                   </th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
-                    Company
+                    Batch
                   </th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
-                    Package
+                    Ineligible
                   </th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">
-                    Actions
+                    Not Required
                   </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {displayStudents.map((student, index) => (
+                {filteredStudentsPlacement.map((student, index) => (
                   <tr
                     key={student.bookingId}
                     className="hover:bg-[#faeff1] text-gray-600"
@@ -221,37 +245,28 @@ export default function PlacedListTab() {
                       {student.name}
                     </td>
                     <td className="px-5 py-3 text-center text-sm">
-                      {student.company}
+                      {student.batch}
                     </td>
                     <td className="px-5 py-3 text-center text-sm font-semibold text-[#cd5e77]">
-                      {student.salary}
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-2 focus:ring-blue-500"
+                        checked={student.ineligible}
+                        onChange={() =>
+                          toggleCheckbox(student.sno, "ineligible")
+                        }
+                      />
                     </td>
-                    <td className="px-5 py-3 text-center text-sm">
-                      <div className="flex gap-2 justify-center">
-                        {/* View Button */}
-                        <button
-                          type="button"
-                          className="p-1 hover:bg-gray-100 rounded"
-                          onClick={() => {
-                            setSelectedStudent(student);
-                            setShowPlacedModal(true);
-                          }}
-                        >
-                          <FiEye className="h-4 w-4" />
-                        </button>
 
-                        {/* Edit Button */}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setEditingStudent(student);
-                            setShowEditModal(true);
-                          }}
-                          className="p-1 hover:bg-gray-100 rounded"
-                        >
-                          <FiEdit className="h-4 w-4" />
-                        </button>
-                      </div>
+                    <td className="px-5 py-3 text-center text-sm font-semibold text-[#cd5e77]">
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-2 focus:ring-blue-500"
+                        checked={student.notRequired}
+                        onChange={() =>
+                          toggleCheckbox(student.sno, "notRequired")
+                        }
+                      />
                     </td>
                   </tr>
                 ))}

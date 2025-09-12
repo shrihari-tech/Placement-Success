@@ -4,7 +4,8 @@
       "@/*": ["./src/*"],
       "@/app/*": ["./src/app/*"],
       "@/components/*": ["./src/components/*"],
-      "@/public/*": ["./public/*"]
-    }
+      "@/public/*": ["./public/*"],
+    },
+    "forceConsistentCasingInFileNames": true,
   }
 }
