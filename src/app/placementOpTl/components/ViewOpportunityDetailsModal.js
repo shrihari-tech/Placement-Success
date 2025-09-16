@@ -179,7 +179,7 @@ console.log("All Student Data:", allStudentData);
         <div className="flex justify-end">
           <button
             onClick={onClose}
-            className="cursor-pointer bg-[#e6a901] hover:bg-[#cc9601] text-white px-4 py-2 rounded-xl text-sm font-medium"
+            className="cursor-pointer bg-[#a17640] hover:bg-[#906a39] text-white px-4 py-2 rounded-xl text-sm font-medium"
           >
             Close
           </button>

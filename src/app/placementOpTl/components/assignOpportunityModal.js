@@ -200,34 +200,34 @@ const AssignOpportunityModal = ({ isOpen, onClose, onSubmit, formData, setFormDa
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={onClose}>
       {/* Include the context holder if we are using the local hook */}
       {contextHolder}
-      {/* Add custom styles for antd notifications to match #e6a901 - only if using local hook */}
+      {/* Add custom styles for antd notifications to match #a17640 - only if using local hook */}
       {!notificationApi && (
         <style jsx global>{`
-          /* Custom antd notification styles for #e6a901 */
+          /* Custom antd notification styles for #a17640 */
           .ant-notification-notice-success,
           .ant-notification-notice-error,
           .ant-notification-notice-warning,
           .ant-notification-notice-info {
-            border-color: #e6a901 !important;
+            border-color: #a17640 !important;
           }
           .ant-notification-notice-success .ant-notification-notice-icon,
           .ant-notification-notice-error .ant-notification-notice-icon,
           .ant-notification-notice-warning .ant-notification-notice-icon,
           .ant-notification-notice-info .ant-notification-notice-icon {
-            color: #e6a901 !important;
+            color: #a17640 !important;
           }
           .ant-notification-notice-success .ant-notification-notice-message,
           .ant-notification-notice-error .ant-notification-notice-message,
           .ant-notification-notice-warning .ant-notification-notice-message,
           .ant-notification-notice-info .ant-notification-notice-message {
-            color: #e6a901 !important;
+            color: #a17640 !important;
           }
           .ant-notification-notice-close:hover {
-            background-color: #e6a901 !important;
+            background-color: #a17640 !important;
             color: white !important;
           }
           .ant-notification-notice-progress-bar {
-            background: #e6a901 !important;
+            background: #a17640 !important;
           }
           /* Custom close icon styling */
           .ant-notification-notice-close {
@@ -235,7 +235,7 @@ const AssignOpportunityModal = ({ isOpen, onClose, onSubmit, formData, setFormDa
           }
           /* Ensure progress bar container also uses the color */
           .ant-notification-notice-progress {
-            background: rgba(230, 169, 1, 0.1) !important; /* Light version of #e6a901 */
+            background: rgba(230, 169, 1, 0.1) !important; /* Light version of #a17640 */
           }
         `}</style>
       )}
@@ -256,9 +256,9 @@ const AssignOpportunityModal = ({ isOpen, onClose, onSubmit, formData, setFormDa
               placeholder=" "
               value={localFormData.domain ? (domains.find(d => d.key === localFormData.domain)?.label || localFormData.domain) : ''}
               onClick={() => setShowDomainDropdown(!showDomainDropdown)}
-              className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${errors.domain ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#e6a901] peer cursor-pointer`}
+              className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${errors.domain ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#a17640] peer cursor-pointer`}
             />
-            <label htmlFor="domain" className={` px-2 text-sm ${errors.domain ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}>
+            <label htmlFor="domain" className={` px-2 text-sm ${errors.domain ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#a17640] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}>
               Select Domain <span className="text-red-500">*</span>
             </label>
             <FiChevronDown
@@ -284,7 +284,7 @@ const AssignOpportunityModal = ({ isOpen, onClose, onSubmit, formData, setFormDa
                   domains.map((domainObj) => (
                     <div
                       key={domainObj.key}
-                      className={`px-4 py-2 cursor-pointer hover:bg-[#ffe499] ${localFormData.domain === domainObj.key ? 'bg-[#e8def8]' : ''}`}
+                      className={`px-4 py-2 cursor-pointer hover:bg-[#e2d5c5] ${localFormData.domain === domainObj.key ? 'bg-[#e8def8]' : ''}`}
                       style={{ color: localFormData.domain === domainObj.key ? '#6750A4' : '#4a4459' }}
                       onClick={() => handleDomainSelect(domainObj.key)}
                     >
@@ -316,10 +316,10 @@ const AssignOpportunityModal = ({ isOpen, onClose, onSubmit, formData, setFormDa
                 }
                 setShowBatchDropdown(!showBatchDropdown);
               }}
-              className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${errors.selectedBatch ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#e6a901] peer cursor-pointer ${!localFormData.domain ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${errors.selectedBatch ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#a17640] peer cursor-pointer ${!localFormData.domain ? 'opacity-50 cursor-not-allowed' : ''}`}
               disabled={!localFormData.domain} // Disable if no domain selected
             />
-            <label htmlFor="selectedBatch" className={` px-2 text-sm ${errors.selectedBatch ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}>
+            <label htmlFor="selectedBatch" className={` px-2 text-sm ${errors.selectedBatch ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#a17640] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}>
               Select Batch <span className="text-red-500">*</span>
             </label>
             <FiChevronDown
@@ -347,7 +347,7 @@ const AssignOpportunityModal = ({ isOpen, onClose, onSubmit, formData, setFormDa
                   filteredBatches.map((batchNo) => (
                     <div
                       key={batchNo}
-                      className={`px-4 py-2 cursor-pointer hover:bg-[#ffe499] ${localFormData.selectedBatch === batchNo ? 'bg-[#e8def8]' : ''}`}
+                      className={`px-4 py-2 cursor-pointer hover:bg-[#e2d5c5] ${localFormData.selectedBatch === batchNo ? 'bg-[#e8def8]' : ''}`}
                       style={{ color: localFormData.selectedBatch === batchNo ? '#6750A4' : '#4a4459' }}
                       onClick={() => handleBatchSelect(batchNo)}
                     >
@@ -370,12 +370,12 @@ const AssignOpportunityModal = ({ isOpen, onClose, onSubmit, formData, setFormDa
             <input
               type="text"
               id="companyName"
-              className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${errors.companyName ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#e6a901] peer`}
+              className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${errors.companyName ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#a17640] peer`}
               placeholder=" "
               value={localFormData.companyName || ''}
               onChange={handleChange}
             />
-            <label htmlFor="companyName" className={` px-2 text-sm  ${errors.companyName ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 pointer-events: none`}>
+            <label htmlFor="companyName" className={` px-2 text-sm  ${errors.companyName ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#a17640] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 pointer-events: none`}>
               Company Name <span className="text-red-500">*</span>
             </label>
             {errors.companyName && <p className="text-red-500 text-xs mt-1">{errors.companyName}</p>}
@@ -386,12 +386,12 @@ const AssignOpportunityModal = ({ isOpen, onClose, onSubmit, formData, setFormDa
             <input
               type="date" // Keep as 'date'
               id="driveDate"
-              className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${errors.driveDate ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#e6a901] peer`}
+              className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${errors.driveDate ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#a17640] peer`}
               placeholder=" "
               value={localFormData.driveDate || ''} 
               onChange={handleChange}
             />
-            <label htmlFor="driveDate" className={` px-2 text-sm ${errors.driveDate ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}>
+            <label htmlFor="driveDate" className={` px-2 text-sm ${errors.driveDate ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#a17640] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}>
               Drive Date <span className="text-red-500">*</span>
             </label>
             {errors.driveDate && <p className="text-red-500 text-xs mt-1">{errors.driveDate}</p>}
@@ -402,12 +402,12 @@ const AssignOpportunityModal = ({ isOpen, onClose, onSubmit, formData, setFormDa
             <input
               type="text"
               id="driveRole"
-              className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${errors.driveRole ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#e6a901] peer`}
+              className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${errors.driveRole ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#a17640] peer`}
               placeholder=" "
               value={localFormData.driveRole || ''}
               onChange={handleChange}
             />
-            <label htmlFor="driveRole" className={` px-2 text-sm ${errors.driveRole ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}>
+            <label htmlFor="driveRole" className={` px-2 text-sm ${errors.driveRole ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#a17640] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}>
               Designation <span className="text-red-500">*</span>
             </label>
             {errors.driveRole && <p className="text-red-500 text-xs mt-1">{errors.driveRole}</p>}
@@ -418,12 +418,12 @@ const AssignOpportunityModal = ({ isOpen, onClose, onSubmit, formData, setFormDa
             <input
               type="text"
               id="package"
-              className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${errors.package ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#e6a901] peer`}
+              className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-[#F8FAFD] rounded-sm border-2 ${errors.package ? "border-red-500" : "border-gray-400"} appearance-none focus:outline-none focus:border-[#a17640] peer`}
               placeholder=" "
               value={localFormData.package || ''}
               onChange={handleChange}
             />
-            <label htmlFor="package" className={` px-2 text-sm ${errors.package ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}>
+            <label htmlFor="package" className={` px-2 text-sm ${errors.package ? "text-red-500" : "text-gray-500"} duration-300 bg-[#F8FAFD] transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#a17640] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}>
               Package <span className="text-red-500">*</span>
             </label>
             {errors.package && <p className="text-red-500 text-xs mt-1">{errors.package}</p>}
@@ -433,13 +433,13 @@ const AssignOpportunityModal = ({ isOpen, onClose, onSubmit, formData, setFormDa
             <button
               type="button"
               onClick={onClose}
-              className="cursor-pointer bg-[#fff2cc] text-[#4a4459] px-4 py-2 rounded-xl text-sm font-medium hover:bg-[#ffebb3]"
+              className="cursor-pointer bg-[#ece3d8] text-[#4a4459] px-4 py-2 rounded-xl text-sm font-medium hover:bg-[#f5f1eb]"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="cursor-pointer bg-[#e6a901] hover:bg-[#cc9601] text-white px-4 py-2 rounded-xl text-sm font-medium"
+              className="cursor-pointer bg-[#a17640] hover:bg-[#906a39] text-white px-4 py-2 rounded-xl text-sm font-medium"
             >
               Assign
             </button>

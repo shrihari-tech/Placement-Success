@@ -120,9 +120,9 @@ export default function ShortlistedSearch({
               placeholder=" "
               value={selectedDomain ? domains.find((d) => d.key === selectedDomain)?.label || "" : ""}
               onClick={() => setShowDomainDropdown(!showDomainDropdown)}
-              className="block px-4 pb-2 pt-5 w-[260px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#e6a901] peer cursor-pointer"
+              className="block px-4 pb-2 pt-5 w-[260px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#a17640] peer cursor-pointer"
             />
-            <label htmlFor="domain" className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ffffff] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#ffffff]">
+            <label htmlFor="domain" className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ffffff] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#a17640] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#ffffff]">
               Domain
             </label>
             <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
@@ -136,12 +136,12 @@ export default function ShortlistedSearch({
               </button>
             )}
             {showDomainDropdown && (
-              <div className="absolute z-10 w-full text-sm bg-[#fff8e6] border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto">
+              <div className="absolute z-10 w-full text-sm bg-[#f5f1eb] border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto">
                 {domains.map((domain) => (
                   <div
                     key={domain.key}
                     tabIndex={0}
-                    className="px-4 py-2 cursor-pointer hover:bg-[#ffe499] focus:bg-[#ffe499] focus:outline-none"
+                    className="px-4 py-2 cursor-pointer hover:bg-[#e2d5c5] focus:bg-[#e2d5c5] focus:outline-none"
                     onClick={() => { setSelectedDomain(domain.key); setShowDomainDropdown(false); }}
                     onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedDomain(domain.key); setShowDomainDropdown(false); } }}
                     role="option"
@@ -177,9 +177,9 @@ export default function ShortlistedSearch({
                 setShowBatchDropdown(!showBatchDropdown);
               }}
               // No 'disabled' attribute, input is always clickable for validation feedback
-              className={`block px-4 pb-2 pt-5 w-[150px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#e6a901] peer cursor-pointer`}
+              className={`block px-4 pb-2 pt-5 w-[150px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#a17640] peer cursor-pointer`}
             />
-            <label htmlFor="batch" className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ffffff] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#ffffff]">
+            <label htmlFor="batch" className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ffffff] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#a17640] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#ffffff]">
               Batch
             </label>
             <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
@@ -193,12 +193,12 @@ export default function ShortlistedSearch({
               </button>
             )}
             {showBatchDropdown && selectedDomain && filteredBatches.length > 0 && (
-              <div className="absolute z-10 w-full text-sm bg-[#fff8e6] border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto">
+              <div className="absolute z-10 w-full text-sm bg-[#f5f1eb] border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto">
                 {filteredBatches.map((batch) => (
                   <div
                     key={batch.batchNo}
                     tabIndex={0}
-                    className="px-4 py-2 cursor-pointer hover:bg-[#ffe499] focus:bg-[#ffe499] focus:outline-none"
+                    className="px-4 py-2 cursor-pointer hover:bg-[#e2d5c5] focus:bg-[#e2d5c5] focus:outline-none"
                     onClick={() => { setSelectedBatch(batch.batchNo); setShowBatchDropdown(false); }}
                     onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedBatch(batch.batchNo); setShowBatchDropdown(false); } }}
                     role="option"
@@ -210,7 +210,7 @@ export default function ShortlistedSearch({
               </div>
             )}
             {showBatchDropdown && selectedDomain && filteredBatches.length === 0 && (
-              <div className="absolute z-10 w-full text-sm bg-[#fff8e6] border border-gray-300 rounded-md shadow-md p-2 text-gray-500">
+              <div className="absolute z-10 w-full text-sm bg-[#f5f1eb] border border-gray-300 rounded-md shadow-md p-2 text-gray-500">
                 No batches available for this domain.
               </div>
             )}
@@ -239,9 +239,9 @@ export default function ShortlistedSearch({
                 // Toggle dropdown visibility
                 setShowCompanyDropdown(!showCompanyDropdown);
               }}
-              className="block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#e6a901] peer cursor-pointer"
+              className="block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#a17640] peer cursor-pointer"
             />
-            <label htmlFor="company" className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ffffff] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#ffffff]">
+            <label htmlFor="company" className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ffffff] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#a17640] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#ffffff]">
               Company
             </label>
             <FiChevronDown className="absolute top-5 right-3 text-gray-500 pointer-events-none" size={16} />
@@ -255,12 +255,12 @@ export default function ShortlistedSearch({
               </button>
             )}
             {showCompanyDropdown && companies.length > 0 && (
-              <div className="absolute z-10 w-full text-sm bg-[#fff8e6] border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto">
+              <div className="absolute z-10 w-full text-sm bg-[#f5f1eb] border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto">
                 {companies.map((company) => (
                   <div
                     key={company} 
                     tabIndex={0}
-                    className="px-4 py-2 cursor-pointer hover:bg-[#ffe499] focus:bg-[#ffe499] focus:outline-none"
+                    className="px-4 py-2 cursor-pointer hover:bg-[#e2d5c5] focus:bg-[#e2d5c5] focus:outline-none"
                     onClick={() => { setSelectedCompany(company); setShowCompanyDropdown(false); }}
                     onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setSelectedCompany(company); setShowCompanyDropdown(false); } }}
                     role="option"
@@ -283,7 +283,7 @@ export default function ShortlistedSearch({
           <div className="flex items-center flex-wrap">
             <button
               onClick={handleSearchClick}
-              className="cursor-pointer bg-[#e6a901] hover:bg-[#cc9601] text-white px-4 py-4 rounded-l-xl  text-sm font-semibold flex items-center gap-2 transition-colors duration-200"
+              className="cursor-pointer bg-[#a17640] hover:bg-[#906a39] text-white px-4 py-4 rounded-l-xl  text-sm font-semibold flex items-center gap-2 transition-colors duration-200"
               aria-label="Search"
             >
               <FaSearch className="inline-block" />
@@ -291,7 +291,7 @@ export default function ShortlistedSearch({
             </button>
             <button
               onClick={handleResetClick}
-              className="cursor-pointer bg-[#ffebb3] hover:bg-[#fff2cc] px-4 py-4 rounded-r-xl text-sm font-semibold  text-gray-700 flex items-center gap-2 transition-colors duration-200"
+              className="cursor-pointer bg-[#e2d5c5] hover:bg-[#f5f1eb] px-4 py-4 rounded-r-xl text-sm font-semibold  text-gray-700 flex items-center gap-2 transition-colors duration-200"
               aria-label="Reset filters"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">

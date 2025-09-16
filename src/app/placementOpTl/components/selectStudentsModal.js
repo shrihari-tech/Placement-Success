@@ -60,22 +60,22 @@ const SelectStudentsModal = ({
 
         {/* Opportunity Details Header */}
         <div className="flex justify-evenly gap-2 md:gap-1 flex-wrap items-center mb-4 p-3 bg-[#fff9e6] rounded flex-shrink-0">
-          <div className={`bg-[#fff2cc] rounded-md border-t-3 border-[#e6a901] shadow p-1 md:p-2`}>
+          <div className={`bg-[#ece3d8] rounded-md border-t-3 border-[#a17640] shadow p-1 md:p-2`}>
             <p className="text-sm p-1"><span className="font-semibold">Company:</span> {opportunityDetails.companyName}</p>
           </div>
-          <div className={`bg-[#fff2cc] rounded-md border-t-3 border-[#e6a901] shadow p-1 md:p-2`}>
+          <div className={`bg-[#ece3d8] rounded-md border-t-3 border-[#a17640] shadow p-1 md:p-2`}>
             <p className="text-sm p-1"><span className="font-semibold">Date:</span> {formatDate(opportunityDetails.driveDate)}</p>
           </div>
-          <div className={`bg-[#fff2cc] rounded-md border-t-3 border-[#e6a901] shadow p-1 md:p-2`}>
+          <div className={`bg-[#ece3d8] rounded-md border-t-3 border-[#a17640] shadow p-1 md:p-2`}>
             <p className="text-sm p-1"><span className="font-semibold">Designation:</span> {opportunityDetails.driveRole}</p>
           </div>
-          <div className={`bg-[#fff2cc] rounded-md border-t-3 border-[#e6a901] shadow p-1 md:p-2`}>
+          <div className={`bg-[#ece3d8] rounded-md border-t-3 border-[#a17640] shadow p-1 md:p-2`}>
             <p className="text-sm p-1"><span className="font-semibold">Package:</span> {opportunityDetails.package}</p>
           </div>
-           <div className={`bg-[#fff2cc] rounded-md border-t-3 border-[#e6a901] shadow p-1 md:p-2`}>
+           <div className={`bg-[#ece3d8] rounded-md border-t-3 border-[#a17640] shadow p-1 md:p-2`}>
             <p className="text-sm p-1"><span className="font-semibold">Domain:</span> {opportunityDetails.domain}</p>
           </div>
-          <div className={`bg-[#fff2cc] rounded-md border-t-3 border-[#e6a901] shadow p-1 md:p-2`}>
+          <div className={`bg-[#ece3d8] rounded-md border-t-3 border-[#a17640] shadow p-1 md:p-2`}>
             <p className="text-sm p-1"><span className="font-semibold">Batch:</span> {opportunityDetails.selectedBatch}</p>
           </div>
         </div>
@@ -99,7 +99,7 @@ const SelectStudentsModal = ({
                         type="checkbox"
                         checked={selectAllChecked}
                         onChange={handleSelectAllStudents}
-                        className="h-4 w-4 cursor-pointer text-[#e6a901] border-gray-300 rounded focus:ring-[#e6a901]"
+                        className="h-4 w-4 cursor-pointer text-[#a17640] border-gray-300 rounded focus:ring-[#a17640]"
                       />
                     </div>
                   </th>
@@ -120,7 +120,7 @@ const SelectStudentsModal = ({
                           type="checkbox"
                           checked={selectedStudents.includes(student.bookingId)}
                           onChange={() => handleStudentSelect(student.bookingId)}
-                          className="h-4 w-4 cursor-pointer text-[#e6a901] border-gray-300 rounded focus:ring-[#e6a901]"
+                          className="h-4 w-4 cursor-pointer text-[#a17640] border-gray-300 rounded focus:ring-[#a17640]"
                         />
                       </td>
                     </tr>
@@ -145,13 +145,13 @@ const SelectStudentsModal = ({
           <div className="flex gap-2">
             <button
               onClick={onClose}
-              className="cursor-pointer bg-[#fff2cc] text-[#4a4459] px-4 py-2 rounded-xl text-sm font-medium hover:bg-[#ffebb3]"
+              className="cursor-pointer bg-[#ece3d8] text-[#4a4459] px-4 py-2 rounded-xl text-sm font-medium hover:bg-[#ffebb3]"
             >
               Cancel
             </button>
             <button
               onClick={onSave}
-              className="cursor-pointer bg-[#e6a901] hover:bg-[#cc9601] text-white px-4 py-2 rounded-xl text-sm font-medium"
+              className="cursor-pointer bg-[#a17640] hover:bg-[#906a39] text-white px-4 py-2 rounded-xl text-sm font-medium"
               disabled={selectedStudents.length === 0}
             >
               Save Selected ({selectedStudents.length})

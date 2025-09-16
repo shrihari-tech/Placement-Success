@@ -24,13 +24,13 @@ const ConfirmSaveModal = ({ isOpen, onClose, onConfirm, name }) => {
         <div className="flex justify-end gap-4">
           <button
             onClick={onClose}
-            className="cursor-pointer bg-[#fff2cc] text-[#4a4459] px-4 py-2.5 rounded-2xl text-sm font-medium hover:bg-[#ffebb3]"
+            className="cursor-pointer bg-[#ece3d8] text-[#4a4459] px-4 py-2.5 rounded-2xl text-sm font-medium hover:bg-[#ffebb3]"
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
-            className="cursor-pointer bg-[#e6a901] hover:bg-[#cc9601] text-white px-4 py-2.5 rounded-xl text-sm font-medium"
+            className="cursor-pointer bg-[#a17640] hover:bg-[#906a39] text-white px-4 py-2.5 rounded-xl text-sm font-medium"
           >
             Confirm
           </button>

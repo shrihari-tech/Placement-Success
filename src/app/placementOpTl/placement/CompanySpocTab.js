@@ -16,7 +16,8 @@ export default function CompanySPOCTab() {
   // State for SPOCs, initialized from localStorage or empty array
   const [spocs, setSpocs] = useState(() => {
     if (typeof window !== "undefined") {
-      try {
+      try 
+      {
         const savedSpocs = localStorage.getItem("companySpocs");
         return savedSpocs ? JSON.parse(savedSpocs) : [];
       } catch (error) {
@@ -30,7 +31,7 @@ export default function CompanySPOCTab() {
              duration: 5,
              showProgress: true,
              pauseOnHover: true,
-             closeIcon: <RiCloseCircleLine className="text-[#e6a901] hover:text-[#cc9601]" size={20} />,
+             closeIcon: <RiCloseCircleLine className="text-[#a17640] hover:text-[#cc9601]" size={20} />,
            });
         }, 0);
         return []; 
@@ -61,7 +62,7 @@ export default function CompanySPOCTab() {
           duration: 5,
           showProgress: true,
           pauseOnHover: true,
-          closeIcon: <RiCloseCircleLine className="text-[#e6a901] hover:text-[#cc9601]" size={20} />,
+          closeIcon: <RiCloseCircleLine className="text-[#a17640] hover:text-[#cc9601]" size={20} />,
         });
       }
     }
@@ -71,7 +72,7 @@ export default function CompanySPOCTab() {
     const newSPOC = { ...spoc, id: Date.now() }; // Consider using a more robust ID generator
     setSpocs((prev) => [newSPOC, ...prev]);
     
-    // Show success notification using the custom style with #e6a901
+    // Show success notification using the custom style with #a17640
     api.success({
       message: 'Success',
       description: 'Company SPOC added successfully!',
@@ -79,7 +80,7 @@ export default function CompanySPOCTab() {
       duration: 3,
       showProgress: true,
       pauseOnHover: true,
-      closeIcon: <RiCloseCircleLine className="text-[#e6a901] hover:text-[#cc9601]" size={20} />,
+      closeIcon: <RiCloseCircleLine className="text-[#a17640] hover:text-[#cc9601]" size={20} />,
     });
   };
   // Handle updating an existing SPOC
@@ -98,7 +99,7 @@ const handleUpdateSPOC = (updatedData) => {
     duration: 3,
     showProgress: true,
     pauseOnHover: true,
-    closeIcon: <RiCloseCircleLine className="text-[#e6a901] hover:text-[#cc9601]" size={20} />,
+    closeIcon: <RiCloseCircleLine className="text-[#a17640] hover:text-[#cc9601]" size={20} />,
   });
 
   // Close modal after update
@@ -118,7 +119,7 @@ const handleDeleteSPOC = (id) => {
     duration: 3,
     showProgress: true,
     pauseOnHover: true,
-    closeIcon: <RiCloseCircleLine className="text-[#e6a901] hover:text-[#cc9601]" size={20} />,
+    closeIcon: <RiCloseCircleLine className="text-[#a17640] hover:text-[#cc9601]" size={20} />,
   });
 
   // Close modal after delete
@@ -139,31 +140,31 @@ const handleDeleteSPOC = (id) => {
       {contextHolder} 
       {/* Add custom styles for notifications */}
       <style jsx global>{`
-        /* Custom notification styles for #e6a901 */
+        /* Custom notification styles for #a17640 */
         .ant-notification-notice-success,
         .ant-notification-notice-error,
         .ant-notification-notice-warning,
         .ant-notification-notice-info {
-          border-color: #e6a901 !important;
+          border-color: #a17640 !important;
         }
         .ant-notification-notice-success .ant-notification-notice-icon,
         .ant-notification-notice-error .ant-notification-notice-icon,
         .ant-notification-notice-warning .ant-notification-notice-icon,
         .ant-notification-notice-info .ant-notification-notice-icon {
-          color: #e6a901 !important;
+          color: #a17640 !important;
         }
         .ant-notification-notice-success .ant-notification-notice-message,
         .ant-notification-notice-error .ant-notification-notice-message,
         .ant-notification-notice-warning .ant-notification-notice-message,
         .ant-notification-notice-info .ant-notification-notice-message {
-          color: #e6a901 !important;
+          color: #a17640 !important;
         }
         .ant-notification-notice-close:hover {
-          background-color: #e6a901 !important;
+          background-color: #a17640 !important;
           color: white !important;
         }
         .ant-notification-notice-progress-bar {
-          background: #e6a901 !important;
+          background: #a17640 !important;
         }
         /* Custom close icon styling */
         .ant-notification-notice-close {
@@ -171,7 +172,7 @@ const handleDeleteSPOC = (id) => {
         }
         /* Ensure progress bar container also uses the color */
         .ant-notification-notice-progress {
-          background: rgba(230, 169, 1, 0.1) !important; /* Light version of #e6a901 */
+          background: rgba(230, 169, 1, 0.1) !important; /* Light version of #a17640 */
         }
       `}</style>
       <Navbar />

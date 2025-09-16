@@ -184,13 +184,13 @@ const CreateModal = ({ isOpen, onClose, onSave }) => {
         showProgress: true,
         pauseOnHover: true,
         style: {
-          borderColor: "#e6a901",
-          color: "#e6a901",
+          borderColor: "#a17640",
+          color: "#a17640",
         },
         className: "custom-ant-notification",
         closeIcon: (
           <RiCloseCircleLine
-            className="text-[#e6a901] hover:text-[#cc9601]"
+            className="text-[#a17640] hover:text-[#906a39]"
             size={20}
           />
         ),
@@ -259,7 +259,7 @@ const CreateModal = ({ isOpen, onClose, onSave }) => {
                     id="spoc-name"
                     className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 ${
                       errors.name ? "border-red-500" : "border-gray-400"
-                    } appearance-none focus:outline-none focus:border-[#e6a901] peer`}
+                    } appearance-none focus:outline-none focus:border-[#a17640] peer`}
                     placeholder=" "
                     value={formData.name}
                     onChange={(e) => handleChange("name", e.target.value)}
@@ -268,7 +268,7 @@ const CreateModal = ({ isOpen, onClose, onSave }) => {
                     htmlFor="spoc-name"
                     className={`absolute px-2 text-sm  ${
                       errors.name ? "text-red-500" : "text-gray-500"
-                    } duration-300 bg-white transform -translate-y-3 scale-75 top-4 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-7`}
+                    } duration-300 bg-white transform -translate-y-3 scale-75 top-4 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#a17640] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-7`}
                   >
                     Name <span className="text-red-500">*</span>
                   </label>
@@ -294,7 +294,7 @@ const CreateModal = ({ isOpen, onClose, onSave }) => {
                     id="spoc-company"
                     className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 ${
                       errors.company ? "border-red-500" : "border-gray-400"
-                    } appearance-none focus:outline-none focus:border-[#e6a901] peer`}
+                    } appearance-none focus:outline-none focus:border-[#a17640] peer`}
                     placeholder=" "
                     value={formData.company}
                     onChange={(e) => handleChange("company", e.target.value)}
@@ -303,7 +303,7 @@ const CreateModal = ({ isOpen, onClose, onSave }) => {
                     htmlFor="spoc-company"
                     className={`absolute px-2 text-sm ${
                       errors.company ? "text-red-500" : "text-gray-500"
-                    } duration-300 bg-white transform -translate-y-3 scale-75 top-4 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-7`}
+                    } duration-300 bg-white transform -translate-y-3 scale-75 top-4 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#a17640] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-7`}
                   >
                     Company <span className="text-red-500">*</span>
                   </label>
@@ -331,7 +331,7 @@ const CreateModal = ({ isOpen, onClose, onSave }) => {
                     id="spoc-email"
                     className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 ${
                       errors.email ? "border-red-500" : "border-gray-400"
-                    } appearance-none focus:outline-none focus:border-[#e6a901] peer`}
+                    } appearance-none focus:outline-none focus:border-[#a17640] peer`}
                     placeholder=" "
                     value={formData.email}
                     onChange={(e) => handleChange("email", e.target.value)}
@@ -340,7 +340,7 @@ const CreateModal = ({ isOpen, onClose, onSave }) => {
                     htmlFor="spoc-email"
                     className={`absolute px-2 text-sm ${
                       errors.email ? "text-red-500" : "text-gray-500"
-                    } duration-300 bg-white transform -translate-y-3 scale-75 top-4 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-7`}
+                    } duration-300 bg-white transform -translate-y-3 scale-75 top-4 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#a17640] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-7`}
                   >
                     Email <span className="text-red-500">*</span>
                   </label>
@@ -366,7 +366,7 @@ const CreateModal = ({ isOpen, onClose, onSave }) => {
                     id="spoc-phone"
                     className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 ${
                       errors.phone ? "border-red-500" : "border-gray-400"
-                    } appearance-none focus:outline-none focus:border-[#e6a901] peer`}
+                    } appearance-none focus:outline-none focus:border-[#a17640] peer`}
                     placeholder=" "
                     value={formData.phone}
                     onChange={(e) => handleChange("phone", e.target.value)}
@@ -378,7 +378,7 @@ const CreateModal = ({ isOpen, onClose, onSave }) => {
                     htmlFor="spoc-phone"
                     className={`absolute px-2 text-sm ${
                       errors.phone ? "text-red-500" : "text-gray-500"
-                    } duration-300 bg-white transform -translate-y-3 scale-75 top-4 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-7`}
+                    } duration-300 bg-white transform -translate-y-3 scale-75 top-4 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#a17640] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-7`}
                   >
                     Phone <span className="text-red-500">*</span>
                   </label>
@@ -404,7 +404,7 @@ const CreateModal = ({ isOpen, onClose, onSave }) => {
                     rows="3"
                     className={`block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 ${
                       errors.address ? "border-red-500" : "border-gray-400"
-                    } appearance-none focus:outline-none focus:border-[#e6a901] peer`}
+                    } appearance-none focus:outline-none focus:border-[#a17640] peer`}
                     placeholder=" "
                     value={formData.address}
                     onChange={(e) => handleChange("address", e.target.value)}
@@ -413,7 +413,7 @@ const CreateModal = ({ isOpen, onClose, onSave }) => {
                     htmlFor="spoc-address"
                     className={`absolute px-2 text-sm ${
                       errors.address ? "text-red-500" : "text-gray-500"
-                    } duration-300 bg-white transform -translate-y-3 scale-75 top-4 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-7`}
+                    } duration-300 bg-white transform -translate-y-3 scale-75 top-4 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#a17640] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-7`}
                   >
                     Address <span className="text-red-500">*</span>
                   </label>
@@ -447,7 +447,7 @@ const CreateModal = ({ isOpen, onClose, onSave }) => {
               <button
                 type="button"
                 onClick={handleSave}
-                className="cursor-pointer px-4 py-2 bg-[#e6a901] text-white rounded-md hover:bg-[#cc9601]"
+                className="cursor-pointer px-4 py-2 bg-[#a17640] text-white rounded-md hover:bg-[#906a39]"
               >
                 Add
               </button>

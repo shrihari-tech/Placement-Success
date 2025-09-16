@@ -7,6 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Toaster, toast } from "sonner";
 import { useDataContext } from "../context/dataContext";
+import Loader from "../components/Loader";
 
 export default function Home() {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,6 +18,7 @@ export default function Home() {
   const passwordRef = useRef(null);
   const router = useRouter();
   const { setLoginUser } = useDataContext();
+  const [loading, setLoading] = useState(false);
 
   // Whitelisted users
   const allowedUsers = [
@@ -84,9 +86,19 @@ export default function Home() {
     { email: "placement.op.tl5@kgisl.com", role: "placementOpTl" },
   ];
 
+  // 👇 NEW: Heads users (5 specific users)
+  const headsUsers = [
+    { email: "head1@kgisl.com", role: "heads" },
+    { email: "head2@kgisl.com", role: "heads" },
+    { email: "head3@kgisl.com", role: "heads" },
+    { email: "head4@kgisl.com", role: "heads" },
+    { email: "head5@kgisl.com", role: "heads" },
+  ];
+
   const allowedEmails = allowedUsers.map((u) => u.email);
   const placementOpHeadEmails = placementOpHeadUsers.map((u) => u.email);
   const placementOpTlEmails = placementOpTlUsers.map((u) => u.email);
+  const headsEmails = headsUsers.map((u) => u.email); // 👈 Added
 
   const validateEmailField = (value) => {
     if (!value.trim()) {
@@ -96,7 +108,13 @@ export default function Home() {
     const emailPattern = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i;
     if (!emailPattern.test(value)) {
       setEmailError("Invalid email format");
-    } else if (!allowedEmails.includes(value) && !placementOpHeadEmails.includes(value) && !placementOpTlEmails.includes(value)) {
+    } else if (
+      !allowedEmails.includes(value) &&
+      !placementOpHeadEmails.includes(value) &&
+      !placementOpTlEmails.includes(value) &&
+      !headsEmails.includes(value)
+    ) {
+      // 👈 Updated
       setEmailError("Unauthorized email. Contact admin.");
     } else {
       setEmailError("");
@@ -119,7 +137,12 @@ export default function Home() {
     } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/i.test(email)) {
       setEmailError("Invalid email format");
       valid = false;
-    } else if (!allowedEmails.includes(email) && !placementOpHeadEmails.includes(email) && !placementOpTlEmails.includes(email)) {
+    } else if (
+      !allowedEmails.includes(email) &&
+      !placementOpHeadEmails.includes(email) &&
+      !placementOpTlEmails.includes(email) &&
+      !headsEmails.includes(email)
+    ) {
       setEmailError("Unauthorized email. Contact admin.");
       valid = false;
     }
@@ -130,46 +153,49 @@ export default function Home() {
       valid = false;
     }
 
-    if (!valid) return false;
+    if (!valid) {
+      setLoading(false); // 👈 Hide loader on validation fail
+      return false;
+    }
 
     if (password !== "1234567") {
       toast.error("Incorrect password");
       setPasswordError("Invalid password");
+      setLoading(false); // 👈 Hide loader
       return false;
     }
 
     // Check if it's a PlacementOpHead user
-    const placementOpHeadUser = placementOpHeadUsers.find((u) => u.email === email);
+    const placementOpHeadUser = placementOpHeadUsers.find(
+      (u) => u.email === email
+    );
     if (placementOpHeadUser) {
-      // Store all necessary session data for PlacementOpHead
       localStorage.setItem("isAuthenticated", "true");
       localStorage.setItem("loginUser", email);
       localStorage.setItem("domainCode", "all");
       localStorage.setItem("userRole", "placementOpHead");
 
-      // Set expiration (optional)
       const expiration = new Date();
-      expiration.setHours(expiration.getHours() + 8); // 8 hour session
+      expiration.setHours(expiration.getHours() + 8);
       localStorage.setItem("expiration", expiration.toISOString());
 
       toast.success("Placement Op Head login successful! Redirecting...");
       setLoginUser(email);
       setTimeout(() => router.push("/placementOpHead/ophome"), 2000);
+      // Do NOT setLoading(false) here — let redirect handle UI change
       return true;
     }
 
     // Check if it's a PlacementOpTl user
     const placementOpTlUser = placementOpTlUsers.find((u) => u.email === email);
     if (placementOpTlUser) {
-      // Store all necessary session data for PlacementOpTl
       localStorage.setItem("isAuthenticated", "true");
       localStorage.setItem("loginUser", email);
       localStorage.setItem("domainCode", "all");
       localStorage.setItem("userRole", "placementOpTl");
 
-      // Set expiration (optional)
       const expiration = new Date();
-      expiration.setHours(expiration.getHours() + 8); // 8 hour session
+      expiration.setHours(expiration.getHours() + 8);
       localStorage.setItem("expiration", expiration.toISOString());
 
       toast.success("Placement Op TL login successful! Redirecting...");
@@ -178,18 +204,34 @@ export default function Home() {
       return true;
     }
 
+    // Check if it's a Heads user
+    const headsUser = headsUsers.find((u) => u.email === email);
+    if (headsUser) {
+      localStorage.setItem("isAuthenticated", "true");
+      localStorage.setItem("loginUser", email);
+      localStorage.setItem("domainCode", "all");
+      localStorage.setItem("userRole", "heads");
+
+      const expiration = new Date();
+      expiration.setHours(expiration.getHours() + 8);
+      localStorage.setItem("expiration", expiration.toISOString());
+
+      toast.success("Heads login successful! Redirecting...");
+      setLoginUser(email);
+      setTimeout(() => router.push("/heads/dashboard"), 2000);
+      return true;
+    }
+
     // Regular user login logic
     const user = allowedUsers.find((u) => u.email === email);
     if (user) {
-      // Store all necessary session data
       localStorage.setItem("isAuthenticated", "true");
       localStorage.setItem("loginUser", email);
       localStorage.setItem("domainCode", user.domain || "all");
       localStorage.setItem("userRole", user.role || "sme");
 
-      // Set expiration (optional)
       const expiration = new Date();
-      expiration.setHours(expiration.getHours() + 8); // 8 hour session
+      expiration.setHours(expiration.getHours() + 8);
       localStorage.setItem("expiration", expiration.toISOString());
 
       if (user.role === "admin") {
@@ -205,11 +247,14 @@ export default function Home() {
     }
 
     toast.error("Login failed. Please try again.");
+    setLoading(false); // 👈 Hide loader on final failure
     return false;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (loading) return; // 👈 Prevent multiple clicks
+    setLoading(true);
     validate();
   };
 
@@ -344,13 +389,16 @@ export default function Home() {
             {/* Submit Button */}
             <button
               type="submit"
-              className={`w-full p-3 mt-6 cursor-pointer rounded-xl border-none ${
-                email || password
-                  ? "bg-[#3f2fb4] text-white"
-                  : "bg-gray-300 text-gray-400"
-              } font-bold hover:text-white transition-colors duration-300`}
+              disabled={loading} // Prevent interaction
+              className={`w-full p-3 mt-6 rounded-xl border-none font-bold transition-all duration-300 flex items-center justify-center ${
+                loading
+                  ? "bg-gray-300 text-transparent cursor-not-allowed" // 👈 Dull background, transparent text
+                  : email && password
+                  ? "bg-[#3f2fb4] text-white hover:bg-[#2d2282] cursor-pointer"
+                  : "bg-gray-300 text-gray-400 cursor-not-allowed"
+              }`}
             >
-              Login
+              {loading ? <Loader size="h-5 w-5" color="text-[#3f2fb4]" /> : "Login"}
             </button>
 
             {/* Links */}

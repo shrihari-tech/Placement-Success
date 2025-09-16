@@ -49,7 +49,7 @@ export default function YetToBePlacedTab() {
     // Check if at least one filter is selected (Domain or Batch)
     // Adjust condition based on your specific requirements (e.g., require domain OR batch)
     if (!selectedDomain && !selectedBatch) {
-      // Show error notification using the custom style with #e6a901
+      // Show error notification using the custom style with #a17640
       api.error({
         message: 'Search Error',
         description: 'Please select at least one filter (Domain or Batch) to search for students yet to be placed.',
@@ -57,7 +57,7 @@ export default function YetToBePlacedTab() {
         duration: 4,
         showProgress: true,
         pauseOnHover: true,
-        closeIcon: <RiCloseCircleLine className="text-[#e6a901] hover:text-[#cc9601]" size={20} />,
+        closeIcon: <RiCloseCircleLine className="text-[#a17640] hover:text-[#a57900]" size={20} />,
       });
       return; // Stop the search if no criteria
     }
@@ -124,31 +124,31 @@ export default function YetToBePlacedTab() {
       {contextHolder}
       {/* Add custom styles for notifications */}
       <style jsx global>{`
-        /* Custom notification styles for #e6a901 */
+        /* Custom notification styles for #a17640 */
         .ant-notification-notice-success,
         .ant-notification-notice-error,
         .ant-notification-notice-warning,
         .ant-notification-notice-info {
-          border-color: #e6a901 !important;
+          border-color: #a17640 !important;
         }
         .ant-notification-notice-success .ant-notification-notice-icon,
         .ant-notification-notice-error .ant-notification-notice-icon,
         .ant-notification-notice-warning .ant-notification-notice-icon,
         .ant-notification-notice-info .ant-notification-notice-icon {
-          color: #e6a901 !important;
+          color: #a17640 !important;
         }
         .ant-notification-notice-success .ant-notification-notice-message,
         .ant-notification-notice-error .ant-notification-notice-message,
         .ant-notification-notice-warning .ant-notification-notice-message,
         .ant-notification-notice-info .ant-notification-notice-message {
-          color: #e6a901 !important;
+          color: #a17640 !important;
         }
         .ant-notification-notice-close:hover {
-          background-color: #e6a901 !important;
+          background-color: #a17640 !important;
           color: white !important;
         }
         .ant-notification-notice-progress-bar {
-          background: #e6a901 !important;
+          background: #a17640 !important;
         }
         /* Custom close icon styling */
         .ant-notification-notice-close {
@@ -156,7 +156,8 @@ export default function YetToBePlacedTab() {
         }
         /* Ensure progress bar container also uses the color */
         .ant-notification-notice-progress {
-          background: rgba(230, 169, 1, 0.1) !important; /* Light version of #e6a901 */
+          background: rgba(230, 169, 1, 0.1) !important; /* Light version of #a17640
+           */
         }
       `}</style>
       <Navbar />

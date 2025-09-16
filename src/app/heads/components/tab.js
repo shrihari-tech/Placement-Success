@@ -1,3 +1,4 @@
+// src/app/heads/components/tab.js
 "use client";
 import React from "react";
 
@@ -16,8 +17,8 @@ export default function Tabs({
             className={`flex-1 py-2 px-3 text-base font-bold transition-colors duration-200 capitalize text-center cursor-pointer
               ${
                 activeTab === label
-                  ? "bg-[#ece3d8] border-[#a17640] text-[#a17640] border  border-b-0 relative -bottom-px "
-                  : "text-[#a17640] hover:text-[#a57900] hover:border-b-2 hover:border-[#a17640]"
+                  ? "bg-[#d2d5b6] border-[#5f6a0a] text-[#5f6a0a] border  border-b-0 relative -bottom-px "
+                  : "text-[#5f6a0a] hover:text-[#5f6a0a] hover:border-b-2 hover:border-[#5f6a0a]"
               }`}
             onClick={() => setActiveTab(label)}
             type="button"

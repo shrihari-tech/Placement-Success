@@ -179,14 +179,14 @@ const PreviewModal = ({
                   <>
                     <button
                       onClick={() => setIsEditMode(true)}
-                      className="text-gray-500 hover:text-[#e6a901] cursor-pointer"
+                      className="text-gray-500 hover:text-[#a17640] cursor-pointer"
                       aria-label="Edit"
                     >
                       <RiEdit2Fill size={20} />
                     </button>
                     <button
                       onClick={handleDeleteClick}
-                      className="text-gray-500 hover:text-[#e6a901] cursor-pointer"
+                      className="text-gray-500 hover:text-[#a17640] cursor-pointer"
                       aria-label="Delete"
                     >
                       <RiDeleteBin6Line size={20} />
@@ -215,7 +215,7 @@ const PreviewModal = ({
                       id="edit-name"
                       className={`block px-3 pb-2 pt-4 w-full text-sm text-gray-900 bg-white rounded-sm border-2 ${
                         errors.name ? "border-red-500" : "border-gray-400"
-                      } appearance-none focus:outline-none focus:border-[#e6a901] peer`}
+                      } appearance-none focus:outline-none focus:border-[#a17640] peer`}
                       placeholder=" "
                       value={editData.name}
                       onChange={(e) => handleChange("name", e.target.value)}
@@ -224,7 +224,7 @@ const PreviewModal = ({
                       htmlFor="edit-name"
                       className={`absolute px-2 text-sm ${
                         errors.name ? "text-red-500" : "text-gray-500"
-                      } duration-300 bg-white transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                      } duration-300 bg-white transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#a17640] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                     >
                       Name <span className="text-red-500">*</span>
                     </label>
@@ -250,7 +250,7 @@ const PreviewModal = ({
                       id="edit-email"
                       className={`block px-3 pb-2 pt-4 w-full text-sm text-gray-900 bg-white rounded-sm border-2 ${
                         errors.email ? "border-red-500" : "border-gray-400"
-                      } appearance-none focus:outline-none focus:border-[#e6a901] peer`}
+                      } appearance-none focus:outline-none focus:border-[#a17640] peer`}
                       placeholder=" "
                       value={editData.email}
                       onChange={(e) => handleChange("email", e.target.value)}
@@ -259,7 +259,7 @@ const PreviewModal = ({
                       htmlFor="edit-email"
                       className={`absolute px-2 text-sm ${
                         errors.email ? "text-red-500" : "text-gray-500"
-                      } duration-300 bg-white transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                      } duration-300 bg-white transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#a17640] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                     >
                       Email <span className="text-red-500">*</span>
                     </label>
@@ -285,7 +285,7 @@ const PreviewModal = ({
                       id="edit-phone"
                       className={`block px-3 pb-2 pt-4 w-full text-sm text-gray-900 bg-white rounded-sm border-2 ${
                         errors.phone ? "border-red-500" : "border-gray-400"
-                      } appearance-none focus:outline-none focus:border-[#e6a901] peer`}
+                      } appearance-none focus:outline-none focus:border-[#a17640] peer`}
                       placeholder=" "
                       value={editData.phone}
                       onChange={(e) => {
@@ -300,7 +300,7 @@ const PreviewModal = ({
                       htmlFor="edit-phone"
                       className={`absolute px-2 text-sm ${
                         errors.phone ? "text-red-500" : "text-gray-500"
-                      } duration-300 bg-white transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                      } duration-300 bg-white transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#a17640] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                     >
                       Phone <span className="text-red-500">*</span>
                     </label>
@@ -326,7 +326,7 @@ const PreviewModal = ({
                       id="edit-company"
                       className={`block px-3 pb-2 pt-4 w-full text-sm text-gray-900 bg-white rounded-sm border-2 ${
                         errors.company ? "border-red-500" : "border-gray-400"
-                      } appearance-none focus:outline-none focus:border-[#e6a901] peer`}
+                      } appearance-none focus:outline-none focus:border-[#a17640] peer`}
                       placeholder=" "
                       value={editData.company}
                       onChange={(e) => handleChange("company", e.target.value)}
@@ -335,7 +335,7 @@ const PreviewModal = ({
                       htmlFor="edit-company"
                       className={`absolute px-2 text-sm ${
                         errors.company ? "text-red-500" : "text-gray-500"
-                      } duration-300 bg-white transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                      } duration-300 bg-white transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#a17640] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                     >
                       Company <span className="text-red-500">*</span>
                     </label>
@@ -360,7 +360,7 @@ const PreviewModal = ({
                       id="edit-address"
                       className={`block px-3 pb-2 pt-4 w-full text-sm text-gray-900 bg-white rounded-sm border-2 ${
                         errors.address ? "border-red-500" : "border-gray-400"
-                      } appearance-none focus:outline-none focus:border-[#e6a901] peer`}
+                      } appearance-none focus:outline-none focus:border-[#a17640] peer`}
                       placeholder=" "
                       value={editData.address}
                       onChange={(e) => handleChange("address", e.target.value)}
@@ -370,7 +370,7 @@ const PreviewModal = ({
                       htmlFor="edit-address"
                       className={`absolute px-2 text-sm ${
                         errors.address ? "text-red-500" : "text-gray-500"
-                      } duration-300 bg-white transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#e6a901] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                      } duration-300 bg-white transform -translate-y-3 scale-75 top-3 z-10 origin-[0] left-3 peer-focus:text-xs peer-focus:text-[#a17640] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
                     >
                       Address <span className="text-red-500">*</span>
                     </label>
@@ -397,8 +397,8 @@ const PreviewModal = ({
                 // --- Preview Details ---
                 <div className="space-y-3">
                   <div className="flex items-center p-2 bg-gray-50 rounded-lg">
-                    <div className="w-10 h-10 rounded-full bg-[#fff2cc] flex items-center justify-center mr-3">
-                      <FiUser className="h-5 w-5 text-[#e6a901]" />
+                    <div className="w-10 h-10 rounded-full bg-[#ece3d8] flex items-center justify-center mr-3">
+                      <FiUser className="h-5 w-5 text-[#a17640]" />
                     </div>
                     <div>
                       <p className="text-xs text-gray-500">Name</p>
@@ -407,8 +407,8 @@ const PreviewModal = ({
                   </div>
 
                   <div className="flex items-center p-2 bg-gray-50 rounded-lg">
-                    <div className="w-10 h-10 rounded-full bg-[#fff2cc] flex items-center justify-center mr-3">
-                      <FiMail className="h-5 w-5 text-[#e6a901]" />
+                    <div className="w-10 h-10 rounded-full bg-[#ece3d8] flex items-center justify-center mr-3">
+                      <FiMail className="h-5 w-5 text-[#a17640]" />
                     </div>
                     <div>
                       <p className="text-xs text-gray-500">Email</p>
@@ -417,8 +417,8 @@ const PreviewModal = ({
                   </div>
 
                   <div className="flex items-center p-2 bg-gray-50 rounded-lg">
-                    <div className="w-10 h-10 rounded-full bg-[#fff2cc] flex items-center justify-center mr-3">
-                      <FiPhone className="h-5 w-5 text-[#e6a901]" />
+                    <div className="w-10 h-10 rounded-full bg-[#ece3d8] flex items-center justify-center mr-3">
+                      <FiPhone className="h-5 w-5 text-[#a17640]" />
                     </div>
                     <div>
                       <p className="text-xs text-gray-500">Phone</p>
@@ -427,8 +427,8 @@ const PreviewModal = ({
                   </div>
 
                   <div className="flex items-center p-2 bg-gray-50 rounded-lg">
-                    <div className="w-10 h-10 rounded-full bg-[#fff2cc] flex items-center justify-center mr-3">
-                      <FiBriefcase className="h-5 w-5 text-[#e6a901]" />
+                    <div className="w-10 h-10 rounded-full bg-[#ece3d8] flex items-center justify-center mr-3">
+                      <FiBriefcase className="h-5 w-5 text-[#a17640]" />
                     </div>
                     <div>
                       <p className="text-xs text-gray-500">Company</p>
@@ -437,8 +437,8 @@ const PreviewModal = ({
                   </div>
 
                   <div className="flex items-center p-2 bg-gray-50 rounded-lg">
-                    <div className="w-10 h-10 rounded-full bg-[#fff2cc] flex items-center justify-center mr-3">
-                      <FiMapPin className="h-5 w-5 text-[#e6a901]" />
+                    <div className="w-10 h-10 rounded-full bg-[#ece3d8] flex items-center justify-center mr-3">
+                      <FiMapPin className="h-5 w-5 text-[#a17640]" />
                     </div>
                     <div>
                       <p className="text-xs text-gray-500">Address</p>
@@ -462,7 +462,7 @@ const PreviewModal = ({
                 <button
                   type="button"
                   onClick={handleSaveChanges}
-                  className="px-3 py-1.5 bg-[#e6a901] text-white rounded-md hover:bg-[#cc9601] focus:outline-none focus:ring-1 focus:ring-[#cc9601] text-sm"
+                  className="px-3 py-1.5 bg-[#a17640] text-white rounded-md hover:bg-[#906a39] focus:outline-none focus:ring-1 focus:ring-[#906a39] text-sm"
                 >
                   Save Changes
                 </button>
@@ -500,7 +500,7 @@ const PreviewModal = ({
                 <button
                   type="button"
                   onClick={handleConfirmDelete}
-                  className="px-3 py-1.5 bg-[#e6a901] text-white rounded-xl hover:bg-[#cc9601] focus:outline-none focus:ring-1 focus:bg-[#e6a901] text-sm"
+                  className="px-3 py-1.5 bg-[#a17640] text-white rounded-xl hover:bg-[#906a39] focus:outline-none focus:ring-1 focus:bg-[#a17640] text-sm"
                 >
                   Delete
                 </button>

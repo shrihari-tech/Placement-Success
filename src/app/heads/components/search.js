@@ -1,4 +1,4 @@
-// placementOpTl/components/search.js
+// heads/components/search.js
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
@@ -7,23 +7,19 @@ import { FiChevronDown } from "react-icons/fi";
 import { notification } from "antd";
 
 export default function Search({
-  // --- Configuration Props ---
-  domains = [], // Array of { key, label } objects
-  batches = [], // Array of batch objects (should have a `batchNo` property)
-  // Callbacks
-  onSearch, // Function called when search is triggered (after validation)
-  onReset,  // Function called when reset is triggered
-  // State Props (controlled component)
+  domains = [],
+  batches = [],
+  onSearch,
+  onReset,
   selectedDomain,
   setSelectedDomain,
   selectedBatch,
   setSelectedBatch,
-  // --- New Props for Reusability ---
-  requireDomainForSearch = true, // Whether a domain must be selected to initiate a search
-  searchValidationMessage = "Please select a domain before searching", // Message if domain required but missing
-  requireDomainForBatch = true,   // Whether a domain must be selected to interact with the batch dropdown
-  batchValidationMessage = "Select domain first please!", // Message if domain required but missing for batch
-  domainPrefixMap = {}, // Object mapping domain keys to batch prefixes (e.g., { fullstack: "FS", ... })
+  requireDomainForSearch = true,
+  searchValidationMessage = "Please select a domain before searching",
+  requireDomainForBatch = true,
+  batchValidationMessage = "Select domain first please!",
+  domainPrefixMap = {},
 }) {
   const [showDomainDropdown, setShowDomainDropdown] = useState(false);
   const [showBatchDropdown, setShowBatchDropdown] = useState(false);
@@ -32,11 +28,12 @@ export default function Search({
   const batchDropdownRef = useRef(null);
 
   // --- Computed Value: Filter batches based on selected domain ---
-  const filteredBatches = selectedDomain && domainPrefixMap[selectedDomain]
-    ? batches.filter((batch) =>
-        batch.batchNo?.startsWith(domainPrefixMap[selectedDomain])
-      )
-    : [];
+  const filteredBatches =
+    selectedDomain && domainPrefixMap[selectedDomain]
+      ? batches.filter((batch) =>
+          batch.batchNo?.startsWith(domainPrefixMap[selectedDomain])
+        )
+      : [];
 
   // --- Effect: Close dropdowns when clicking outside ---
   useEffect(() => {
@@ -98,14 +95,12 @@ export default function Search({
   return (
     <>
       {contextHolder} {/* Ant Design Notification Context Holder */}
-
       <div
         id="search-container"
         className="bg-[#ffffff] py-3 rounded-xl"
         tabIndex={0} // Make focusable if needed
       >
         <div className="flex flex-row flex-wrap justify-center gap-3 px-2 py-3">
-          
           {/* --- Domain Dropdown --- */}
           <div className="relative" ref={domainDropdownRef}>
             <input
@@ -119,11 +114,11 @@ export default function Search({
                   : ""
               }
               onClick={() => setShowDomainDropdown(!showDomainDropdown)}
-              className="block px-4 pb-2 pt-5 w-[260px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#a17640] peer cursor-pointer"
+              className="block px-4 pb-2 pt-5 w-[260px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#5f6a0a] peer cursor-pointer"
             />
             <label
               htmlFor="domain"
-              className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ffffff] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#a17640] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#ffffff]"
+              className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ffffff] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#5f6a0a] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#ffffff]"
             >
               Domain
             </label>
@@ -148,12 +143,12 @@ export default function Search({
             )}
             {/* Domain Dropdown Options */}
             {showDomainDropdown && (
-              <div className="absolute z-10 w-full text-sm bg-[#f5f1eb] border border-gray-300 rounded-md shadow-md">
+              <div className="absolute z-10 w-full text-sm bg-[#e1e6b7] border border-gray-300 rounded-md shadow-md">
                 {domains.map((domain) => (
                   <div
                     key={domain.key}
                     tabIndex={0} // Make focusable
-                    className="px-4 py-2 cursor-pointer hover:bg-[#e2d5c5] focus:bg-[#e2d5c5] focus:outline-none"
+                    className="px-4 py-2 cursor-pointer hover:bg-[#bac658] focus:bg-[#bac658] focus:outline-none"
                     onClick={() => {
                       setSelectedDomain(domain.key);
                       // setSelectedBatch(""); // Handled by useEffect now
@@ -162,7 +157,8 @@ export default function Search({
                       // handleSearchClick();
                     }}
                     onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") { // Enter or Space
+                      if (e.key === "Enter" || e.key === " ") {
+                        // Enter or Space
                         e.preventDefault();
                         setSelectedDomain(domain.key);
                         // setSelectedBatch(""); // Handled by useEffect now
@@ -204,11 +200,11 @@ export default function Search({
                 setShowBatchDropdown(!showBatchDropdown);
               }}
               // No 'disabled' attribute, input is always clickable for validation feedback
-              className={`block px-4 pb-2 pt-5 w-[170px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#a17640] peer cursor-pointer`}
+              className={`block px-4 pb-2 pt-5 w-[170px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#5f6a0a] peer cursor-pointer`}
             />
             <label
               htmlFor="batch"
-              className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ffffff] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#a17640] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#ffffff]"
+              className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ffffff] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#5f6a0a] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6 peer-focus:bg-[#ffffff]"
             >
               Batch
             </label>
@@ -235,12 +231,12 @@ export default function Search({
             {showBatchDropdown &&
               selectedDomain &&
               filteredBatches.length > 0 && (
-                <div className="absolute z-10 w-full text-sm bg-[#f5f1eb] border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto">
+                <div className="absolute z-10 w-full text-sm bg-[#e1e6b7] border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto">
                   {filteredBatches.map((batch) => (
                     <div
                       key={batch.batchNo}
                       tabIndex={0} // Make focusable
-                      className="px-4 py-2 cursor-pointer hover:bg-[#e2d5c5] focus:bg-[#e2d5c5] focus:outline-none"
+                      className="px-4 py-2 cursor-pointer hover:bg-[#bac658] focus:bg-[#bac658] focus:outline-none"
                       onClick={() => {
                         setSelectedBatch(batch.batchNo);
                         setShowBatchDropdown(false);
@@ -248,8 +244,9 @@ export default function Search({
                         // handleSearchClick();
                       }}
                       onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") { // Enter or Space
-                         e.preventDefault();
+                        if (e.key === "Enter" || e.key === " ") {
+                          // Enter or Space
+                          e.preventDefault();
                           setSelectedBatch(batch.batchNo);
                           setShowBatchDropdown(false);
                           // Optional: Auto-search
@@ -264,8 +261,8 @@ export default function Search({
                   ))}
                 </div>
               )}
-             {/* Optional: Show message if no batches for selected domain */}
-             {showBatchDropdown &&
+            {/* Optional: Show message if no batches for selected domain */}
+            {showBatchDropdown &&
               selectedDomain &&
               filteredBatches.length === 0 && (
                 <div className="absolute z-10 w-full text-sm bg-[#fff8e6] border border-gray-300 rounded-md shadow-md p-2 text-gray-500">
@@ -279,7 +276,7 @@ export default function Search({
             {/* Search Button */}
             <button
               onClick={handleSearchClick}
-              className="cursor-pointer bg-[#a17640] hover:bg-[#906a39] text-white px-4 py-4 rounded-l-xl  text-sm font-semibold flex items-center gap-2 transition-colors duration-200"
+              className="cursor-pointer bg-[#6d790b] hover:bg-[#5e680a] text-white px-4 py-4 rounded-l-xl  text-sm font-semibold flex items-center gap-2 transition-colors duration-200"
               aria-label="Search"
             >
               <FaSearch className="inline-block" />
@@ -288,7 +285,7 @@ export default function Search({
             {/* Reset Button */}
             <button
               onClick={handleResetClick}
-              className="cursor-pointer bg-[#e2d5c5] hover:bg-[#f5f1eb] px-4 py-4 rounded-r-xl text-sm font-semibold  text-gray-700 flex items-center gap-2 transition-colors duration-200"
+              className="cursor-pointer bg-[#d7de9f] hover:bg-[#ebeecf] px-4 py-4 rounded-r-xl text-sm font-semibold  text-gray-700 flex items-center gap-2 transition-colors duration-200"
               aria-label="Reset filters"
             >
               <svg
