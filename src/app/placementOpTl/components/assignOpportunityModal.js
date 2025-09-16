@@ -240,15 +240,15 @@ const AssignOpportunityModal = ({ isOpen, onClose, onSubmit, formData, setFormDa
         `}</style>
       )}
       <div className="w-full max-w-md bg-[#F8FAFD] rounded-[10px] p-6 animate-fade-in-up" onClick={(e) => e.stopPropagation()}>
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-medium">Assign Opportunity</h2>
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="text-lg font-medium text-gray-700">Assign Opportunity</h2>
           <button onClick={onClose} className="cursor-pointer text-gray-500 hover:text-gray-700">
             <RiCloseCircleLine size={20} />
           </button>
         </div>
         <form onSubmit={handleSubmit}>
           {/* Domain Dropdown */}
-          <div className="relative mb-4" ref={domainDropdownRef}>
+          <div className="relative mb-2" ref={domainDropdownRef}>
             <input
               type="text"
               id="domain"
@@ -301,7 +301,7 @@ const AssignOpportunityModal = ({ isOpen, onClose, onSubmit, formData, setFormDa
           </div>
 
           {/* Batch Dropdown */}
-          <div className="relative mb-4" ref={batchDropdownRef}>
+          <div className="relative mb-2" ref={batchDropdownRef}>
             <input
               type="text"
               id="selectedBatch"
@@ -366,7 +366,7 @@ const AssignOpportunityModal = ({ isOpen, onClose, onSubmit, formData, setFormDa
           </div>
 
           {/* Company Name */}
-          <div className="relative mb-4">
+          <div className="relative mb-2">
             <input
               type="text"
               id="companyName"
@@ -382,7 +382,7 @@ const AssignOpportunityModal = ({ isOpen, onClose, onSubmit, formData, setFormDa
           </div>
 
           {/* Drive Date - Corrected to use YYYY-MM-DD value for type="date" */}
-          <div className="relative mb-4">
+          <div className="relative mb-2">
             <input
               type="date" // Keep as 'date'
               id="driveDate"
@@ -398,7 +398,7 @@ const AssignOpportunityModal = ({ isOpen, onClose, onSubmit, formData, setFormDa
           </div>
 
           {/* Designation (Drive Role) */}
-          <div className="relative mb-4">
+          <div className="relative mb-2">
             <input
               type="text"
               id="driveRole"
@@ -414,7 +414,7 @@ const AssignOpportunityModal = ({ isOpen, onClose, onSubmit, formData, setFormDa
           </div>
 
           {/* Package */}
-          <div className="relative mb-4">
+          <div className="relative mb-2">
             <input
               type="text"
               id="package"

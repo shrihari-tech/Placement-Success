@@ -7,118 +7,114 @@ import { FiChevronDown } from "react-icons/fi";
 import { notification } from "antd";
 
 export default function Search({
-  // --- Configuration Props ---
-  domains = [], // Array of { key, label } objects
-  batches = [], // Array of batch objects (should have a `batchNo` property)
-  // Callbacks
-  onSearch, // Function called when search is triggered (after validation)
-  onReset,  // Function called when reset is triggered
-  // State Props (controlled component)
+  domains = [],
+  batches = [],
+  onSearch,
+  onReset,
   selectedDomain,
   setSelectedDomain,
   selectedBatch,
   setSelectedBatch,
-  // --- New Props for Reusability ---
-  requireDomainForSearch = true, // Whether a domain must be selected to initiate a search
-  searchValidationMessage = "Please select a domain before searching", // Message if domain required but missing
-  requireDomainForBatch = true,   // Whether a domain must be selected to interact with the batch dropdown
-  batchValidationMessage = "Select domain first please!", // Message if domain required but missing for batch
-  domainPrefixMap = {}, // Object mapping domain keys to batch prefixes (e.g., { fullstack: "FS", ... })
+  requireDomainForSearch = true,
+  searchValidationMessage = "Please select a domain before searching",
+  requireDomainForBatch = true,
+  batchValidationMessage = "Select domain first please!",
+  domainPrefixMap = {},
 }) {
   const [showDomainDropdown, setShowDomainDropdown] = useState(false);
   const [showBatchDropdown, setShowBatchDropdown] = useState(false);
+  const [domainInput, setDomainInput] = useState(
+    selectedDomain ? domains.find((d) => d.key === selectedDomain)?.label || "" : ""
+  );
+  const [batchInput, setBatchInput] = useState(selectedBatch || "");
   const [api, contextHolder] = notification.useNotification();
+
   const domainDropdownRef = useRef(null);
   const batchDropdownRef = useRef(null);
 
-  // --- Computed Value: Filter batches based on selected domain ---
+  // --- Filter batches based on selected domain ---
   const filteredBatches = selectedDomain && domainPrefixMap[selectedDomain]
     ? batches.filter((batch) =>
         batch.batchNo?.startsWith(domainPrefixMap[selectedDomain])
       )
     : [];
 
-  // --- Effect: Close dropdowns when clicking outside ---
+  // --- Filter domain options based on typed input ---
+  const filteredDomainOptions = domains.filter(d =>
+    d.label.toLowerCase().includes(domainInput.toLowerCase())
+  );
+
+  // --- Filter batch options based on typed input ---
+  const filteredBatchOptions = filteredBatches.filter(b =>
+    b.batchNo.toLowerCase().includes(batchInput.toLowerCase())
+  );
+
+  // --- Close dropdowns when clicking outside ---
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        domainDropdownRef.current &&
-        !domainDropdownRef.current.contains(event.target)
-      ) {
+      if (domainDropdownRef.current && !domainDropdownRef.current.contains(event.target)) {
         setShowDomainDropdown(false);
       }
-      if (
-        batchDropdownRef.current &&
-        !batchDropdownRef.current.contains(event.target)
-      ) {
+      if (batchDropdownRef.current && !batchDropdownRef.current.contains(event.target)) {
         setShowBatchDropdown(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []); // Dependencies removed as refs don't change
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-  // --- Effect: Reset batch when domain changes ---
+  // --- Reset batch when domain changes ---
   useEffect(() => {
     if (!selectedDomain) {
-      setSelectedBatch(""); // Clear batch if domain is cleared
+      setSelectedBatch("");
+      setBatchInput("");
     }
-    // Close batch dropdown if domain changes
     setShowBatchDropdown(false);
-  }, [selectedDomain, setSelectedBatch]);
+  }, [selectedDomain]);
 
-  // --- Handler: Enhanced search with optional validation ---
+  // --- Search handler with validation ---
   const handleSearchClick = () => {
-    // Optional validation: Check if domain is required for search
     if (requireDomainForSearch && !selectedDomain) {
       api.info({
-        message: "Domain Required", // Generic title
-        description: searchValidationMessage, // Configurable message
+        message: "Domain Required",
+        description: searchValidationMessage,
         placement: "topRight",
         duration: 3,
       });
-      return; // Prevent search
+      return;
     }
-    // If validation passes, call the parent's onSearch handler
     onSearch();
   };
 
-  // --- Handler: Reset filters ---
+  // --- Reset handler ---
   const handleResetClick = () => {
-    // Reset local dropdown states
+    setDomainInput("");
+    setBatchInput("");
+    setSelectedDomain("");
+    setSelectedBatch("");
     setShowDomainDropdown(false);
     setShowBatchDropdown(false);
-    // Call the parent's onReset handler
     onReset();
   };
 
   return (
     <>
-      {contextHolder} {/* Ant Design Notification Context Holder */}
-
-      <div
-        id="search-container"
-        className="bg-[#ffffff] py-3 rounded-xl"
-        tabIndex={0} // Make focusable if needed
-      >
+      {contextHolder}
+      <div id="search-container" className="bg-[#ffffff] py-3 rounded-xl">
         <div className="flex flex-row flex-wrap justify-center gap-3 px-2 py-3">
-          
+
           {/* --- Domain Dropdown --- */}
           <div className="relative" ref={domainDropdownRef}>
             <input
               type="text"
               id="domain"
-              readOnly
               placeholder=" "
-              value={
-                selectedDomain
-                  ? domains.find((d) => d.key === selectedDomain)?.label || ""
-                  : ""
-              }
-              onClick={() => setShowDomainDropdown(!showDomainDropdown)}
+              value={domainInput}
+              onChange={(e) => {
+                setDomainInput(e.target.value);
+                setShowDomainDropdown(true);
+              }}
+              onClick={() => setShowDomainDropdown(true)}
               className="block px-4 pb-2 pt-5 w-[260px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#a17640] peer cursor-pointer"
             />
             <label
@@ -131,14 +127,12 @@ export default function Search({
               className="absolute top-5 right-3 text-gray-500 pointer-events-none"
               size={16}
             />
-            {/* Clear Domain Button */}
             {selectedDomain && (
               <button
                 onClick={(e) => {
-                  e.stopPropagation(); // Prevent dropdown toggle
+                  e.stopPropagation();
                   setSelectedDomain("");
-                  // setSelectedBatch(""); // Handled by useEffect now
-                  handleSearchClick(); // Optional: Trigger search on clear
+                  setDomainInput("");
                 }}
                 className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700"
                 aria-label="Clear domain"
@@ -146,37 +140,36 @@ export default function Search({
                 <RiCloseCircleLine size={20} />
               </button>
             )}
-            {/* Domain Dropdown Options */}
             {showDomainDropdown && (
-              <div className="absolute z-10 w-full text-sm bg-[#f5f1eb] border border-gray-300 rounded-md shadow-md">
-                {domains.map((domain) => (
-                  <div
-                    key={domain.key}
-                    tabIndex={0} // Make focusable
-                    className="px-4 py-2 cursor-pointer hover:bg-[#e2d5c5] focus:bg-[#e2d5c5] focus:outline-none"
-                    onClick={() => {
-                      setSelectedDomain(domain.key);
-                      // setSelectedBatch(""); // Handled by useEffect now
-                      setShowDomainDropdown(false);
-                      // Optional: Auto-search or let user click Search button
-                      // handleSearchClick();
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") { // Enter or Space
-                        e.preventDefault();
+              <div className="absolute z-10 w-full text-sm bg-[#f5f1eb] border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto">
+                {filteredDomainOptions.length > 0 ? (
+                  filteredDomainOptions.map((domain) => (
+                    <div
+                      key={domain.key}
+                      tabIndex={0}
+                      className="px-4 py-2 cursor-pointer hover:bg-[#e2d5c5] focus:bg-[#e2d5c5] focus:outline-none"
+                      onClick={() => {
                         setSelectedDomain(domain.key);
-                        // setSelectedBatch(""); // Handled by useEffect now
+                        setDomainInput(domain.label);
                         setShowDomainDropdown(false);
-                        // Optional: Auto-search
-                        // handleSearchClick();
-                      }
-                    }}
-                    role="option" // Accessibility
-                    aria-selected={selectedDomain === domain.key}
-                  >
-                    {domain.label}
-                  </div>
-                ))}
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setSelectedDomain(domain.key);
+                          setDomainInput(domain.label);
+                          setShowDomainDropdown(false);
+                        }
+                      }}
+                      role="option"
+                      aria-selected={selectedDomain === domain.key}
+                    >
+                      {domain.label}
+                    </div>
+                  ))
+                ) : (
+                  <div className="px-4 py-2 text-gray-500">No matching domain</div>
+                )}
               </div>
             )}
           </div>
@@ -186,25 +179,25 @@ export default function Search({
             <input
               type="text"
               id="batch"
-              readOnly
               placeholder=" "
-              value={selectedBatch || ""}
-              onClick={(e) => {
-                // Optional validation: Check if domain is required for batch interaction
+              value={batchInput}
+              onChange={(e) => {
+                setBatchInput(e.target.value);
+                setShowBatchDropdown(true);
+              }}
+              onClick={() => {
                 if (requireDomainForBatch && !selectedDomain) {
                   api.info({
-                    message: "Domain Required", // Generic title
-                    description: batchValidationMessage, // Configurable message
+                    message: "Domain Required",
+                    description: batchValidationMessage,
                     placement: "topRight",
                     duration: 3,
                   });
-                  return; // Prevent dropdown from opening
+                  return;
                 }
-                // Toggle dropdown visibility if domain check passes (or not required)
-                setShowBatchDropdown(!showBatchDropdown);
+                setShowBatchDropdown(true);
               }}
-              // No 'disabled' attribute, input is always clickable for validation feedback
-              className={`block px-4 pb-2 pt-5 w-[170px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#a17640] peer cursor-pointer`}
+              className="block px-4 pb-2 pt-5 w-[170px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#a17640] peer cursor-pointer"
             />
             <label
               htmlFor="batch"
@@ -216,14 +209,12 @@ export default function Search({
               className="absolute top-5 right-3 text-gray-500 pointer-events-none"
               size={16}
             />
-            {/* Clear Batch Button */}
             {selectedBatch && (
               <button
                 onClick={(e) => {
-                  e.stopPropagation(); // Prevent dropdown toggle
+                  e.stopPropagation();
                   setSelectedBatch("");
-                  // Optional: Auto-search on clear
-                  // handleSearchClick();
+                  setBatchInput("");
                 }}
                 className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700"
                 aria-label="Clear batch"
@@ -231,65 +222,54 @@ export default function Search({
                 <RiCloseCircleLine size={20} />
               </button>
             )}
-            {/* Batch Dropdown Options */}
             {showBatchDropdown &&
               selectedDomain &&
-              filteredBatches.length > 0 && (
+              (filteredBatchOptions.length > 0 ? (
                 <div className="absolute z-10 w-full text-sm bg-[#f5f1eb] border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto">
-                  {filteredBatches.map((batch) => (
+                  {filteredBatchOptions.map((batch) => (
                     <div
                       key={batch.batchNo}
-                      tabIndex={0} // Make focusable
+                      tabIndex={0}
                       className="px-4 py-2 cursor-pointer hover:bg-[#e2d5c5] focus:bg-[#e2d5c5] focus:outline-none"
                       onClick={() => {
                         setSelectedBatch(batch.batchNo);
+                        setBatchInput(batch.batchNo);
                         setShowBatchDropdown(false);
-                        // Optional: Auto-search on selection
-                        // handleSearchClick();
                       }}
                       onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") { // Enter or Space
-                         e.preventDefault();
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
                           setSelectedBatch(batch.batchNo);
+                          setBatchInput(batch.batchNo);
                           setShowBatchDropdown(false);
-                          // Optional: Auto-search
-                          // handleSearchClick();
                         }
                       }}
-                      role="option" // Accessibility
+                      role="option"
                       aria-selected={selectedBatch === batch.batchNo}
                     >
                       {batch.batchNo}
                     </div>
                   ))}
                 </div>
-              )}
-             {/* Optional: Show message if no batches for selected domain */}
-             {showBatchDropdown &&
-              selectedDomain &&
-              filteredBatches.length === 0 && (
+              ) : (
                 <div className="absolute z-10 w-full text-sm bg-[#fff8e6] border border-gray-300 rounded-md shadow-md p-2 text-gray-500">
                   No batches available for this domain.
                 </div>
-              )}
+              ))}
           </div>
 
           {/* --- Action Buttons --- */}
           <div className="flex items-center flex-wrap">
-            {/* Search Button */}
             <button
               onClick={handleSearchClick}
-              className="cursor-pointer bg-[#a17640] hover:bg-[#906a39] text-white px-4 py-4 rounded-l-xl  text-sm font-semibold flex items-center gap-2 transition-colors duration-200"
-              aria-label="Search"
+              className="cursor-pointer bg-[#a17640] hover:bg-[#906a39] text-white px-4 py-4 rounded-l-xl text-sm font-semibold flex items-center gap-2 transition-colors duration-200"
             >
-              <FaSearch className="inline-block" />
+              <FaSearch />
               <span>Search</span>
             </button>
-            {/* Reset Button */}
             <button
               onClick={handleResetClick}
-              className="cursor-pointer bg-[#e2d5c5] hover:bg-[#f5f1eb] px-4 py-4 rounded-r-xl text-sm font-semibold  text-gray-700 flex items-center gap-2 transition-colors duration-200"
-              aria-label="Reset filters"
+              className="cursor-pointer bg-[#e2d5c5] hover:bg-[#f5f1eb] px-4 py-4 rounded-r-xl text-sm font-semibold text-gray-700 flex items-center gap-2 transition-colors duration-200"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -297,7 +277,7 @@ export default function Search({
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                aria-hidden="true" // Icon is decorative
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"

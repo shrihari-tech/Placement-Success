@@ -24,6 +24,7 @@ export default function StudentDataPage() {
     addOpportunity,
     batchingvalue,
     getOpportunitiesByDomain,
+    allStudentData,
   } = useDataContext();
   const [searchInitiated, setSearchInitiated] = useState(false);
   const [selectedBatch, setSelectedBatch] = useState("");
@@ -49,6 +50,8 @@ export default function StudentDataPage() {
   const [selectedStudents, setSelectedStudents] = useState([]);
   const [showViewModal, setShowViewModal] = useState(false);
   const [viewOpportunityDetails, setViewOpportunityDetails] = useState(null);
+  const [showCompanyDropdown, setShowCompanyDropdown] = useState(false);
+  const [filteredCompanies, setFilteredCompanies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
@@ -117,22 +120,32 @@ export default function StudentDataPage() {
       ) {
         setShowBatchDropdown(false);
       }
+      // 👇 Handle company dropdown
       if (
-        statusDropdownRef.current &&
-        !statusDropdownRef.current.contains(event.target)
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(event.target)
       ) {
+        setShowCompanyDropdown(false);
       }
-      if (
-        placementDropdownRef.current &&
-        !placementDropdownRef.current.contains(event.target)
-      ) {
-      }
+      // 👇 You can add other dropdown refs here if needed
+      // if (statusDropdownRef.current && !statusDropdownRef.current.contains(event.target)) {
+      //   setShowStatusDropdown(false);
+      // }
+      // if (placementDropdownRef.current && !placementDropdownRef.current.contains(event.target)) {
+      //   setShowPlacementDropdown(false);
+      // }
     }
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [
+    batchDropdownRef,
+    searchContainerRef,
+    // statusDropdownRef,
+    // placementDropdownRef,
+  ]); // ✅ Critical: Include searchContainerRef in dependencies
 
   useEffect(() => {
     const html = document.documentElement;
@@ -162,37 +175,69 @@ export default function StudentDataPage() {
     studentSelectModelDiscard,
   ]);
 
-  const handleSearch = useCallback(() => {
-    const term = searchTerm.trim().toLowerCase();
-    const allOpportunities =
-      getOpportunitiesByDomain(batchingvalue)?.filter(
-        (opportunity) => opportunity.createdDomain === batchHead
-      ) || [];
-    const sortedOpportunities = [...allOpportunities].sort(
-      (a, b) => (b.id || 0) - (a.id || 0)
-    );
-
-    if (term) {
-      const results = sortedOpportunities.filter((opportunity) =>
-        opportunity.companyName.toLowerCase().includes(term)
-      );
-      setSearchResults(results);
-      setSearchInitiated(true);
-      setCurrentPage(1);
-    } else {
-      setSearchResults(sortedOpportunities);
-      setSearchInitiated(true);
-      setCurrentPage(1);
+  // Inside StudentDataPage component
+  const allCompanyNames = useMemo(() => {
+    if (!allStudentData || allStudentData.length === 0) {
+      return [];
     }
-  }, [searchTerm, batchingvalue, batchHead, getOpportunitiesByDomain]);
+
+    const companies = new Set();
+    allStudentData.forEach((student) => {
+      const company = student?.company;
+      if (company && typeof company === "string" && company.trim() !== "") {
+        companies.add(company.trim());
+      }
+    });
+
+    return Array.from(companies).sort((a, b) => a.localeCompare(b));
+  }, [allStudentData]);
+
+const handleSearch = useCallback(() => {
+  // ✅ Validation: Check if searchTerm is empty/whitespace
+  if (!searchTerm.trim()) {
+    toast.error("Please enter or select a company name to search.");
+    return; // 👈 Stop execution if validation fails
+  }
+
+  const term = searchTerm.trim().toLowerCase();
+  const allOpportunities =
+    getOpportunitiesByDomain(batchingvalue)?.filter(
+      (opportunity) => opportunity.createdDomain === batchHead
+    ) || [];
+  const sortedOpportunities = [...allOpportunities].sort(
+    (a, b) => (b.id || 0) - (a.id || 0)
+  );
+
+  if (term) {
+    const results = sortedOpportunities.filter((opportunity) =>
+      opportunity.companyName.toLowerCase().includes(term)
+    );
+    setSearchResults(results);
+    setSearchInitiated(true);
+    setCurrentPage(1);
+  } else {
+    setSearchResults(sortedOpportunities);
+    setSearchInitiated(true);
+    setCurrentPage(1);
+  }
+
+  setShowCompanyDropdown(false); // Close dropdown on search
+}, [searchTerm, batchingvalue, batchHead, getOpportunitiesByDomain]);
 
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      handleSearch();
-    }, 500);
+    if (searchTerm.trim() === "") {
+      setFilteredCompanies(allCompanyNames); // 👈 Show all when empty
+      return;
+    }
+    const term = searchTerm.toLowerCase();
+    const matches = allCompanyNames.filter((company) =>
+      company.toLowerCase().includes(term)
+    );
+    setFilteredCompanies(matches);
+    // 👇 DO NOT close dropdown here — let user keep typing
+    // setShowCompanyDropdown(matches.length > 0); // ❌ Remove this line
+  }, [searchTerm, allCompanyNames]);
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm, handleSearch]);
 
   const resetSearch = () => {
     setSearchTerm("");
@@ -216,65 +261,88 @@ export default function StudentDataPage() {
     setShowDiscardConfirm(false);
   };
 
-  const handleAssignFormChange = (e) => {
-    const { id, value } = e.target;
-    setAssignFormData((prev) => ({ ...prev, [id]: value }));
-    if (id === "driveDate") {
-      const today = new Date().toISOString().split("T")[0];
-      if (value < today) {
-        setAssignErrors((prev) => ({
-          ...prev,
-          driveDate: "The drive date cannot be earlier than today.",
-        }));
-        return;
-      }
-    }
-    if (assignErrors[id]) {
-      setAssignErrors((prev) => ({ ...prev, [id]: "" }));
-    }
-    setIsAssignFormDirty(true);
-  };
+const handleAssignFormChange = (e) => {
+  const { id, value } = e.target;
+  setAssignFormData((prev) => ({ ...prev, [id]: value }));
 
-  const handleAssignFormSubmit = (e) => {
-    e.preventDefault();
-    const errors = {};
-    let isValid = true;
+  if (id === "driveDate") {
+    const today = new Date().toISOString().split("T")[0];
+    const errors = { ...assignErrors };
 
-    if (!assignFormData.companyName.trim()) {
-      errors.companyName = "Company Name is required.";
-      isValid = false;
+    // Clear error if valid
+    if (value && value >= today) {
+      delete errors.driveDate;
     }
-    if (!assignFormData.driveDate) {
+    // Set "past date" error
+    else if (value && value < today) {
+      errors.driveDate = "The drive date cannot be earlier than today.";
+    }
+    // Keep "required" error if empty
+    else if (!value) {
       errors.driveDate = "Drive Date is required.";
-      isValid = false;
     }
+
+    setAssignErrors(errors);
+  }
+
+  // For other fields, clear their error if being edited
+  if (assignErrors[id]) {
+    setAssignErrors((prev) => ({ ...prev, [id]: "" }));
+  }
+
+  setIsAssignFormDirty(true);
+};
+
+const handleAssignFormSubmit = (e) => {
+  e.preventDefault();
+  const errors = {};
+  let isValid = true;
+
+  // Validate Company Name
+  if (!assignFormData.companyName.trim()) {
+    errors.companyName = "Company Name is required.";
+    isValid = false;
+  }
+
+  // Validate Drive Date
+  if (!assignFormData.driveDate) {
+    errors.driveDate = "Drive Date is required.";
+    isValid = false;
+  } else {
     const today = new Date().toISOString().split("T")[0];
     if (assignFormData.driveDate < today) {
       errors.driveDate = "The drive date cannot be earlier than today.";
       isValid = false;
     }
-    if (!assignFormData.driveRole.trim()) {
-      errors.driveRole = "Drive Role is required.";
-      isValid = false;
-    }
-    if (!assignFormData.package.trim()) {
-      errors.package = "Package is required.";
-      isValid = false;
-    }
-    if (!assignFormData.selectedBatch) {
-      errors.selectedBatch = "Please select a batch.";
-      isValid = false;
-    }
+  }
 
-    if (!isValid) {
-      setAssignErrors(errors);
-      toast.error("Please fix the errors in the form.");
-      return;
-    }
+  // Validate Drive Role
+  if (!assignFormData.driveRole.trim()) {
+    errors.driveRole = "Drive Role is required.";
+    isValid = false;
+  }
 
-    setOpportunityDetails(assignFormData);
-    setShowStudentSelectModal(true);
-  };
+  // Validate Package
+  if (!assignFormData.package.trim()) {
+    errors.package = "Package is required.";
+    isValid = false;
+  }
+
+  // Validate Batch
+  if (!assignFormData.selectedBatch) {
+    errors.selectedBatch = "Please select a batch.";
+    isValid = false;
+  }
+
+  if (!isValid) {
+    setAssignErrors(errors);
+    toast.error("Please fix the errors in the form.");
+    return;
+  }
+
+  setOpportunityDetails(assignFormData);
+  setShowStudentSelectModal(true);
+};
 
   const handleCloseAssignModal = () => {
     if (isAssignFormDirty) {
@@ -433,23 +501,81 @@ export default function StudentDataPage() {
       <Toaster position="top-right" />
       <div className={`flex-1 bg-[#F8FAFD]`} ref={searchContainerRef}>
         <div className="bg-[#ffffff] w-full flex flex-col md:flex-row justify-center rounded-xl gap-5 py-6 px-5">
-          <div>
+          <div className="relative" ref={searchContainerRef}>
             <input
               type="text"
+              placeholder=" "
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search by Company Name"
-              className="px-2 py-3.5 w-[250px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] cursor-pointer"
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setShowCompanyDropdown(true); // 👈 Keep dropdown open while typing
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (searchTerm.trim() === "") {
+                  setFilteredCompanies(allCompanyNames); // 👈 Show all companies if empty
+                }
+                setShowCompanyDropdown(!showCompanyDropdown); // 👈 Toggle on click
+              }}
+              onFocus={(e) => {
+                e.stopPropagation();
+                if (searchTerm.trim() === "") {
+                  setFilteredCompanies(allCompanyNames);
+                }
+                setShowCompanyDropdown(true);
+              }}
+              onMouseDown={(e) => e.stopPropagation()} // 👈 Critical: prevent global handler from closing
+              className="block px-4 pb-2 pt-5 w-[250px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#6750A4] peer cursor-pointer"
+              autoComplete="off"
+            />
+            <label className="absolute px-2 text-sm text-gray-500 duration-300 bg-[#ffffff] transform -translate-y-4 scale-75 top-4 z-5 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#6750A4] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6">
+              Company Name
+            </label>
+            <FiChevronDown
+              className="absolute top-5 right-3 text-gray-500 pointer-events-none"
+              size={16}
             />
             {searchTerm && (
               <button
-                onClick={resetSearch}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSearchTerm("");
+                  setFilteredCompanies([]);
+                  setShowCompanyDropdown(false);
+                  resetSearch();
+                }}
+                className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700"
               >
-                <FiX size={16} />
+                <RiCloseCircleLine size={20} />
               </button>
             )}
+            {showCompanyDropdown && (
+              <div className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md max-h-60 overflow-y-auto">
+                {filteredCompanies.length > 0 ? (
+                  filteredCompanies.map((company) => (
+                    <div
+                      key={company}
+                      className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                      onClick={() => {
+                        setSearchTerm(company);
+                        setShowCompanyDropdown(false);
+                        handleSearch();
+                      }}
+                    >
+                      {company}
+                    </div>
+                  ))
+                ) : (
+                  <div className="px-4 py-2 text-gray-500 italic">
+                    {searchTerm
+                      ? "No companies found"
+                      : "Start typing to search..."}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
+
           <div>
             <button
               onClick={handleSearch}
@@ -496,7 +622,7 @@ export default function StudentDataPage() {
                   <div className="absolute top-0 right-0 w-20 h-20 bg-[#6750A4]/5 rounded-bl-full "></div>
                   {/* Company header */}
                   <div className="flex items-start justify-between mb-4">
-                    <h2 className="text-xl font-bold text-gray-800 pr-6">
+                    <h2 className="text-xl font-bold text-gray-700 pr-6">
                       {opportunity.companyName}
                     </h2>
                     <div className="bg-[#6750A4]/10 text-[#6750A4] text-xs font-semibold px-2 py-1 rounded-full">
@@ -551,7 +677,9 @@ export default function StudentDataPage() {
                       </div>
                       <div>
                         <p className="text-xs text-gray-500">Role</p>
-                        <p className="font-medium text-gray-700">{opportunity.driveRole}</p>
+                        <p className="font-medium text-gray-700">
+                          {opportunity.driveRole}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center">
@@ -573,7 +701,9 @@ export default function StudentDataPage() {
                       </div>
                       <div>
                         <p className="text-xs text-gray-500">Package</p>
-                        <p className="font-medium text-gray-700">{opportunity.package}</p>
+                        <p className="font-medium text-gray-700">
+                          {opportunity.package}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center">
@@ -733,7 +863,9 @@ export default function StudentDataPage() {
               onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
             >
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-medium text-gray-700">Assign Opportunity</h2>
+                <h2 className="text-lg font-medium text-gray-700">
+                  Assign Opportunity
+                </h2>
                 <button
                   onClick={handleCloseAssignModal}
                   className="cursor-pointer text-gray-500 hover:text-gray-700"
@@ -1046,8 +1178,12 @@ export default function StudentDataPage() {
                   className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
                 >
                   <p className="text-sm p-1">
-                    <span className="font-semibold text-gray-700">Company: </span>{" "}
-                    {opportunityDetails.companyName}
+                    <span className="font-semibold text-gray-700">
+                      Company:{" "}
+                    </span>{" "}
+                    <span className=" text-gray-700">
+                      {opportunityDetails.companyName}
+                    </span>
                   </p>
                 </div>
                 <div
@@ -1055,7 +1191,7 @@ export default function StudentDataPage() {
                 >
                   <p className="text-sm p-1">
                     <span className="font-semibold text-gray-700"> Date: </span>{" "}
-                    {opportunityDetails.driveDate}
+                    <span className=" text-gray-700">{opportunityDetails.driveDate}</span>
                   </p>
                 </div>
                 <div
@@ -1063,23 +1199,29 @@ export default function StudentDataPage() {
                 >
                   <p className="text-sm p-1">
                     <span className="font-semibold text-gray-700"> Role: </span>{" "}
-                    {opportunityDetails.driveRole}
+                    <span className=" text-gray-700">{opportunityDetails.driveRole}</span>
                   </p>
                 </div>
                 <div
                   className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
                 >
                   <p className="text-sm p-1">
-                    <span className="font-semibold text-gray-700"> Package: </span>{" "}
-                    {opportunityDetails.package}
+                    <span className="font-semibold text-gray-700">
+                      {" "}
+                      Package:{" "}
+                    </span>{" "}
+                    <span className=" text-gray-700">{opportunityDetails.package}</span>
                   </p>
                 </div>
                 <div
                   className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
                 >
                   <p className="text-sm p-1">
-                    <span className="font-semibold text-gray-700"> Batch: </span>{" "}
-                    {opportunityDetails.selectedBatch}
+                    <span className="font-semibold text-gray-700">
+                      {" "}
+                      Batch:{" "}
+                    </span>{" "}
+                    <span className=" text-gray-700">{opportunityDetails.selectedBatch}</span>
                   </p>
                 </div>
               </div>
@@ -1228,7 +1370,10 @@ export default function StudentDataPage() {
               onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
             >
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-medium text-gray-700"> Opportunity Details </h2>
+                <h2 className="text-lg font-medium text-gray-700">
+                  {" "}
+                  Opportunity Details{" "}
+                </h2>
                 <button
                   onClick={handleCloseViewModal}
                   className="cursor-pointer text-gray-500 hover:text-gray-700"
@@ -1242,8 +1387,13 @@ export default function StudentDataPage() {
                   className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
                 >
                   <p className="text-sm p-1">
-                    <span className="font-semibold text-gray-700"> Company: </span>{" "}
-                    {viewOpportunityDetails.companyName}
+                    <span className="font-semibold text-gray-700">
+                      {" "}
+                      Company:{" "}
+                    </span>{" "}
+                    <span className=" text-gray-700">
+                      {viewOpportunityDetails.companyName}
+                    </span>
                   </p>
                 </div>
                 <div
@@ -1251,7 +1401,9 @@ export default function StudentDataPage() {
                 >
                   <p className="text-sm p-1">
                     <span className="font-semibold text-gray-700"> Date: </span>{" "}
-                    {formatDate(viewOpportunityDetails.driveDate)}
+                    <span className=" text-gray-700">
+                      {formatDate(viewOpportunityDetails.driveDate)}
+                    </span>
                   </p>
                 </div>
                 <div
@@ -1259,23 +1411,29 @@ export default function StudentDataPage() {
                 >
                   <p className="text-sm p-1">
                     <span className="font-semibold text-gray-700"> Role: </span>{" "}
-                    {viewOpportunityDetails.driveRole}
+                    <span className=" text-gray-700">{viewOpportunityDetails.driveRole}</span>
                   </p>
                 </div>
                 <div
                   className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
                 >
                   <p className="text-sm p-1">
-                    <span className="font-semibold text-gray-700"> Package: </span>{" "}
-                    {viewOpportunityDetails.package}
+                    <span className="font-semibold text-gray-700">
+                      {" "}
+                      Package:{" "}
+                    </span>{" "}
+                    <span className=" text-gray-700">{viewOpportunityDetails.package}</span>
                   </p>
                 </div>
                 <div
                   className={`bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition`}
                 >
                   <p className="text-sm p-1">
-                    <span className="font-semibold text-gray-700"> Batch: </span>{" "}
-                    {viewOpportunityDetails.selectedBatch}
+                    <span className="font-semibold text-gray-700">
+                      {" "}
+                      Batch:{" "}
+                    </span>{" "}
+                    <span className=" text-gray-700">{viewOpportunityDetails.selectedBatch}</span>
                   </p>
                 </div>
               </div>

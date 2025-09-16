@@ -2,9 +2,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import SMENavbar from "../smenavbar";
 import { useDataContext } from "../../context/dataContext";
-import BatchListTab from "../batches/batchListTab/page";
-import TrainerUpdateTab from "../batches/trainerUpdateTab/page";
-import BatchHistoryTab from "../batches/batchHistoryTab/page";
 import QuickReport from "./components/QuickReport";
 import PlacedStudent from "./components/PlacedStudent";
 import Placement from "./components/Placement";

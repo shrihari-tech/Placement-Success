@@ -52,7 +52,7 @@ const SelectStudentsModal = ({
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={onClose}>
       <div className="w-full max-w-4xl bg-[#F8FAFD] rounded-[10px] p-6 animate-fade-in-up max-h-[90vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-between items-center mb-4 flex-shrink-0">
-          <h2 className="text-lg font-medium">Select Students for Opportunity</h2>
+          <h2 className="text-lg font-medium text-gray-700">Select Students for Opportunity</h2>
           <button onClick={onClose} className="cursor-pointer text-gray-500 hover:text-gray-700">
             <RiCloseCircleLine size={20} />
           </button>
@@ -61,22 +61,22 @@ const SelectStudentsModal = ({
         {/* Opportunity Details Header */}
         <div className="flex justify-evenly gap-2 md:gap-1 flex-wrap items-center mb-4 p-3 bg-[#fff9e6] rounded flex-shrink-0">
           <div className={`bg-[#ece3d8] rounded-md border-t-3 border-[#a17640] shadow p-1 md:p-2`}>
-            <p className="text-sm p-1"><span className="font-semibold">Company:</span> {opportunityDetails.companyName}</p>
+            <p className="text-sm p-1"><span className="font-semibold text-gray-700">Company:</span> <span className='text-gray-700'>{opportunityDetails.companyName}</span></p>
           </div>
           <div className={`bg-[#ece3d8] rounded-md border-t-3 border-[#a17640] shadow p-1 md:p-2`}>
-            <p className="text-sm p-1"><span className="font-semibold">Date:</span> {formatDate(opportunityDetails.driveDate)}</p>
+            <p className="text-sm p-1"><span className="font-semibold text-gray-700">Date:</span> <span className='text-gray-700'>{formatDate(opportunityDetails.driveDate)}</span></p>
           </div>
           <div className={`bg-[#ece3d8] rounded-md border-t-3 border-[#a17640] shadow p-1 md:p-2`}>
-            <p className="text-sm p-1"><span className="font-semibold">Designation:</span> {opportunityDetails.driveRole}</p>
+            <p className="text-sm p-1"><span className="font-semibold text-gray-700 ">Designation:</span> <span className='text-gray-700'>{opportunityDetails.driveRole}</span></p>
           </div>
           <div className={`bg-[#ece3d8] rounded-md border-t-3 border-[#a17640] shadow p-1 md:p-2`}>
-            <p className="text-sm p-1"><span className="font-semibold">Package:</span> {opportunityDetails.package}</p>
+            <p className="text-sm p-1"><span className="font-semibold text-gray-700">Package:</span> <span className='text-gray-700'>{opportunityDetails.package}</span></p>
           </div>
            <div className={`bg-[#ece3d8] rounded-md border-t-3 border-[#a17640] shadow p-1 md:p-2`}>
-            <p className="text-sm p-1"><span className="font-semibold">Domain:</span> {opportunityDetails.domain}</p>
+            <p className="text-sm p-1"><span className="font-semibold text-gray-700">Domain:</span> <span className='text-gray-700'>{opportunityDetails.domain}</span></p>
           </div>
           <div className={`bg-[#ece3d8] rounded-md border-t-3 border-[#a17640] shadow p-1 md:p-2`}>
-            <p className="text-sm p-1"><span className="font-semibold">Batch:</span> {opportunityDetails.selectedBatch}</p>
+            <p className="text-sm p-1"><span className="font-semibold text-gray-700">Batch:</span> <span className='text-gray-700'>{opportunityDetails.selectedBatch}</span></p>
           </div>
         </div>
 

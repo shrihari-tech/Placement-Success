@@ -78,6 +78,12 @@ export default function EditPlacementModal({ student, onClose, onSave }) {
     handleChange(field, "");
   };
 
+  function formatDate(value) {
+    if (!value) return "";
+    const date = new Date(value);
+    return new Intl.DateTimeFormat("en-GB").format(date); // dd/mm/yyyy
+  }
+
   return (
     <>
       {/* Main Modal */}
@@ -188,13 +194,14 @@ export default function EditPlacementModal({ student, onClose, onSave }) {
             {/* Placed Month */}
             <div className="relative mb-4">
               <input
-                type="month"
+                type="date"
                 value={placement.placedMonth}
                 onChange={(e) => handleChange("placedMonth", e.target.value)}
                 className={`block px-4 py-3 w-full text-sm border-2 ${
                   errors.placedMonth ? "border-red-500" : "border-gray-400"
                 } rounded-sm focus:border-[#6750A4]`}
               />
+
               {errors.placedMonth && (
                 <p className="text-red-500 text-xs mt-1">
                   {errors.placedMonth}

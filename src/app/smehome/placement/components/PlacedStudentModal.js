@@ -5,6 +5,15 @@ import Image from "next/image";
 const PlacedStudentModal = ({ isOpen, onClose, selectedStudent }) => {
   if (!isOpen || !selectedStudent) return null;
 
+  function formatDate(value) {
+    if (!value) return "";
+    const date = new Date(value);
+    const options = { day: "2-digit", month: "long", year: "numeric" };
+    return new Intl.DateTimeFormat("en-GB", options)
+      .format(date)
+      .replace(/ /g, " - ");
+  }
+
   return (
     <div
       className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
@@ -84,9 +93,11 @@ const PlacedStudentModal = ({ isOpen, onClose, selectedStudent }) => {
               </p>
               <p>
                 <span className="font-semibold text-[#cd5e77]">
-                  Placed Month:
+                  Placed Date:
                 </span>{" "}
-                {selectedStudent.placedMonth}
+                {selectedStudent.placedMonth
+                  ? formatDate(selectedStudent.placedMonth)
+                  : "-"}
               </p>
             </div>
           </div>

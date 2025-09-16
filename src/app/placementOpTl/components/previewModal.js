@@ -25,6 +25,21 @@ const PreviewModal = ({
 
   const [errors, setErrors] = useState({});
   const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
+  const [isChanged, setIsChanged] = useState(false);
+
+  useEffect(() => {
+  const { confirmPassword, ...originalDataWithoutPwd } = {
+    ...data,
+    password: "",
+  };
+
+  // Check if editData differs from original data
+  const changed = Object.keys(originalDataWithoutPwd).some(
+    (key) => editData[key] !== originalDataWithoutPwd[key]
+  ) || editData.password !== "" || editData.confirmPassword !== "";
+
+  setIsChanged(changed);
+}, [editData, data]);
 
   // Reset form when data changes or mode switches
   useEffect(() => {
@@ -458,15 +473,21 @@ const PreviewModal = ({
               >
                 {isEditMode ? "Cancel" : "Close"}
               </button>
-              {isEditMode && (
-                <button
-                  type="button"
-                  onClick={handleSaveChanges}
-                  className="px-3 py-1.5 bg-[#a17640] text-white rounded-md hover:bg-[#906a39] focus:outline-none focus:ring-1 focus:ring-[#906a39] text-sm"
-                >
-                  Save Changes
-                </button>
-              )}
+{isEditMode && (
+  <button
+    type="button"
+    onClick={handleSaveChanges}
+    disabled={!isChanged} // Disable until a change is made
+    className={`px-3 py-1.5 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-[#906a39] ${
+      isChanged
+        ? "bg-[#a17640] text-white hover:bg-[#906a39]"
+        : "bg-gray-300 text-gray-500 cursor-not-allowed"
+    }`}
+  >
+    Save Changes
+  </button>
+)}
+
             </div>
           </div>
         </div>

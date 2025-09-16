@@ -73,49 +73,49 @@ console.log("All Student Data:", allStudentData);
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4" onClick={onClose}>
       <div className="w-full max-w-4xl bg-[#F8FAFD] rounded-[10px] p-6 animate-fade-in-up max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-gray-800">Opportunity Details</h2>
+          <h2 className="text-xl font-bold text-gray-700">Opportunity Details</h2>
           <button onClick={onClose} className="cursor-pointer text-gray-500 hover:text-gray-700 transition-colors">
             <RiCloseCircleLine size={24} />
           </button>
         </div>
 
-        {/* Opportunity Details - Purple Theme */}
-        <div className="flex justify-evenly gap-2 md:gap-1 flex-wrap items-center mb-6 p-3 bg-[#ECE6F0] rounded">
-          <div className="bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition">
+        {/* Opportunity Details */}
+        <div className="flex justify-evenly gap-2 md:gap-1 flex-wrap items-center mb-6 p-3 bg-[#fff9e6] rounded">
+          <div className="bg-[#ece3d8] rounded-md border-t-3 border-[#a17640] shadow p-1 md:p-2 hover:bg-violet-50 transition">
             <p className="text-sm p-1">
-              <span className="font-semibold">Company: </span> {opportunityData.companyName}
+              <span className="font-semibold text-gray-700">Company: </span> <span className="text-gray-700">{opportunityData.companyName}</span>
             </p>
           </div>
-          <div className="bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition">
+          <div className="bg-[#ece3d8] rounded-md border-t-3 border-[#a17640] shadow p-1 md:p-2 hover:bg-violet-50 transition">
             <p className="text-sm p-1">
-              <span className="font-semibold">Date: </span> {formatDate(opportunityData.driveDate)}
+              <span className="font-semibold text-gray-700">Date: </span> <span className="text-gray-700">{formatDate(opportunityData.driveDate)}</span>
             </p>
           </div>
-          <div className="bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition">
+          <div className="bg-[#ece3d8] rounded-md border-t-3 border-[#a17640] shadow p-1 md:p-2 hover:bg-violet-50 transition">
             <p className="text-sm p-1">
-              <span className="font-semibold">Role: </span> {opportunityData.driveRole}
+              <span className="font-semibold text-gray-700">Role: </span> <span className="text-gray-700">{opportunityData.driveRole}</span>
             </p>
           </div>
-          <div className="bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition">
+          <div className="bg-[#ece3d8] rounded-md border-t-3 border-[#a17640] shadow p-1 md:p-2 hover:bg-violet-50 transition">
             <p className="text-sm p-1">
-              <span className="font-semibold">Package: </span> {opportunityData.package}
+              <span className="font-semibold text-gray-700">Package: </span> <span className="text-gray-700">{opportunityData.package}</span>
             </p>
           </div>
-          <div className="bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition">
+          <div className="bg-[#ece3d8] rounded-md border-t-3 border-[#a17640] shadow p-1 md:p-2 hover:bg-violet-50 transition">
             <p className="text-sm p-1">
-              <span className="font-semibold">Batch: </span> {opportunityData.selectedBatch}
+              <span className="font-semibold text-gray-700">Batch: </span> <span className="text-gray-700">{opportunityData.selectedBatch}</span>
             </p>
           </div>
-          <div className="bg-[#eaddff] rounded-md border-t-3 border-[#6b21a8] shadow p-1 md:p-2 hover:bg-violet-50 transition">
+          <div className="bg-[#ece3d8] rounded-md border-t-3 border-[#a17640] shadow p-1 md:p-2 hover:bg-violet-50 transition">
             <p className="text-sm p-1">
-              <span className="font-semibold">Domain: </span> {opportunityData.domain}
+              <span className="font-semibold text-gray-700">Domain: </span> <span className="text-gray-700">{opportunityData.domain}</span>
             </p>
           </div>
         </div>
 
         {/* Students Section */}
         <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-3">Selected Students ({studentsToDisplay.length})</h3>
+          <h3 className="text-lg font-semibold text-gray-700 mb-3">Selected Students ({studentsToDisplay.length})</h3>
           {studentsToDisplay.length > 0 ? (
             <div className="bg-white rounded-lg shadow overflow-hidden">
               <div className="overflow-x-auto max-h-[60vh]">

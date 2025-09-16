@@ -2,25 +2,24 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { useDataContext } from "../../../context/dataContext"; // Ensure this path is correct for your project structure
+import { useDataContext } from "../../../context/dataContext";
 import { FiEye, FiEdit, FiTrash2, FiChevronDown } from "react-icons/fi";
 import { RiCloseCircleLine } from "react-icons/ri";
 import { FaSearch } from "react-icons/fa";
 import Image from "next/image";
-import EditStudentModal from "../batchListTab/EditStudentModal"; // Adjust the import path as needed
+import EditStudentModal from "../batchListTab/EditStudentModal";
+import { notification } from "antd"; // ✅ AntD notification
 
 export default function BatchHistoryTab() {
-  // 1. Destructure necessary values from DataContext
   const {
     batchesNames,
     selectedBatch,
     setSelectedBatch,
     studentData,
     batchEpicStats,
-    // allStudentData,
     allFullstackTrainer,
   } = useDataContext();
-  // console.log(allStudentData, "hhh");
+
   const [showBatchDropdown, setShowBatchDropdown] = useState(false);
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [searchInitiated, setSearchInitiated] = useState(false);
@@ -29,20 +28,50 @@ export default function BatchHistoryTab() {
 
   const batchDropdownRef = useRef(null);
 
+  // ✅ Notification hook
+  const [api, contextHolder] = notification.useNotification();
+
   // --- Helper Functions ---
   const handleSearch = () => {
     if (!selectedBatch) {
-      alert("Please select a batch");
+      api.error({
+        message: "Search Error",
+        description: "Please select a batch before searching.",
+        placement: "topRight",
+        duration: 4,
+        showProgress: false,
+        pauseOnHover: true,
+        closeIcon: (
+          <RiCloseCircleLine
+            className="text-[#cd5e77] hover:text-[#b9556b]"
+            size={20}
+          />
+        ),
+      });
       return;
     }
+
     const results = allFullstackTrainer.filter(
       (student) => student.batch === selectedBatch
     );
     setFilteredStudents(results);
     setSearchInitiated(true);
 
-    // console.log(results, "jjj");
-    // Note: Epic stats are now calculated in DataContext and accessed via batchEpicStats
+    if (results.length === 0) {
+      api.warning({
+        message: "No Students Found",
+        description: `No students found in batch "${selectedBatch}".`,
+        placement: "topRight",
+        duration: 4,
+        showProgress: false,
+        closeIcon: (
+          <RiCloseCircleLine
+            className="text-[#cd5e77] hover:text-[#b9556b]"
+            size={20}
+          />
+        ),
+      });
+    }
   };
 
   const handleReset = () => {
@@ -50,29 +79,15 @@ export default function BatchHistoryTab() {
     setShowBatchDropdown(false);
     setFilteredStudents([]);
     setSearchInitiated(false);
-    // Reset modal states if used
-    // setSelectedStudent(null);
-    // setShowViewModal(false);
-    // setEditingStudent(null);
-    // setDeletingStudent(null);
-    // setShowDeleteModal(false);
-    // setDeleteConfirmationInput("");
-    // setDeleteError("");
   };
 
-  // --- Data Processing ---
-  // Simplified: batchesNames from context is already filtered for the domain
   const filteredBatches = Array.isArray(batchesNames) ? batchesNames : [];
 
-  // 2. Get Epic Status data for the currently selected batch from DataContext
-  // batchEpicStats[selectedBatch] will be an object like { Excellent: 5, Capable: 10, ... }
-  // or undefined/{} if no data or batch not selected.
   const epicStatsForSelectedBatch = selectedBatch
     ? batchEpicStats[selectedBatch] || {}
     : {};
 
   // --- Effects ---
-  // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(e) {
       if (
@@ -95,20 +110,41 @@ export default function BatchHistoryTab() {
     };
   }, []);
 
-  // --- Effect to update filtered students when studentData or selectedBatch changes ---
   useEffect(() => {
     if (searchInitiated && selectedBatch) {
       const results = allFullstackTrainer.find(
         (student) => student.batch === selectedBatch
       );
-
-      setFilteredStudents([results]);
+      setFilteredStudents(results ? [results] : []);
     }
   }, [allFullstackTrainer, selectedBatch, searchInitiated]);
 
-  // --- Rendering ---
   return (
     <>
+      {contextHolder}
+
+      <style jsx global>{`
+        .ant-notification-notice {
+          border: none !important;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+          border-radius: 10px;
+        }
+        .ant-notification-notice-icon {
+          color: #cd5e77 !important;
+        }
+        .ant-notification-notice-message {
+          color: #cd5e77 !important;
+        }
+        .ant-notification-notice-close:hover {
+          background-color: #cd5e77 !important;
+          color: white !important;
+        }
+        .ant-notification-notice-progress-bar,
+        .ant-notification-notice-progress {
+          display: none !important;
+        }
+      `}</style>
+
       {/* Search Filters */}
       <div
         id="search-container"
@@ -122,7 +158,7 @@ export default function BatchHistoryTab() {
               type="text"
               id="batch-select"
               placeholder=" "
-              value={selectedBatch ?? ""} // Handles null/undefined
+              value={selectedBatch ?? ""}
               maxLength={16}
               onChange={(e) => {
                 setSelectedBatch(e.target.value);
@@ -155,7 +191,7 @@ export default function BatchHistoryTab() {
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleReset(); // Use the reset function
+                  handleReset();
                 }}
                 className="cursor-pointer absolute top-4 right-8 text-gray-500 hover:text-gray-700 focus:outline-none"
                 aria-label="Clear batch selection"
@@ -200,16 +236,6 @@ export default function BatchHistoryTab() {
                       {batchName}
                     </div>
                   ))}
-                {filteredBatches.filter((batchName) =>
-                  batchName
-                    .toLowerCase()
-                    .includes((selectedBatch ?? "").toLowerCase())
-                ).length === 0 &&
-                  selectedBatch && (
-                    <div className="px-4 py-2 text-gray-500 italic">
-                      No matching batches
-                    </div>
-                  )}
               </div>
             )}
           </div>
@@ -240,8 +266,6 @@ export default function BatchHistoryTab() {
           </div>
         </div>
       </div>
-
-      {/* {console.log(selectedBatch, "ggg")} */}
 
       {/* Student Table */}
       {searchInitiated && filteredStudents.length > 0 && (
@@ -292,7 +316,6 @@ export default function BatchHistoryTab() {
                           </option>
                         ))}
                       </select>
-                      {/* {student?.trainer[student.trainer.length - 1]} */}
                     </td>
                     <td className="px-5 py-3 text-center text-sm text-gray-500 whitespace-nowrap">
                       <select
@@ -317,10 +340,6 @@ export default function BatchHistoryTab() {
           </div>
         </div>
       )}
-
-      {/* 3. Epic Status Display Section - Shown after search and if data exists */}
-
-      {/* Edit Student Modal */}
     </>
   );
 }
