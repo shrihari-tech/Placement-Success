@@ -1,9 +1,9 @@
-// src/app/heads/dashboard/page.js
 "use client";
 import React, { useMemo } from "react";
-import Navbar from "../navbar"; // 👈 Adjust path if needed
+import Navbar from "../navbar"; 
 import Image from "next/image";
-import { useDataContext } from "../../context/dataContext";
+import Counts from "../components/counts"; 
+import PlacementBarChart from "../components/graph";
 
 export default function Dashboard() {
   const storedUserName = localStorage.getItem("loginUser") || "";
@@ -72,13 +72,9 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Your actual dashboard content */}
-          <div className="p-6 bg-white rounded-lg shadow">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Welcome to the Heads Module!</h2>
-            <p className="text-gray-600">
-              This is your central hub for managing placement operations at the head level.
-            </p>
-          </div>
+          {/* New Counts Component */}
+          <Counts />
+          <PlacementBarChart />
         </div>
       </main>
     </div>

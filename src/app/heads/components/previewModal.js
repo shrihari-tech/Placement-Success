@@ -30,7 +30,7 @@ export default function PreviewModal({
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
         {/* Header — no border */}
         <div className="flex justify-between items-center p-6">
-          <h2 className="text-xl font-bold text-gray-800">Student Details</h2>
+          <h2 className="text-xl font-bold text-gray-700">Student Details</h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 cursor-pointer"
@@ -49,7 +49,7 @@ export default function PreviewModal({
             </div>
             <div>
               <p className="text-xs text-gray-500">Name</p>
-              <p className="font-medium text-gray-800">{data.name}</p>
+              <p className="font-medium text-gray-700">{data.name}</p>
             </div>
           </div>
 
@@ -60,7 +60,7 @@ export default function PreviewModal({
             </div>
             <div>
               <p className="text-xs text-gray-500">Email</p>
-              <p className="font-medium text-gray-800">{data.email}</p>
+              <p className="font-medium text-gray-700">{data.email}</p>
             </div>
           </div>
 
@@ -71,7 +71,7 @@ export default function PreviewModal({
             </div>
             <div>
               <p className="text-xs text-gray-500">Phone</p>
-              <p className="font-medium text-gray-800">{data.phone}</p>
+              <p className="font-medium text-gray-700">{data.phone}</p>
             </div>
           </div>
 
@@ -82,7 +82,7 @@ export default function PreviewModal({
             </div>
             <div>
               <p className="text-xs text-gray-500">Attendance</p>
-              <p className="font-medium text-gray-800">{data.attendance}%</p>
+              <p className="font-medium text-gray-700">{data.attendance}%</p>
             </div>
           </div>
 
@@ -93,7 +93,7 @@ export default function PreviewModal({
             </div>
             <div>
               <p className="text-xs text-gray-500">Epic Status</p>
-              <p className="font-medium text-gray-800">{data.epicStatus}</p>
+              <p className="font-medium text-gray-700">{data.epicStatus}</p>
             </div>
           </div>
         </div>

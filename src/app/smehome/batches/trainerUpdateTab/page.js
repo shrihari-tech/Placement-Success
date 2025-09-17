@@ -9,7 +9,6 @@ import { FiEye, FiEdit, FiTrash2, FiChevronDown } from "react-icons/fi";
 import { FaSearch } from "react-icons/fa";
 import Image from "next/image";
 
-
 export default function TrainerUpdateTab() {
   const {
     batchesNames,
@@ -222,9 +221,9 @@ export default function TrainerUpdateTab() {
                       .toLowerCase()
                       .includes((selectedBatch ?? "").toLowerCase())
                   )
-                  .map((batchName) => (
+                  .map((batchName, index) => (
                     <div
-                      key={batchName}
+                      key={`${batchName}-${index}`}
                       tabIndex={0}
                       role="option"
                       aria-selected={selectedBatch === batchName}
@@ -306,7 +305,7 @@ export default function TrainerUpdateTab() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredStudents.map((student, index) => (
                   <tr
-                    key={student.bookingId}
+                    key={student.id || student.bookingId || index}
                     className="hover:bg-[#faeff1] hover:text-gray-900 text-gray-500 "
                   >
                     <td className="px-5 text-gray-700 text-center py-3 text-sm whitespace-nowrap">
@@ -351,7 +350,7 @@ export default function TrainerUpdateTab() {
                                 ]
                             )
                             .map((item) => (
-                              <option value={item} key={item}>
+                              <option value={item} key={`${item}-${index}`}>
                                 {item}
                               </option>
                             ))}
@@ -424,6 +423,25 @@ export default function TrainerUpdateTab() {
                                   setTimingError(
                                     "Start time and end time cannot be the same."
                                   );
+
+                                  // ✅ AntD Notification for timing error
+                                  api.error({
+                                    message: "Timing Error",
+                                    description:
+                                      "Start time and end time cannot be the same.",
+                                    placement: "topRight",
+                                    duration: 4,
+                                    pauseOnHover: true,
+                                    closeIcon: (
+                                      <RiCloseCircleLine
+                                        className="text-[#cd5e77] hover:text-white"
+                                        size={20}
+                                      />
+                                    ),
+                                    style: { border: "1px solid #cd5e77" },
+                                    className: "custom-notification",
+                                  });
+
                                   return;
                                 }
                               }

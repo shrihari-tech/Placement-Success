@@ -43,7 +43,7 @@ export const fullstackInitial = [
     id: 1,
     batchNo: "FS01",
     mode: "Online",
-    status: "Completed",
+    status: "Ongoing",
     startDate: "2024-01-03",
     endDate: "2024-06-28",
     trainerName: "Shri Hari",
@@ -179,7 +179,7 @@ export const dataanalyticsInitial = [
     id: 1,
     batchNo: "DA01",
     mode: "Online",
-    status: "Completed",
+    status: "Ongoing",
     startDate: "2024-01-01",
     endDate: "2024-06-28",
     trainerName: "Shri Hari",
@@ -371,7 +371,7 @@ export const bankingInitial = [
     id: 3,
     batchNo: "BK03",
     mode: "Online",
-    status: "Completed",
+    status: "Ongoing",
     startDate: "2024-03-01",
     endDate: "2024-08-28",
     trainerName: "Shri Hari",
@@ -674,7 +674,7 @@ export const devopsInitial = [
     id: 4,
     batchNo: "DV04",
     mode: "Offline",
-    status: "Completed",
+    status: "Ongoing",
     startDate: "2024-04-01",
     endDate: "2024-09-28",
     trainerName: "Shri Hari",
@@ -4111,6 +4111,49 @@ const DataProvider = ({ children }) => {
     devopsData,
   ]);
 
+  // ➤ Calculate unique trainer counts for each domain (ADD THIS BLOCK)
+  const fullstackTrainers = useMemo(() => {
+    return [
+      ...new Set(
+        fullstackData.map((batch) => batch.trainerName).filter(Boolean)
+      ),
+    ];
+  }, [fullstackData]);
+
+  const dataanalyticsTrainers = useMemo(() => {
+    return [
+      ...new Set(
+        dataanalyticsData.map((batch) => batch.trainerName).filter(Boolean)
+      ),
+    ];
+  }, [dataanalyticsData]);
+
+  const marketingTrainers = useMemo(() => {
+    return [
+      ...new Set(
+        marketingData.map((batch) => batch.trainerName).filter(Boolean)
+      ),
+    ];
+  }, [marketingData]);
+
+  const sapTrainers = useMemo(() => {
+    return [
+      ...new Set(sapData.map((batch) => batch.trainerName).filter(Boolean)),
+    ];
+  }, [sapData]);
+
+  const bankingTrainers = useMemo(() => {
+    return [
+      ...new Set(bankingData.map((batch) => batch.trainerName).filter(Boolean)),
+    ];
+  }, [bankingData]);
+
+  const devopsTrainers = useMemo(() => {
+    return [
+      ...new Set(devopsData.map((batch) => batch.trainerName).filter(Boolean)),
+    ];
+  }, [devopsData]);
+
   const calculateUpcomingBatchesPerDomain = useCallback(() => {
     // console.log("Calculating upcoming batches..."); // Optional debug log
     return {
@@ -4641,17 +4684,11 @@ const DataProvider = ({ children }) => {
 
   // Inside DataContext.js
   const addOpportunity = (opportunity, domain) => {
-    // Accept domain as an argument
-    // Use the passed domain, fallback to batchingvalue if not provided
-    // (Providing it explicitly is preferred, but fallback maintains some compatibility)
     const targetDomain = domain || batchingvalue;
 
     // Check the resolved targetDomain
     if (!targetDomain) {
       console.error("Domain is not set. Cannot add opportunity.");
-      // Assuming you have a toast notification system available in DataContext
-      // If not, you might need to handle this error differently (e.g., throw an error
-      // that the calling component can catch, or return a specific error code/object)
       if (typeof toast !== "undefined" && toast.error) {
         toast.error("Failed to add opportunity: Domain not specified.");
       }
@@ -4767,51 +4804,72 @@ const DataProvider = ({ children }) => {
 
   const getStatsByBatch = (batchKey) => batchStatsData[batchKey];
   const updateOpportunity = async (opportunityId, updates) => {
-  // Find which domain array the opportunity belongs to
-  let domainKey = null;
-  let opportunitiesArray = null;
+    // Find which domain array the opportunity belongs to
+    let domainKey = null;
+    let opportunitiesArray = null;
 
-  if (fullstackOpportunities.some(opp => opp.id === opportunityId)) {
-    domainKey = 'fullstackOpportunities';
-    opportunitiesArray = fullstackOpportunities;
-  } else if (dataanalyticsOpportunities.some(opp => opp.id === opportunityId)) {
-    domainKey = 'dataanalyticsOpportunities';
-    opportunitiesArray = dataanalyticsOpportunities;
-  } else if (marketingOpportunities.some(opp => opp.id === opportunityId)) {
-    domainKey = 'marketingOpportunities';
-    opportunitiesArray = marketingOpportunities;
-  } else if (sapOpportunities.some(opp => opp.id === opportunityId)) {
-    domainKey = 'sapOpportunities';
-    opportunitiesArray = sapOpportunities;
-  } else if (devopsOpportunities.some(opp => opp.id === opportunityId)) {
-    domainKey = 'devopsOpportunities';
-    opportunitiesArray = devopsOpportunities;
-  } else if (bankingOpportunities.some(opp => opp.id === opportunityId)) {
-    domainKey = 'bankingOpportunities';
-    opportunitiesArray = bankingOpportunities;
-  }
+    if (fullstackOpportunities.some((opp) => opp.id === opportunityId)) {
+      domainKey = "fullstackOpportunities";
+      opportunitiesArray = fullstackOpportunities;
+    } else if (
+      dataanalyticsOpportunities.some((opp) => opp.id === opportunityId)
+    ) {
+      domainKey = "dataanalyticsOpportunities";
+      opportunitiesArray = dataanalyticsOpportunities;
+    } else if (marketingOpportunities.some((opp) => opp.id === opportunityId)) {
+      domainKey = "marketingOpportunities";
+      opportunitiesArray = marketingOpportunities;
+    } else if (sapOpportunities.some((opp) => opp.id === opportunityId)) {
+      domainKey = "sapOpportunities";
+      opportunitiesArray = sapOpportunities;
+    } else if (devopsOpportunities.some((opp) => opp.id === opportunityId)) {
+      domainKey = "devopsOpportunities";
+      opportunitiesArray = devopsOpportunities;
+    } else if (bankingOpportunities.some((opp) => opp.id === opportunityId)) {
+      domainKey = "bankingOpportunities";
+      opportunitiesArray = bankingOpportunities;
+    }
 
-  if (!domainKey || !opportunitiesArray) {
-    console.error("Opportunity not found in any domain array");
-    return;
-  }
+    if (!domainKey || !opportunitiesArray) {
+      console.error("Opportunity not found in any domain array");
+      return;
+    }
 
-  // Update the opportunity in the array
-  const updatedOpportunities = opportunitiesArray.map(opp =>
-    opp.id === opportunityId ? { ...opp, ...updates } : opp
-  );
+    // Update the opportunity in the array
+    const updatedOpportunities = opportunitiesArray.map((opp) =>
+      opp.id === opportunityId ? { ...opp, ...updates } : opp
+    );
 
-  // Update the state
-  setFullstackOpportunities(domainKey === 'fullstackOpportunities' ? updatedOpportunities : fullstackOpportunities);
-  setDataanalyticsOpportunities(domainKey === 'dataanalyticsOpportunities' ? updatedOpportunities : dataanalyticsOpportunities);
-  setMarketingOpportunities(domainKey === 'marketingOpportunities' ? updatedOpportunities : marketingOpportunities);
-  setSapOpportunities(domainKey === 'sapOpportunities' ? updatedOpportunities : sapOpportunities);
-  setDevopsOpportunities(domainKey === 'devopsOpportunities' ? updatedOpportunities : devopsOpportunities);
-  setBankingOpportunities(domainKey === 'bankingOpportunities' ? updatedOpportunities : bankingOpportunities);
-
-  // Optionally, persist the change to your backend API here
-  // await api.updateOpportunity(opportunityId, updates);
-};
+    // Update the state
+    setFullstackOpportunities(
+      domainKey === "fullstackOpportunities"
+        ? updatedOpportunities
+        : fullstackOpportunities
+    );
+    setDataanalyticsOpportunities(
+      domainKey === "dataanalyticsOpportunities"
+        ? updatedOpportunities
+        : dataanalyticsOpportunities
+    );
+    setMarketingOpportunities(
+      domainKey === "marketingOpportunities"
+        ? updatedOpportunities
+        : marketingOpportunities
+    );
+    setSapOpportunities(
+      domainKey === "sapOpportunities" ? updatedOpportunities : sapOpportunities
+    );
+    setDevopsOpportunities(
+      domainKey === "devopsOpportunities"
+        ? updatedOpportunities
+        : devopsOpportunities
+    );
+    setBankingOpportunities(
+      domainKey === "bankingOpportunities"
+        ? updatedOpportunities
+        : bankingOpportunities
+    );
+  };
 
   return (
     <DataContext.Provider
@@ -4869,6 +4927,12 @@ const DataProvider = ({ children }) => {
         placementFSDStudents,
         setPlacementFSDStudents,
         updateOpportunity,
+        fullstackTrainers,
+        dataanalyticsTrainers,
+        marketingTrainers,
+        sapTrainers,
+        bankingTrainers,
+        devopsTrainers,
       }}
     >
       {children}
