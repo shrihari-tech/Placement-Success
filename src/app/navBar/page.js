@@ -330,7 +330,7 @@ export default function NavBar() {
             >
               <TbLogout2 size={20} />
             </Link>
-            <span className={`text-xs font-semibold cursor-pointer mb-2`}
+            <span className={`text-xs font-semibold cursor-pointer text-[#49454f] mb-2`}
               onClick={() => router.push('/')}>Logout</span>
           </div>
         </div>

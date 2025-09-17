@@ -6,6 +6,7 @@ import Dashboard from "./dashboard/dashboard";
 import Upcoming from "./upcoming/upcoming";
 import { useDataContext } from "../context/dataContext";
 import Tabs from "./components/tab"; // Import the Tabs component
+import DomainTab from "./domain/domain";
 
 export default function SMEPage() {
     const [activeTab, setActiveTab] = useState("Dashboard");
@@ -45,7 +46,7 @@ export default function SMEPage() {
                     )}
 
                     {activeTab === "Domain" && (
-                        <p>Domain Content Goes Here</p>
+                        <DomainTab />
                     )}
 
                     {activeTab === "Upcoming" && (
