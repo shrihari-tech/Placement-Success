@@ -7,7 +7,7 @@ import { FaSearch } from "react-icons/fa";
 import { RiCloseCircleLine } from "react-icons/ri";
 import Image from "next/image";
 import PlacedStudentModal from "./PlacedStudentModal";
-
+import toast, { Toaster } from "react-hot-toast";
 import EditPlacementModal from "./EditPlacementModel";
 
 export default function Placement() {
@@ -30,6 +30,9 @@ export default function Placement() {
   const [showPlacedModal, setShowPlacedModal] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
+
+  // New state for temporary checkbox values
+  const [tempCheckboxStates, setTempCheckboxStates] = useState({});
 
   const batchDropdownRef = useRef(null);
 
@@ -56,6 +59,8 @@ export default function Placement() {
     setShowBatchDropdown(false);
     setFilteredStudents([]);
     setSearchInitiated(false);
+    // Reset temporary checkbox states
+    setTempCheckboxStates({});
   };
 
   const filteredBatches = Array.isArray(batchesNames) ? batchesNames : [];
@@ -84,15 +89,67 @@ export default function Placement() {
     }
   }, [studentData, selectedBatch, searchInitiated]);
 
+  // Initialize temporary checkbox states when filteredStudentsPlacement changes
+  useEffect(() => {
+    const newTempStates = {};
+    filteredStudentsPlacement.forEach((student) => {
+      newTempStates[student.sno] = {
+        ineligible: student.ineligible || false,
+        notRequired: student.notRequired || false,
+      };
+    });
+    setTempCheckboxStates(newTempStates);
+  }, [placementFSDStudents, selectedBatch]);
+
   // --- Final Data to Display ---
   const displayStudents =
     searchInitiated && selectedBatch ? filteredStudents : placedStudents;
 
-  const toggleCheckbox = (sno, field) => {
-    console.log(field, "llll", sno);
+  // Modified toggle function for temporary state
+  const toggleTempCheckbox = (sno, field) => {
+    setTempCheckboxStates((prev) => ({
+      ...prev,
+      [sno]: {
+        ...prev[sno],
+        [field]: !prev[sno]?.[field],
+      },
+    }));
+  };
+
+  // Submit function to update the actual state
+  const handleSubmit = () => {
     setPlacementFSDStudents((prev) =>
-      prev.map((s) => (s.sno === sno ? { ...s, [field]: !s[field] } : s))
+      prev.map((student) => {
+        const tempState = tempCheckboxStates[student.sno];
+        if (tempState) {
+          return {
+            ...student,
+            ineligible: tempState.ineligible,
+            notRequired: tempState.notRequired,
+          };
+        }
+        return student;
+      })
     );
+
+    // Show success message or handle success
+    toast.success("Saved Sucessfully!", {
+      duration: 3000,
+      position: "top-right",
+    });
+  };
+
+  // Check if there are any changes to enable/disable submit button
+  const hasChanges = () => {
+    return placementFSDStudents.some((student) => {
+      const tempState = tempCheckboxStates[student.sno];
+      if (!tempState) return false;
+
+      return (
+        tempState.ineligible !== (student.ineligible || false) ||
+        tempState.notRequired !== (student.notRequired || false)
+      );
+    });
   };
 
   const [selectedBatchPlacement, setSelectedBatchPlacement] = useState("All");
@@ -104,6 +161,8 @@ export default function Placement() {
 
   return (
     <>
+      <Toaster />
+
       {/* Search Filters */}
       <div
         id="search-container"
@@ -249,9 +308,11 @@ export default function Placement() {
                       <input
                         type="checkbox"
                         className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-2 focus:ring-blue-500"
-                        checked={student.ineligible}
+                        checked={
+                          tempCheckboxStates[student.sno]?.ineligible || false
+                        }
                         onChange={() =>
-                          toggleCheckbox(student.sno, "ineligible")
+                          toggleTempCheckbox(student.sno, "ineligible")
                         }
                       />
                     </td>
@@ -260,9 +321,11 @@ export default function Placement() {
                       <input
                         type="checkbox"
                         className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-2 focus:ring-blue-500"
-                        checked={student.notRequired}
+                        checked={
+                          tempCheckboxStates[student.sno]?.notRequired || false
+                        }
                         onChange={() =>
-                          toggleCheckbox(student.sno, "notRequired")
+                          toggleTempCheckbox(student.sno, "notRequired")
                         }
                       />
                     </td>
@@ -270,6 +333,24 @@ export default function Placement() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Submit Button */}
+          <div className="p-6 border-t border-gray-200 bg-gray-50 rounded-b-2xl">
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={!hasChanges()}
+                className={`px-6 py-3 rounded-xl text-sm font-semibold transition-colors ${
+                  hasChanges()
+                    ? "bg-[#cd5e77] hover:bg-[#b9556b] text-white cursor-pointer"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
+              >
+                Save Changes
+              </button>
+            </div>
           </div>
         </div>
       ) : (
