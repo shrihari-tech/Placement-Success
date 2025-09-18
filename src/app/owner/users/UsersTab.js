@@ -8,8 +8,12 @@ import {
   RiSearchLine,
   RiFilterLine,
 } from "react-icons/ri";
+import { notification } from "antd"; // 👈 Import notification
 
 export default function UsersTab() {
+  // 👇 Initialize Ant Design notification
+  const [api, contextHolder] = notification.useNotification();
+
   // State management
   const [users, setUsers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -100,35 +104,162 @@ export default function UsersTab() {
     setShowTable(false);
   };
 
-  // Validation function
+  // Real-time field validator
+  const validateField = (field, value) => {
+    let error = "";
+    switch (field) {
+      case "name":
+        if (!value.trim()) {
+          error = "Name is required";
+        } else if (!/^[a-zA-Z\s]+$/.test(value)) {
+          error = "Name should contain only letters";
+        } else if (value.length < 2) {
+          error = "Name must be at least 2 characters long";
+        } else if (value.length > 50) {
+          error = "Name cannot exceed 50 characters";
+        }
+        break;
+      case "email":
+        const trimmedValue = value.trim();
+        if (!trimmedValue) {
+          error = "Email is required";
+        } else {
+          const basicRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!basicRegex.test(trimmedValue)) {
+            error = "Invalid email format";
+          } else {
+            const [localPart, domainPart] = trimmedValue.split("@");
+            if (!localPart || localPart.length > 64) {
+              error = "Invalid email format";
+            } else if (!/^[a-zA-Z]/.test(localPart)) {
+              error = "Email local part must start with a letter";
+            } else if (!/^[a-zA-Z][a-zA-Z0-9._-]*$/.test(localPart)) {
+              error = "Invalid characters in email";
+            } else if (!domainPart || domainPart.length > 253) {
+              error = "Invalid email format";
+            } else {
+              const domainLabels = domainPart.split(".");
+              if (domainLabels.length < 2) {
+                error = "Invalid email format";
+              } else {
+                for (let i = 0; i < domainLabels.length; i++) {
+                  const label = domainLabels[i];
+                  if (!label) {
+                    error = "Invalid email format";
+                    break;
+                  }
+                  if (label.length > 63) {
+                    error = "Invalid email format";
+                    break;
+                  }
+                  if (i === 0) {
+                    if (/^[0-9]/.test(label)) {
+                      error = "Invalid email format";
+                      break;
+                    }
+                    if (
+                      !/^[a-zA-Z0-9]([a-zA-Z0-9-])*[a-zA-Z0-9]$|^[a-zA-Z0-9]$/.test(
+                        label
+                      )
+                    ) {
+                      error = "Invalid email format";
+                      break;
+                    }
+                  } else if (i === domainLabels.length - 1) {
+                    if (label.length < 2) {
+                      error = "Invalid email format";
+                      break;
+                    }
+                    if (/^[0-9]+$/.test(label)) {
+                      error = "Invalid email format";
+                      break;
+                    }
+                    if (!/^[a-zA-Z]+$/.test(label)) {
+                      error = "Invalid email format";
+                      break;
+                    }
+                  } else {
+                    if (/^[0-9]/.test(label)) {
+                      error = "Invalid email format";
+                      break;
+                    }
+                    if (
+                      !/^[a-zA-Z0-9]([a-zA-Z0-9-])*[a-zA-Z0-9]$|^[a-zA-Z0-9]$/.test(
+                        label
+                      )
+                    ) {
+                      error = "Invalid email format";
+                      break;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        break;
+      case "phone":
+        if (!value.trim()) {
+          error = "Phone number is required";
+        } else if (!/^\d+$/.test(value)) {
+          error = "Please enter a valid phone number";
+        } else if (!/^[6-9]/.test(value)) {
+          error = "Invalid phone number format";
+        } else if (value.length !== 10) {
+          error = "Phone number must be 10 digits";
+        }
+        break;
+      default:
+        break;
+    }
+    return error;
+  };
+
+  // Handle input with real-time validation
+  const handleInputChange = (field, value) => {
+    let val = value;
+
+    if (field === "phone") {
+      val = value.replace(/\D/g, "");
+    }
+
+    setFormData((prev) => ({ ...prev, [field]: val }));
+
+    if (formErrors[field]) {
+      setFormErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
+
+    const error = validateField(field, val);
+    if (error) {
+      setFormErrors((prev) => ({ ...prev, [field]: error }));
+    } else if (formErrors[field]) {
+      setFormErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
+  };
+
+  // Validate entire form
   const validateForm = () => {
     const errors = {};
 
-    if (!formData.name.trim()) {
-      errors.name = "Name is required";
-    } else if (formData.name.length < 2) {
-      errors.name = "Name must be at least 2 characters long";
-    } else if (formData.name.length > 50) {
-      errors.name = "Name cannot exceed 50 characters";
-    }
+    ["name", "email", "phone"].forEach((field) => {
+      const error = validateField(field, formData[field]);
+      if (error) {
+        errors[field] = error;
+      }
+    });
 
-    if (!formData.email.trim()) {
-      errors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      errors.email = "Please enter a valid email address";
-    }
-
-    if (!formData.phone.trim()) {
-      errors.phone = "Phone number is required";
-    } else if (!/^\+?[\d\s\-\(\)]+$/.test(formData.phone)) {
-      errors.phone = "Please enter a valid phone number";
-    } else if (formData.phone.replace(/\D/g, "").length < 10) {
-      errors.phone = "Phone number must be at least 10 digits";
-    }
-
-    if (!formData.role) {
-      errors.role = "Role is required";
-    }
+    if (!formData.name.trim()) errors.name = "Name is required";
+    if (!formData.email.trim()) errors.email = "Email is required";
+    if (!formData.phone.trim()) errors.phone = "Phone number is required";
+    if (!formData.role) errors.role = "Role is required";
 
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
@@ -160,22 +291,36 @@ export default function UsersTab() {
 
     setLoading(true);
 
-    // Simulate API call
     setTimeout(() => {
       try {
         if (editingUser) {
-          // Update existing user
           const updatedUsers = users.map((user) =>
             user.id === editingUser.id ? { ...user, ...formData } : user
           );
           setUsers(updatedUsers);
+
+          // 👇 Show success notification for update
+          api.success({
+            message: "User Updated",
+            description: `${formData.name}'s information has been successfully updated.`,
+             icon: <CheckCircleOutlined style={{ color: "#6d790b" }} />,
+            placement: "topRight",
+            duration: 5,
+          });
         } else {
-          // Create new user
           const newUser = {
             id: Date.now(),
             ...formData,
           };
           setUsers([...users, newUser]);
+
+          // 👇 Show success notification for creation
+          api.success({
+            message: "User Created",
+            description: `${formData.name} has been successfully added.`,
+            placement: "topRight",
+            duration: 3,
+          });
         }
 
         setIsModalOpen(false);
@@ -183,6 +328,14 @@ export default function UsersTab() {
         setEditingUser(null);
       } catch (error) {
         console.error("Error saving user:", error);
+
+        // 👇 Show error notification
+        api.error({
+          message: "Operation Failed",
+          description: "There was an error saving the user. Please try again.",
+          placement: "topRight",
+          duration: 3,
+        });
       } finally {
         setLoading(false);
       }
@@ -191,9 +344,18 @@ export default function UsersTab() {
 
   // Handle user deletion
   const handleDelete = (userId) => {
+    const userToDelete = users.find((u) => u.id === userId);
     const updatedUsers = users.filter((user) => user.id !== userId);
     setUsers(updatedUsers);
     setShowDeleteConfirm(null);
+
+    // 👇 Optional: Show delete success notification
+    api.info({
+      message: "User Deleted",
+      description: `${userToDelete?.name || "User"} has been removed.`,
+      placement: "topRight",
+      duration: 2,
+    });
   };
 
   // Close modal
@@ -202,14 +364,6 @@ export default function UsersTab() {
     setFormData({ name: "", email: "", phone: "", role: "" });
     setFormErrors({});
     setEditingUser(null);
-  };
-
-  // Handle input changes
-  const handleInputChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    if (formErrors[field]) {
-      setFormErrors((prev) => ({ ...prev, [field]: "" }));
-    }
   };
 
   // Filter users based on search and role filter
@@ -233,11 +387,16 @@ export default function UsersTab() {
     }
   };
 
+  
+
   return (
     <div className="bg-white p-6">
+      {/* 👇 Render notification context holder */}
+      {contextHolder}
+
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">User Management</h2>
+        <h2 className="text-2xl font-bold text-gray-700">User Management</h2>
         <button
           onClick={handleCreate}
           className="inline-flex items-center px-4 py-2 bg-[#6d790b] text-white text-sm font-medium rounded-md hover:bg-[#5a6509] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6d790b] transition-colors duration-200"
@@ -246,6 +405,7 @@ export default function UsersTab() {
           Add New User
         </button>
       </div>
+
 
       {/* Search and Filter Bar */}
       <div className="bg-gray-50 p-4 rounded-lg mb-6 border border-gray-200">
@@ -430,12 +590,18 @@ export default function UsersTab() {
                   value={formData.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
                   className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#6d790b] ${
-                    formErrors.name ? "border-red-300" : "border-gray-300"
+                    formErrors.name
+                      ? "border-red-300"
+                      : formData.name
+                      ? "border-green-300"
+                      : "border-gray-300"
                   }`}
                   placeholder="Enter full name"
                 />
                 {formErrors.name && (
-                  <p className="text-red-500 text-xs mt-1">{formErrors.name}</p>
+                  <p className="text-red-500 text-xs mt-1">
+                    {formErrors.name}
+                  </p>
                 )}
               </div>
 
@@ -449,7 +615,11 @@ export default function UsersTab() {
                   value={formData.email}
                   onChange={(e) => handleInputChange("email", e.target.value)}
                   className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#6d790b] ${
-                    formErrors.email ? "border-red-300" : "border-gray-300"
+                    formErrors.email
+                      ? "border-red-300"
+                      : formData.email
+                      ? "border-green-300"
+                      : "border-gray-300"
                   }`}
                   placeholder="Enter email address"
                 />
@@ -470,9 +640,14 @@ export default function UsersTab() {
                   value={formData.phone}
                   onChange={(e) => handleInputChange("phone", e.target.value)}
                   className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#6d790b] ${
-                    formErrors.phone ? "border-red-300" : "border-gray-300"
+                    formErrors.phone
+                      ? "border-red-300"
+                      : formData.phone
+                      ? "border-green-300"
+                      : "border-gray-300"
                   }`}
                   placeholder="Enter phone number"
+                  maxLength={10}
                 />
                 {formErrors.phone && (
                   <p className="text-red-500 text-xs mt-1">
@@ -501,7 +676,9 @@ export default function UsersTab() {
                   ))}
                 </select>
                 {formErrors.role && (
-                  <p className="text-red-500 text-xs mt-1">{formErrors.role}</p>
+                  <p className="text-red-500 text-xs mt-1">
+                    {formErrors.role}
+                  </p>
                 )}
               </div>
 

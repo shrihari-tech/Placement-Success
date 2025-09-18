@@ -1461,30 +1461,27 @@ export default function BatchModel() {
             </div>
 
             {/* Section Labels */}
-            <div className="flex bg-[#ECE6F0] rounded-xl p-1 mb-4 relative">
-              <div
-                className={`absolute top-1 bottom-1 bg-[#F8FAFD] rounded-lg shadow-sm transition-all
-                  duration-300 ease-in-out z-0
-                  ${
-                    activeTab === "Domain"
-                      ? "left-1 w-[calc(33.33%-0.5rem)]"
-                      : activeTab === "Aptitude"
-                      ? "left-[calc(33.33%+0.25rem)] w-[calc(33.33%-0.5rem)]"
-                      : "left-[calc(65.66%+0.25rem)] w-[calc(34%-0.5rem)]"
-                  }`}
-              />
-              {["Domain", "Aptitude", "Communication"].map((label) => (
-                <span
+            <div className="flex bg-[#ECE6F0] p-1 mb-4 relative">
+              {["Domain", "Aptitude", "Communication"].map((label, index) => (
+                <div
                   key={label}
-                  className={`flex-1 items-center text-gray-800 text-center py-2 text-xs font-semibold select-none cursor-default relative z-10
-                          ${
-                            activeTab === label
-                              ? "text-indigo-600"
-                              : "text-gray-800"
-                          }`}
+                  onClick={() => setActiveTab(label)}
+                  className={`
+        relative flex-1 text-center py-2 text-xs font-semibold cursor-pointer select-none
+        ${
+          activeTab === label
+            ? "bg-[#F8FAFD] text-indigo-600 shadow-sm"
+            : "text-gray-800"
+        }
+        ${index !== 0 ? "-ml-4" : ""}
+      `}
+                  style={{
+                    clipPath:
+                      "polygon(0% 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 0% 100%, 10px 50%)",
+                  }}
                 >
                   {label}
-                </span>
+                </div>
               ))}
             </div>
 

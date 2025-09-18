@@ -73,7 +73,7 @@ export default function Home() {
       <Navbar />
 
       {/* Added pt-16 for mobile header height and pt-0 for desktop */}
-      <main className="mx-auto w-full pt-16 md:pt-0">
+      <main className="mx-auto w-full">
         {/* --- HEADER SECTION --- */}
         <div className="border-b-2 border-gray-300 bg-white ps-10 pt-2 mb-2 md:mb-4">
           <p className="text-xl md:text-2xl text-gray-700 font-semibold mb-2 flex items-center">
