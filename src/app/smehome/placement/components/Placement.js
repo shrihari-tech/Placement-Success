@@ -7,8 +7,8 @@ import { FaSearch } from "react-icons/fa";
 import { RiCloseCircleLine } from "react-icons/ri";
 import Image from "next/image";
 import PlacedStudentModal from "./PlacedStudentModal";
-import toast, { Toaster } from "react-hot-toast";
 import EditPlacementModal from "./EditPlacementModel";
+import { notification } from "antd"; // Import notification
 
 export default function Placement() {
   const {
@@ -36,6 +36,9 @@ export default function Placement() {
 
   const batchDropdownRef = useRef(null);
 
+  // Notification hook
+  const [api, contextHolder] = notification.useNotification();
+
   // Filter only placed students
   const placedStudents = studentData.filter(
     (student) => student.placement === "Placed"
@@ -44,7 +47,21 @@ export default function Placement() {
   // --- Search Functions ---
   const handleSearch = () => {
     if (!selectedBatch) {
-      alert("Please select a batch");
+      // Show custom notification instead of alert
+      api.error({
+        message: "Search Error",
+        description: "Please select a batch to search for placed students.",
+        placement: "topRight",
+        duration: 4,
+        //showProgress: true,
+        pauseOnHover: true,
+        closeIcon: (
+          <RiCloseCircleLine
+            className="text-[#cd5e77] hover:text-[#a57900]"
+            size={20}
+          />
+        ),
+      });
       return;
     }
     const results = placedStudents.filter(
@@ -161,7 +178,51 @@ export default function Placement() {
 
   return (
     <>
-      <Toaster />
+      {/* Include the context holder for notifications */}
+      {contextHolder}
+
+      {/* Add custom styles for notifications */}
+      <style jsx global>{`
+        /* Custom notification styles for #cd5e77 */
+        .ant-notification-notice-success,
+        .ant-notification-notice-error,
+        .ant-notification-notice-warning,
+        .ant-notification-notice-info {
+          border-color: #cd5e77 !important;
+        }
+        .ant-notification-notice-success .ant-notification-notice-icon,
+        .ant-notification-notice-error .ant-notification-notice-icon,
+        .ant-notification-notice-warning .ant-notification-notice-icon,
+        .ant-notification-notice-info .ant-notification-notice-icon {
+          color: #cd5e77 !important;
+        }
+        .ant-notification-notice-success .ant-notification-notice-message,
+        .ant-notification-notice-error .ant-notification-notice-message,
+        .ant-notification-notice-warning .ant-notification-notice-message,
+        .ant-notification-notice-info .ant-notification-notice-message {
+          color: #cd5e77 !important;
+        }
+        .ant-notification-notice-close:hover {
+          background-color: #cd5e77 !important;
+          color: white !important;
+        }
+        .ant-notification-notice-progress-bar {
+          background: #cd5e77 !important;
+        }
+        /* Custom close icon styling */
+        .ant-notification-notice-close {
+          transition: all 0.3s ease;
+        }
+        /* Ensure progress bar container also uses the color */
+        .ant-notification-notice-progress {
+          background: rgba(
+            205,
+            94,
+            119,
+            0.1
+          ) !important; /* Light version of #cd5e77 */
+        }
+      `}</style>
 
       {/* Search Filters */}
       <div
