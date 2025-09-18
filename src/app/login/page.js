@@ -95,10 +95,18 @@ export default function Home() {
     { email: "head5@kgisl.com", role: "heads" },
   ];
 
+  // New: PSM users
+  const psmUsers = [
+    { email: "psm1@kgisl.com", role: "psm" },
+    { email: "psm2@kgisl.com", role: "psm" },
+  ];
+
   const allowedEmails = allowedUsers.map((u) => u.email);
   const placementOpHeadEmails = placementOpHeadUsers.map((u) => u.email);
   const placementOpTlEmails = placementOpTlUsers.map((u) => u.email);
   const headsEmails = headsUsers.map((u) => u.email); // 👈 Added
+  const psmEmails = psmUsers.map((u) => u.email);
+
 
   const validateEmailField = (value) => {
     if (!value.trim()) {
@@ -112,7 +120,8 @@ export default function Home() {
       !allowedEmails.includes(value) &&
       !placementOpHeadEmails.includes(value) &&
       !placementOpTlEmails.includes(value) &&
-      !headsEmails.includes(value)
+      !headsEmails.includes(value) &&
+      !psmEmails.includes(value)
     ) {
       // 👈 Updated
       setEmailError("Unauthorized email. Contact admin.");
@@ -141,7 +150,8 @@ export default function Home() {
       !allowedEmails.includes(email) &&
       !placementOpHeadEmails.includes(email) &&
       !placementOpTlEmails.includes(email) &&
-      !headsEmails.includes(email)
+      !headsEmails.includes(email) &&
+      !psmEmails.includes(email)
     ) {
       setEmailError("Unauthorized email. Contact admin.");
       valid = false;
@@ -163,6 +173,23 @@ export default function Home() {
       setPasswordError("Invalid password");
       setLoading(false); // 👈 Hide loader
       return false;
+    }
+
+    // check if it's a PSM user
+    const psmUser = psmUsers.find((u) => u.email === email);
+    if (psmUser) {
+      localStorage.setItem("isAuthenticated", "true");
+      localStorage.setItem("loginUser", email);
+      localStorage.setItem("domainCode", "all");
+      localStorage.setItem("userRole", "psm");
+      const expiration = new Date();
+      expiration.setHours(expiration.getHours() + 8);
+      localStorage.setItem("expiration", expiration.toISOString());
+      toast.success("PSM login successful! Redirecting...");
+      setLoginUser(email);
+      setTimeout(() => router.push("/home"), 2000);
+      // Do NOT setLoading(false) here — let redirect handle UI change
+      return true;
     }
 
     // Check if it's a PlacementOpHead user
