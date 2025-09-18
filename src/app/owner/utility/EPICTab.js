@@ -411,8 +411,8 @@ export default function EPICTab() {
               Confirm Delete
             </h2>
             <p className="text-gray-600 mb-6">
-              Are you sure you want to delete the proficiency level "
-              {deleteConfirm.key}" ({deleteConfirm.label})? This action cannot
+              Are you sure you want to delete the proficiency level 
+              {deleteConfirm.key} ({deleteConfirm.label})? This action cannot
               be undone.
             </p>
 

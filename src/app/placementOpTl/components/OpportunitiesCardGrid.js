@@ -27,6 +27,8 @@ const OpportunitiesCardGrid = ({ items, onViewDetails }) => {
     setViewModalOpen(true);
   };
 
+  console.log(currentItems, "lll");
+
   if (items.length === 0) {
     return (
       <div className="col-span-full w-full py-8 sm:py-12 text-center">

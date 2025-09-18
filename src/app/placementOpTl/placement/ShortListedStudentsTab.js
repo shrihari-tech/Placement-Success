@@ -12,7 +12,7 @@ import {
   bankingInitial,
   marketingInitial,
   sapInitial,
-  devopsInitial,
+  devopsInitial,  
 } from '../../context/dataContext';
 
 // Helper function to get domain label from batch prefix

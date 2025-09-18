@@ -374,8 +374,8 @@ export default function PlacementTab() {
               Confirm Delete
             </h2>
             <p className="text-gray-600 mb-6">
-              Are you sure you want to delete the eligibility status "
-              {deleteConfirm.label}"? This action cannot be undone.
+              Are you sure you want to delete the eligibility status 
+              {deleteConfirm.label}? This action cannot be undone.
             </p>
 
             <div className="flex gap-3">

@@ -4933,6 +4933,12 @@ const DataProvider = ({ children }) => {
         sapTrainers,
         bankingTrainers,
         devopsTrainers,
+        bankingStudent,
+        fullstackStudent,
+        dataanalyticsStudent,
+        marketingStudent,
+        sapStudent,
+        devopsStudent,
       }}
     >
       {children}

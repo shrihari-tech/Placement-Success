@@ -1,9 +1,16 @@
 'use client';
 import React from 'react';
 import { RiCloseCircleLine } from 'react-icons/ri';
+import { useContext } from 'react';
+import {useDataContext} from '../../context/dataContext';
 
 const ViewOpportunityDetailsModal = ({ isOpen, onClose, opportunityData, allStudentData }) => {
+  const {bankingStudent, fullstackStudent,dataanalyticsStudent,marketingStudent,sapStudent, devopsStudent, } = useDataContext()
+
   if (!isOpen || !opportunityData) return null;
+
+
+
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
@@ -12,49 +19,89 @@ const ViewOpportunityDetailsModal = ({ isOpen, onClose, opportunityData, allStud
   };
 
   // --- Corrected getStudentData function ---
+  // const getStudentData = (bookingId) => {
+  //   // If it's already a full student object (unlikely from current save logic, but safe)
+  //   if (typeof bookingId === 'object' && bookingId !== null && bookingId.bookingId) {
+  //     return bookingId;
+  //   }
+
+  //   // If it's a string or number (booking ID), find the student in the passed allStudentData
+  //   if (typeof bookingId === 'string' || typeof bookingId === 'number') {
+  //     // Use find with safe string comparison to handle potential type differences
+  //     // .trim() handles accidental whitespace
+  //     const student = allStudentData?.find(
+  //       (s) => String(s.bookingId).trim() === String(bookingId).trim()
+  //     );
+
+  //     if (student) {
+  //       return student;
+  //     }
+  //   }
+
+  //   // Fallback if student not found or bookingId is invalid
+  //   // Use the bookingId itself for display if available
+  //   const fallbackId = (typeof bookingId === 'string' || typeof bookingId === 'number') ? bookingId : "unknown";
+  //   return {
+  //     // bookingId: fallbackId,
+  //     // name: "N/A",
+  //     // email: "N/A",
+  //     // phone: "N/A",
+  //     // epicStatus: "N/A",
+  //     // attendance: "N/A"
+  //     bookingId: fallbackId,
+  //     name: bookingId.name || "N/A",
+  //     email: bookingId.email || "N/A",
+  //     phone: bookingId.phone || "N/A",
+  //     epicStatus: bookingId.epicStatus || "N/A",
+  //     attendance: bookingId.attendance || "N/A"
+
+  //   };
+  // };
   const getStudentData = (bookingId) => {
-    // If it's already a full student object (unlikely from current save logic, but safe)
-    if (typeof bookingId === 'object' && bookingId !== null && bookingId.bookingId) {
-      return bookingId;
-    }
+  // If bookingId is already a student object
+  if (typeof bookingId === "object" && bookingId !== null && bookingId.bookingId) {
+    return bookingId;
+  }
 
-    // If it's a string or number (booking ID), find the student in the passed allStudentData
-    if (typeof bookingId === 'string' || typeof bookingId === 'number') {
-      // Use find with safe string comparison to handle potential type differences
-      // .trim() handles accidental whitespace
-      const student = allStudentData?.find(
-        (s) => String(s.bookingId).trim() === String(bookingId).trim()
-      );
+  // If bookingId is string or number, look it up in allStudentData
+  if ((typeof bookingId === "string" || typeof bookingId === "number") && Array.isArray(allStudentData)) {
+    const student = allStudentData.find(
+      (s) => String(s.bookingId).trim() === String(bookingId).trim()
+    );
+    if (student) return student;
+  }
 
-      if (student) {
-        return student;
-      }
-    }
-
-    // Fallback if student not found or bookingId is invalid
-    // Use the bookingId itself for display if available
-    const fallbackId = (typeof bookingId === 'string' || typeof bookingId === 'number') ? bookingId : "unknown";
-    return {
-      // bookingId: fallbackId,
-      // name: "N/A",
-      // email: "N/A",
-      // phone: "N/A",
-      // epicStatus: "N/A",
-      // attendance: "N/A"
-      bookingId: fallbackId,
-      name: bookingId.name || "N/A",
-      email: bookingId.email || "N/A",
-      phone: bookingId.phone || "N/A",
-      epicStatus: bookingId.epicStatus || "N/A",
-      attendance: bookingId.attendance || "N/A"
-
-    };
+  // --- Fallback (student not found) ---
+  return {
+    bookingId: bookingId || "N/A",
+    name: "N/A",
+    email: "N/A",
+    phone: "N/A",
+    epicStatus: "N/A",
+    attendance: "N/A",
   };
+};
+
 
   // Create array of student objects for display
+  const allStudents = [
+  ...bankingStudent,
+  ...fullstackStudent,
+  ...dataanalyticsStudent,
+  ...marketingStudent,
+  ...sapStudent,
+  ...devopsStudent,
+];
+
   const studentsToDisplay = opportunityData.selectedStudents?.map(getStudentData) || [];
+  console.log(bankingStudent, "jjjj")
   console.log("Selected Students:", opportunityData.selectedStudents);
 console.log("All Student Data:", allStudentData);
+
+const matchedStudents = allStudents.filter(student => opportunityData.selectedStudents.includes(student.bookingId));
+
+console.log(matchedStudents, "mmm")
+
 
 
   // --- Optional Debug logging (remove in production) ---
@@ -143,7 +190,7 @@ console.log("All Student Data:", allStudentData);
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {studentsToDisplay.map((student, index) => (
+                    {matchedStudents.map((student, index) => (
                       <tr key={student.bookingId || index} className="hover:bg-gray-50">
                         <td className="px-4 py-3 text-center text-sm text-gray-700 whitespace-nowrap">
                           {index + 1}
