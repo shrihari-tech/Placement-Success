@@ -237,7 +237,7 @@ export default function Home() {
       if (user.role === "admin") {
         toast.success("Admin login successful! Redirecting to Home...");
         setLoginUser(email);
-        setTimeout(() => router.push("/home"), 2000);
+        setTimeout(() => router.push("/owner/dashboard"), 2000);
       } else {
         toast.success("Login successful! Redirecting to SME Home...");
         setLoginUser(email);
@@ -398,7 +398,11 @@ export default function Home() {
                   : "bg-gray-300 text-gray-400 cursor-not-allowed"
               }`}
             >
-              {loading ? <Loader size="h-5 w-5" color="text-[#3f2fb4]" /> : "Login"}
+              {loading ? (
+                <Loader size="h-5 w-5" color="text-[#3f2fb4]" />
+              ) : (
+                "Login"
+              )}
             </button>
 
             {/* Links */}
