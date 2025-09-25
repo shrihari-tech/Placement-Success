@@ -275,12 +275,16 @@ export default function BatchModel() {
     }
   }, [batches]);
 
-  const toDDMMYYYY = (d) => {
-    const date = d instanceof Date ? d : new Date(d);
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = date.toLocaleString("en-US", { month: "short" }); // e.g., Jul
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
+  const toDDMMYYYY = (date) => {
+    // const date = d instanceof Date ? d : new Date(d);
+    // const day = String(date.getDate()).padStart(2, "0");
+    // const month = date.toLocaleString("en-US", { month: "short" });
+    // const year = date.getFullYear();
+    // return `${day}-${month}-${year}`;
+    const d = date instanceof Date ? date : new Date(date);
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${d.getFullYear()}-${month}-${day}`;
   };
 
   const parseDate = (str) => {
@@ -793,7 +797,51 @@ export default function BatchModel() {
     return isValid;
   };
 
-  const handleAddBatch = () => {
+  // const handleAddBatch = () => {
+  //   if (!validateForm()) return;
+  //   if (Object.values(modalDateErrors).some((e) => e)) {
+  //     toast.error("Please fix the date range errors before adding the batch");
+  //     return;
+  //   }
+  //   /* ⬇️ earliest / latest across sections */
+  //   const allSecs = Object.values(newBatch.sections);
+  //   const earliest = new Date(
+  //     Math.min(...allSecs.map((s) => new Date(s.startDate)))
+  //   );
+  //   const latest = new Date(
+  //     Math.max(...allSecs.map((s) => new Date(s.endDate)))
+  //   );
+
+  //   /* convert every section date to DD-MM-YYYY */
+  //   const sectionCopy = {};
+  //   for (const [k, s] of Object.entries(newBatch.sections)) {
+  //     sectionCopy[k] = {
+  //       startDate: toDDMMYYYY(parseDate(s.startDate)),
+  //       endDate: toDDMMYYYY(parseDate(s.endDate)),
+  //     };
+  //   }
+
+  //   const newBatchEntry = {
+  //     id: batches.length + 1,
+  //     batchNo: newBatch.batchNo,
+  //     status: newBatch.status,
+  //     mode: newBatch.mode,
+  //     startDate: toDDMMYYYY(earliest),
+  //     endDate: toDDMMYYYY(latest),
+  //     studentsPlaced: 0, // Add these
+  //     pending: 0,
+  //     trainerName: "", // Add these
+  //     epicData: {},
+  //     sections: sectionCopy,
+  //   };
+
+  //   addBatch(newBatchEntry);
+  //   setShowModal(false);
+  //   resetForm();
+  //   toast.success("Batch added successfully");
+  // };
+  // ...existing code...
+  const handleAddBatch = async () => {
     if (!validateForm()) return;
     if (Object.values(modalDateErrors).some((e) => e)) {
       toast.error("Please fix the date range errors before adding the batch");
@@ -817,25 +865,50 @@ export default function BatchModel() {
       };
     }
 
+    // const newBatchEntry = {
+    //   batchName: newBatch.batchNo,
+    //   status: newBatch.status,
+    //   mode: newBatch.mode,
+    //   startDate: toDDMMYYYY(earliest),
+    //   endDate: toDDMMYYYY(latest),
+    //   studentsPlaced: 0,
+    //   pending: 0,
+    //   trainerName: "",
+    //   epicData: {},
+    //   sections: sectionCopy,
+    //   domain: selectedDomain || "General",
+    // };
     const newBatchEntry = {
-      id: batches.length + 1,
-      batchNo: newBatch.batchNo,
+      batchName: newBatch.batchNo,
       status: newBatch.status,
       mode: newBatch.mode,
       startDate: toDDMMYYYY(earliest),
       endDate: toDDMMYYYY(latest),
-      studentsPlaced: 0, // Add these
-      pending: 0,
-      trainerName: "", // Add these
-      epicData: {},
-      sections: sectionCopy,
+      domain: selectedDomain || "General",
     };
 
-    addBatch(newBatchEntry);
-    setShowModal(false);
-    resetForm();
-    toast.success("Batch added successfully");
+    try {
+      const response = await fetch("http://localhost:5000/batches/addBatch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newBatchEntry),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add batch");
+      }
+
+      const savedBatch = await response.json();
+      addBatch(savedBatch); // update context/state with the response from API
+      setShowModal(false);
+      resetForm();
+      toast.success("Batch added successfully");
+    } catch (error) {
+      toast.error("Failed to add batch. Please try again.");
+      console.error(error);
+    }
   };
+  // ...existing code...
 
   // 👇 runs on each onChange
   const validateBatchNumber = (value) => {
@@ -1465,9 +1538,8 @@ export default function BatchModel() {
               {["Domain", "Aptitude", "Communication"].map((label, index) => (
                 <div
                   key={label}
-                  onClick={() => setActiveTab(label)}
                   className={`
-        relative flex-1 text-center py-2 text-xs font-semibold cursor-pointer select-none
+        relative flex-1 text-center py-2 text-xs font-semibold select-none
         ${
           activeTab === label
             ? "bg-[#F8FAFD] text-indigo-600 shadow-sm"
@@ -1503,7 +1575,7 @@ export default function BatchModel() {
                   <input
                     type="date"
                     id={`${activeTab.toLowerCase()}-start-date`}
-                    className={`block px-3 py-2 pt-4 w-full text-xs text-gray-900 bg-[#ECE6F0] rounded-sm border-2 ${
+                    className={`block px-3 h-9.5 pt-4 w-full text-xs text-gray-900 bg-[#ECE6F0] rounded-sm border-2 ${
                       formErrors.sections[activeTab] ||
                       modalDateErrors[activeTab]
                         ? "border-red-500"
@@ -1546,7 +1618,7 @@ export default function BatchModel() {
                   <input
                     type="date"
                     id={`${activeTab.toLowerCase()}-end-date`}
-                    className={`block px-3 py-2 pt-4 w-full text-xs text-gray-900 bg-[#ECE6F0] rounded-sm border-2 ${
+                    className={`block px-3 h-9.5 pt-4 w-full text-xs text-gray-900 bg-[#ECE6F0] rounded-sm border-2 ${
                       formErrors.sections[activeTab] ||
                       modalDateErrors[activeTab]
                         ? "border-red-500"

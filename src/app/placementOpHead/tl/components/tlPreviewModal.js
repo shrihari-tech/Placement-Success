@@ -181,7 +181,7 @@ const TLPreviewModal = ({
 
   return (
     <>
-            {/* Main Preview/Edit Modal Backdrop */}
+      {/* Main Preview/Edit Modal Backdrop */}
       <div
         className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
         onClick={onClose} // Clicking the backdrop closes the main modal
@@ -189,7 +189,7 @@ const TLPreviewModal = ({
         {/* Main Modal Container - Dynamically sized based on mode */}
         <div
           className={`bg-white rounded-lg shadow-xl w-full ${
-            isEditMode ? 'max-w-2xl' : 'max-w-sm max-h-[90vh]'
+            isEditMode ? "max-w-2xl" : "max-w-sm max-h-[90vh]"
           }`}
           onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
         >
@@ -481,7 +481,7 @@ const TLPreviewModal = ({
                     <div>
                       <p className="text-xs text-gray-500">Name</p>
                       <p className="font-medium text-gray-800">
-                        {teamLeader.name}
+                        <span className="text-gray-700">{teamLeader.name}</span>
                       </p>
                     </div>
                   </div>
@@ -497,7 +497,9 @@ const TLPreviewModal = ({
                     <div>
                       <p className="text-xs text-gray-500">Email</p>
                       <p className="font-medium text-gray-800">
-                        {teamLeader.email}
+                        <span className="text-gray-700">
+                          {teamLeader.email}
+                        </span>
                       </p>
                     </div>
                   </div>
@@ -513,7 +515,9 @@ const TLPreviewModal = ({
                     <div>
                       <p className="text-xs text-gray-500">Phone</p>
                       <p className="font-medium text-gray-800">
-                        {teamLeader.phone}
+                        <span className="text-gray-700">
+                          {teamLeader.phone}
+                        </span>
                       </p>
                     </div>
                   </div>
@@ -529,7 +533,7 @@ const TLPreviewModal = ({
                     <div>
                       <p className="text-xs text-gray-500">Role</p>
                       <p className="font-medium text-gray-800">
-                        {teamLeader.role}
+                        <span className="text-gray-700">{teamLeader.role}</span>
                       </p>
                     </div>
                   </div>
@@ -546,7 +550,7 @@ const TLPreviewModal = ({
                     <div>
                       <p className="text-xs text-gray-500">Password</p>
                       {/* Display the password. Consider security implications. */}
-                      <p className="font-medium text-gray-800">
+                      <p className="font-medium text-gray-700">
                         {teamLeader.password || "N/A"}
                       </p>
                     </div>

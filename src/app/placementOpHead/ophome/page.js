@@ -22,7 +22,7 @@ export default function Home() {
   const statsData = useMemo(() => {
     const totalBatchesPerDomain = calculateTotalBatchesPerDomain();
     const upcomingBatchesPerDomain = calculateUpcomingBatchesPerDomain();
-    
+
     const placedStudentsPerDomain = {
       fullstack: batchStatsData.fullstack?.alreadyPlaced ?? 0,
       data: batchStatsData.data?.alreadyPlaced ?? 0,
@@ -45,9 +45,13 @@ export default function Home() {
       totalBatchesPerDomain,
       upcomingBatchesPerDomain,
       placedStudentsPerDomain,
-      yetToPlaceStudentsPerDomain
+      yetToPlaceStudentsPerDomain,
     };
-  }, [calculateTotalBatchesPerDomain, calculateUpcomingBatchesPerDomain, batchStatsData]);
+  }, [
+    calculateTotalBatchesPerDomain,
+    calculateUpcomingBatchesPerDomain,
+    batchStatsData,
+  ]);
 
   const graphData = {
     previousData: [
@@ -120,7 +124,7 @@ export default function Home() {
         `}</style>
 
         {/* Main Content */}
-        <div className="container mx-auto px-4 ps-7">
+        <div className="container mx-auto px-2 ps-2">
           {/* Page Title with Hi text and animation */}
           <div className="mb-8">
             <div className="flex items-center">
@@ -129,10 +133,7 @@ export default function Home() {
           </div>
           {/* Dashboard Container */}
           <div className="bg-white rounded-lg shadow-md p-6">
-            <Dashboard 
-              graphData={graphData} 
-              statsData={statsData} 
-            />
+            <Dashboard graphData={graphData} statsData={statsData} />
           </div>
         </div>
       </main>

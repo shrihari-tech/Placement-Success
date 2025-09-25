@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect, useMemo } from 'react';
-import { useDataContext } from '../../context/dataContext';
-import Navbar from '../navbar';
-import CreateButton from '../components/createButton';
-import OpportunitiesCardGrid from '../components/OpportunitiesCardGrid';
-import AssignOpportunityModal from '../components/assignOpportunityModal';
-import SelectStudentsModal from '../components/selectStudentsModal';
-import ConfirmSaveModal from '../components/confirmSaveModal';
-import DiscardModal from '../components/discardModal';
-import ViewOpportunityDetailsModal from '../components/ViewOpportunityDetailsModal'; // ✅ import added
+import React, { useState, useEffect, useMemo } from "react";
+import { useDataContext } from "../../context/dataContext";
+import Navbar from "../navbar";
+import CreateButton from "../components/createButton";
+import OpportunitiesCardGrid from "../components/OpportunitiesCardGrid";
+import AssignOpportunityModal from "../components/assignOpportunityModal";
+import SelectStudentsModal from "../components/selectStudentsModal";
+import ConfirmSaveModal from "../components/confirmSaveModal";
+import DiscardModal from "../components/discardModal";
+import ViewOpportunityDetailsModal from "../components/ViewOpportunityDetailsModal"; // ✅ import added
 
 export default function PlacementOpportunitiesTab() {
   const {
@@ -43,22 +43,23 @@ export default function PlacementOpportunitiesTab() {
 
   // State for modals and data
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
-  const [isSelectStudentsModalOpen, setIsSelectStudentsModalOpen] = useState(false);
+  const [isSelectStudentsModalOpen, setIsSelectStudentsModalOpen] =
+    useState(false);
   const [isConfirmSaveModalOpen, setIsConfirmSaveModalOpen] = useState(false);
   const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
 
   // ✅ new state for view details modal
   const [isViewDetailsModalOpen, setIsViewDetailsModalOpen] = useState(false);
   const [selectedOpportunity, setSelectedOpportunity] = useState(null);
-  
+
   // State for opportunity being created/assigned
   const [newOpportunity, setNewOpportunity] = useState({
-    domain: '',
-    selectedBatch: '',
-    companyName: '',
-    driveDate: '',
-    driveRole: '',
-    package: '',
+    domain: "",
+    selectedBatch: "",
+    companyName: "",
+    driveDate: "",
+    driveRole: "",
+    package: "",
   });
 
   // State for selected students in the selection modal
@@ -67,17 +68,30 @@ export default function PlacementOpportunitiesTab() {
   const [filteredBatchStudents, setFilteredBatchStudents] = useState([]);
 
   // State for the opportunity data being viewed/saved in the student selection modal
-  const [opportunityDetailsForSelection, setOpportunityDetailsForSelection] = useState(null); // <- Only ONE declaration
+  const [opportunityDetailsForSelection, setOpportunityDetailsForSelection] =
+    useState(null); // <- Only ONE declaration
 
   // Combine all opportunities from different domains into one list for display
   const allOpportunities = useMemo(() => {
     const opps = [
-      ...(fullstackOpportunities || []).map(op => ({ ...op, domain: 'fullstack' })),
-      ...(dataanalyticsOpportunities || []).map(op => ({ ...op, domain: 'dataanalytics' })),
-      ...(marketingOpportunities || []).map(op => ({ ...op, domain: 'marketing' })),
-      ...(sapOpportunities || []).map(op => ({ ...op, domain: 'sap' })),
-      ...(devopsOpportunities || []).map(op => ({ ...op, domain: 'devops' })),
-      ...(bankingOpportunities || []).map(op => ({ ...op, domain: 'banking' })),
+      ...(fullstackOpportunities || []).map((op) => ({
+        ...op,
+        domain: "fullstack",
+      })),
+      ...(dataanalyticsOpportunities || []).map((op) => ({
+        ...op,
+        domain: "dataanalytics",
+      })),
+      ...(marketingOpportunities || []).map((op) => ({
+        ...op,
+        domain: "marketing",
+      })),
+      ...(sapOpportunities || []).map((op) => ({ ...op, domain: "sap" })),
+      ...(devopsOpportunities || []).map((op) => ({ ...op, domain: "devops" })),
+      ...(bankingOpportunities || []).map((op) => ({
+        ...op,
+        domain: "banking",
+      })),
     ];
     return opps.map((op, index) => ({ ...op, id: op.id || `opp-${index}` }));
   }, [
@@ -90,83 +104,114 @@ export default function PlacementOpportunitiesTab() {
   ]);
 
   // --- Define Domain Labels ---
-  const DOMAIN_LABEL_MAP = useMemo(() => ({
-    fullstack: 'Full Stack Development',
-    dataanalytics: 'Data Analytics & Science',
-    marketing: 'Digital Marketing',
-    sap: 'SAP',
-    devops: 'DevOps',
-    banking: 'Banking & Finance',
-  }), []);
+  const DOMAIN_LABEL_MAP = useMemo(
+    () => ({
+      fullstack: "Full Stack Development",
+      dataanalytics: "Data Analytics & Science",
+      marketing: "Digital Marketing",
+      sap: "SAP",
+      devops: "DevOps",
+      banking: "Banking & Finance",
+    }),
+    []
+  );
 
   // --- Generate domains as array of { key, label } objects ---
   const domains = useMemo(() => {
     const domainSet = new Set();
-    studentData.forEach(student => {
+    studentData.forEach((student) => {
       if (student.domain) domainSet.add(student.domain);
     });
-    const expectedDomains = ['fullstack', 'dataanalytics', 'marketing', 'sap', 'devops', 'banking'];
-    expectedDomains.forEach(d => domainSet.add(d));
+    const expectedDomains = [
+      "fullstack",
+      "dataanalytics",
+      "marketing",
+      "sap",
+      "devops",
+      "banking",
+    ];
+    expectedDomains.forEach((d) => domainSet.add(d));
 
-    return Array.from(domainSet).map(key => ({
-      key: key,
-      label: DOMAIN_LABEL_MAP[key] || key
-    })).sort((a, b) => a.label.localeCompare(b.label));
+    return Array.from(domainSet)
+      .map((key) => ({
+        key: key,
+        label: DOMAIN_LABEL_MAP[key] || key,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
   }, [studentData, DOMAIN_LABEL_MAP]);
 
   // --- Create an object containing all domain batch data ---
-  const allDomainBatchData = useMemo(() => ({
-    fullstack: fullstackData || [],
-    dataanalytics: dataanalyticsData || [],
-    marketing: marketingData || [],
-    sap: sapData || [],
-    devops: devopsData || [],
-    banking: bankingData || [],
-  }), [fullstackData, dataanalyticsData, marketingData, sapData, devopsData, bankingData]);
+  const allDomainBatchData = useMemo(
+    () => ({
+      fullstack: fullstackData || [],
+      dataanalytics: dataanalyticsData || [],
+      marketing: marketingData || [],
+      sap: sapData || [],
+      devops: devopsData || [],
+      banking: bankingData || [],
+    }),
+    [
+      fullstackData,
+      dataanalyticsData,
+      marketingData,
+      sapData,
+      devopsData,
+      bankingData,
+    ]
+  );
+
+  
 
   // Effect to filter students when batch changes in selection modal
   useEffect(() => {
-    if (opportunityDetailsForSelection?.selectedBatch && opportunityDetailsForSelection?.domain) {
+    if (
+      opportunityDetailsForSelection?.selectedBatch &&
+      opportunityDetailsForSelection?.domain
+    ) {
       // Get the appropriate student array based on domain
       let domainStudentData = [];
-      
+
       switch (opportunityDetailsForSelection.domain) {
-        case 'fullstack':
+        case "fullstack":
           domainStudentData = fullstackStudent || [];
           break;
-        case 'dataanalytics':
+        case "dataanalytics":
           domainStudentData = dataanalyticsStudent || [];
           break;
-        case 'marketing':
+        case "marketing":
           domainStudentData = marketingStudent || [];
           break;
-        case 'sap':
+        case "sap":
           domainStudentData = sapStudent || [];
           break;
-        case 'devops':
+        case "devops":
           domainStudentData = devopsStudent || [];
           break;
-        case 'banking':
+        case "banking":
           domainStudentData = bankingStudent || [];
           break;
         default:
           domainStudentData = [];
       }
-      
+
       // Debug: Check if domain array is empty
-      console.log(`DEBUG: ${opportunityDetailsForSelection.domain} student count:`, domainStudentData.length);
-      
+      console.log(
+        `DEBUG: ${opportunityDetailsForSelection.domain} student count:`,
+        domainStudentData.length
+      );
+
       // Fallback to allStudentData if domain array is empty
       if (domainStudentData.length === 0) {
         console.log("DEBUG: Using allStudentData as fallback");
         domainStudentData = allStudentData;
       }
-      
+
       // Filter students by selected batch
       const studentsInBatch = domainStudentData.filter(
-        (student) => student.batch === opportunityDetailsForSelection.selectedBatch
+        (student) =>
+          student.batch === opportunityDetailsForSelection.selectedBatch
       );
-      
+
       console.log("DEBUG: Found students:", studentsInBatch.length);
       setFilteredBatchStudents(studentsInBatch);
       setSelectedStudents([]);
@@ -174,28 +219,39 @@ export default function PlacementOpportunitiesTab() {
       setFilteredBatchStudents([]);
       setSelectedStudents([]);
     }
-  }, [opportunityDetailsForSelection, fullstackStudent, dataanalyticsStudent, marketingStudent, sapStudent, devopsStudent, bankingStudent, allStudentData]);
+  }, [
+    opportunityDetailsForSelection,
+    fullstackStudent,
+    dataanalyticsStudent,
+    marketingStudent,
+    sapStudent,
+    devopsStudent,
+    bankingStudent,
+    allStudentData,
+  ]);
 
   // Handlers for modals
   const handleOpenAssignModal = () => {
     setIsAssignModalOpen(true);
     setNewOpportunity({
-      domain: '',
-      selectedBatch: '',
-      companyName: '',
-      driveDate: '',
-      driveRole: '',
-      package: '',
+      domain: "",
+      selectedBatch: "",
+      companyName: "",
+      driveDate: "",
+      driveRole: "",
+      package: "",
     });
     setSelectedStudents([]);
   };
 
   const handleCloseAssignModal = () => {
-    const isFormFilled = Object.values(newOpportunity).some(val => val !== '');
+    const isFormFilled = Object.values(newOpportunity).some(
+      (val) => val !== ""
+    );
     if (isFormFilled) {
-        setIsDiscardModalOpen(true);
+      setIsDiscardModalOpen(true);
     } else {
-        setIsAssignModalOpen(false);
+      setIsAssignModalOpen(false);
     }
   };
 
@@ -207,10 +263,10 @@ export default function PlacementOpportunitiesTab() {
 
   const handleCloseSelectStudentsModal = () => {
     if (selectedStudents.length > 0) {
-        setIsDiscardModalOpen(true);
+      setIsDiscardModalOpen(true);
     } else {
-        setIsSelectStudentsModalOpen(false);
-        setOpportunityDetailsForSelection(null);
+      setIsSelectStudentsModalOpen(false);
+      setOpportunityDetailsForSelection(null);
     }
   };
 
@@ -236,13 +292,13 @@ export default function PlacementOpportunitiesTab() {
     setIsSelectStudentsModalOpen(false);
     setOpportunityDetailsForSelection(null);
     setSelectedStudents([]);
-     setNewOpportunity({
-      domain: '',
-      selectedBatch: '',
-      companyName: '',
-      driveDate: '',
-      driveRole: '',
-      package: '',
+    setNewOpportunity({
+      domain: "",
+      selectedBatch: "",
+      companyName: "",
+      driveDate: "",
+      driveRole: "",
+      package: "",
     });
   };
 
@@ -274,12 +330,12 @@ export default function PlacementOpportunitiesTab() {
     setOpportunityDetailsForSelection(null);
     setSelectedStudents([]);
     setNewOpportunity({
-      domain: '',
-      selectedBatch: '',
-      companyName: '',
-      driveDate: '',
-      driveRole: '',
-      package: '',
+      domain: "",
+      selectedBatch: "",
+      companyName: "",
+      driveDate: "",
+      driveRole: "",
+      package: "",
     });
   };
 
@@ -295,16 +351,21 @@ export default function PlacementOpportunitiesTab() {
   };
 
   return (
-    <div className="h-screen overflow-hidden flex flex-col">
-      <Navbar />
-      <main className="ml-[5px] flex-1 overflow-auto p-6 flex flex-col">
+    <div className="flex flex-col h-full">
+      
+      <main className="ml-[5px] flex-1 min-h-0 overflow-auto p-6 flex flex-col">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold text-gray-700">Placement Opportunities</h1>
+          <h1 className="text-2xl font-bold text-gray-700">
+            Placement Opportunities
+          </h1>
           <CreateButton onClick={handleOpenAssignModal} />
         </div>
 
-        <div className="flex-1 overflow-auto">
-          <OpportunitiesCardGrid items={allOpportunities} onViewDetails={handleViewOpportunityDetails} />
+        <div className="flex-1  min-h-0 overflow-auto">
+          <OpportunitiesCardGrid
+            items={allOpportunities}
+            onViewDetails={handleViewOpportunityDetails}
+          />
         </div>
       </main>
 
@@ -351,14 +412,14 @@ export default function PlacementOpportunitiesTab() {
       )}
 
       {/* ✅ new details modal */}
-{isViewDetailsModalOpen && selectedOpportunity && (
-  <ViewOpportunityDetailsModal
-    isOpen={isViewDetailsModalOpen}
-    onClose={handleCloseViewDetailsModal}
-    opportunityData={selectedOpportunity}
-    allStudentData={allStudentData} // Pass allStudentData directly
-  />
-)}
+      {isViewDetailsModalOpen && selectedOpportunity && (
+        <ViewOpportunityDetailsModal
+          isOpen={isViewDetailsModalOpen}
+          onClose={handleCloseViewDetailsModal}
+          opportunityData={selectedOpportunity}
+          allStudentData={allStudentData} // Pass allStudentData directly
+        />
+      )}
     </div>
   );
 }

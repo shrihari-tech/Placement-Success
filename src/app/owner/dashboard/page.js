@@ -64,7 +64,7 @@ export default function Dashboard() {
         `}</style>
 
         {/* Main Content */}
-        <div className="container mx-auto px-4 ps-7">
+        <div className="container mx-auto px-2 ps-2">
           {/* Page Title */}
           <div className="mb-8">
             <div className="flex items-center">

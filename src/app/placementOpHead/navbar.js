@@ -88,7 +88,7 @@ const Navbar = () => {
 
           <nav className="flex flex-col items-center w-full">
             {/* Home */}
-            <div className="flex flex-col items-center w-full mb-7">
+            <div className="flex flex-col items-center w-full mb-10">
               <Link
                 href="/placementOpHead/ophome"
                 className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
@@ -111,7 +111,7 @@ const Navbar = () => {
             </div>
 
             {/* tl */}
-            <div className="flex flex-col items-center w-full mb-7">
+            <div className="flex flex-col items-center w-full mb-10">
               <Link
                 href="/placementOpHead/tl"
                 className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
@@ -134,7 +134,7 @@ const Navbar = () => {
             </div>
 
             {/* JD Dashboard */}
-            <div className="flex flex-col items-center w-full mb-7">
+            <div className="flex flex-col items-center w-full mb-10">
               <Link
                 href="/placementOpHead/jd"
                 className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
@@ -157,7 +157,7 @@ const Navbar = () => {
             </div>
 
             {/* Notification */}
-            <div className="flex flex-col items-center w-full mb-7">
+            <div className="flex flex-col items-center w-full mb-10">
               <Link
                 href="/placementOpHead/notification"
                 className="cursor-pointer flex flex-col items-center mb-1 px-3.5 py-1 text-black hover:bg-[#e8d3ec] hover:text-black rounded-2xl"
@@ -173,7 +173,7 @@ const Navbar = () => {
             </div>
 
             {/* Settings */}
-            <div className="flex flex-col items-center w-full mb-7">
+            <div className="flex flex-col items-center w-full mb-10">
               <Link
                 href="/placementOpHead/settings"
                 className={`flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
@@ -198,7 +198,7 @@ const Navbar = () => {
             </div>
 
             {/* Logout */}
-            <div className="flex flex-col items-center w-full mb-7">
+            <div className="flex flex-col items-center w-full mb-10">
               <Link
                 href="/login"
                 className="flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl hover:bg-[#e8d3ec] text-black"

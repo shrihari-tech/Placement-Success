@@ -1,4 +1,4 @@
-// src/app/heads/components/previewModal.js
+// src/app/owner/components/previewModal.js
 "use client";
 import React from "react";
 import { RiCloseCircleLine } from "react-icons/ri";

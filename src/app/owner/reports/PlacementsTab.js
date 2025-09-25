@@ -1,4 +1,4 @@
-// src/app/heads/reports/PlacementsTab.js
+// src/app/owner/reports/PlacementsTab.js
 "use client";
 import React, { useState } from "react";
 import { notification } from "antd";

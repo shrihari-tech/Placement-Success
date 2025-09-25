@@ -302,7 +302,7 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div
           ref={mobileMenuRef}
-          className="md:hidden fixed top-16 left-0 w-full bg-[#fff2cc] z-30 p-4 shadow-lg"
+          className="md:hidden fixed top-16 left-0 w-full bg-[#c3c89d] z-30 p-4 shadow-lg"
         >
           <div className="flex flex-col space-y-4">
             {/* Dashboard */}
