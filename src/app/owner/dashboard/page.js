@@ -1,8 +1,8 @@
 "use client";
 import React, { useMemo } from "react";
-import Navbar from "../navbar"; 
+import Navbar from "../navbar";
 import Image from "next/image";
-import Counts from "../components/counts"; 
+import Counts from "../components/counts";
 import PlacementBarChart from "../components/graph";
 
 export default function Dashboard() {
@@ -64,7 +64,7 @@ export default function Dashboard() {
         `}</style>
 
         {/* Main Content */}
-        <div className="container mx-auto px-2 ps-2">
+        <div className="container mx-auto px-2 ps-6">
           {/* Page Title */}
           <div className="mb-8">
             <div className="flex items-center">
