@@ -124,7 +124,7 @@ export default function Home() {
         `}</style>
 
         {/* Main Content */}
-        <div className="container mx-auto px-2 ps-2">
+        <div className="container mx-auto px-2 ps-6">
           {/* Page Title with Hi text and animation */}
           <div className="mb-8">
             <div className="flex items-center">
