@@ -1,27 +1,21 @@
-// heads/placement/YetToBeTab.js
+//src/app/owner/placement/YetToBeTab.js
 "use client";
 import React, { useState } from "react";
 import { notification } from "antd";
 import { RiCloseCircleLine } from "react-icons/ri";
 import Search from "../components/search";
-import { useDataContext } from "../../context/dataContext";
-import {
-  fullstackInitial,
-  dataanalyticsInitial,
-  bankingInitial,
-  marketingInitial,
-  sapInitial,
-  devopsInitial,
-} from "../../context/dataContext";
 
 export default function YetToBePlacedTab() {
-  const { allStudentData } = useDataContext();
-
   // State for search criteria
   const [selectedDomain, setSelectedDomain] = useState("");
   const [selectedBatch, setSelectedBatch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showTable, setShowTable] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  // State for preview modal
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   // Notification hook
   const [api, contextHolder] = notification.useNotification();
@@ -36,13 +30,8 @@ export default function YetToBePlacedTab() {
     devops: "DV",
   };
 
-  // Filter for "Yet to Place" students
-  const yetToPlaceStudentsData = allStudentData.filter(
-    (s) => s.placement && s.placement === "Yet to Place"
-  );
-
   // --- Search Handler ---
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (!selectedDomain && !selectedBatch) {
       api.error({
         message: "Search Error",
@@ -62,25 +51,32 @@ export default function YetToBePlacedTab() {
       return;
     }
 
-    let filteredStudents = yetToPlaceStudentsData;
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (selectedDomain) params.append("domain", selectedDomain);
+      if (selectedBatch) params.append("batch", selectedBatch);
 
-    if (selectedDomain) {
-      const prefix = domainPrefixMap[selectedDomain];
-      if (prefix) {
-        filteredStudents = filteredStudents.filter((s) =>
-          s.batch?.startsWith(prefix)
-        );
-      }
-    }
-
-    if (selectedBatch) {
-      filteredStudents = filteredStudents.filter(
-        (s) => s.batch === selectedBatch
+      // ✅ Fetch from the new API endpoint
+      const res = await fetch(
+        `http://localhost:5000/owner/placement/yet-to-place?${params}`
       );
-    }
+      if (!res.ok) throw new Error("Failed to fetch data");
+      const data = await res.json();
 
-    setSearchResults(filteredStudents);
-    setShowTable(true);
+      setSearchResults(data);
+      setShowTable(true);
+    } catch (err) {
+      console.error("Search error:", err);
+      api.error({
+        message: "Fetch Error",
+        description: "Failed to load student data. Please try again.",
+        duration: 4,
+      });
+      setSearchResults([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // --- Reset Handler ---
@@ -91,15 +87,10 @@ export default function YetToBePlacedTab() {
     setShowTable(false);
   };
 
-  // Combine all batches
-  const allBatches = [
-    ...fullstackInitial,
-    ...dataanalyticsInitial,
-    ...bankingInitial,
-    ...marketingInitial,
-    ...sapInitial,
-    ...devopsInitial,
-  ];
+  // Combine all batches (you can keep this for search dropdown)
+  const allBatches = [];
+  // If you still need mock batches for dropdown, keep your existing logic
+  // Otherwise, consider fetching batches dynamically
 
   // Define domains
   const domains = [
@@ -110,6 +101,26 @@ export default function YetToBePlacedTab() {
     { key: "banking", label: "Banking & Financial Services" },
     { key: "devops", label: "DevOps" },
   ];
+
+  // Handle View Details
+  const handleViewDetails = async (student) => {
+    try {
+      const res = await fetch(
+        `http://localhost:5000/owner/reports/student/${student.booking_id}`
+      );
+      if (!res.ok) throw new Error("Student not found");
+      const fullStudent = await res.json();
+      setSelectedStudent(fullStudent);
+      setIsPreviewOpen(true);
+    } catch (err) {
+      console.error("Failed to load student details:", err);
+      api.error({
+        message: "Error",
+        description: "Could not load full student details.",
+        duration: 3,
+      });
+    }
+  };
 
   return (
     <div className="bg-white">
@@ -143,7 +154,7 @@ export default function YetToBePlacedTab() {
       {/* Search Component */}
       <Search
         domains={domains}
-        batches={allBatches}
+        batches={allBatches} // You can leave empty or populate if needed
         onSearch={handleSearch}
         onReset={handleReset}
         selectedDomain={selectedDomain}
@@ -151,9 +162,14 @@ export default function YetToBePlacedTab() {
         selectedBatch={selectedBatch}
         setSelectedBatch={setSelectedBatch}
         domainPrefixMap={domainPrefixMap}
+        requireDomainForBatch={false} // Optional: allow batch search without domain
       />
 
-      {/* Table */}
+      {/* Loading Indicator */}
+      {loading && (
+        <div className="text-center py-4 text-gray-600">Searching...</div>
+      )}
+
       {/* Table */}
       {showTable && searchResults.length > 0 && (
         <div className="bg-white rounded-lg shadow-md overflow-hidden mt-6 border border-gray-200">
@@ -184,7 +200,7 @@ export default function YetToBePlacedTab() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {searchResults.map((student, index) => (
                   <tr
-                    key={student.bookingId || index}
+                    key={student.booking_id || index}
                     className="hover:bg-gray-50 transition-colors duration-150"
                   >
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -229,7 +245,7 @@ export default function YetToBePlacedTab() {
         </div>
       )}
 
-      {showTable && searchResults.length === 0 && (
+      {showTable && searchResults.length === 0 && !loading && (
         <div className="bg-white rounded-lg shadow-md p-6 text-center mt-6">
           <p className="text-gray-600">
             No students found for the selected criteria.

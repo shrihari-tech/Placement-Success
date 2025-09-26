@@ -17,7 +17,7 @@ export default function DomainTab() {
   //   { key: "devops", label: "DevOps" },
   // ]);
 
-  const [domains,setDomains] = useState([]);
+  const [domains, setDomains] = useState([]);
 
   // Search and filter states
   const [searchTerm, setSearchTerm] = useState("");
@@ -113,18 +113,18 @@ export default function DomainTab() {
   //   setShowModal(true);
   // };
   const handleEdit = async (domain) => {
-  try {
-    const resp = await axios.get(`http://localhost:5000/domain/${domain.id}`);
-    setModalMode("edit");
-    setEditingDomain(resp.data);
-    setFormData({ key: resp.data.key, label: resp.data.label });
-    setFormErrors({});
-    setShowModal(true);
-  } catch (err) {
-    console.error("Error fetching domain:", err);
-    showToast("Failed to fetch domain details", "error");
-  }
-};
+    try {
+      const resp = await axios.get(`http://localhost:5000/domain/${domain.id}`);
+      setModalMode("edit");
+      setEditingDomain(resp.data);
+      setFormData({ key: resp.data.key, label: resp.data.label });
+      setFormErrors({});
+      setShowModal(true);
+    } catch (err) {
+      console.error("Error fetching domain:", err);
+      showToast("Failed to fetch domain details", "error");
+    }
+  };
 
   // Handle delete
   const handleDelete = (domain) => {
@@ -166,56 +166,66 @@ export default function DomainTab() {
   // };
 
   const handleSubmit = async () => {
-  if (!validateForm()) return;
+    if (!validateForm()) return;
 
-  try {
-    if (modalMode === "create") {
-      const response = await axios.post("http://localhost:5000/domain/createDomain", formData);
-      showToast("Domain created successfully");
-      setDomains((prev) => [...prev, { ...formData, id: response.data.id }]);
-      // refresh list
-      const refreshed = await axios.get("http://localhost:5000/domain/allDomains");
-      setDomains(refreshed.data);
-    } else {
-      // You may also need an update endpoint in backend, for now we just update locally
-      // setDomains((prev) =>
-      //   prev.map((d) => (d.key === editingDomain.key ? { ...formData } : d))
-      // );
-      await axios.put(`http://localhost:5000/domain/${editingDomain.id}`, formData);
-      setDomains((prev) =>
-        prev.map((d) =>
-          d.id === editingDomain.id ? { ...editingDomain, ...formData } : d
-        )
-      );
-      showToast("Domain updated successfully");
-    }
-
-    setShowModal(false);
-    setEditingDomain(null);
-
-    // Update filtered results if search is active
-    if (searchInitiated) {
-      setTimeout(() => handleSearch(), 100);
-    }
-  } catch (err) {
-    console.error("Error creating domain:", err);
-    showToast("Failed to create domain", "error");
-  }
-};
-
-useEffect(() => {
-  const fetchDomains = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/domain/allDomains");
-      setDomains(response.data); // assuming backend sends [{id, key, label}, ...]
+      if (modalMode === "create") {
+        const response = await axios.post(
+          "http://localhost:5000/domain/createDomain",
+          formData
+        );
+        showToast("Domain created successfully");
+        setDomains((prev) => [...prev, { ...formData, id: response.data.id }]);
+        // refresh list
+        const refreshed = await axios.get(
+          "http://localhost:5000/domain/allDomains"
+        );
+        setDomains(refreshed.data);
+      } else {
+        // You may also need an update endpoint in backend, for now we just update locally
+        // setDomains((prev) =>
+        //   prev.map((d) => (d.key === editingDomain.key ? { ...formData } : d))
+        // );
+        await axios.put(
+          `http://localhost:5000/domain/${editingDomain.id}`,
+          formData
+        );
+        setDomains((prev) =>
+          prev.map((d) =>
+            d.id === editingDomain.id ? { ...editingDomain, ...formData } : d
+          )
+        );
+        showToast("Domain updated successfully");
+      }
+
+      setShowModal(false);
+      setEditingDomain(null);
+
+      // Update filtered results if search is active
+      if (searchInitiated) {
+        setTimeout(() => handleSearch(), 100);
+      }
     } catch (err) {
-      console.error("Error fetching domains:", err);
-      showToast("Failed to load domains", "error");
+      console.error("Error creating domain:", err);
+      showToast("Failed to create domain", "error");
     }
   };
 
-  fetchDomains();
-}, []);
+  useEffect(() => {
+    const fetchDomains = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/domain/allDomains"
+        );
+        setDomains(response.data); // assuming backend sends [{id, key, label}, ...]
+      } catch (err) {
+        console.error("Error fetching domains:", err);
+        showToast("Failed to load domains", "error");
+      }
+    };
+
+    fetchDomains();
+  }, []);
 
   // Auto-search when typing
   useEffect(() => {
@@ -460,8 +470,8 @@ useEffect(() => {
               Confirm Delete
             </h2>
             <p className="text-gray-600 mb-6">
-              Are you sure you want to delete the domain {deleteConfirm.label}
-              ? This action cannot be undone.
+              Are you sure you want to delete the domain {deleteConfirm.label}?
+              This action cannot be undone.
             </p>
 
             <div className="flex gap-3">

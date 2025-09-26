@@ -15,7 +15,7 @@ import {
 } from "../../context/dataContext";
 
 export default function PlacementsTab() {
-  const { allStudentData } = useDataContext();
+  const [loading, setLoading] = useState(false);
 
   // State for search criteria
   const [selectedDomain, setSelectedDomain] = useState("");
@@ -37,51 +37,42 @@ export default function PlacementsTab() {
   };
 
   // --- Filter for "Placed" students ---
-  const placedStudentsData = allStudentData.filter(
-    (s) => s.placement && (s.placement === "Placed" || s.placement === "placed")
-  );
+  // const placedStudentsData = allStudentData.filter(
+  //   (s) => s.placement && (s.placement === "Placed" || s.placement === "placed")
+  // );
 
   // --- Search Handler ---
-  const handleSearch = () => {
-    if (!selectedDomain && !selectedBatch) {
-      api.error({
-        message: "Search Error",
-        description:
-          "Please select at least one filter (Domain or Batch) to search for placed students.",
-        placement: "topRight",
-        duration: 4,
-        showProgress: true,
-        pauseOnHover: true,
-        closeIcon: (
-          <RiCloseCircleLine
-            className="text-[#6d790b] hover:text-[#cc9601]"
-            size={20}
-          />
-        ),
-      });
-      return;
-    }
+  const handleSearch = async () => {
+  if (!selectedDomain && !selectedBatch) {
+    api.error({ /* same */ });
+    return;
+  }
 
-    let filteredStudents = placedStudentsData;
+  setLoading(true);
+  try {
+    const params = new URLSearchParams();
+    if (selectedDomain) params.append("domain", selectedDomain);
+    if (selectedBatch) params.append("batch", selectedBatch);
 
-    if (selectedDomain) {
-      const prefix = domainPrefixMap[selectedDomain];
-      if (prefix) {
-        filteredStudents = filteredStudents.filter((s) =>
-          s.batch?.startsWith(prefix)
-        );
-      }
-    }
+    const res = await fetch(`http://localhost:5000/owner/reports/placements?${params}`);
+    if (!res.ok) throw new Error("Failed to fetch placements");
+    const data = await res.json();
 
-    if (selectedBatch) {
-      filteredStudents = filteredStudents.filter(
-        (s) => s.batch === selectedBatch
-      );
-    }
-
-    setSearchResults(filteredStudents);
+    setSearchResults(data);
     setShowTable(true);
-  };
+  } catch (err) {
+    console.error("Placement search error:", err);
+    api.error({
+      message: "Fetch Error",
+      description: "Failed to load placed students. Please try again.",
+      duration: 4,
+    });
+    setSearchResults([]);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   // --- Reset Handler ---
   const handleReset = () => {

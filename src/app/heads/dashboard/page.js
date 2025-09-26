@@ -1,3 +1,5 @@
+//src/app/heads/dashboard/page.js
+
 "use client";
 import React, { useMemo } from "react";
 import Navbar from "../navbar"; 

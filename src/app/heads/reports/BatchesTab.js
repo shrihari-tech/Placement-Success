@@ -17,7 +17,9 @@ import {
 import PreviewModal from "../components/previewModal";
 
 export default function BatchesTab() {
-  const { allStudentData } = useDataContext();
+  // Remove allStudentData
+  // Add state for API data
+  const [loading, setLoading] = useState(false);
 
   // State for search criteria
   const [selectedDomain, setSelectedDomain] = useState("");
@@ -43,45 +45,39 @@ export default function BatchesTab() {
   };
 
   // --- Search Handler ---
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (!selectedDomain && !selectedBatch) {
       api.error({
-        message: "Search Error",
-        description:
-          "Please select at least one filter (Domain or Batch) to search.",
-        placement: "topRight",
-        duration: 4,
-        showProgress: true,
-        pauseOnHover: true,
-        closeIcon: (
-          <RiCloseCircleLine
-            className="text-[#6d790b] hover:text-[#cc9601]"
-            size={20}
-          />
-        ),
+        /* same as before */
       });
       return;
     }
 
-    let filteredStudents = allStudentData;
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (selectedDomain) params.append("domain", selectedDomain);
+      if (selectedBatch) params.append("batch", selectedBatch);
 
-    if (selectedDomain) {
-      const prefix = domainPrefixMap[selectedDomain];
-      if (prefix) {
-        filteredStudents = filteredStudents.filter((s) =>
-          s.batch?.startsWith(prefix)
-        );
-      }
-    }
-
-    if (selectedBatch) {
-      filteredStudents = filteredStudents.filter(
-        (s) => s.batch === selectedBatch
+      const res = await fetch(
+        `http://localhost:5000/owner/reports/batches?${params}`
       );
-    }
+      if (!res.ok) throw new Error("Failed to fetch data");
+      const data = await res.json();
 
-    setSearchResults(filteredStudents);
-    setShowTable(true);
+      setSearchResults(data);
+      setShowTable(true);
+    } catch (err) {
+      console.error("Search error:", err);
+      api.error({
+        message: "Fetch Error",
+        description: "Failed to load student data. Please try again.",
+        duration: 4,
+      });
+      setSearchResults([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // --- Reset Handler ---
@@ -113,9 +109,23 @@ export default function BatchesTab() {
   ];
 
   // Handle View Details
-  const handleViewDetails = (student) => {
-    setSelectedStudent(student);
-    setIsPreviewOpen(true);
+  const handleViewDetails = async (student) => {
+    try {
+      const res = await fetch(
+        `http://localhost:5000/owner/reports/student/${student.booking_id}`
+      );
+      if (!res.ok) throw new Error("Student not found");
+      const fullStudent = await res.json();
+      setSelectedStudent(fullStudent);
+      setIsPreviewOpen(true);
+    } catch (err) {
+      console.error("Failed to load student details:", err);
+      api.error({
+        message: "Error",
+        description: "Could not load full student details.",
+        duration: 3,
+      });
+    }
   };
 
   return (

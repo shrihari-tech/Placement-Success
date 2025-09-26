@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { notification } from "antd";
 import { RiCloseCircleLine } from "react-icons/ri";
 import Search from "../components/search";
-import { useDataContext } from "../../context/dataContext";
 import {
   fullstackInitial,
   dataanalyticsInitial,
@@ -16,7 +15,7 @@ import {
 import PreviewModal from "../components/previewModal";
 
 export default function EpicReport() {
-  const { allStudentData } = useDataContext();
+  const [loading, setLoading] = useState(false);
 
   // State for search criteria
   const [selectedDomain, setSelectedDomain] = useState("");
@@ -42,7 +41,7 @@ export default function EpicReport() {
   };
 
   // --- Search Handler ---
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (!selectedDomain && !selectedBatch) {
       api.error({
         message: "Search Error",
@@ -62,25 +61,31 @@ export default function EpicReport() {
       return;
     }
 
-    let filteredStudents = allStudentData;
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (selectedDomain) params.append("domain", selectedDomain);
+      if (selectedBatch) params.append("batch", selectedBatch);
 
-    if (selectedDomain) {
-      const prefix = domainPrefixMap[selectedDomain];
-      if (prefix) {
-        filteredStudents = filteredStudents.filter((s) =>
-          s.batch?.startsWith(prefix)
-        );
-      }
-    }
-
-    if (selectedBatch) {
-      filteredStudents = filteredStudents.filter(
-        (s) => s.batch === selectedBatch
+      const res = await fetch(
+        `http://localhost:5000/owner/epic/search?${params}`
       );
-    }
+      if (!res.ok) throw new Error("Failed to fetch EPIC data");
+      const data = await res.json();
 
-    setSearchResults(filteredStudents);
-    setShowTable(true);
+      setSearchResults(data);
+      setShowTable(true);
+    } catch (err) {
+      console.error("EPIC search error:", err);
+      api.error({
+        message: "Fetch Error",
+        description: "Failed to load EPIC data. Please try again.",
+        duration: 4,
+      });
+      setSearchResults([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // --- Reset Handler ---
@@ -110,12 +115,6 @@ export default function EpicReport() {
     { key: "banking", label: "Banking & Financial Services" },
     { key: "devops", label: "DevOps" },
   ];
-
-  // Handle View Details
-  const handleViewDetails = (student) => {
-    setSelectedStudent(student);
-    setIsPreviewOpen(true);
-  };
 
   return (
     <div className="bg-white">
@@ -184,7 +183,6 @@ export default function EpicReport() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Epic Status
                   </th>
-                 
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -227,7 +225,6 @@ export default function EpicReport() {
                         {student.epicStatus || "Unknown"}
                       </span>
                     </td>
-                 
                   </tr>
                 ))}
               </tbody>

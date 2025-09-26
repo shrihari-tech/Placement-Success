@@ -3933,62 +3933,62 @@ export const sstudentData = [
   ...devopsStudentData.map((s) => ({ ...s, domain: "devops" })),
 ];
 
-const batchStatsData = {
-  fullstack: {
-    completedBatches: 18,
-    ongoingBatches: 4,
-    completedStudents: 500,
-    ongoingStudents: 80,
-    placementEligible: 50,
-    alreadyPlaced: 320,
-    yetToPlace: 180,
-  },
-  data: {
-    completedBatches: 12,
-    ongoingBatches: 3,
-    completedStudents: 400,
-    ongoingStudents: 50,
-    placementEligible: 30,
-    alreadyPlaced: 260,
-    yetToPlace: 140,
-  },
-  banking: {
-    completedBatches: 8,
-    ongoingBatches: 2,
-    completedStudents: 300,
-    ongoingStudents: 40,
-    placementEligible: 20,
-    alreadyPlaced: 180,
-    yetToPlace: 120,
-  },
-  marketing: {
-    completedBatches: 5,
-    ongoingBatches: 1,
-    completedStudents: 200,
-    ongoingStudents: 20,
-    placementEligible: 10,
-    alreadyPlaced: 120,
-    yetToPlace: 80,
-  },
-  sap: {
-    completedBatches: 6,
-    ongoingBatches: 2,
-    completedStudents: 100,
-    ongoingStudents: 30,
-    placementEligible: 8,
-    alreadyPlaced: 60,
-    yetToPlace: 70,
-  },
-  devops: {
-    completedBatches: 3,
-    ongoingBatches: 2,
-    completedStudents: 100,
-    ongoingStudents: 10,
-    placementEligible: 5,
-    alreadyPlaced: 40,
-    yetToPlace: 70,
-  },
-};
+// const batchStatsData = {
+//   fullstack: {
+//     completedBatches: 18,
+//     ongoingBatches: 4,
+//     completedStudents: 500,
+//     ongoingStudents: 80,
+//     placementEligible: 50,
+//     alreadyPlaced: 320,
+//     yetToPlace: 180,
+//   },
+//   data: {
+//     completedBatches: 12,
+//     ongoingBatches: 3,
+//     completedStudents: 400,
+//     ongoingStudents: 50,
+//     placementEligible: 30,
+//     alreadyPlaced: 260,
+//     yetToPlace: 140,
+//   },
+//   banking: {
+//     completedBatches: 8,
+//     ongoingBatches: 2,
+//     completedStudents: 300,
+//     ongoingStudents: 40,
+//     placementEligible: 20,
+//     alreadyPlaced: 180,
+//     yetToPlace: 120,
+//   },
+//   marketing: {
+//     completedBatches: 5,
+//     ongoingBatches: 1,
+//     completedStudents: 200,
+//     ongoingStudents: 20,
+//     placementEligible: 10,
+//     alreadyPlaced: 120,
+//     yetToPlace: 80,
+//   },
+//   sap: {
+//     completedBatches: 6,
+//     ongoingBatches: 2,
+//     completedStudents: 100,
+//     ongoingStudents: 30,
+//     placementEligible: 8,
+//     alreadyPlaced: 60,
+//     yetToPlace: 70,
+//   },
+//   devops: {
+//     completedBatches: 3,
+//     ongoingBatches: 2,
+//     completedStudents: 100,
+//     ongoingStudents: 10,
+//     placementEligible: 5,
+//     alreadyPlaced: 40,
+//     yetToPlace: 70,
+//   },
+// };
 
 // ➤ Provider Component
 const DataProvider = ({ children }) => {
@@ -4011,6 +4011,53 @@ const DataProvider = ({ children }) => {
     student: 0,
     domain: 6,
   }); // live counts of students in each domain
+
+  
+  // ➤ Add these inside DataProvider, near other useState calls
+  const [batchStatsDataFromAPI, setBatchStatsDataFromAPI] = useState({
+    fullstack: {
+      totalBatches: 0,
+      upcomingBatches: 0,
+      alreadyPlaced: 0,
+      yetToPlace: 0,
+    },
+    data: {
+      totalBatches: 0,
+      upcomingBatches: 0,
+      alreadyPlaced: 0,
+      yetToPlace: 0,
+    },
+    marketing: {
+      totalBatches: 0,
+      upcomingBatches: 0,
+      alreadyPlaced: 0,
+      yetToPlace: 0,
+    },
+    sap: {
+      totalBatches: 0,
+      upcomingBatches: 0,
+      alreadyPlaced: 0,
+      yetToPlace: 0,
+    },
+    banking: {
+      totalBatches: 0,
+      upcomingBatches: 0,
+      alreadyPlaced: 0,
+      yetToPlace: 0,
+    },
+    devops: {
+      totalBatches: 0,
+      upcomingBatches: 0,
+      alreadyPlaced: 0,
+      yetToPlace: 0,
+    },
+  });
+
+  const [graphDataFromAPI, setGraphDataFromAPI] = useState({
+    previousData: [],
+    currentData: [],
+  });
+
 
   // ➤ Domain-wise individual state data
   const [fullstackData, setFullstackData] = useState(fullstackInitial);
@@ -4154,27 +4201,17 @@ const DataProvider = ({ children }) => {
     ];
   }, [devopsData]);
 
-  const calculateUpcomingBatchesPerDomain = useCallback(() => {
-    // console.log("Calculating upcoming batches..."); // Optional debug log
-    return {
-      fullstack:
-        fullstackData?.filter((b) => b?.status === "Ongoing")?.length ?? 0,
-      data:
-        dataanalyticsData?.filter((b) => b?.status === "Ongoing")?.length ?? 0, // Key 'data'
-      marketing:
-        marketingData?.filter((b) => b?.status === "Ongoing")?.length ?? 0,
-      sap: sapData?.filter((b) => b?.status === "Ongoing")?.length ?? 0,
-      banking: bankingData?.filter((b) => b?.status === "Ongoing")?.length ?? 0,
-      devops: devopsData?.filter((b) => b?.status === "Ongoing")?.length ?? 0,
-    };
-  }, [
-    fullstackData,
-    dataanalyticsData,
-    marketingData,
-    sapData,
-    bankingData,
-    devopsData,
-  ]);
+  // ➤ Replace the existing calculateUpcomingBatchesPerDomain
+const calculateUpcomingBatchesPerDomain = useCallback(() => {
+  return {
+    fullstack: batchStatsDataFromAPI.fullstack.upcomingBatches,
+    data: batchStatsDataFromAPI.data.upcomingBatches,
+    marketing: batchStatsDataFromAPI.marketing.upcomingBatches,
+    sap: batchStatsDataFromAPI.sap.upcomingBatches,
+    banking: batchStatsDataFromAPI.banking.upcomingBatches,
+    devops: batchStatsDataFromAPI.devops.upcomingBatches,
+  };
+}, [batchStatsDataFromAPI]);
 
   //all batches names across domains
   useEffect(() => {
@@ -4296,6 +4333,99 @@ const DataProvider = ({ children }) => {
     }
     setStudentData(updateList(studentData));
   };
+
+useEffect(() => {
+  const fetchDashboardData = async () => {
+    try {
+      // ✅ Fetch counts from /owner/dashboard/counts
+      const countsRes = await fetch("http://localhost:5000/owner/dashboard/counts");
+      const countsData = await countsRes.json();
+      if (!countsRes.ok) throw new Error("Failed to load dashboard counts");
+
+      // ✅ Fetch graphs from /owner/dashboard/graphs
+      const graphsRes = await fetch("http://localhost:5000/owner/dashboard/graphs");
+      const graphsData = await graphsRes.json();
+      if (!graphsRes.ok) throw new Error("Failed to load dashboard graphs");
+
+      // ➤ 1. Normalize counts into batchStatsDataFromAPI structure
+      const normalizedStats = {
+        fullstack: {
+          totalBatches: 0, // ❌ Not provided by /counts → keep 0 or omit
+          upcomingBatches: countsData.ongoingBatchesPerDomain.fullstack,
+          alreadyPlaced: 0, // ❌ Not in /counts — but graphs has it
+          yetToPlace: 0,
+        },
+        data: {
+          totalBatches: 0,
+          upcomingBatches: countsData.ongoingBatchesPerDomain.data,
+          alreadyPlaced: 0,
+          yetToPlace: 0,
+        },
+        marketing: {
+          totalBatches: 0,
+          upcomingBatches: countsData.ongoingBatchesPerDomain.marketing,
+          alreadyPlaced: 0,
+          yetToPlace: 0,
+        },
+        sap: {
+          totalBatches: 0,
+          upcomingBatches: countsData.ongoingBatchesPerDomain.sap,
+          alreadyPlaced: 0,
+          yetToPlace: 0,
+        },
+        banking: {
+          totalBatches: 0,
+          upcomingBatches: countsData.ongoingBatchesPerDomain.banking,
+          alreadyPlaced: 0,
+          yetToPlace: 0,
+        },
+        devops: {
+          totalBatches: 0,
+          upcomingBatches: countsData.ongoingBatchesPerDomain.devops,
+          alreadyPlaced: 0,
+          yetToPlace: 0,
+        },
+      };
+
+      // ➤ 2. Extract placed/yetToPlace from graphsData
+      const getStudentCountByDomain = (data, domainLabel) => {
+        const item = data.find((d) => d.name === domainLabel);
+        return item ? item.students : 0;
+      };
+
+      normalizedStats.fullstack.alreadyPlaced = getStudentCountByDomain(graphsData.placedData, "FSD");
+      normalizedStats.fullstack.yetToPlace = getStudentCountByDomain(graphsData.yetToPlaceData, "FSD");
+
+      normalizedStats.data.alreadyPlaced = getStudentCountByDomain(graphsData.placedData, "DADS");
+      normalizedStats.data.yetToPlace = getStudentCountByDomain(graphsData.yetToPlaceData, "DADS");
+
+      normalizedStats.marketing.alreadyPlaced = getStudentCountByDomain(graphsData.placedData, "MK");
+      normalizedStats.marketing.yetToPlace = getStudentCountByDomain(graphsData.yetToPlaceData, "MK");
+
+      normalizedStats.sap.alreadyPlaced = getStudentCountByDomain(graphsData.placedData, "SAP");
+      normalizedStats.sap.yetToPlace = getStudentCountByDomain(graphsData.yetToPlaceData, "SAP");
+
+      normalizedStats.banking.alreadyPlaced = getStudentCountByDomain(graphsData.placedData, "BFS");
+      normalizedStats.banking.yetToPlace = getStudentCountByDomain(graphsData.yetToPlaceData, "BFS");
+
+      normalizedStats.devops.alreadyPlaced = getStudentCountByDomain(graphsData.placedData, "DV");
+      normalizedStats.devops.yetToPlace = getStudentCountByDomain(graphsData.yetToPlaceData, "DV");
+
+      // ➤ Set states
+      setBatchStatsDataFromAPI(normalizedStats);
+      setGraphDataFromAPI({
+        placedData: graphsData.placedData,
+        yetToPlaceData: graphsData.yetToPlaceData,
+      });
+
+    } catch (err) {
+      console.error("Failed to fetch dashboard data:", err);
+    }
+  };
+
+  fetchDashboardData();
+}, []);
+
 
   // 🔄 Update studentData and studentHead when batchingvalue changes
   useEffect(() => {
@@ -4871,6 +5001,8 @@ const DataProvider = ({ children }) => {
     );
   };
 
+ 
+
   return (
     <DataContext.Provider
       value={{
@@ -4890,7 +5022,7 @@ const DataProvider = ({ children }) => {
         selectedBatch,
         setSelectedBatch,
         getStatsByBatch,
-        batchStatsData,
+        // batchStatsData,
         batchesNames,
         studentData,
         deleteStudent,
@@ -4923,7 +5055,7 @@ const DataProvider = ({ children }) => {
         bankingOpportunities,
         setBankingOpportunities,
         calculateTotalBatchesPerDomain,
-        calculateUpcomingBatchesPerDomain,
+        
         placementFSDStudents,
         setPlacementFSDStudents,
         updateOpportunity,
@@ -4939,6 +5071,9 @@ const DataProvider = ({ children }) => {
         marketingStudent,
         sapStudent,
         devopsStudent,
+        batchStatsData: batchStatsDataFromAPI, // ✅ Use API data
+        graphData: graphDataFromAPI, // ✅ Add graph data
+        calculateUpcomingBatchesPerDomain,
       }}
     >
       {children}
