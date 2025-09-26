@@ -4,15 +4,18 @@ import React, { useState, useEffect, useRef } from "react";
 import { FiEdit, FiTrash2, FiPlus, FiChevronDown } from "react-icons/fi";
 import { FaSearch } from "react-icons/fa";
 import { RiCloseCircleLine } from "react-icons/ri";
+import axios from "axios";
 import Image from "next/image";
 
 export default function EPICTab() {
-  const [proficiencyLevels, setProficiencyLevels] = useState([
-    { key: "excellent", label: "E" },
-    { key: "intermediate", label: "I" },
-    { key: "proficient", label: "P" },
-    { key: "capable", label: "C" },
-  ]);
+  // const [proficiencyLevels, setProficiencyLevels] = useState([
+  //   { key: "excellent", label: "E" },
+  //   { key: "intermediate", label: "I" },
+  //   { key: "proficient", label: "P" },
+  //   { key: "capable", label: "C" },
+  // ]);
+
+  const [proficiencyLevels, setProficiencyLevels] = useState([]);
 
   // Search and filter states
   const [searchTerm, setSearchTerm] = useState("");
@@ -112,13 +115,21 @@ export default function EPICTab() {
   };
 
   // Handle edit
+  // const handleEdit = (level) => {
+  //   setModalMode("edit");
+  //   setEditingProficiencyLevel(level);
+  //   setFormData({ key: level.key, label: level.label });
+  //   setFormErrors({});
+  //   setShowModal(true);
+  // };
   const handleEdit = (level) => {
     setModalMode("edit");
-    setEditingProficiencyLevel(level);
+    setEditingProficiencyLevel(level); // keep full object (id, key, label)
     setFormData({ key: level.key, label: level.label });
     setFormErrors({});
     setShowModal(true);
   };
+
 
   // Handle delete
   const handleDelete = (level) => {
@@ -139,19 +150,72 @@ export default function EPICTab() {
   };
 
   // Handle form submit
-  const handleSubmit = () => {
-    if (!validateForm()) return;
+  // const handleSubmit = () => {
+  //   if (!validateForm()) return;
 
+  //   if (modalMode === "create") {
+  //     setProficiencyLevels((prev) => [...prev, { ...formData }]);
+  //     showToast("Proficiency level created successfully");
+  //   } else {
+  //     setProficiencyLevels((prev) =>
+  //       prev.map((pl) =>
+  //         pl.key === editingProficiencyLevel.key ? { ...formData } : pl
+  //       )
+  //     );
+  //     showToast("Proficiency level updated successfully");
+  //   }
+
+  //   setShowModal(false);
+  //   setEditingProficiencyLevel(null);
+
+  //   // Update filtered results if search is active
+  //   if (searchInitiated) {
+  //     setTimeout(() => handleSearch(), 100);
+  //   }
+  // };
+  const fetchEpics = async () => {
+  try {
+    const res = await axios.get("http://localhost:5000/epic/allEPIC");
+    setProficiencyLevels(res.data); // update state with full list
+  } catch (err) {
+    console.error("Error fetching epics:", err);
+    showToast("Failed to fetch epics", "error");
+  }
+};
+
+
+  const handleSubmit = async () => {
+  if (!validateForm()) return;
+
+  try {
     if (modalMode === "create") {
-      setProficiencyLevels((prev) => [...prev, { ...formData }]);
-      showToast("Proficiency level created successfully");
-    } else {
+      // Call backend to create new EPIC
+      const res = await axios.post("http://localhost:5000/epic/createEPIC", formData);
+
+      // Update frontend state with new data
+      // setProficiencyLevels((prev) => [...prev, res.data]);
       setProficiencyLevels((prev) =>
-        prev.map((pl) =>
-          pl.key === editingProficiencyLevel.key ? { ...formData } : pl
-        )
+        prev.map((pl) => (pl.id === res.data.id ? res.data : pl))
       );
-      showToast("Proficiency level updated successfully");
+      fetchEpics(); // refresh the list from backend
+      showToast("Epic created successfully");
+    } else {
+      // Call backend to update existing EPIC
+      const res = await axios.put(
+        `http://localhost:5000/epic/${editingProficiencyLevel.id}`,
+        formData
+      );
+
+      // setProficiencyLevels((prev) =>
+      //   prev.map((pl) =>
+      //     pl.key === editingProficiencyLevel.key ? res.data : pl
+      //   )
+      // );
+      setProficiencyLevels((prev) =>
+        prev.map((pl) => (pl.id === res.data.id ? res.data : pl))
+      );
+      fetchEpics(); // refresh the list from backend
+      showToast("Epic updated successfully");
     }
 
     setShowModal(false);
@@ -161,7 +225,25 @@ export default function EPICTab() {
     if (searchInitiated) {
       setTimeout(() => handleSearch(), 100);
     }
-  };
+  } catch (err) {
+    console.error("Error saving epic:", err);
+    showToast("Failed to save epic", "error");
+  }
+};
+
+
+useEffect(() => {
+    const fetchEpics = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/epic/allEPIC");
+        setProficiencyLevels(res.data); // backend should return an array of epics
+      } catch (err) {
+        console.error("Error fetching epics:", err);
+        showToast("Failed to fetch epics", "error");
+      }
+    };
+    fetchEpics();
+  }, []);
 
   // Auto-search when typing
   useEffect(() => {
@@ -273,7 +355,7 @@ export default function EPICTab() {
               {displayProficiencyLevels.length > 0 ? (
                 displayProficiencyLevels.map((level, index) => (
                   <tr
-                    key={level.key}
+                    key={level.id ?? level.key ?? index}
                     className="hover:bg-[#5f6a0a11] text-gray-600"
                   >
                     <td className="px-5 py-3 text-center text-sm">

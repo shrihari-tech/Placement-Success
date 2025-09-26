@@ -18,6 +18,7 @@ import React, { useState, useEffect } from "react";
 import { useDataContext } from "../context/dataContext";
 import { useRef, useCallback } from "react";
 import Tabs from "./components/tab";
+import axios from "axios";
 
 // Inside your component
 
@@ -793,49 +794,102 @@ export default function BatchModel() {
     return isValid;
   };
 
-  const handleAddBatch = () => {
-    if (!validateForm()) return;
-    if (Object.values(modalDateErrors).some((e) => e)) {
-      toast.error("Please fix the date range errors before adding the batch");
-      return;
-    }
-    /* ⬇️ earliest / latest across sections */
-    const allSecs = Object.values(newBatch.sections);
-    const earliest = new Date(
-      Math.min(...allSecs.map((s) => new Date(s.startDate)))
-    );
-    const latest = new Date(
-      Math.max(...allSecs.map((s) => new Date(s.endDate)))
-    );
+  // const handleAddBatch = () => {
+  //   if (!validateForm()) return;
+  //   if (Object.values(modalDateErrors).some((e) => e)) {
+  //     toast.error("Please fix the date range errors before adding the batch");
+  //     return;
+  //   }
+  //   /* ⬇️ earliest / latest across sections */
+  //   const allSecs = Object.values(newBatch.sections);
+  //   const earliest = new Date(
+  //     Math.min(...allSecs.map((s) => new Date(s.startDate)))
+  //   );
+  //   const latest = new Date(
+  //     Math.max(...allSecs.map((s) => new Date(s.endDate)))
+  //   );
 
-    /* convert every section date to DD-MM-YYYY */
-    const sectionCopy = {};
-    for (const [k, s] of Object.entries(newBatch.sections)) {
-      sectionCopy[k] = {
-        startDate: toDDMMYYYY(parseDate(s.startDate)),
-        endDate: toDDMMYYYY(parseDate(s.endDate)),
-      };
-    }
+  //   /* convert every section date to DD-MM-YYYY */
+  //   const sectionCopy = {};
+  //   for (const [k, s] of Object.entries(newBatch.sections)) {
+  //     sectionCopy[k] = {
+  //       startDate: toDDMMYYYY(parseDate(s.startDate)),
+  //       endDate: toDDMMYYYY(parseDate(s.endDate)),
+  //     };
+  //   }
 
-    const newBatchEntry = {
-      id: batches.length + 1,
-      batchNo: newBatch.batchNo,
-      status: newBatch.status,
-      mode: newBatch.mode,
-      startDate: toDDMMYYYY(earliest),
-      endDate: toDDMMYYYY(latest),
-      studentsPlaced: 0, // Add these
-      pending: 0,
-      trainerName: "", // Add these
-      epicData: {},
-      sections: sectionCopy,
+  //   const newBatchEntry = {
+  //     id: batches.length + 1,
+  //     batchNo: newBatch.batchNo,
+  //     status: newBatch.status,
+  //     mode: newBatch.mode,
+  //     startDate: toDDMMYYYY(earliest),
+  //     endDate: toDDMMYYYY(latest),
+  //     studentsPlaced: 0, // Add these
+  //     pending: 0,
+  //     trainerName: "", // Add these
+  //     epicData: {},
+  //     sections: sectionCopy,
+  //   };
+
+  //   addBatch(newBatchEntry);
+  //   setShowModal(false);
+  //   resetForm();
+  //   toast.success("Batch added successfully");
+  // };
+  const handleAddBatch = async () => {
+  if (!validateForm()) return;
+  if (Object.values(modalDateErrors).some((e) => e)) {
+    toast.error("Please fix the date range errors before adding the batch");
+    return;
+  }
+
+  /* ⬇️ earliest / latest across sections */
+  const allSecs = Object.values(newBatch.sections);
+  const earliest = new Date(
+    Math.min(...allSecs.map((s) => new Date(s.startDate)))
+  );
+  const latest = new Date(
+    Math.max(...allSecs.map((s) => new Date(s.endDate)))
+  );
+
+  /* convert every section date to DD-MM-YYYY */
+  const sectionCopy = {};
+  for (const [k, s] of Object.entries(newBatch.sections)) {
+    sectionCopy[k] = {
+      startDate: toDDMMYYYY(parseDate(s.startDate)),
+      endDate: toDDMMYYYY(parseDate(s.endDate)),
     };
+  }
 
-    addBatch(newBatchEntry);
-    setShowModal(false);
-    resetForm();
-    toast.success("Batch added successfully");
+  const newBatchEntry = {
+    batchName: newBatch.batchNo, // ✅ match DB column name
+    status: newBatch.status,
+    mode: newBatch.mode,
+    startDate: toDDMMYYYY(earliest),
+    endDate: toDDMMYYYY(latest),
+    trainer: newBatch.trainerName || "", // optional trainer field
+    selectedDomain: selectedDomain || "", // optional domain field
   };
+
+  try {
+    const res = await axios.post(
+      "http://localhost:5000/batches/addBatch",
+      newBatchEntry
+    );
+
+    if (res.status === 201) {
+      toast.success("Batch added successfully");
+      setShowModal(false);
+      resetForm();
+      // optionally re-fetch batches from backend instead of local add
+      // fetchBatches();
+    }
+  } catch (err) {
+    console.error("Error adding batch:", err);
+    toast.error("Failed to add batch");
+  }
+};
 
   // 👇 runs on each onChange
   const validateBatchNumber = (value) => {

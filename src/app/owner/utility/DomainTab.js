@@ -4,17 +4,20 @@ import React, { useState, useEffect, useRef } from "react";
 import { FiEdit, FiTrash2, FiPlus, FiChevronDown } from "react-icons/fi";
 import { FaSearch } from "react-icons/fa";
 import { RiCloseCircleLine } from "react-icons/ri";
+import axios from "axios";
 import Image from "next/image";
 
 export default function DomainTab() {
-  const [domains, setDomains] = useState([
-    { key: "fullstack", label: "Full Stack Development" },
-    { key: "dataanalytics", label: "Data Analytics & Science" },
-    { key: "marketing", label: "Digital Marketing" },
-    { key: "sap", label: "SAP" },
-    { key: "banking", label: "Banking & Financial Services" },
-    { key: "devops", label: "DevOps" },
-  ]);
+  // const [domains, setDomains] = useState([
+  //   { key: "fullstack", label: "Full Stack Development" },
+  //   { key: "dataanalytics", label: "Data Analytics & Science" },
+  //   { key: "marketing", label: "Digital Marketing" },
+  //   { key: "sap", label: "SAP" },
+  //   { key: "banking", label: "Banking & Financial Services" },
+  //   { key: "devops", label: "DevOps" },
+  // ]);
+
+  const [domains,setDomains] = useState([]);
 
   // Search and filter states
   const [searchTerm, setSearchTerm] = useState("");
@@ -102,13 +105,26 @@ export default function DomainTab() {
   };
 
   // Handle edit
-  const handleEdit = (domain) => {
+  // const handleEdit = (domain) => {
+  //   setModalMode("edit");
+  //   setEditingDomain(domain);
+  //   setFormData({ key: domain.key, label: domain.label });
+  //   setFormErrors({});
+  //   setShowModal(true);
+  // };
+  const handleEdit = async (domain) => {
+  try {
+    const resp = await axios.get(`http://localhost:5000/domain/${domain.id}`);
     setModalMode("edit");
-    setEditingDomain(domain);
-    setFormData({ key: domain.key, label: domain.label });
+    setEditingDomain(resp.data);
+    setFormData({ key: resp.data.key, label: resp.data.label });
     setFormErrors({});
     setShowModal(true);
-  };
+  } catch (err) {
+    console.error("Error fetching domain:", err);
+    showToast("Failed to fetch domain details", "error");
+  }
+};
 
   // Handle delete
   const handleDelete = (domain) => {
@@ -127,15 +143,49 @@ export default function DomainTab() {
   };
 
   // Handle form submit
-  const handleSubmit = () => {
-    if (!validateForm()) return;
+  // const handleSubmit = () => {
+  //   if (!validateForm()) return;
 
+  //   if (modalMode === "create") {
+  //     setDomains((prev) => [...prev, { ...formData }]);
+  //     showToast("Domain created successfully");
+  //   } else {
+  //     setDomains((prev) =>
+  //       prev.map((d) => (d.key === editingDomain.key ? { ...formData } : d))
+  //     );
+  //     showToast("Domain updated successfully");
+  //   }
+
+  //   setShowModal(false);
+  //   setEditingDomain(null);
+
+  //   // Update filtered results if search is active
+  //   if (searchInitiated) {
+  //     setTimeout(() => handleSearch(), 100);
+  //   }
+  // };
+
+  const handleSubmit = async () => {
+  if (!validateForm()) return;
+
+  try {
     if (modalMode === "create") {
-      setDomains((prev) => [...prev, { ...formData }]);
+      const response = await axios.post("http://localhost:5000/domain/createDomain", formData);
       showToast("Domain created successfully");
+      setDomains((prev) => [...prev, { ...formData, id: response.data.id }]);
+      // refresh list
+      const refreshed = await axios.get("http://localhost:5000/domain/allDomains");
+      setDomains(refreshed.data);
     } else {
+      // You may also need an update endpoint in backend, for now we just update locally
+      // setDomains((prev) =>
+      //   prev.map((d) => (d.key === editingDomain.key ? { ...formData } : d))
+      // );
+      await axios.put(`http://localhost:5000/domain/${editingDomain.id}`, formData);
       setDomains((prev) =>
-        prev.map((d) => (d.key === editingDomain.key ? { ...formData } : d))
+        prev.map((d) =>
+          d.id === editingDomain.id ? { ...editingDomain, ...formData } : d
+        )
       );
       showToast("Domain updated successfully");
     }
@@ -147,7 +197,25 @@ export default function DomainTab() {
     if (searchInitiated) {
       setTimeout(() => handleSearch(), 100);
     }
+  } catch (err) {
+    console.error("Error creating domain:", err);
+    showToast("Failed to create domain", "error");
+  }
+};
+
+useEffect(() => {
+  const fetchDomains = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/domain/allDomains");
+      setDomains(response.data); // assuming backend sends [{id, key, label}, ...]
+    } catch (err) {
+      console.error("Error fetching domains:", err);
+      showToast("Failed to load domains", "error");
+    }
   };
+
+  fetchDomains();
+}, []);
 
   // Auto-search when typing
   useEffect(() => {
@@ -257,7 +325,7 @@ export default function DomainTab() {
               {displayDomains.length > 0 ? (
                 displayDomains.map((domain, index) => (
                   <tr
-                    key={domain.key}
+                    key={domain.key || domain.id}
                     className="hover:bg-[#5f6a0a11] text-gray-600"
                   >
                     <td className="px-5 py-3 text-center text-sm">

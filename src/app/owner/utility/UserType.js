@@ -4,16 +4,18 @@ import React, { useState, useEffect, useRef } from "react";
 import { FiEdit, FiTrash2, FiPlus, FiChevronDown } from "react-icons/fi";
 import { FaSearch } from "react-icons/fa";
 import { RiCloseCircleLine } from "react-icons/ri";
+import axios from "axios";
 import Image from "next/image";
 
 export default function UserType() {
-  const [userTypes, setUserTypes] = useState([
-    { key: "psm", label: "PSM" },
-    { key: "sme", label: "SME" },
-    { key: "placementophead", label: "Placement Op Head" },
-    { key: "placementtl", label: "Placement TL" },
-    { key: "heds", label: "HEDS" },
-  ]);
+  // const [userTypes, setUserTypes] = useState([
+  //   { key: "psm", label: "PSM" },
+  //   { key: "sme", label: "SME" },
+  //   { key: "placementophead", label: "Placement Op Head" },
+  //   { key: "placementtl", label: "Placement TL" },
+  //   { key: "heds", label: "HEDS" },
+  // ]);
+  const [userTypes, setUserTypes] = useState([]);
 
   // Search and filter states
   const [searchTerm, setSearchTerm] = useState("");
@@ -92,6 +94,19 @@ export default function UserType() {
     setTimeout(() => setToast({ show: false, message: "", type: "" }), 3000);
   };
 
+    useEffect(() => {
+    const fetchUserTypes = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/user/allUsers");
+        setUserTypes(response.data); // assume response.data is an array of user types
+      } catch (err) {
+        console.error("Error fetching user types:", err);
+        showToast("Failed to fetch user types", "error");
+      }
+    };
+    fetchUserTypes();
+  }, []);
+
   // Handle create
   const handleCreate = () => {
     setModalMode("create");
@@ -126,13 +141,54 @@ export default function UserType() {
   };
 
   // Handle form submit
-  const handleSubmit = () => {
-    if (!validateForm()) return;
+  // const handleSubmit = () => {
+  //   if (!validateForm()) return;
 
+  //   if (modalMode === "create") {
+  //     setUserTypes((prev) => [...prev, { ...formData }]);
+  //     showToast("User type created successfully");
+  //   } else {
+  //     setUserTypes((prev) =>
+  //       prev.map((ut) =>
+  //         ut.key === editingUserType.key ? { ...formData } : ut
+  //       )
+  //     );
+  //     showToast("User type updated successfully");
+  //   }
+
+  //   setShowModal(false);
+  //   setEditingUserType(null);
+
+  //   // Update filtered results if search is active
+  //   if (searchInitiated) {
+  //     setTimeout(() => handleSearch(), 100);
+  //   }
+  // };
+
+  const handleSubmit = async () => {
+  if (!validateForm()) return;
+
+  try {
     if (modalMode === "create") {
-      setUserTypes((prev) => [...prev, { ...formData }]);
+      // Send POST request to backend
+      const response = await axios.post(
+        "http://localhost:5000/user/createUser",
+        formData
+      );
+
       showToast("User type created successfully");
+
+      // Add the returned ID from backend (if any) to local state
+      setUserTypes((prev) => [
+        ...prev,
+        { ...formData, id: response.data.id || prev.length + 1 },
+      ]);
     } else {
+      // Local edit; you can later add PUT request for backend update
+        const response = await axios.put(
+        `http://localhost:5000/user/updateUser/${editingUserType.key}`,
+        formData
+      );
       setUserTypes((prev) =>
         prev.map((ut) =>
           ut.key === editingUserType.key ? { ...formData } : ut
@@ -148,7 +204,11 @@ export default function UserType() {
     if (searchInitiated) {
       setTimeout(() => handleSearch(), 100);
     }
-  };
+  } catch (err) {
+    console.error("Error creating user type:", err);
+    showToast("Failed to create user type", "error");
+  }
+};
 
   // Auto-search when typing
   useEffect(() => {
