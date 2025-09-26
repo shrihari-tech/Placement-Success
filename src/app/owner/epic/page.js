@@ -1,4 +1,4 @@
-// src/app/heads/epic/page.js
+// src/app/owner/epic/page.js
 "use client";
 import React from "react";
 import Navbar from "../navbar";

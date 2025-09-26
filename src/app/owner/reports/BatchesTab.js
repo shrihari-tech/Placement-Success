@@ -1,4 +1,4 @@
-// src/app/heads/reports/BatchesTab.js
+// src/app/owner/reports/BatchesTab.js
 "use client";
 import React, { useState } from "react";
 import { notification } from "antd";

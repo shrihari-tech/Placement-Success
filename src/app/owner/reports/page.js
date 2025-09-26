@@ -1,4 +1,4 @@
-// src/app/heads/reports/page.js
+// src/app/owner/reports/page.js
 "use client";
 import React, { useState } from "react";
 import Navbar from "../navbar";

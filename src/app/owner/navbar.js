@@ -94,7 +94,7 @@ const Navbar = () => {
 
           <nav className="flex flex-col items-center w-full">
             {/* Dashboard */}
-            <div className="flex flex-col items-center w-full mb-4">
+            <div className="flex flex-col items-center w-full mb-2">
               <Link
                 href="/owner/dashboard"
                 className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
@@ -119,7 +119,7 @@ const Navbar = () => {
             </div>
 
             {/* Reports */}
-            <div className="flex flex-col items-center w-full mb-4">
+            <div className="flex flex-col items-center w-full mb-2">
               <Link
                 href="/owner/reports"
                 className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
@@ -144,7 +144,7 @@ const Navbar = () => {
             </div>
 
             {/* Epic */}
-            <div className="flex flex-col items-center w-full mb-4">
+            <div className="flex flex-col items-center w-full mb-2">
               <Link
                 href="/owner/epic"
                 className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
@@ -167,7 +167,7 @@ const Navbar = () => {
             </div>
 
             {/* 👇 Placement — NEW */}
-            <div className="flex flex-col items-center w-full mb-4">
+            <div className="flex flex-col items-center w-full mb-2">
               <Link
                 href="/owner/placement"
                 className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
@@ -192,7 +192,7 @@ const Navbar = () => {
             </div>
 
             {/* 👇 User - CURD */}
-            <div className="flex flex-col items-center w-full mb-4">
+            <div className="flex flex-col items-center w-full mb-2">
               <Link
                 href="/owner/users"
                 className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
@@ -217,7 +217,7 @@ const Navbar = () => {
             </div>
 
             {/* 👇 Utilty - CURD */}
-            <div className="flex flex-col items-center w-full mb-4">
+            <div className="flex flex-col items-center w-full mb-2">
               <Link
                 href="/owner/utility"
                 className={`flex flex-col items-center text-black mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
@@ -242,7 +242,7 @@ const Navbar = () => {
             </div>
 
             {/* Notification */}
-            <div className="flex flex-col items-center w-full mb-4">
+            <div className="flex flex-col items-center w-full mb-2">
               <Link
                 href="/owner/notification"
                 className="cursor-pointer flex flex-col items-center mb-1 px-3.5 py-1 text-black hover:bg-[#9dae11] hover:text-black rounded-2xl"
@@ -258,7 +258,7 @@ const Navbar = () => {
             </div>
 
             {/* Settings */}
-            <div className="flex flex-col items-center w-full mb-4">
+            <div className="flex flex-col items-center w-full mb-2">
               <Link
                 href="/owner/settings"
                 className={`flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl transition-colors ${
@@ -283,7 +283,7 @@ const Navbar = () => {
             </div>
 
             {/* Logout */}
-            <div className="flex flex-col items-center w-full mb-4">
+            <div className="flex flex-col items-center w-full mb-2">
               <Link
                 href="/login"
                 className="flex flex-col items-center mb-1 px-3.5 py-1 rounded-2xl hover:bg-[#9dae11] text-black"
@@ -302,7 +302,7 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div
           ref={mobileMenuRef}
-          className="md:hidden fixed top-16 left-0 w-full bg-[#fff2cc] z-30 p-4 shadow-lg"
+          className="md:hidden fixed top-16 left-0 w-full bg-[#c3c89d] z-30 p-4 shadow-lg"
         >
           <div className="flex flex-col space-y-4">
             {/* Dashboard */}

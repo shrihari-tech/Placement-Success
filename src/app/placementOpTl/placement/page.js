@@ -31,30 +31,18 @@ export default function PlacementPage() {
     }
   };
 
-  return (
-    <div className="h-screen overflow-hidden">
-
-      <Navbar />
-      <main className="ml-[0px] p-6">
-        <h1 className="text-2xl font-bold text-gray-700 mb-4">Placement</h1>
-       
-        {/* Optional: Remove placeholder */}
-        <div className="container mx-auto  ">
-          {/* ✅ Pass the necessary props to the Tabs component */}
-          <Tabs
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            tabs={tabs} // ✅ Pass the tabs array
-            className="mt-6"
-          />
-
-          {/* Tab Content */}
-          <div className="bg-white rounded-lg shadow-md p-6 mt-4">
-            {/* ✅ Use the render function */}
-            {renderActiveTab()}
-          </div>
+ return (
+  <div className="h-screen overflow-hidden flex flex-col">
+    <Navbar />
+    <main className="p-6 flex flex-col flex-1 min-h-0">
+      <h1 className="text-2xl font-bold text-gray-700 mb-4">Placement</h1>
+      <div className="container mx-auto flex flex-col flex-1 min-h-0">
+        <Tabs activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs} className="mt-6" />
+        <div className="bg-white rounded-lg shadow-md p-6 mt-4 flex-1 min-h-0 overflow-auto">
+          {renderActiveTab()}
         </div>
-      </main>
-    </div>
-  );
+      </div>
+    </main>
+  </div>
+);
 }

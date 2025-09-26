@@ -1,5 +1,4 @@
-// src/app/smehome/page.js
-// src/app/smehome/page.js
+// src/app/smehome/student/page.js
 "use client";
 import React, { useState, useEffect, useMemo } from "react";
 import SMENavbar from "../smenavbar";

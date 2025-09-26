@@ -13,7 +13,7 @@ const TLCard = ({ teamLeader, onViewDetails, serialNumber }) => {
 
       {/* TL header with Serial Number */}
       <div className="flex items-start justify-between mb-4">
-        <h2 className="text-xl font-bold text-gray-800 pr-6 truncate">
+        <h2 className="text-xl font-bold text-gray-700 pr-6 truncate">
           {teamLeader.name}
         </h2>
         {/* Display Serial Number Badge */}
@@ -30,7 +30,7 @@ const TLCard = ({ teamLeader, onViewDetails, serialNumber }) => {
           </div>
           <div>
             <p className="text-xs text-gray-500">Email</p>
-            <p className="font-medium text-sm truncate">{teamLeader.email}</p>
+            <p className="font-medium text-sm truncate text-gray-700">{teamLeader.email}</p>
           </div>
         </div>
         <div className="flex items-center">
@@ -39,7 +39,7 @@ const TLCard = ({ teamLeader, onViewDetails, serialNumber }) => {
           </div>
           <div>
             <p className="text-xs text-gray-500">Role</p>
-            <p className="font-medium">{teamLeader.role}</p>
+            <p className="font-medium text-gray-700">{teamLeader.role}</p>
           </div>
         </div>
       </div>

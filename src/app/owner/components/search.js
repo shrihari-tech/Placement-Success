@@ -1,4 +1,4 @@
-// heads/components/search.js
+// owner/components/search.js
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";

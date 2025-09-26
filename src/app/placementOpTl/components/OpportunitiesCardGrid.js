@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React, { useState, useMemo } from 'react';
 import OpportunitiesCard from './OpportunitiesCard';
 import ViewOpportunityDetailsModal from './ViewOpportunityDetailsModal';
@@ -10,11 +10,15 @@ const OpportunitiesCardGrid = ({ items, onViewDetails }) => {
   const itemsPerPage = 6;
 
   const { totalPages, currentItems, totalItems } = useMemo(() => {
-    const total = items.length;
+    // ✅ Sort items by id descending (highest id first)
+    const sorted = [...items].sort((a, b) => (b.id || 0) - (a.id || 0));
+
+    const total = sorted.length;
     const totalPagesCount = Math.ceil(total / itemsPerPage);
     const indexOfLast = currentPage * itemsPerPage;
     const indexOfFirst = indexOfLast - itemsPerPage;
-    const current = items.slice(indexOfFirst, indexOfLast);
+    const current = sorted.slice(indexOfFirst, indexOfLast);
+
     return { totalPages: totalPagesCount, currentItems: current, totalItems: total };
   }, [items, currentPage]);
 
@@ -27,8 +31,6 @@ const OpportunitiesCardGrid = ({ items, onViewDetails }) => {
     setViewModalOpen(true);
   };
 
-  console.log(currentItems, "lll");
-
   if (items.length === 0) {
     return (
       <div className="col-span-full w-full py-8 sm:py-12 text-center">
@@ -37,7 +39,7 @@ const OpportunitiesCardGrid = ({ items, onViewDetails }) => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
           </svg>
         </div>
-        <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-1">No Entries Found</h3>
+        <h3 className="text-base sm:text-lg font-medium text-gray-700 mb-1">No Entries Found</h3>
         <p className="text-sm sm:text-gray-500">Get started by creating a new entry.</p>
       </div>
     );
