@@ -4,15 +4,17 @@ import React, { useState, useEffect, useRef } from "react";
 import { FiEdit, FiTrash2, FiPlus, FiChevronDown } from "react-icons/fi";
 import { FaSearch } from "react-icons/fa";
 import { RiCloseCircleLine } from "react-icons/ri";
+import axios from "axios";
 import Image from "next/image";
 
 export default function BatchStatus() {
-  const [eligibilityStatuses, setEligibilityStatuses] = useState([
-    { id: 1, label: "Yet to start" },
-    { id: 2, label: "Ongoing" },
-    { id: 3, label: "Completed" },
-    { id: 4, label: "Stopped" },
-  ]);
+  // const [eligibilityStatuses, setEligibilityStatuses] = useState([
+  //   { id: 1, label: "Yet to start" },
+  //   { id: 2, label: "Ongoing" },
+  //   { id: 3, label: "Completed" },
+  //   { id: 4, label: "Stopped" },
+  // ]);
+  const [eligibilityStatuses, setEligibilityStatuses] = useState([]);
 
   // Counter for generating unique IDs
   const [nextId, setNextId] = useState(5);
@@ -59,6 +61,18 @@ export default function BatchStatus() {
     setFilteredEligibilityStatuses([]);
     setSearchInitiated(false);
   };
+    const fetchStatuses = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/batch_status/all");
+      setEligibilityStatuses(res.data);
+    } catch (err) {
+      console.error("Error fetching batch statuses:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchStatuses();
+  }, []);
 
   // Display data
   const displayEligibilityStatuses = searchInitiated
@@ -127,36 +141,61 @@ export default function BatchStatus() {
   };
 
   // Handle form submit
-  const handleSubmit = () => {
+  // const handleSubmit = () => {
+  //   if (!validateForm()) return;
+
+  //   if (modalMode === "create") {
+  //     const newStatus = {
+  //       id: nextId,
+  //       label: formData.label.trim(),
+  //     };
+  //     setEligibilityStatuses((prev) => [...prev, newStatus]);
+  //     setNextId((prev) => prev + 1);
+  //     showToast("Eligibility status created successfully");
+  //   } else {
+  //     setEligibilityStatuses((prev) =>
+  //       prev.map((es) =>
+  //         es.id === editingEligibilityStatus.id
+  //           ? { ...es, label: formData.label.trim() }
+  //           : es
+  //       )
+  //     );
+  //     showToast("Eligibility status updated successfully");
+  //   }
+
+  //   setShowModal(false);
+  //   setEditingEligibilityStatus(null);
+
+  //   // Update filtered results if search is active
+  //   if (searchInitiated) {
+  //     setTimeout(() => handleSearch(), 100);
+  //   }
+  // };
+  const handleSubmit = async () => {
     if (!validateForm()) return;
 
-    if (modalMode === "create") {
-      const newStatus = {
-        id: nextId,
-        label: formData.label.trim(),
-      };
-      setEligibilityStatuses((prev) => [...prev, newStatus]);
-      setNextId((prev) => prev + 1);
-      showToast("Eligibility status created successfully");
-    } else {
-      setEligibilityStatuses((prev) =>
-        prev.map((es) =>
-          es.id === editingEligibilityStatus.id
-            ? { ...es, label: formData.label.trim() }
-            : es
-        )
-      );
-      showToast("Eligibility status updated successfully");
-    }
-
-    setShowModal(false);
-    setEditingEligibilityStatus(null);
-
-    // Update filtered results if search is active
-    if (searchInitiated) {
-      setTimeout(() => handleSearch(), 100);
+    try {
+      if (modalMode === "create") {
+        await axios.post("http://localhost:5000/batch_status/create", {
+          label: formData.label.trim(),
+        });
+        showToast("Batch status created successfully");
+      } else {
+        await axios.put(
+          `http://localhost:5000/batch_status/${editingEligibilityStatus.id}`,
+          { label: formData.label.trim() }
+        );
+        showToast("Batch status updated successfully");
+      }
+      fetchStatuses();
+      setShowModal(false);
+      setEditingEligibilityStatus(null);
+    } catch (err) {
+      console.error("Error saving batch status:", err);
+      showToast("Failed to save batch status", "error");
     }
   };
+
 
   // Auto-search when typing
   useEffect(() => {
