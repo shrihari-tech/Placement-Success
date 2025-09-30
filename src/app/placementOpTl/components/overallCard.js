@@ -138,7 +138,7 @@ export default function OverallCard({ title = 'Overall', studentData = [] }) {
           <div className="text-xs mb-2">Detection mode: <strong>{debug?.detection || debug?.reason}</strong></div>
           <div className="text-xs">Preview of up to first 3 rows returned by API:</div>
           <pre className="text-xs mt-2 max-h-40 overflow-auto bg-white p-2 rounded border text-gray-700">{JSON.stringify(debug?.sample || [], null, 2)}</pre>
-          <div className="mt-2 text-xs text-gray-600">If the preview doesn't show `batchName` or `domain`, update the backend to include them (or pass the right prop to this card).</div>
+          <div className="mt-2 text-xs text-gray-600">{"If the preview doesn't show `batchName` or `domain`, update the backend to include them (or pass the right prop to this card)."}</div>
         </div>
       )}
     </div>
