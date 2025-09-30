@@ -10,6 +10,7 @@ import {
 } from "react-icons/ri";
 import { notification } from "antd"; // 👈 Import notification
 import { CheckCircleOutlined } from "@ant-design/icons";
+import axios from "axios";
 
 
 export default function UsersTab() {
@@ -46,6 +47,24 @@ export default function UsersTab() {
     { value: "placement TL", label: "Placement TL" },
     { value: "heads", label: "Heads" },
   ];
+
+    const fetchUsers = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/users/all");
+      setUsers(res.data);
+      setSearchResults(res.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      api.error({
+        message: "Failed to fetch users",
+        description: "Check if backend is running",
+      });
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   // Mock initial data
   useEffect(() => {
@@ -284,65 +303,97 @@ export default function UsersTab() {
   };
 
   // Handle form submission
-  const handleSubmit = async (e) => {
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   if (!validateForm()) {
+  //     return;
+  //   }
+
+  //   setLoading(true);
+
+  //   setTimeout(() => {
+  //     try {
+  //       if (editingUser) {
+  //         const updatedUsers = users.map((user) =>
+  //           user.id === editingUser.id ? { ...user, ...formData } : user
+  //         );
+  //         setUsers(updatedUsers);
+
+  //         // 👇 Show success notification for update
+  //         api.success({
+  //           message: "User Updated",
+  //           description: `${formData.name}'s information has been successfully updated.`,
+  //            icon: <CheckCircleOutlined style={{ color: "#6d790b" }} />,
+  //           placement: "topRight",
+  //           duration: 5,
+  //         });
+  //       } else {
+  //         const newUser = {
+  //           id: Date.now(),
+  //           ...formData,
+  //         };
+  //         setUsers([...users, newUser]);
+
+  //         // 👇 Show success notification for creation
+  //         api.success({
+  //           message: "User Created",
+  //           description: `${formData.name} has been successfully added.`,
+  //           placement: "topRight",
+  //           duration: 3,
+  //         });
+  //       }
+
+  //       setIsModalOpen(false);
+  //       setFormData({ name: "", email: "", phone: "", role: "" });
+  //       setEditingUser(null);
+  //     } catch (error) {
+  //       console.error("Error saving user:", error);
+
+  //       // 👇 Show error notification
+  //       api.error({
+  //         message: "Operation Failed",
+  //         description: "There was an error saving the user. Please try again.",
+  //         placement: "topRight",
+  //         duration: 3,
+  //       });
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }, 500);
+  // };
+    const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validateForm()) {
-      return;
-    }
-
     setLoading(true);
-
-    setTimeout(() => {
-      try {
-        if (editingUser) {
-          const updatedUsers = users.map((user) =>
-            user.id === editingUser.id ? { ...user, ...formData } : user
-          );
-          setUsers(updatedUsers);
-
-          // 👇 Show success notification for update
-          api.success({
-            message: "User Updated",
-            description: `${formData.name}'s information has been successfully updated.`,
-             icon: <CheckCircleOutlined style={{ color: "#6d790b" }} />,
-            placement: "topRight",
-            duration: 5,
-          });
-        } else {
-          const newUser = {
-            id: Date.now(),
-            ...formData,
-          };
-          setUsers([...users, newUser]);
-
-          // 👇 Show success notification for creation
-          api.success({
-            message: "User Created",
-            description: `${formData.name} has been successfully added.`,
-            placement: "topRight",
-            duration: 3,
-          });
-        }
-
-        setIsModalOpen(false);
-        setFormData({ name: "", email: "", phone: "", role: "" });
-        setEditingUser(null);
-      } catch (error) {
-        console.error("Error saving user:", error);
-
-        // 👇 Show error notification
-        api.error({
-          message: "Operation Failed",
-          description: "There was an error saving the user. Please try again.",
-          placement: "topRight",
-          duration: 3,
+    try {
+      if (editingUser) {
+        // 👉 Update user
+        await axios.put(`http://localhost:5000/users/${editingUser.id}`, formData);
+        api.success({
+          message: "User Updated",
+          description: `${formData.name} updated successfully`,
+          icon: <CheckCircleOutlined style={{ color: "#6d790b" }} />,
         });
-      } finally {
-        setLoading(false);
+      } else {
+        // 👉 Create user
+        await axios.post("http://localhost:5000/users/create", formData);
+        api.success({
+          message: "User Created",
+          description: `${formData.name} added successfully (default password = Welcome@123)`,
+        });
       }
-    }, 500);
+
+      setIsModalOpen(false);
+      fetchUsers(); // refresh list
+    } catch (err) {
+      console.error("Error saving user:", err);
+      api.error({ message: "Operation Failed", description: "Check server logs" });
+    } finally {
+      setLoading(false);
+    }
   };
+
 
   // Handle user deletion
   const handleDelete = (userId) => {

@@ -4,15 +4,17 @@ import React, { useState, useEffect, useRef } from "react";
 import { FiEdit, FiTrash2, FiPlus, FiChevronDown } from "react-icons/fi";
 import { FaSearch } from "react-icons/fa";
 import { RiCloseCircleLine } from "react-icons/ri";
+import axios from "axios";
 import Image from "next/image";
 
 export default function PlacementTab() {
-  const [eligibilityStatuses, setEligibilityStatuses] = useState([
-    { id: 1, label: "Eligible" },
-    { id: 2, label: "Ineligible" },
-    { id: 3, label: "Required" },
-    { id: 4, label: "Not required" },
-  ]);
+  // const [eligibilityStatuses, setEligibilityStatuses] = useState([
+  //   { id: 1, label: "Eligible" },
+  //   { id: 2, label: "Ineligible" },
+  //   { id: 3, label: "Required" },
+  //   { id: 4, label: "Not required" },
+  // ]);
+  const [eligibilityStatuses, setEligibilityStatuses] = useState([]);
 
   // Counter for generating unique IDs
   const [nextId, setNextId] = useState(5);
@@ -127,36 +129,76 @@ export default function PlacementTab() {
   };
 
   // Handle form submit
-  const handleSubmit = () => {
+  // const handleSubmit = () => {
+  //   if (!validateForm()) return;
+
+  //   if (modalMode === "create") {
+  //     const newStatus = {
+  //       id: nextId,
+  //       label: formData.label.trim(),
+  //     };
+  //     setEligibilityStatuses((prev) => [...prev, newStatus]);
+  //     setNextId((prev) => prev + 1);
+  //     showToast("Eligibility status created successfully");
+  //   } else {
+  //     setEligibilityStatuses((prev) =>
+  //       prev.map((es) =>
+  //         es.id === editingEligibilityStatus.id
+  //           ? { ...es, label: formData.label.trim() }
+  //           : es
+  //       )
+  //     );
+  //     showToast("Eligibility status updated successfully");
+  //   }
+
+  //   setShowModal(false);
+  //   setEditingEligibilityStatus(null);
+
+  //   // Update filtered results if search is active
+  //   if (searchInitiated) {
+  //     setTimeout(() => handleSearch(), 100);
+  //   }
+  // };
+  const handleSubmit = async () => {
     if (!validateForm()) return;
 
-    if (modalMode === "create") {
-      const newStatus = {
-        id: nextId,
-        label: formData.label.trim(),
-      };
-      setEligibilityStatuses((prev) => [...prev, newStatus]);
-      setNextId((prev) => prev + 1);
-      showToast("Eligibility status created successfully");
-    } else {
-      setEligibilityStatuses((prev) =>
-        prev.map((es) =>
-          es.id === editingEligibilityStatus.id
-            ? { ...es, label: formData.label.trim() }
-            : es
-        )
-      );
-      showToast("Eligibility status updated successfully");
-    }
+    try {
+      if (modalMode === "create") {
+        const res = await axios.post("http://localhost:5000/eligibilityStatus/create", formData);
+        setEligibilityStatuses((prev) => [...prev, res.data]);
+        showToast("Created successfully");
+      } else {
+        const res = await axios.put(
+          `http://localhost:5000/eligibilityStatus/${editingEligibilityStatus.id}`,
+          formData
+        );
+        setEligibilityStatuses((prev) =>
+          prev.map((es) => (es.id === editingEligibilityStatus.id ? res.data : es))
+        );
+        showToast("Updated successfully");
+      }
 
-    setShowModal(false);
-    setEditingEligibilityStatus(null);
-
-    // Update filtered results if search is active
-    if (searchInitiated) {
-      setTimeout(() => handleSearch(), 100);
+      setShowModal(false);
+      setEditingEligibilityStatus(null);
+      if (searchInitiated) handleSearch();
+    } catch (err) {
+      console.error(err);
+      showToast("Failed to save", "error");
     }
   };
+  const fetchEligibilityStatuses = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/eligibilityStatus/all");
+      setEligibilityStatuses(res.data);
+    } catch (err) {
+      console.error("Error fetching eligibility statuses:", err);
+      showToast("Failed to fetch statuses", "error");
+    }
+  };
+
+  useEffect(() => {
+    fetchEligibilityStatuses();
+  },[]);
 
   // Auto-search when typing
   useEffect(() => {
