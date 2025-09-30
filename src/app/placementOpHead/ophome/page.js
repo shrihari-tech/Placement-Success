@@ -1,6 +1,6 @@
 // placementOpHead/ophome/page.js
 "use client";
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import Navbar from "../navbar";
 import Dashboard from "./components/dashboard";
 import Image from "next/image";
@@ -19,8 +19,81 @@ export default function Home() {
     batchStatsData = {},
   } = useDataContext();
 
+  // State for total batches data
+  const [totalBatchesData, setTotalBatchesData] = useState({
+    fullstack: 0,
+    data: 0,
+    marketing: 0,
+    sap: 0,
+    banking: 0,
+    devops: 0
+  });
+
+  // State for loading and error
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch total batches from API
+  useEffect(() => {
+    const fetchTotalBatches = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        console.log("Fetching total batches from API...");
+        const res = await fetch("http://localhost:5000/batches/totalBatches");
+        
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        console.log("Total batches API response:", data);
+
+        if (data.error) {
+          throw new Error(data.error);
+        }
+
+        // Set the total batches data
+        setTotalBatchesData({
+          fullstack: data.totalBatchesPerDomain?.fullstack ?? 0,
+          data: data.totalBatchesPerDomain?.data ?? 0,
+          marketing: data.totalBatchesPerDomain?.marketing ?? 0,
+          sap: data.totalBatchesPerDomain?.sap ?? 0,
+          banking: data.totalBatchesPerDomain?.banking ?? 0,
+          devops: data.totalBatchesPerDomain?.devops ?? 0,
+        });
+
+      } catch (err) {
+        console.error("Error fetching total batches:", err);
+        setError(err.message);
+        // Set default values on error
+        setTotalBatchesData({
+          fullstack: 0,
+          data: 0,
+          marketing: 0,
+          sap: 0,
+          banking: 0,
+          devops: 0
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTotalBatches();
+  }, []);
+
   const statsData = useMemo(() => {
-    const totalBatchesPerDomain = calculateTotalBatchesPerDomain();
+    const totalBatchesPerDomain = {
+      fullstack: totalBatchesData.fullstack,
+      data: totalBatchesData.data,
+      marketing: totalBatchesData.marketing,
+      sap: totalBatchesData.sap,
+      banking: totalBatchesData.banking,
+      devops: totalBatchesData.devops,
+    };
+
     const upcomingBatchesPerDomain = calculateUpcomingBatchesPerDomain();
 
     const placedStudentsPerDomain = {
@@ -48,29 +121,33 @@ export default function Home() {
       yetToPlaceStudentsPerDomain,
     };
   }, [
-    calculateTotalBatchesPerDomain,
+    totalBatchesData,
     calculateUpcomingBatchesPerDomain,
     batchStatsData,
   ]);
 
-  const graphData = {
-    previousData: [
-      { name: "2", value: 8 },
-      { name: "4", value: 9 },
-      { name: "6", value: 10 },
-      { name: "8", value: 24 },
-      { name: "10", value: 30 },
-      { name: "12", value: 30 },
-    ],
-    currentData: [
-      { name: "2", value: 10 },
-      { name: "4", value: 12 },
-      { name: "6", value: 15 },
-      { name: "8", value: 28 },
-      { name: "10", value: 32 },
-      { name: "12", value: 35 },
-    ],
+  const [graphData, setGraphData] = useState({
+    previousData: [],
+    currentData: [],
+  });
+
+useEffect(() => {
+  const fetchGraphData = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/students/graph-data");
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`Failed with status ${res.status}: ${text}`);
+      }
+      const data = await res.json();
+      setGraphData(data);
+    } catch (err) {
+      console.error("Graph fetch error:", err);
+    }
   };
+  fetchGraphData();
+}, []);
+
 
   return (
     <div className="overflow-y-auto min-h-screen bg-gray-50">

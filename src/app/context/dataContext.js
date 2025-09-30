@@ -4334,6 +4334,7 @@ const calculateUpcomingBatchesPerDomain = useCallback(() => {
     setStudentData(updateList(studentData));
   };
 
+
 useEffect(() => {
   const fetchDashboardData = async () => {
     try {
@@ -4425,6 +4426,71 @@ useEffect(() => {
 
   fetchDashboardData();
 }, []);
+
+
+// // ✅ Separate useEffect for fetching Total Batches
+// // ✅ Separate useEffect for fetching Total Batches
+// // ✅ Separate useEffect for fetching Total Batches
+// useEffect(() => {
+//   const fetchTotalBatches = async () => {
+//     try {
+//       console.log("Fetching total batches from API...");
+//       const res = await fetch("http://localhost:5000/batches/totalBatches");
+      
+//       if (!res.ok) {
+//         throw new Error(`HTTP error! status: ${res.status}`);
+//       }
+
+//       const data = await res.json();
+//       console.log("Total batches API response:", data);
+
+//       // Handle case where API returns error
+//       if (data.error) {
+//         console.error("API returned error:", data.error);
+//         // Set default values
+//         setBatchStatsDataFromAPI(prevStats => ({
+//           ...prevStats,
+//           fullstack: { ...prevStats.fullstack, totalBatches: 0 },
+//           data: { ...prevStats.data, totalBatches: 0 },
+//           marketing: { ...prevStats.marketing, totalBatches: 0 },
+//           sap: { ...prevStats.sap, totalBatches: 0 },
+//           banking: { ...prevStats.banking, totalBatches: 0 },
+//           devops: { ...prevStats.devops, totalBatches: 0 },
+//         }));
+//         return;
+//       }
+
+//       // Update with API data
+//       setBatchStatsDataFromAPI(prevStats => ({
+//         ...prevStats,
+//         fullstack: { ...prevStats.fullstack, totalBatches: data.totalBatchesPerDomain?.fullstack ?? 0 },
+//         data: { ...prevStats.data, totalBatches: data.totalBatchesPerDomain?.data ?? 0 },
+//         marketing: { ...prevStats.marketing, totalBatches: data.totalBatchesPerDomain?.marketing ?? 0 },
+//         sap: { ...prevStats.sap, totalBatches: data.totalBatchesPerDomain?.sap ?? 0 },
+//         banking: { ...prevStats.banking, totalBatches: data.totalBatchesPerDomain?.banking ?? 0 },
+//         devops: { ...prevStats.devops, totalBatches: data.totalBatchesPerDomain?.devops ?? 0 },
+//       }));
+
+//     } catch (err) {
+//       console.error("Error fetching total batches:", err);
+//       // Set default values on error
+//       setBatchStatsDataFromAPI(prevStats => ({
+//         ...prevStats,
+//         fullstack: { ...prevStats.fullstack, totalBatches: 0 },
+//         data: { ...prevStats.data, totalBatches: 0 },
+//         marketing: { ...prevStats.marketing, totalBatches: 0 },
+//         sap: { ...prevStats.sap, totalBatches: 0 },
+//         banking: { ...prevStats.banking, totalBatches: 0 },
+//         devops: { ...prevStats.devops, totalBatches: 0 },
+//       }));
+//     }
+//   };
+
+//   fetchTotalBatches();
+// }, []);
+
+
+
 
 
   // 🔄 Update studentData and studentHead when batchingvalue changes

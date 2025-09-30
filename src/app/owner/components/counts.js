@@ -1,6 +1,7 @@
+//src/app/owner/components/counts.js
 "use client";
 import React, { useMemo } from "react";
-import { useDataContext } from "../../context/dataContext"; 
+import { useDataContext } from "../../context/dataContext";
 
 // Reusable function to render domain-specific counts
 const renderDomainCounts = (counts) => {
@@ -85,19 +86,19 @@ const Counts = () => {
       devops: 0,
     };
 
-    allStudentData.forEach(student => {
+    allStudentData.forEach((student) => {
       if (student.status === "Ongoing") {
-        if (student.batch?.startsWith('FS')) {
+        if (student.batch?.startsWith("FS")) {
           counts.fullstack += 1;
-        } else if (student.batch?.startsWith('DA')) {
+        } else if (student.batch?.startsWith("DA")) {
           counts.data += 1;
-        } else if (student.batch?.startsWith('MK')) {
+        } else if (student.batch?.startsWith("MK")) {
           counts.marketing += 1;
-        } else if (student.batch?.startsWith('SA')) {
+        } else if (student.batch?.startsWith("SA")) {
           counts.sap += 1;
-        } else if (student.batch?.startsWith('BK')) {
+        } else if (student.batch?.startsWith("BK")) {
           counts.banking += 1;
-        } else if (student.batch?.startsWith('DV')) {
+        } else if (student.batch?.startsWith("DV")) {
           counts.devops += 1;
         }
       }

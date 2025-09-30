@@ -18,10 +18,8 @@ const Dashboard = ({ graphData, statsData }) => {
       {/* Graphs */}
       <div>
         <h2 className="text-xl text-gray-700 font-semibold mb-4">Statistics</h2>
-        <Graphs 
-          previousData={previousData} 
-          currentData={currentData} 
-        />
+        <Graphs previousData={graphData.previousData} currentData={graphData.currentData} />
+     
       </div>
     </div>
   );

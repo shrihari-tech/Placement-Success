@@ -1,12 +1,11 @@
-// placedTab.jsx
+// placementOpTl/tlHome/PlacedTab.jsx
 'use client';
-import React, { useState } from "react";
-import { notification } from 'antd'; // Import notification
-import { RiCloseCircleLine } from 'react-icons/ri'; // Import the icon
+import React, { useState, useEffect } from "react";
+import { notification } from 'antd';
+import { RiCloseCircleLine } from 'react-icons/ri';
 import Navbar from "../navbar";
 import OverallCard from "../components/overallCard";
-import Search from "../components/search"; // Import the reusable Search
-import { useDataContext } from "../../context/dataContext";
+import Search from "../components/search";
 import {
   fullstackInitial,
   dataanalyticsInitial,
@@ -16,19 +15,19 @@ import {
   devopsInitial,
 } from "../../context/dataContext";
 
-export default function PlacedTab() {
-  const { allStudentData } = useDataContext();
+// ✅ Hardcoded — but matches what works in browser
+const API_URL = "http://localhost:5000/students?placement=Placed";
 
-  // State for search criteria
+export default function PlacedTab() {
+  const [api, contextHolder] = notification.useNotification();
+
+  const [placedStudents, setPlacedStudents] = useState([]);
   const [selectedDomain, setSelectedDomain] = useState("");
   const [selectedBatch, setSelectedBatch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showTable, setShowTable] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // Notification hook
-  const [api, contextHolder] = notification.useNotification();
-
-  // Define domain prefixes specific to this tab
   const domainPrefixMap = {
     fullstack: "FS",
     dataanalytics: "DA",
@@ -38,59 +37,45 @@ export default function PlacedTab() {
     devops: "DV",
   };
 
-  // Filter for "Placed" students
-  const placedStudentsData = allStudentData.filter(
-    (s) => s.placement && (s.placement === "Placed" || s.placement === "placed") // Handle case variations
-  );
-  // console.log("PlacedTab - Filtered placedStudentsData:", placedStudentsData); // Debug log - can be removed
-
-  // --- Search Handler ---
-  const handleSearch = () => {
-    // Check if at least one filter is selected (Domain or Batch)
-    // Adjust condition based on your specific requirements (e.g., require domain OR batch)
-    if (!selectedDomain && !selectedBatch) {
-      // Show error notification using the custom style with #a17640
-      api.error({
-        message: 'Search Error',
-        description: 'Please select at least one filter (Domain or Batch) to search for placed students.',
-        placement: 'topRight',
-        duration: 4,
-        showProgress: true,
-        pauseOnHover: true,
-        closeIcon: <RiCloseCircleLine className="text-[#a17640] hover:text-[#a57900]" size={20} />,
-      });
-      return; // Stop the search if no criteria
-    }
-
-    let filteredStudents = placedStudentsData;
-    // console.log("PlacedTab - Initial filteredStudents (placed only):", filteredStudents.length); // Debug log - can be removed
-
-    if (selectedDomain) {
-      const prefix = domainPrefixMap[selectedDomain];
-      // console.log("PlacedTab - Domain prefix:", prefix); // Debug log - can be removed
-      if (prefix) {
-        // const initialCount = filteredStudents.length; // Debug log - can be removed
-        filteredStudents = filteredStudents.filter((s) =>
-          s.batch?.startsWith(prefix)
-        );
-        // console.log(`PlacedTab - After domain filter (${prefix}):`, filteredStudents.length, `(removed ${initialCount - filteredStudents.length})`); // Debug log - can be removed
+  // Fetch on mount
+  useEffect(() => {
+    const fetchPlaced = async () => {
+      try {
+        const res = await fetch(API_URL);
+        if (!res.ok) throw new Error('Failed to load placed students');
+        const data = await res.json();
+        setPlacedStudents(data);
+      } catch (err) {
+        console.error("Fetch error:", err);
+        api.error({ message: "Error", description: err.message, duration: 5 });
       }
-    }
+    };
+    fetchPlaced();
+  }, [api]);
+
+const handleSearch = async () => {
+  setLoading(true);
+  try {
+    let url = "http://localhost:5000/students?placement=Placed";
 
     if (selectedBatch) {
-      // const initialCount = filteredStudents.length; // Debug log - can be removed
-      filteredStudents = filteredStudents.filter(
-        (s) => s.batch === selectedBatch
-      );
-      // console.log(`PlacedTab - After batch filter (${selectedBatch}):`, filteredStudents.length, `(removed ${initialCount - filteredStudents.length})`); // Debug log - can be removed
+      url += `&batchId=${encodeURIComponent(selectedBatch)}`;
     }
 
-    // console.log("PlacedTab - Final filteredStudents for table:", filteredStudents); // Debug log - can be removed
-    setSearchResults(filteredStudents);
-    setShowTable(true);
-  };
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("Search failed");
+    const students = await res.json();
 
-  // --- Reset Handler ---
+    setSearchResults(students);
+    setShowTable(true);
+  } catch (err) {
+    api.error({ message: "Search Failed", description: err.message });
+  } finally {
+    setLoading(false);
+  }
+};
+
+
   const handleReset = () => {
     setSelectedDomain("");
     setSelectedBatch("");
@@ -98,7 +83,6 @@ export default function PlacedTab() {
     setShowTable(false);
   };
 
-  // Combine all batches
   const allBatches = [
     ...fullstackInitial,
     ...dataanalyticsInitial,
@@ -108,7 +92,6 @@ export default function PlacedTab() {
     ...devopsInitial,
   ];
 
-  // Define domains for this tab
   const domains = [
     { key: "fullstack", label: "Full Stack Development" },
     { key: "dataanalytics", label: "Data Analytics & Science" },
@@ -120,58 +103,36 @@ export default function PlacedTab() {
 
   return (
     <div className="h-screen overflow-auto">
-      {/* Include the context holder for notifications */}
       {contextHolder}
-      {/* Add custom styles for notifications */}
       <style jsx global>{`
-        /* Custom notification styles for #a17640 */
         .ant-notification-notice-success,
         .ant-notification-notice-error,
         .ant-notification-notice-warning,
         .ant-notification-notice-info {
           border-color: #a17640 !important;
         }
-        .ant-notification-notice-success .ant-notification-notice-icon,
-        .ant-notification-notice-error .ant-notification-notice-icon,
-        .ant-notification-notice-warning .ant-notification-notice-icon,
-        .ant-notification-notice-info .ant-notification-notice-icon {
-          color: #a17640 !important;
-        }
-        .ant-notification-notice-success .ant-notification-notice-message,
-        .ant-notification-notice-error .ant-notification-notice-message,
-        .ant-notification-notice-warning .ant-notification-notice-message,
-        .ant-notification-notice-info .ant-notification-notice-message {
-          color: #a17640 !important;
-        }
+        .ant-notification-notice-icon { color: #a17640 !important; }
+        .ant-notification-notice-message { color: #a17640 !important; }
         .ant-notification-notice-close:hover {
           background-color: #a17640 !important;
           color: white !important;
         }
-        .ant-notification-notice-progress-bar {
-          background: #a17640 !important;
-        }
-        /* Custom close icon styling */
-        .ant-notification-notice-close {
-          transition: all 0.3s ease;
-        }
-        /* Ensure progress bar container also uses the color */
+        .ant-notification-notice-progress-bar { background: #a17640 !important; }
         .ant-notification-notice-progress {
-          background: rgba(230, 169, 1, 0.1) !important; /* Light version of #a17640 */
+          background: rgba(230, 169, 1, 0.1) !important;
         }
       `}</style>
+
       <Navbar />
       <main className="ml-[5px] p-6">
         <div className="mb-8">
           <OverallCard
             title="Overall Placed Students"
-            studentData={placedStudentsData}
+            studentData={placedStudents}
           />
         </div>
 
-        {/* --- Reusable Search Component --- */}
-        {/* Pass the notification API to Search if it needs to show notifications */}
         <Search
-          // --- Basic Props ---
           domains={domains}
           batches={allBatches}
           onSearch={handleSearch}
@@ -180,15 +141,12 @@ export default function PlacedTab() {
           setSelectedDomain={setSelectedDomain}
           selectedBatch={selectedBatch}
           setSelectedBatch={setSelectedBatch}
-          // --- Reusability Props ---
           domainPrefixMap={domainPrefixMap}
-          notificationApi={api} // Pass the notification API
-          // Optional: Customize messages if needed in the component itself
-          // searchValidationMessage="Please select a domain to find placed students"
-          // batchValidationMessage="Please select a domain first to choose a batch"
+          notificationApi={api}
         />
 
-        {/* Table */}
+        {loading && <p className="text-center text-blue-600 mt-4">Searching...</p>}
+
         {showTable && searchResults.length > 0 && (
           <div className="bg-white rounded-lg shadow-md overflow-hidden mt-6">
             <div className="overflow-x-auto">
@@ -211,7 +169,7 @@ export default function PlacedTab() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{s.phone}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{s.company || "-"}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{s.designation || "-"}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{s.salary}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{s.salary || "-"}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -220,7 +178,7 @@ export default function PlacedTab() {
           </div>
         )}
 
-        {showTable && searchResults.length === 0 && (
+        {showTable && searchResults.length === 0 && !loading && (
           <div className="bg-white rounded-lg shadow-md p-6 text-center mt-6">
             <p className="text-gray-600">No placed students found for the selected criteria.</p>
           </div>

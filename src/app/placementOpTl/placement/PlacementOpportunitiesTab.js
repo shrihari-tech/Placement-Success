@@ -1,3 +1,4 @@
+//src/app/placementOpTl/placement/PlacementOpportunitiesTab.js
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
@@ -160,8 +161,6 @@ export default function PlacementOpportunitiesTab() {
     ]
   );
 
-  
-
   // Effect to filter students when batch changes in selection modal
   useEffect(() => {
     if (
@@ -316,15 +315,61 @@ export default function PlacementOpportunitiesTab() {
     handleOpenConfirmSaveModal();
   };
 
-  const handleConfirmSave = () => {
-    const finalOpportunity = {
-      ...newOpportunity,
-      selectedStudents: selectedStudents,
-      id: Date.now().toString(),
-    };
+  // const handleConfirmSave = () => {
+  //   const finalOpportunity = {
+  //     ...newOpportunity,
+  //     selectedStudents: selectedStudents,
+  //     id: Date.now().toString(),
+  //   };
 
+  //   addOpportunity(finalOpportunity, newOpportunity.domain);
+
+  //   handleCloseConfirmSaveModal();
+  //   setIsSelectStudentsModalOpen(false);
+  //   setOpportunityDetailsForSelection(null);
+  //   setSelectedStudents([]);
+  //   setNewOpportunity({
+  //     domain: "",
+  //     selectedBatch: "",
+  //     companyName: "",
+  //     driveDate: "",
+  //     driveRole: "",
+  //     package: "",
+  //   });
+  // };
+  const handleConfirmSave = async () => {
+  const finalOpportunity = {
+    ...newOpportunity,
+    selectedStudents: selectedStudents,
+    id: Date.now().toString(),
+  };
+
+  try {
+    // Extract studentIds (ensure they are IDs)
+    const studentIds = selectedStudents.map(student => student.id); 
+
+    // Call backend API
+    const response = await fetch("http://localhost:5000/placementOpportunities/assignStudents", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        opportunityId: finalOpportunity.id, // or actual DB ID if exists
+        studentIds: studentIds,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to assign students");
+    }
+
+    console.log("Students assigned successfully!");
+
+    // Save to local context AFTER success
     addOpportunity(finalOpportunity, newOpportunity.domain);
 
+    // Cleanup & close modals
     handleCloseConfirmSaveModal();
     setIsSelectStudentsModalOpen(false);
     setOpportunityDetailsForSelection(null);
@@ -337,7 +382,13 @@ export default function PlacementOpportunitiesTab() {
       driveRole: "",
       package: "",
     });
-  };
+
+  } catch (error) {
+    console.error("Error assigning students:", error);
+    alert("Failed to assign students. Please try again.");
+  }
+};
+
 
   // ✅ updated to open details modal
   const handleViewOpportunityDetails = (opportunity) => {
@@ -352,7 +403,6 @@ export default function PlacementOpportunitiesTab() {
 
   return (
     <div className="flex flex-col h-full">
-      
       <main className="ml-[5px] flex-1 min-h-0 overflow-auto p-6 flex flex-col">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-2xl font-bold text-gray-700">

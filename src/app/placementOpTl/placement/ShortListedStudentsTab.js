@@ -1,88 +1,51 @@
 // placementOpTl/placement/shortListedStudents.js
-'use client';
-import React, { useState, useMemo } from 'react';
-import { notification } from 'antd'; // Import notification
-import { RiCloseCircleLine } from 'react-icons/ri'; // Import the icon
-import Navbar from '../navbar';
-import ShortlistedSearch from '../components/shortlistedSearch';
-import { useDataContext } from '../../context/dataContext';
+"use client";
+import React, { useState, useEffect, useMemo } from "react";
+import { notification } from "antd";
+import { RiCloseCircleLine } from "react-icons/ri";
+import Navbar from "../navbar";
+import ShortlistedSearch from "../components/shortlistedSearch";
 import {
   fullstackInitial,
   dataanalyticsInitial,
   bankingInitial,
   marketingInitial,
   sapInitial,
-  devopsInitial,  
-} from '../../context/dataContext';
+  devopsInitial,
+} from "../../context/dataContext";
 
-// Helper function to get domain label from batch prefix
 const getDomainLabelFromBatch = (batch, domainPrefixMap, domains) => {
-  if (!batch) return '-';
-  // Handle SAP (3 chars like "SAP") and others (2 chars like "FS", "DA")
-  // This logic assumes batch names like "FS01", "DA02", "SAP01"
-  // Adjust substring logic if your batch naming is different.
-  let prefix = "";
-  if (batch.startsWith("SAP")) {
-     prefix = "SAP";
-  } else if (batch.length >= 2) {
-     prefix = batch.substring(0, 2); // Take first 2 characters for others
-  } else {
-     prefix = batch; // Fallback if batch name is unexpectedly short
-  }
-  const domainKey = Object.keys(domainPrefixMap).find(key => domainPrefixMap[key] === prefix);
-  return domainKey ? domains.find(d => d.key === domainKey)?.label || prefix : prefix;
+  if (!batch) return "-";
+  if (batch.startsWith("SAP")) return "SAP";
+  const prefix = batch.substring(0, 2);
+  const domainKey = Object.keys(domainPrefixMap).find(
+    (key) => domainPrefixMap[key] === prefix
+  );
+  return domainKey
+    ? domains.find((d) => d.key === domainKey)?.label || prefix
+    : prefix;
 };
 
 export default function ShortListedStudentsTab() {
-  const { allStudentData } = useDataContext();
+  const [api, contextHolder] = notification.useNotification();
 
-  // State for search criteria
+  const [allPlacedStudents, setAllPlacedStudents] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
   const [selectedDomain, setSelectedDomain] = useState("");
   const [selectedBatch, setSelectedBatch] = useState("");
   const [selectedCompany, setSelectedCompany] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [showTable, setShowTable] = useState(false);
-
-  // Notification hook
-  const [api, contextHolder] = notification.useNotification();
+  const [showTable, setShowTable] = useState(false); // ✅ Start as false
+  const [loading, setLoading] = useState(false);
 
   const domainPrefixMap = {
     fullstack: "FS",
     dataanalytics: "DA",
     banking: "BK",
     marketing: "MK",
-    sap: "SAP", // 3 characters
+    sap: "SAP",
     devops: "DV",
   };
 
-  // --- Filter for 'Placed' Students ---
-  const placedStudentsData = useMemo(() => {
-    return allStudentData.filter(
-      (s) => s.placement && (s.placement === "Placed" || s.placement === "placed")
-    );
-  }, [allStudentData]);
-
-  // --- Extract Unique Companies from Placed Students ---
-  const uniqueCompanies = useMemo(() => {
-    const companiesSet = new Set(
-      placedStudentsData
-        .map(student => student.company)
-        .filter(company => company && company.trim() !== "")
-    );
-    return Array.from(companiesSet).sort();
-  }, [placedStudentsData]);
-
-  // --- Combine all batches ---
-  const allBatches = useMemo(() => [
-    ...fullstackInitial,
-    ...dataanalyticsInitial,
-    ...bankingInitial,
-    ...marketingInitial,
-    ...sapInitial,
-    ...devopsInitial,
-  ], []);
-
-  // --- Define domains ---
   const domains = [
     { key: "fullstack", label: "Full Stack Development" },
     { key: "dataanalytics", label: "Data Analytics & Science" },
@@ -92,84 +55,107 @@ export default function ShortListedStudentsTab() {
     { key: "devops", label: "DevOps" },
   ];
 
-  // --- Search Handler ---
+  const allBatches = useMemo(
+    () => [
+      ...fullstackInitial,
+      ...dataanalyticsInitial,
+      ...bankingInitial,
+      ...marketingInitial,
+      ...sapInitial,
+      ...devopsInitial,
+    ],
+    []
+  );
+
+  // Fetch all placed students on mount (but don't show table)
+  useEffect(() => {
+    const fetchPlaced = async () => {
+      try {
+        const res = await fetch(
+          "http://localhost:5000/students?placement=Placed"
+        );
+        if (!res.ok) throw new Error("Failed to load placed students");
+        const data = await res.json();
+        setAllPlacedStudents(data);
+      } catch (err) {
+        console.error("Fetch error:", err);
+        api.error({ message: "Error", description: err.message, duration: 5 });
+      }
+    };
+    fetchPlaced();
+  }, [api]);
+
+  const uniqueCompanies = useMemo(() => {
+    return [
+      ...new Set(
+        allPlacedStudents
+          .map((s) => s.company)
+          .filter((company) => company?.trim())
+      ),
+    ].sort();
+  }, [allPlacedStudents]);
+
+  // ✅ Search handler: ONLY show table after search
   const handleSearch = () => {
-    // Check if at least one filter is selected
     if (!selectedDomain && !selectedBatch && !selectedCompany) {
-      // Show error notification using the custom style with #a17640
       api.error({
-        message: 'Search Error',
-        description: 'Please select at least one filter (Domain, Batch, or Company) to search.',
-        placement: 'topRight',
+        message: "Search Error",
+        description:
+          "Please select at least one filter (Domain, Batch, or Company).",
+        placement: "topRight",
         duration: 4,
-        showProgress: true,
-        pauseOnHover: true,
-        closeIcon: <RiCloseCircleLine className="text-[#a17640] hover:text-[#cc9601]" size={20} />,
+        closeIcon: <RiCloseCircleLine className="text-[#a17640]" size={20} />,
       });
-      return; // Stop the search if no criteria
+      return;
     }
 
-    let filteredStudents = [...placedStudentsData];
+    setLoading(true);
+    let filtered = [...allPlacedStudents];
 
+    // ✅ CRITICAL: Use batch_no (not batch)
     if (selectedDomain) {
       const prefix = domainPrefixMap[selectedDomain];
-      if (prefix) {
-        // Ensure batch starts with the prefix (e.g., "FS", "DA")
-        filteredStudents = filteredStudents.filter((s) =>
-          s.batch?.startsWith(prefix)
-        );
-      }
+      filtered = filtered.filter((s) => s.batch_no?.startsWith(prefix));
     }
 
     if (selectedBatch) {
-      filteredStudents = filteredStudents.filter(
-        (s) => s.batch === selectedBatch
-      );
+      filtered = filtered.filter((s) => s.batch_no === selectedBatch);
     }
 
     if (selectedCompany) {
-      // Case-insensitive and trimmed comparison for company
-      filteredStudents = filteredStudents.filter(
-        (s) => s.company && s.company.toLowerCase().trim() === selectedCompany.toLowerCase().trim()
+      const companyLower = selectedCompany.toLowerCase().trim();
+      filtered = filtered.filter(
+        (s) => s.company?.toLowerCase().trim() === companyLower
       );
     }
 
-    setSearchResults(filteredStudents);
-    setShowTable(true);
+    setSearchResults(filtered);
+    setShowTable(true); // ✅ Only show after search
+    setLoading(false);
   };
 
-  // --- Reset Handler ---
   const handleReset = () => {
     setSelectedDomain("");
     setSelectedBatch("");
     setSelectedCompany("");
     setSearchResults([]);
-    setShowTable(false);
+    setShowTable(false); // ✅ Hide table on reset
   };
 
   return (
     <div className="h-screen overflow-auto">
-      {/* Include the context holder for notifications */}
       {contextHolder}
-      {/* Add custom styles for notifications */}
       <style jsx global>{`
-        /* Custom notification styles for #a17640 */
         .ant-notification-notice-success,
         .ant-notification-notice-error,
         .ant-notification-notice-warning,
         .ant-notification-notice-info {
           border-color: #a17640 !important;
         }
-        .ant-notification-notice-success .ant-notification-notice-icon,
-        .ant-notification-notice-error .ant-notification-notice-icon,
-        .ant-notification-notice-warning .ant-notification-notice-icon,
-        .ant-notification-notice-info .ant-notification-notice-icon {
+        .ant-notification-notice-icon {
           color: #a17640 !important;
         }
-        .ant-notification-notice-success .ant-notification-notice-message,
-        .ant-notification-notice-error .ant-notification-notice-message,
-        .ant-notification-notice-warning .ant-notification-notice-message,
-        .ant-notification-notice-info .ant-notification-notice-message {
+        .ant-notification-notice-message {
           color: #a17640 !important;
         }
         .ant-notification-notice-close:hover {
@@ -179,20 +165,17 @@ export default function ShortListedStudentsTab() {
         .ant-notification-notice-progress-bar {
           background: #a17640 !important;
         }
-        /* Custom close icon styling */
-        .ant-notification-notice-close {
-          transition: all 0.3s ease;
-        }
-        /* Ensure progress bar container also uses the color */
         .ant-notification-notice-progress {
-          background: rgba(230, 169, 1, 0.1) !important; /* Light version of #a17640 */
+          background: rgba(230, 169, 1, 0.1) !important;
         }
       `}</style>
-      <Navbar />
-      <main className="ml-[5px] p-6"> {/* Kept ml-[5px] as in your original PlacedTab */}
-        <h1 className="text-2xl font-bold text-gray-700 mb-4">Shortlisted Students</h1>
 
-        {/* Pass the notification API to ShortlistedSearch if it needs to show notifications */}
+      <Navbar />
+      <main className="ml-[5px] p-6">
+        <h1 className="text-2xl font-bold text-gray-700 mb-4">
+          Shortlisted Students
+        </h1>
+
         <ShortlistedSearch
           domains={domains}
           batches={allBatches}
@@ -206,44 +189,74 @@ export default function ShortListedStudentsTab() {
           selectedCompany={selectedCompany}
           setSelectedCompany={setSelectedCompany}
           domainPrefixMap={domainPrefixMap}
-          notificationApi={api} // Pass the notification API
-          // Optional: Customize validation messages if needed in the component itself
-          // searchValidationMessage="Please select a domain, batch, or company to shortlist students."
+          notificationApi={api}
         />
 
-        {/* --- Results Table --- */}
+        {loading && (
+          <p className="text-center text-blue-600 mt-4">Searching...</p>
+        )}
+
+        {/* ✅ Table ONLY appears after search */}
         {showTable && searchResults.length > 0 && (
           <div className="bg-white rounded-lg shadow-md overflow-hidden mt-6">
             <div className="overflow-x-auto">
-              {/* Added 'w-full' and 'min-w-max' for better table handling on smaller screens */}
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    {/* Updated table headers to match requirements */}
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">S.No</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Name</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Batch</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Domain</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Company</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Designation</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Package</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      S.No
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Name
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Batch
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Domain
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Company
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Designation
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Package
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {searchResults.map((student, i) => (
-                    <tr key={student.bookingId || student.id || i} className="hover:bg-gray-50">
-                      {/* Updated table cells to match requirements and include domain derivation */}
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{i + 1}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{student.name}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{student.batch || "-"}</td>
-                      {/* Derived Domain Column */}
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {getDomainLabelFromBatch(student.batch, domainPrefixMap, domains) || "-"}
+                    <tr
+                      key={student.bookingId || i}
+                      className="hover:bg-gray-50"
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {i + 1}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{student.company || "-"}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{student.designation || "-"}</td>
-                      {/* Changed Salary to Package */}
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{student.salary || "-"}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {student.name}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {student.batch_no || "-"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {getDomainLabelFromBatch(
+                          student.batch_no,
+                          domainPrefixMap,
+                          domains
+                        ) || "-"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {student.company || "-"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {student.designation || "-"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {student.salary || "-"}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -252,9 +265,11 @@ export default function ShortListedStudentsTab() {
           </div>
         )}
 
-        {showTable && searchResults.length === 0 && (
+        {showTable && searchResults.length === 0 && !loading && (
           <div className="bg-white rounded-lg shadow-md p-6 text-center mt-6">
-            <p className="text-gray-600">No placed students found matching the selected criteria.</p>
+            <p className="text-gray-600">
+              No placed students found matching the selected criteria.
+            </p>
           </div>
         )}
       </main>
