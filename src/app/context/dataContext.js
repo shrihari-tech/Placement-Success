@@ -5031,7 +5031,7 @@ const DataProvider = ({ children }) => {
 
   const [selectedBatch, setSelectedBatch] = useState(null);
 
-  const getStatsByBatch = (batchKey) => batchStatsData[batchKey];
+  const getStatsByBatch = (batchKey) => batchStatsDataFromAPI[batchKey];
   const updateOpportunity = async (opportunityId, updates) => {
     // Find which domain array the opportunity belongs to
     let domainKey = null;
@@ -5168,7 +5168,7 @@ const DataProvider = ({ children }) => {
         marketingStudent,
         sapStudent,
         devopsStudent,
-        batchStatsData: batchStatsDataFromAPI, // ✅ Use API data
+        batchStatsDataFromAPI: batchStatsDataFromAPI, // ✅ Use API data
         graphData: graphDataFromAPI, // ✅ Add graph data
         calculateUpcomingBatchesPerDomain,
       }}

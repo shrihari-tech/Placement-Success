@@ -798,49 +798,109 @@ export default function BatchModel() {
     return isValid;
   };
 
-  const handleAddBatch = () => {
-    if (!validateForm()) return;
-    if (Object.values(modalDateErrors).some((e) => e)) {
-      toast.error("Please fix the date range errors before adding the batch");
-      return;
-    }
-    /* ⬇️ earliest / latest across sections */
-    const allSecs = Object.values(newBatch.sections);
-    const earliest = new Date(
-      Math.min(...allSecs.map((s) => new Date(s.startDate)))
-    );
-    const latest = new Date(
-      Math.max(...allSecs.map((s) => new Date(s.endDate)))
-    );
+  // const handleAddBatch = () => {
+  //   if (!validateForm()) return;
+  //   if (Object.values(modalDateErrors).some((e) => e)) {
+  //     toast.error("Please fix the date range errors before adding the batch");
+  //     return;
+  //   }
+  //   /* ⬇️ earliest / latest across sections */
+  //   const allSecs = Object.values(newBatch.sections);
+  //   const earliest = new Date(
+  //     Math.min(...allSecs.map((s) => new Date(s.startDate)))
+  //   );
+  //   const latest = new Date(
+  //     Math.max(...allSecs.map((s) => new Date(s.endDate)))
+  //   );
 
-  /* convert every section date to DD-MM-YYYY */
-  const sectionCopy = {};
-  for (const [k, s] of Object.entries(newBatch.sections)) {
-    sectionCopy[k] = {
-      startDate: toDDMMYYYY(parseDate(s.startDate)),
-      endDate: toDDMMYYYY(parseDate(s.endDate)),
-    };
+  // /* convert every section date to DD-MM-YYYY */
+  // const sectionCopy = {};
+  // for (const [k, s] of Object.entries(newBatch.sections)) {
+  //   sectionCopy[k] = {
+  //     startDate: toDDMMYYYY(parseDate(s.startDate)),
+  //     endDate: toDDMMYYYY(parseDate(s.endDate)),
+  //   };
+  // }
+
+  //   const newBatchEntry = {
+  //     id: batches.length + 1,
+  //     batchNo: newBatch.batchNo,
+  //     status: newBatch.status,
+  //     mode: newBatch.mode,
+  //     startDate: toDDMMYYYY(earliest),
+  //     endDate: toDDMMYYYY(latest),
+  //     studentsPlaced: 0, // Add these
+  //     pending: 0,
+  //     trainerName: "", // Add these
+  //     epicData: {},
+  //     sections: sectionCopy,
+  //   };
+
+  //   addBatch(newBatchEntry);
+  //   setShowModal(false);
+  //   resetForm();
+  //   toast.success("Batch added successfully");
+  // };
+  // ...existing code...
+
+const handleAddBatch = async () => {
+  if (!validateForm()) return;
+  if (Object.values(modalDateErrors).some((e) => e)) {
+    toast.error("Please fix the date range errors before adding the batch");
+    return;
   }
 
-    const newBatchEntry = {
-      id: batches.length + 1,
-      batchNo: newBatch.batchNo,
-      status: newBatch.status,
-      mode: newBatch.mode,
-      startDate: toDDMMYYYY(earliest),
-      endDate: toDDMMYYYY(latest),
-      studentsPlaced: 0, // Add these
-      pending: 0,
-      trainerName: "", // Add these
-      epicData: {},
-      sections: sectionCopy,
-    };
+  const allSecs = Object.values(newBatch.sections);
+  const earliest = new Date(
+    Math.min(...allSecs.map((s) => new Date(s.startDate)))
+  );
+  const latest = new Date(
+    Math.max(...allSecs.map((s) => new Date(s.endDate)))
+  );
 
-    addBatch(newBatchEntry);
+  // Prepare payload for backend
+  // const payload = {
+  //   id: batches.length + 1,
+  //   batchNo: newBatch.batchNo,
+  //   batchName: newBatch.batchNo,
+  //   status: newBatch.status,
+  //   mode: newBatch.mode,
+  //   startDate: earliest.toISOString().split("T")[0],
+  //   endDate: latest.toISOString().split("T")[0],
+  //   domain: selectedDomain || "dataanalytics", // or get from UI
+  // };
+  // ...existing code...
+// ...existing code...
+const payload = {
+  batch_no: newBatch.batchNo,
+  batchName: newBatch.batchName || newBatch.batchNo,
+  status: newBatch.status || "Ongoing",
+  mode: newBatch.mode,
+  start_date: earliest.toISOString().split("T")[0],
+  end_date: latest.toISOString().split("T")[0],
+  // domain: selectedDomain || "dataanalytics",
+  domain: batchHead,
+  sections: JSON.stringify(newBatch.sections),
+  trainer_name: "", // can be empty string if allowed
+  total_count: 0,   // <-- always send 0, not ""
+  students_placed: 0, // <-- always send 0, not ""
+  pending: 0        // <-- always send 0, not ""
+};
+// ...existing code...
+
+  try {
+    const res = await axios.post("http://localhost:5000/batches/addBatch", payload);
+    toast.success("Batch added successfully");
     setShowModal(false);
     resetForm();
-    toast.success("Batch added successfully");
-  };
+    // Optionally, fetch batches again from backend to update UI
+  } catch (err) {
+    toast.error("Failed to add batch");
+    console.error(err);
+  }
+};
+
+// ...existing code...
 
   // 👇 runs on each onChange
   const validateBatchNumber = (value) => {

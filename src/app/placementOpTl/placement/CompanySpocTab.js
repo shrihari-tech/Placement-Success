@@ -21,7 +21,7 @@ export default function CompanySPOCTab() {
   useEffect(() => {
     const fetchSpocs = async () => {
       try {
-        const res = await fetch("http://localhost:5000/spoc/allSPCOS");
+        const res = await fetch("http://localhost:5000/spocs/allSPCOS");
         if (!res.ok) throw new Error("Failed to fetch SPOCs");
         const data = await res.json();
         setSpocs(data);
@@ -43,7 +43,7 @@ export default function CompanySPOCTab() {
   // ✅ Create SPOC via API
   const handleAddSPOC = async (spoc) => {
     try {
-      const res = await fetch("http://localhost:5000/spoc/createSPOC", {
+      const res = await fetch("http://localhost:5000/spocs/createSPOC", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(spoc),

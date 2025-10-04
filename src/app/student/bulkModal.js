@@ -6,9 +6,10 @@ import { FiChevronDown } from "react-icons/fi";
 import { useDataContext } from "../context/dataContext";
 import * as XLSX from "xlsx";
 import { toast } from "sonner";
+import axios from "axios";
 
 export default function BulkModal() {
-  const { studentData, addStudent, batchesNames, addMultipleStudents } =
+  const { studentData, addStudent, batchesNames, addMultipleStudents, batchHead } =
     useDataContext();
   const [isOpen, setIsOpen] = useState(false);
   const [file, setFile] = useState(null);
@@ -19,6 +20,7 @@ export default function BulkModal() {
   const [showBatchDropdown, setShowBatchDropdown] = useState(false);
   const fileInputRef = useRef(null);
   const dropdownRef = useRef(null);
+  const [allBatches, setAllBatches] = useState([]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -28,6 +30,19 @@ export default function BulkModal() {
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    // Fetch all batches from backend
+    const fetchBatches = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/batches/allBatches");
+        setAllBatches(res.data || []);
+      } catch (err) {
+        console.error("Failed to fetch batches:", err);
+      }
+    };
+    fetchBatches();
   }, []);
 
   useEffect(() => {
@@ -169,7 +184,7 @@ export default function BulkModal() {
     setShowBatchInput(true);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     if (!batchName.trim()) {
       setError("Please enter a batch name.");
       return;
@@ -181,7 +196,7 @@ export default function BulkModal() {
     }
 
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       const data = new Uint8Array(e.target.result);
       const workbook = XLSX.read(data, { type: "array" });
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
@@ -256,27 +271,125 @@ export default function BulkModal() {
         return;
       }
       // Add valid data to the specific domain
+      // const newStudentsArray = validData.map((student) => ({
+      //   name: student["STUDENT FULL NAME (AS PER DOCUMENTS)"],
+      //   email: student["EMAIL ADDRESS"],
+      //   bookingId: student["Booking ID"],
+      //   epicStatus: "",
+      //   placement: "",
+      //   batch: batchName,
+      //   phone: student["CONTACT NUMBER (10 digit)"] || "",
+      //   mode: student["MODE OF STUDY"] || "",
+      // }));
+
+      // addMultipleStudents(newStudentsArray);
+
+      // setUploadMessage(
+      //   `File "${file.name}" uploaded successfully with batch: ${batchName}`
+      // );
+      // setFile(null);
+      // setBatchName("");
+      // setShowBatchInput(false);
+      // setError("");
+      // toast.success("File uploaded successfully!");
+      // const newStudentsArray = validData.map((student) => ({
+      //   name: student["STUDENT FULL NAME (AS PER DOCUMENTS)"],
+      //   email: student["EMAIL ADDRESS"],
+      //   bookingId: student["Booking ID"],
+      //   epicStatus: "",
+      //   placement: "",
+      //   batch: batchName,
+      //   phone: student["CONTACT NUMBER (10 digit)"] || "",
+      //   mode: student["MODE OF STUDY"] || "",
+      // }));
+      function excelDateToJSDate(serial) {
+        if (!serial) return null;
+        const utc_days = Math.floor(serial - 25569);
+        const utc_value = utc_days * 86400; // seconds in a day
+        const date_info = new Date(utc_value * 1000);
+        const fractional_day = serial - Math.floor(serial) + 0.0000001;
+        let total_seconds = Math.floor(86400 * fractional_day);
+        const seconds = total_seconds % 60;
+        total_seconds -= seconds;
+        const hours = Math.floor(total_seconds / 3600);
+        const minutes = Math.floor(total_seconds / 60) % 60;
+        date_info.setHours(hours);
+        date_info.setMinutes(minutes);
+        date_info.setSeconds(seconds);
+        return date_info.toISOString().split("T")[0]; // YYYY-MM-DD
+      }
+
       const newStudentsArray = validData.map((student) => ({
-        name: student["STUDENT FULL NAME (AS PER DOCUMENTS)"],
-        email: student["EMAIL ADDRESS"],
-        bookingId: student["Booking ID"],
-        epicStatus: "",
-        placement: "",
-        batch: batchName,
+        batchId: null,
+        batchName: batchName.trim(),
+        name: (student["STUDENT FULL NAME (AS PER DOCUMENTS)"] || "").trim(),
+        email: (student["EMAIL ADDRESS"] || "").trim(),
+        booking_Id: student["Booking ID"]?.toString().trim() || null,
+        batch_no: batchName.trim(),
+        domain: batchHead.trim(),
         phone: student["CONTACT NUMBER (10 digit)"] || "",
-        mode: student["MODE OF STUDY"] || "",
+        alternatePhone: student["ALTERNATE CONTACT NUMBER( 10 digit)"] || "",
+        mode: (student["MODE OF STUDY"] || "").trim(),
+        gender: (student["GENDER"] || "").trim(),
+        dob: excelDateToJSDate(student["DOB"] || ""),
+        address: student["RESIDENTIAL ADDRESS (COMPLETE ADDRESS)"] || "",
+        pincode: student["PINCODE"] || "",
+        city: student["CURRENT CITY/TOWN OF RESIDENCE"] || "",
+        state: student["CURRENT STATE OF RESIDENCE"] || "",
+        photoUrl: student["PASSPORT SIZE PROFESSIONAL PHOTO (WITH WHITE BACKGROUND ONLY)"] || "",
+        cvUrl: student["UPDATED CV"] || "",
+        tenthPercentage: student["10 th Percentage"] || "",
+        tenthYear: student["10 th YEAR OF COMPLETION"] || "",
+        twelfthPercentage: student["12 th / DIPLOMA %(Percentage)"] || "",
+        twelfthYear: student["12 th YEAR OF COMPLETION"] || "",
+        ugPercentage:student["UG %( Percentage)"] || "",
+        ugMode:student["UG MODE"] || "",
+        ugSpecialization:student["UG SPECIALIZATION"] || "",
+        ugYear:student["UG YEAR OF COMPLETION"] || "",
+        ugCertificateAvailable:student["UG - DEGREE CERTIFICATE AVAILABILITY"] === "Y",
+        ugArrearsPending:student["UG - ARREARS PENDING AS OF TODAY IF ANY"] || "",
+        pgPercentage:student["PG % Percentage)"] || "",
+        pgSpecialization:student["PG SPECIALIZATION"] || "",
+        pgYear:student["PG YEAR OF COMPLETION"] || "",
+        pgCertificateAvailable:student["PG - DEGREE CERTIFICATE AVAILABILITY"] === "Y",
+        pgArrearsPending:student["PG - ARREARS PENDING AS OF TODAY IF ANY"] || "",
+        gapInEducation: student["GAP IN EDUCATION IF ANY"] || "",
+        gapReason: student["REASON FOR GAP IN EDUCATION"] || "",
+        workExperienceYears: student["WORK EXPERIENCE (IF ANY)"] || "",
+        workExperienceMonths: student["WORK EXPERIENCE ( IN MONTHS)"] || "",
+        previousOrganisation: student["PREVIOUS ORGANISATION NAME (if any)"] || "",
+        willingToRelocate: student["WILLING TO RELOCATE (FOR PLACEMENT ASSISTANCE)"] === "Y",
+        languagesWrite: student["LANGUAGES KNOWN (TO WRITE)"] || "",
+        languagesRead: student["LANGUAGES KNOWN (TO READ)"] || "",
+        languagesSpeak: student["LANGUAGES KNOWN (TO SPEAK)"] || "",
+        certificateReceived: (student["Certificate Received ( Y or N )"] || "N").trim(),
+        epicStatus: "".trim(),
+        placement: "".trim(),
+        status : "" || "on going",
+        trainer_name : "null".trim(),
       }));
 
-      addMultipleStudents(newStudentsArray);
+  try {
+    const res = await axios.post(
+      `http://localhost:5000/students/bulkAdd/${batchName}`,
+      {students : newStudentsArray}
+    );
+    setUploadMessage(
+      `File "${file.name}" uploaded successfully with batch: ${batchName}`
+    );
+    console.log("Batch Name:", batchName);
+    console.log("Students array:", newStudentsArray);
 
-      setUploadMessage(
-        `File "${file.name}" uploaded successfully with batch: ${batchName}`
-      );
-      setFile(null);
-      setBatchName("");
-      setShowBatchInput(false);
-      setError("");
-      toast.success("File uploaded successfully!");
+    setFile(null);
+    setBatchName("");
+    setShowBatchInput(false);
+    setError("");
+    toast.success("File uploaded successfully!");
+  } catch (err) {
+    setError("Bulk upload failed.");
+    toast.error("Bulk upload failed!");
+    console.error(err);
+  }
     };
 
     reader.readAsArrayBuffer(file);
@@ -416,7 +529,7 @@ export default function BulkModal() {
                   )}
 
                   {/* 🔽 Dropdown List */}
-                  {showBatchDropdown && (
+                  {/* {showBatchDropdown && (
                     <div
                       className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md"
                       style={{
@@ -438,6 +551,40 @@ export default function BulkModal() {
                               setShowBatchDropdown(false);
                             }}
                             onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                setBatchName(name);
+                                setShowBatchDropdown(false);
+                              }
+                            }}
+                          >
+                            {name}
+                          </div>
+                        ))}
+                    </div>
+                  )} */}
+                  {showBatchDropdown && (
+                    <div
+                      className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md"
+                      style={{
+                        maxHeight: allBatches.length > 5 ? "200px" : "auto",
+                        overflowY: allBatches.length > 5 ? "auto" : "visible",
+                      }}
+                    >
+                      {allBatches
+                        .map(b => b.batchName)
+                        .filter(name =>
+                          name && name.toLowerCase().includes(batchName.toLowerCase())
+                        )
+                        .map(name => (
+                          <div
+                            key={name}
+                            tabIndex={0}
+                            className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                            onClick={() => {
+                              setBatchName(name);
+                              setShowBatchDropdown(false);
+                            }}
+                            onKeyDown={e => {
                               if (e.key === "Enter") {
                                 setBatchName(name);
                                 setShowBatchDropdown(false);
