@@ -208,7 +208,6 @@ import BulkModal from "./bulkModal";
 import Tabs from "./components/tab";
 import Image from "next/image";
 import EditStudentModal from "./EditStudentModal";
-import ViewStudentModal from "./ViewStudentModal";
 import BatchChange from "./BatchChange";
 import Scores from "./scores";
 import Opportunity from "./oppotunities";
