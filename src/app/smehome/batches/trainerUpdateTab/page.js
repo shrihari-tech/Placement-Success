@@ -34,13 +34,34 @@ export default function TrainerUpdateTab() {
   });
 
   const batchDropdownRef = useRef(null);
-  const allTrainerFW = ["Sundar P", "Sri Hari", "Suriya", "Sundar Raj K"];
+  const [allTrainerFW, setAllTrainerFW] = useState([]);
+
+  // Add useEffect to load trainers on mount:
+  useEffect(() => {
+    const loadTrainers = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/sme/trainers");
+        const data = await res.json();
+        if (data.success) {
+          // ✅ Extract only the name strings
+          const trainerNames = data.data.map(
+            (trainer) => trainer.name || trainer
+          );
+          setAllTrainerFW(trainerNames);
+        }
+      } catch (err) {
+        console.error("Failed to load trainers");
+        setAllTrainerFW(["Sundar P", "Sri Hari", "Suriya", "Sundar Raj K"]);
+      }
+    };
+    loadTrainers();
+  }, []);
 
   // ✅ AntD notification hook
   const [api, contextHolder] = notification.useNotification();
 
   // --- Helper Functions ---
-  const handleSearch = () => {
+  const handleSearch = async () => {
     if (!selectedBatch) {
       api.error({
         message: "Search Error",
@@ -61,12 +82,36 @@ export default function TrainerUpdateTab() {
       return;
     }
 
-    const results = allFullstackTrainer.filter(
-      (student) => student.batch === selectedBatch
-    );
-    setFilteredStudents(results);
-    setTrainerEdit(results);
-    setSearchInitiated(true);
+    try {
+      const res = await fetch(
+        `http://localhost:5000/sme/batches/${selectedBatch}/trainer-assignments`
+      );
+      const data = await res.json();
+
+      if (data.success) {
+        const mockStudent = {
+          id: `batch-${selectedBatch}`,
+          batch: selectedBatch,
+          mode: "Online", // or fetch from actual student
+          trainer: data.data.trainer,
+          sTiming: data.data.sTiming,
+          eTiming: data.data.eTiming,
+        };
+        setFilteredStudents([mockStudent]);
+        setTrainerEdit([mockStudent]);
+        setSearchInitiated(true);
+      } else {
+        api.error({
+          message: "Fetch Error",
+          description: "Failed to load trainer data",
+        });
+      }
+    } catch (err) {
+      api.error({
+        message: "Network Error",
+        description: "Could not connect to server",
+      });
+    }
   };
 
   const handleReset = () => {
@@ -415,16 +460,15 @@ export default function TrainerUpdateTab() {
                         {editingStudent && (
                           <button
                             type="button"
-                            onClick={() => {
+                            onClick={async () => {
                               setTimingError("");
 
+                              // Validate timing
                               if (formData.sTiming && formData.eTiming) {
                                 if (formData.sTiming === formData.eTiming) {
                                   setTimingError(
                                     "Start time and end time cannot be the same."
                                   );
-
-                                  // ✅ AntD Notification for timing error
                                   api.error({
                                     message: "Timing Error",
                                     description:
@@ -441,57 +485,92 @@ export default function TrainerUpdateTab() {
                                     style: { border: "1px solid #cd5e77" },
                                     className: "custom-notification",
                                   });
-
                                   return;
                                 }
                               }
 
-                              if (
-                                formData.trainer ||
-                                (formData.sTiming && formData.eTiming)
-                              ) {
-                                const updatedStudent = { ...student };
-
-                                if (formData.trainer) {
-                                  updatedStudent.trainer = [
-                                    ...student.trainer,
-                                    formData.trainer,
-                                  ];
-                                }
-                                if (formData.sTiming && formData.eTiming) {
-                                  updatedStudent.sTiming = [
-                                    ...student.sTiming,
-                                    formData.sTiming,
-                                  ];
-                                  updatedStudent.eTiming = [
-                                    ...student.eTiming,
-                                    formData.eTiming,
-                                  ];
-                                }
-
-                                setAllFullStackTrainer((prev) =>
-                                  prev.map((item) =>
-                                    item.id === student.id
-                                      ? updatedStudent
-                                      : item
-                                  )
-                                );
-
-                                setFilteredStudents((prev) =>
-                                  prev.map((item) =>
-                                    item.id === student.id
-                                      ? updatedStudent
-                                      : item
-                                  )
-                                );
+                              // If nothing to save, just close
+                              if (!formData.trainer && !formData.sTiming) {
+                                setEditingStudent(null);
+                                setFormData({
+                                  trainer: "",
+                                  sTiming: "",
+                                  eTiming: "",
+                                });
+                                return;
                               }
 
-                              setEditingStudent(null);
-                              setFormData({
-                                trainer: "",
-                                sTiming: "",
-                                eTiming: "",
-                              });
+                              // Prepare payload
+                              const payload = {};
+                              if (formData.trainer)
+                                payload.trainer_name = formData.trainer;
+                              if (formData.sTiming)
+                                payload.sTiming = formData.sTiming;
+                              if (formData.eTiming)
+                                payload.eTiming = formData.eTiming;
+
+                              try {
+                                // Call API to save assignment
+                                const res = await fetch(
+                                  `http://localhost:5000/sme/batches/${selectedBatch}/trainer-assignments`,
+                                  {
+                                    method: "POST",
+                                    headers: {
+                                      "Content-Type": "application/json",
+                                    },
+                                    body: JSON.stringify(payload),
+                                  }
+                                );
+
+                                const result = await res.json();
+
+                                if (result.success) {
+                                  // ✅ Refetch updated data from backend
+                                  handleSearch(); // This reloads the batch with new assignment
+                                  setEditingStudent(null);
+                                  setFormData({
+                                    trainer: "",
+                                    sTiming: "",
+                                    eTiming: "",
+                                  });
+                                } else {
+                                  // Show backend error
+                                  api.error({
+                                    message: "Save Failed",
+                                    description:
+                                      result.message ||
+                                      "Could not save trainer assignment",
+                                    placement: "topRight",
+                                    duration: 4,
+                                    pauseOnHover: true,
+                                    closeIcon: (
+                                      <RiCloseCircleLine
+                                        className="text-[#cd5e77] hover:text-white"
+                                        size={20}
+                                      />
+                                    ),
+                                    style: { border: "1px solid #cd5e77" },
+                                    className: "custom-notification",
+                                  });
+                                }
+                              } catch (err) {
+                                console.error("Network error:", err);
+                                api.error({
+                                  message: "Network Error",
+                                  description: "Could not connect to server",
+                                  placement: "topRight",
+                                  duration: 4,
+                                  pauseOnHover: true,
+                                  closeIcon: (
+                                    <RiCloseCircleLine
+                                      className="text-[#cd5e77] hover:text-white"
+                                      size={20}
+                                    />
+                                  ),
+                                  style: { border: "1px solid #cd5e77" },
+                                  className: "custom-notification",
+                                });
+                              }
                             }}
                             className="cursor-pointer p-1 hover:bg-gray-100 rounded text-green-600 font-medium"
                             aria-label={`Save ${student?.batch}`}

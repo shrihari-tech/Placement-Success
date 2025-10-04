@@ -4012,7 +4012,6 @@ const DataProvider = ({ children }) => {
     domain: 6,
   }); // live counts of students in each domain
 
-  
   // ➤ Add these inside DataProvider, near other useState calls
   const [batchStatsDataFromAPI, setBatchStatsDataFromAPI] = useState({
     fullstack: {
@@ -4057,7 +4056,6 @@ const DataProvider = ({ children }) => {
     previousData: [],
     currentData: [],
   });
-
 
   // ➤ Domain-wise individual state data
   const [fullstackData, setFullstackData] = useState(fullstackInitial);
@@ -4202,16 +4200,16 @@ const DataProvider = ({ children }) => {
   }, [devopsData]);
 
   // ➤ Replace the existing calculateUpcomingBatchesPerDomain
-const calculateUpcomingBatchesPerDomain = useCallback(() => {
-  return {
-    fullstack: batchStatsDataFromAPI.fullstack.upcomingBatches,
-    data: batchStatsDataFromAPI.data.upcomingBatches,
-    marketing: batchStatsDataFromAPI.marketing.upcomingBatches,
-    sap: batchStatsDataFromAPI.sap.upcomingBatches,
-    banking: batchStatsDataFromAPI.banking.upcomingBatches,
-    devops: batchStatsDataFromAPI.devops.upcomingBatches,
-  };
-}, [batchStatsDataFromAPI]);
+  const calculateUpcomingBatchesPerDomain = useCallback(() => {
+    return {
+      fullstack: batchStatsDataFromAPI.fullstack.upcomingBatches,
+      data: batchStatsDataFromAPI.data.upcomingBatches,
+      marketing: batchStatsDataFromAPI.marketing.upcomingBatches,
+      sap: batchStatsDataFromAPI.sap.upcomingBatches,
+      banking: batchStatsDataFromAPI.banking.upcomingBatches,
+      devops: batchStatsDataFromAPI.devops.upcomingBatches,
+    };
+  }, [batchStatsDataFromAPI]);
 
   //all batches names across domains
   useEffect(() => {
@@ -4334,164 +4332,197 @@ const calculateUpcomingBatchesPerDomain = useCallback(() => {
     setStudentData(updateList(studentData));
   };
 
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        // ✅ Fetch counts from /owner/dashboard/counts
+        const countsRes = await fetch(
+          "http://localhost:5000/owner/dashboard/counts"
+        );
+        const countsData = await countsRes.json();
+        if (!countsRes.ok) throw new Error("Failed to load dashboard counts");
 
-useEffect(() => {
-  const fetchDashboardData = async () => {
-    try {
-      // ✅ Fetch counts from /owner/dashboard/counts
-      const countsRes = await fetch("http://localhost:5000/owner/dashboard/counts");
-      const countsData = await countsRes.json();
-      if (!countsRes.ok) throw new Error("Failed to load dashboard counts");
+        // ✅ Fetch graphs from /owner/dashboard/graphs
+        const graphsRes = await fetch(
+          "http://localhost:5000/owner/dashboard/graphs"
+        );
+        const graphsData = await graphsRes.json();
+        if (!graphsRes.ok) throw new Error("Failed to load dashboard graphs");
 
-      // ✅ Fetch graphs from /owner/dashboard/graphs
-      const graphsRes = await fetch("http://localhost:5000/owner/dashboard/graphs");
-      const graphsData = await graphsRes.json();
-      if (!graphsRes.ok) throw new Error("Failed to load dashboard graphs");
+        // ➤ 1. Normalize counts into batchStatsDataFromAPI structure
+        const normalizedStats = {
+          fullstack: {
+            totalBatches: 0, // ❌ Not provided by /counts → keep 0 or omit
+            upcomingBatches: countsData.ongoingBatchesPerDomain.fullstack,
+            alreadyPlaced: 0, // ❌ Not in /counts — but graphs has it
+            yetToPlace: 0,
+          },
+          data: {
+            totalBatches: 0,
+            upcomingBatches: countsData.ongoingBatchesPerDomain.data,
+            alreadyPlaced: 0,
+            yetToPlace: 0,
+          },
+          marketing: {
+            totalBatches: 0,
+            upcomingBatches: countsData.ongoingBatchesPerDomain.marketing,
+            alreadyPlaced: 0,
+            yetToPlace: 0,
+          },
+          sap: {
+            totalBatches: 0,
+            upcomingBatches: countsData.ongoingBatchesPerDomain.sap,
+            alreadyPlaced: 0,
+            yetToPlace: 0,
+          },
+          banking: {
+            totalBatches: 0,
+            upcomingBatches: countsData.ongoingBatchesPerDomain.banking,
+            alreadyPlaced: 0,
+            yetToPlace: 0,
+          },
+          devops: {
+            totalBatches: 0,
+            upcomingBatches: countsData.ongoingBatchesPerDomain.devops,
+            alreadyPlaced: 0,
+            yetToPlace: 0,
+          },
+        };
 
-      // ➤ 1. Normalize counts into batchStatsDataFromAPI structure
-      const normalizedStats = {
-        fullstack: {
-          totalBatches: 0, // ❌ Not provided by /counts → keep 0 or omit
-          upcomingBatches: countsData.ongoingBatchesPerDomain.fullstack,
-          alreadyPlaced: 0, // ❌ Not in /counts — but graphs has it
-          yetToPlace: 0,
-        },
-        data: {
-          totalBatches: 0,
-          upcomingBatches: countsData.ongoingBatchesPerDomain.data,
-          alreadyPlaced: 0,
-          yetToPlace: 0,
-        },
-        marketing: {
-          totalBatches: 0,
-          upcomingBatches: countsData.ongoingBatchesPerDomain.marketing,
-          alreadyPlaced: 0,
-          yetToPlace: 0,
-        },
-        sap: {
-          totalBatches: 0,
-          upcomingBatches: countsData.ongoingBatchesPerDomain.sap,
-          alreadyPlaced: 0,
-          yetToPlace: 0,
-        },
-        banking: {
-          totalBatches: 0,
-          upcomingBatches: countsData.ongoingBatchesPerDomain.banking,
-          alreadyPlaced: 0,
-          yetToPlace: 0,
-        },
-        devops: {
-          totalBatches: 0,
-          upcomingBatches: countsData.ongoingBatchesPerDomain.devops,
-          alreadyPlaced: 0,
-          yetToPlace: 0,
-        },
-      };
+        // ➤ 2. Extract placed/yetToPlace from graphsData
+        const getStudentCountByDomain = (data, domainLabel) => {
+          const item = data.find((d) => d.name === domainLabel);
+          return item ? item.students : 0;
+        };
 
-      // ➤ 2. Extract placed/yetToPlace from graphsData
-      const getStudentCountByDomain = (data, domainLabel) => {
-        const item = data.find((d) => d.name === domainLabel);
-        return item ? item.students : 0;
-      };
+        normalizedStats.fullstack.alreadyPlaced = getStudentCountByDomain(
+          graphsData.placedData,
+          "FSD"
+        );
+        normalizedStats.fullstack.yetToPlace = getStudentCountByDomain(
+          graphsData.yetToPlaceData,
+          "FSD"
+        );
 
-      normalizedStats.fullstack.alreadyPlaced = getStudentCountByDomain(graphsData.placedData, "FSD");
-      normalizedStats.fullstack.yetToPlace = getStudentCountByDomain(graphsData.yetToPlaceData, "FSD");
+        normalizedStats.data.alreadyPlaced = getStudentCountByDomain(
+          graphsData.placedData,
+          "DADS"
+        );
+        normalizedStats.data.yetToPlace = getStudentCountByDomain(
+          graphsData.yetToPlaceData,
+          "DADS"
+        );
 
-      normalizedStats.data.alreadyPlaced = getStudentCountByDomain(graphsData.placedData, "DADS");
-      normalizedStats.data.yetToPlace = getStudentCountByDomain(graphsData.yetToPlaceData, "DADS");
+        normalizedStats.marketing.alreadyPlaced = getStudentCountByDomain(
+          graphsData.placedData,
+          "MK"
+        );
+        normalizedStats.marketing.yetToPlace = getStudentCountByDomain(
+          graphsData.yetToPlaceData,
+          "MK"
+        );
 
-      normalizedStats.marketing.alreadyPlaced = getStudentCountByDomain(graphsData.placedData, "MK");
-      normalizedStats.marketing.yetToPlace = getStudentCountByDomain(graphsData.yetToPlaceData, "MK");
+        normalizedStats.sap.alreadyPlaced = getStudentCountByDomain(
+          graphsData.placedData,
+          "SAP"
+        );
+        normalizedStats.sap.yetToPlace = getStudentCountByDomain(
+          graphsData.yetToPlaceData,
+          "SAP"
+        );
 
-      normalizedStats.sap.alreadyPlaced = getStudentCountByDomain(graphsData.placedData, "SAP");
-      normalizedStats.sap.yetToPlace = getStudentCountByDomain(graphsData.yetToPlaceData, "SAP");
+        normalizedStats.banking.alreadyPlaced = getStudentCountByDomain(
+          graphsData.placedData,
+          "BFS"
+        );
+        normalizedStats.banking.yetToPlace = getStudentCountByDomain(
+          graphsData.yetToPlaceData,
+          "BFS"
+        );
 
-      normalizedStats.banking.alreadyPlaced = getStudentCountByDomain(graphsData.placedData, "BFS");
-      normalizedStats.banking.yetToPlace = getStudentCountByDomain(graphsData.yetToPlaceData, "BFS");
+        normalizedStats.devops.alreadyPlaced = getStudentCountByDomain(
+          graphsData.placedData,
+          "DV"
+        );
+        normalizedStats.devops.yetToPlace = getStudentCountByDomain(
+          graphsData.yetToPlaceData,
+          "DV"
+        );
 
-      normalizedStats.devops.alreadyPlaced = getStudentCountByDomain(graphsData.placedData, "DV");
-      normalizedStats.devops.yetToPlace = getStudentCountByDomain(graphsData.yetToPlaceData, "DV");
+        // ➤ Set states
+        setBatchStatsDataFromAPI(normalizedStats);
+        setGraphDataFromAPI({
+          placedData: graphsData.placedData,
+          yetToPlaceData: graphsData.yetToPlaceData,
+        });
+      } catch (err) {
+        console.error("Failed to fetch dashboard data:", err);
+      }
+    };
 
-      // ➤ Set states
-      setBatchStatsDataFromAPI(normalizedStats);
-      setGraphDataFromAPI({
-        placedData: graphsData.placedData,
-        yetToPlaceData: graphsData.yetToPlaceData,
-      });
+    fetchDashboardData();
+  }, []);
 
-    } catch (err) {
-      console.error("Failed to fetch dashboard data:", err);
-    }
-  };
+  // // ✅ Separate useEffect for fetching Total Batches
+  // // ✅ Separate useEffect for fetching Total Batches
+  // // ✅ Separate useEffect for fetching Total Batches
+  // useEffect(() => {
+  //   const fetchTotalBatches = async () => {
+  //     try {
+  //       console.log("Fetching total batches from API...");
+  //       const res = await fetch("http://localhost:5000/batches/totalBatches");
 
-  fetchDashboardData();
-}, []);
+  //       if (!res.ok) {
+  //         throw new Error(`HTTP error! status: ${res.status}`);
+  //       }
 
+  //       const data = await res.json();
+  //       console.log("Total batches API response:", data);
 
-// // ✅ Separate useEffect for fetching Total Batches
-// // ✅ Separate useEffect for fetching Total Batches
-// // ✅ Separate useEffect for fetching Total Batches
-// useEffect(() => {
-//   const fetchTotalBatches = async () => {
-//     try {
-//       console.log("Fetching total batches from API...");
-//       const res = await fetch("http://localhost:5000/batches/totalBatches");
-      
-//       if (!res.ok) {
-//         throw new Error(`HTTP error! status: ${res.status}`);
-//       }
+  //       // Handle case where API returns error
+  //       if (data.error) {
+  //         console.error("API returned error:", data.error);
+  //         // Set default values
+  //         setBatchStatsDataFromAPI(prevStats => ({
+  //           ...prevStats,
+  //           fullstack: { ...prevStats.fullstack, totalBatches: 0 },
+  //           data: { ...prevStats.data, totalBatches: 0 },
+  //           marketing: { ...prevStats.marketing, totalBatches: 0 },
+  //           sap: { ...prevStats.sap, totalBatches: 0 },
+  //           banking: { ...prevStats.banking, totalBatches: 0 },
+  //           devops: { ...prevStats.devops, totalBatches: 0 },
+  //         }));
+  //         return;
+  //       }
 
-//       const data = await res.json();
-//       console.log("Total batches API response:", data);
+  //       // Update with API data
+  //       setBatchStatsDataFromAPI(prevStats => ({
+  //         ...prevStats,
+  //         fullstack: { ...prevStats.fullstack, totalBatches: data.totalBatchesPerDomain?.fullstack ?? 0 },
+  //         data: { ...prevStats.data, totalBatches: data.totalBatchesPerDomain?.data ?? 0 },
+  //         marketing: { ...prevStats.marketing, totalBatches: data.totalBatchesPerDomain?.marketing ?? 0 },
+  //         sap: { ...prevStats.sap, totalBatches: data.totalBatchesPerDomain?.sap ?? 0 },
+  //         banking: { ...prevStats.banking, totalBatches: data.totalBatchesPerDomain?.banking ?? 0 },
+  //         devops: { ...prevStats.devops, totalBatches: data.totalBatchesPerDomain?.devops ?? 0 },
+  //       }));
 
-//       // Handle case where API returns error
-//       if (data.error) {
-//         console.error("API returned error:", data.error);
-//         // Set default values
-//         setBatchStatsDataFromAPI(prevStats => ({
-//           ...prevStats,
-//           fullstack: { ...prevStats.fullstack, totalBatches: 0 },
-//           data: { ...prevStats.data, totalBatches: 0 },
-//           marketing: { ...prevStats.marketing, totalBatches: 0 },
-//           sap: { ...prevStats.sap, totalBatches: 0 },
-//           banking: { ...prevStats.banking, totalBatches: 0 },
-//           devops: { ...prevStats.devops, totalBatches: 0 },
-//         }));
-//         return;
-//       }
+  //     } catch (err) {
+  //       console.error("Error fetching total batches:", err);
+  //       // Set default values on error
+  //       setBatchStatsDataFromAPI(prevStats => ({
+  //         ...prevStats,
+  //         fullstack: { ...prevStats.fullstack, totalBatches: 0 },
+  //         data: { ...prevStats.data, totalBatches: 0 },
+  //         marketing: { ...prevStats.marketing, totalBatches: 0 },
+  //         sap: { ...prevStats.sap, totalBatches: 0 },
+  //         banking: { ...prevStats.banking, totalBatches: 0 },
+  //         devops: { ...prevStats.devops, totalBatches: 0 },
+  //       }));
+  //     }
+  //   };
 
-//       // Update with API data
-//       setBatchStatsDataFromAPI(prevStats => ({
-//         ...prevStats,
-//         fullstack: { ...prevStats.fullstack, totalBatches: data.totalBatchesPerDomain?.fullstack ?? 0 },
-//         data: { ...prevStats.data, totalBatches: data.totalBatchesPerDomain?.data ?? 0 },
-//         marketing: { ...prevStats.marketing, totalBatches: data.totalBatchesPerDomain?.marketing ?? 0 },
-//         sap: { ...prevStats.sap, totalBatches: data.totalBatchesPerDomain?.sap ?? 0 },
-//         banking: { ...prevStats.banking, totalBatches: data.totalBatchesPerDomain?.banking ?? 0 },
-//         devops: { ...prevStats.devops, totalBatches: data.totalBatchesPerDomain?.devops ?? 0 },
-//       }));
-
-//     } catch (err) {
-//       console.error("Error fetching total batches:", err);
-//       // Set default values on error
-//       setBatchStatsDataFromAPI(prevStats => ({
-//         ...prevStats,
-//         fullstack: { ...prevStats.fullstack, totalBatches: 0 },
-//         data: { ...prevStats.data, totalBatches: 0 },
-//         marketing: { ...prevStats.marketing, totalBatches: 0 },
-//         sap: { ...prevStats.sap, totalBatches: 0 },
-//         banking: { ...prevStats.banking, totalBatches: 0 },
-//         devops: { ...prevStats.devops, totalBatches: 0 },
-//       }));
-//     }
-//   };
-
-//   fetchTotalBatches();
-// }, []);
-
-
-
-
+  //   fetchTotalBatches();
+  // }, []);
 
   // 🔄 Update studentData and studentHead when batchingvalue changes
   useEffect(() => {
@@ -4723,79 +4754,81 @@ useEffect(() => {
     }
   };
 
-  // Update an existing student by bookingId in current domain
-  const updateStudent = (bookingId, updatedFields) => {
-    console.log("DataContext updateStudent called with:", {
-      bookingId,
-      updatedFields,
-    });
-
-    let originalDomain = "";
-    let originalStudent = "";
-
-    if (fullstackStudent.some((s) => s.bookingId === bookingId)) {
-      originalStudent = fullstackStudent.find((s) => s.bookingId === bookingId);
-      originalDomain = "fullstack";
-    } else if (dataanalyticsStudent.some((s) => s.bookingId === bookingId)) {
-      originalStudent = dataanalyticsStudent.find(
-        (s) => s.bookingId === bookingId
-      );
-      originalDomain = "dataanalytics";
-    } else if (bankingStudent.some((s) => s.bookingId === bookingId)) {
-      originalStudent = bankingStudent.find((s) => s.bookingId === bookingId);
-      originalDomain = "banking";
-    } else if (marketingStudent.some((s) => s.bookingId === bookingId)) {
-      originalStudent = marketingStudent.find((s) => s.bookingId === bookingId);
-      originalDomain = "marketing";
-    } else if (sapStudent.some((s) => s.bookingId === bookingId)) {
-      originalStudent = sapStudent.find((s) => s.bookingId === bookingId);
-      originalDomain = "sap";
-    } else if (devopsStudent.some((s) => s.bookingId === bookingId)) {
-      originalStudent = devopsStudent.find((s) => s.bookingId === bookingId);
-      originalDomain = "devops";
+  // ✅ CORRECT updateStudent in DataContext.js
+  const updateStudent = async (bookingId, updatedData, domain) => {
+    // 🔒 Validate domain FIRST (from SME login, NOT from batch)
+    const validDomains = [
+      "fullstack",
+      "dataanalytics",
+      "marketing",
+      "devops",
+      "sap",
+      "banking",
+    ];
+    if (!domain || !validDomains.includes(domain)) {
+      throw new Error(`Unknown domain for student update: "${domain}"`);
     }
 
-    // 2. Update the specific domain's student list
-    const updateList = (list) =>
-      list.map((item) =>
-        item.bookingId === bookingId ? { ...item, ...updatedFields } : item
-      );
+    // ✅ Call your Express API
+    const response = await fetch(
+      `http://localhost:5000/sme/students/${bookingId}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedData),
+      }
+    );
 
-    switch (originalDomain) {
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || "Failed to update student");
+    }
+
+    const result = await response.json();
+
+    // 🔄 Optional: Update local context state to avoid refetching
+    // But ONLY if you're managing local state (not recommended if you use SWR/React Query)
+    // If you must update local state, do it like this:
+    setStudentData((prev) =>
+      prev.map((s) =>
+        s.bookingId === bookingId ? { ...s, ...updatedData } : s
+      )
+    );
+    setAllStudentData((prev) =>
+      prev.map((s) =>
+        s.bookingId === bookingId ? { ...s, ...updatedData } : s
+      )
+    );
+
+    // Also update domain-specific arrays if you really need them
+    const updateDomainList = (setter, list) => {
+      setter((prev) =>
+        prev.map((s) =>
+          s.bookingId === bookingId ? { ...s, ...updatedData } : s
+        )
+      );
+    };
+
+    switch (domain) {
       case "fullstack":
-        setFullstackStudent((prev) => updateList(prev));
+        updateDomainList(setFullstackStudent, fullstackStudent);
         break;
       case "dataanalytics":
-        setDataanalyticsStudent((prev) => updateList(prev));
+        updateDomainList(setDataanalyticsStudent, dataanalyticsStudent);
         break;
       case "banking":
-        setBankingStudent((prev) => updateList(prev));
+        updateDomainList(setBankingStudent, bankingStudent);
         break;
       case "marketing":
-        setMarketingStudent((prev) => updateList(prev));
+        updateDomainList(setMarketingStudent, marketingStudent);
         break;
       case "sap":
-        setSapStudent((prev) => updateList(prev));
+        updateDomainList(setSapStudent, sapStudent);
         break;
       case "devops":
-        setDevopsStudent((prev) => updateList(prev));
+        updateDomainList(setDevopsStudent, devopsStudent);
         break;
-      default:
-        console.error("Unknown domain for student update:", originalDomain);
-        return;
     }
-
-    setStudentData((prev) =>
-      prev.map((item) =>
-        item.bookingId === bookingId ? { ...item, ...updatedFields } : item
-      )
-    );
-
-    setAllStudentData((prev) =>
-      prev.map((item) =>
-        item.bookingId === bookingId ? { ...item, ...updatedFields } : item
-      )
-    );
   };
 
   const batchChange = (bookingId, updatedStudentData) => {
@@ -5067,8 +5100,6 @@ useEffect(() => {
     );
   };
 
- 
-
   return (
     <DataContext.Provider
       value={{
@@ -5121,7 +5152,7 @@ useEffect(() => {
         bankingOpportunities,
         setBankingOpportunities,
         calculateTotalBatchesPerDomain,
-        
+
         placementFSDStudents,
         setPlacementFSDStudents,
         updateOpportunity,

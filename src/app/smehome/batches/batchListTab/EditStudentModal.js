@@ -1,3 +1,4 @@
+//src/app/smehome/batches/batchListTab/EditStudentModal.js
 "use client";
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { FiChevronDown, FiEdit } from "react-icons/fi";
@@ -7,7 +8,13 @@ import { useDataContext } from "../../../context/dataContext"; // Ensure this pa
 import { toast } from "sonner";
 import Tabs from "../../components/tab";
 
-export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
+export default function EditStudentModal({
+  student,
+  domain,
+  onClose,
+  onSave,
+  isOpen,
+}) {
   // Destructure opportunities data from context
   const {
     updateStudent,
@@ -205,7 +212,6 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
       "name",
       "email",
       "phone",
-      "batch",
       "mode",
       "epicStatus",
       "placement",
@@ -214,6 +220,8 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
       "experience",
       "attendance",
     ];
+
+    // Validate non-batch fields
     requiredFields.forEach((field) => {
       validateField(field, editingStudent[field]);
       if (
@@ -223,20 +231,39 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
       ) {
         isValid = false;
       }
-      // Special handling for numbers
       if (field === "experience" || field === "attendance") {
         const num = parseFloat(editingStudent[field]);
         if (isNaN(num) || num < 0 || (field === "attendance" && num > 100)) {
           isValid = false;
-          // Ensure error is set if validation fails here
           setErrors((prev) => ({ ...prev, [field]: `Invalid ${field}` }));
         }
       }
     });
-    // Also check for any existing errors in the errors state
-    if (Object.keys(errors).length > 0) {
+
+    // ✅ IMPROVED: Better batch validation
+    const batch = editingStudent.batch?.trim() || "";
+    if (!batch) {
+      setErrors((prev) => ({ ...prev, batch: "Batch is required" }));
       isValid = false;
+    } else {
+      const prefix = batch.substring(0, 2).toUpperCase();
+      const validPrefixes = ["FS", "DA", "BK", "MK", "SA", "DV"];
+      if (!validPrefixes.includes(prefix)) {
+        setErrors((prev) => ({
+          ...prev,
+          batch: `Batch must start with FS, DA, BK, MK, SA, or DV (got: "${prefix}")`,
+        }));
+        isValid = false;
+      } else {
+        // Clear batch error if valid
+        setErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors.batch;
+          return newErrors;
+        });
+      }
     }
+
     return isValid;
   };
 
@@ -248,7 +275,7 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
       case "FS":
         return "fullstack";
       case "DA":
-        return "dataanalytics";
+        return "dataanalytics"; // <-- all lowercase
       case "BK":
         return "banking";
       case "MK":
@@ -267,7 +294,7 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
     switch (studentDomain) {
       case "fullstack":
         return fullstackOpportunities || [];
-      case "dataAnalytics":
+      case "dataanalytics": // <-- match lowercase
         return dataanalyticsOpportunities || [];
       case "banking":
         return bankingOpportunities || [];
@@ -313,19 +340,46 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
   };
 
   const handleConfirmSave = () => {
+    if (!validateFields()) {
+      toast.error("Please fix validation errors before saving");
+      setShowConfirmModal(false);
+      return;
+    }
+
+    // Double-check batch validity
+    const batch = editingStudent.batch?.trim() || "";
+    const batchPrefix = batch.substring(0, 2).toUpperCase();
+    const validPrefixes = ["FS", "DA", "BK", "MK", "SA", "DV"];
+
+    if (!validPrefixes.includes(batchPrefix)) {
+      toast.error(
+        `Cannot update: Invalid batch format "${batch}". Must start with FS, DA, BK, MK, SA, or DV`
+      );
+      setShowConfirmModal(false);
+      return;
+    }
+
     const updatedStudent = {
       ...editingStudent,
       mode:
         typeof editingStudent.mode === "string" && editingStudent.mode
           ? editingStudent.mode
           : "Online",
+      batch: batch, // Use trimmed batch
     };
-    updateStudent(updatedStudent.bookingId, updatedStudent);
-    onSave && onSave(updatedStudent);
-    setShowConfirmModal(false);
-    setEditingStudent(initialStudent);
-    onClose();
-    toast.success("Student updated successfully");
+
+    try {
+      updateStudent(updatedStudent.bookingId, updatedStudent, domain);
+      onSave && onSave(updatedStudent);
+      setShowConfirmModal(false);
+      setEditingStudent(initialStudent);
+      onClose();
+      toast.success("Student updated successfully");
+    } catch (error) {
+      console.error("Error updating student:", error);
+      toast.error(`Failed to update student: ${error.message}`);
+      setShowConfirmModal(false);
+    }
   };
 
   const handleCancel = () => {
@@ -547,6 +601,25 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
                       </p>
                     )}
                   </div>
+
+                  {/* Batch Input - Static/Read Only */}
+                  <div className="relative mb-4">
+                    <input
+                      type="text"
+                      id="batch"
+                      readOnly
+                      className="block px-4 pb-2 pt-5 w-full text-sm text-gray-900 bg-gray-100 rounded-sm border-2 border-gray-300 appearance-none focus:outline-none peer cursor-not-allowed"
+                      placeholder=" "
+                      value={editingStudent.batch || ""}
+                    />
+                    <label
+                      htmlFor="batch"
+                      className="absolute px-2 text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-4 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 bg-gray-100"
+                    >
+                      Batch <span className="text-red-500">*</span>
+                    </label>
+                  </div>
+
                   {/* Phone */}
                   <div className="relative mb-4">
                     <input
@@ -651,7 +724,7 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
                     )}
                   </div>
                   {/* Placement Dropdown */}
-                  <div className="relative mb-4" ref={placementDropdownRef}>
+                  <div className="relative mb-4 " ref={placementDropdownRef}>
                     {" "}
                     {/* Removed z-100 */}
                     <input
@@ -710,6 +783,45 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
                     {errors.placement && (
                       <p className="text-red-500 text-xs mt-1">
                         {errors.placement}
+                      </p>
+                    )}
+                  </div>
+                  {/* Experience */}
+                  <div className="relative mb-4">
+                    <input
+                      type="number"
+                      id="experience"
+                      className={`block px-4 pb-2  pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 ${
+                        errors.experience ? "border-red-500" : "border-gray-400"
+                      } appearance-none focus:outline-none focus:border-[#cd5e77] peer`}
+                      placeholder=" "
+                      value={editingStudent.experience || ""}
+                      onChange={(e) =>
+                        handleChange("experience", e.target.value)
+                      }
+                      min="0"
+                      step="0.5"
+                    />
+                    <label
+                      htmlFor="experience"
+                      className={`absolute px-2 text-sm ${
+                        errors.experience ? "text-red-500" : "text-gray-500"
+                      } duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#cd5e77] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
+                    >
+                      Experience (in years)
+                    </label>
+                    {editingStudent.experience && (
+                      <button
+                        type="button"
+                        className="absolute inset-y-0 right-7 pr-3 flex items-center"
+                        onClick={() => clearField("experience")}
+                      >
+                        <RiCloseCircleLine className="text-gray-400 hover:text-gray-600" />
+                      </button>
+                    )}
+                    {errors.experience && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.experience}
                       </p>
                     )}
                   </div>
@@ -812,45 +924,6 @@ export default function EditStudentModal({ student, onClose, onSave, isOpen }) {
                     )}
                     {errors.pg && (
                       <p className="text-red-500 text-xs mt-1">{errors.pg}</p>
-                    )}
-                  </div>
-                  {/* Experience */}
-                  <div className="relative mb-4">
-                    <input
-                      type="number"
-                      id="experience"
-                      className={`block px-4 pb-2  pt-5 w-full text-sm text-gray-900 bg-white rounded-sm border-2 ${
-                        errors.experience ? "border-red-500" : "border-gray-400"
-                      } appearance-none focus:outline-none focus:border-[#cd5e77] peer`}
-                      placeholder=" "
-                      value={editingStudent.experience || ""}
-                      onChange={(e) =>
-                        handleChange("experience", e.target.value)
-                      }
-                      min="0"
-                      step="0.5"
-                    />
-                    <label
-                      htmlFor="experience"
-                      className={`absolute px-2 text-sm ${
-                        errors.experience ? "text-red-500" : "text-gray-500"
-                      } duration-300 bg-white transform -translate-y-3 scale-75 top-3.5 z-10 origin-[0] left-4 peer-focus:text-xs peer-focus:text-[#cd5e77] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-100 peer-focus:-translate-y-6`}
-                    >
-                      Experience (in years)
-                    </label>
-                    {editingStudent.experience && (
-                      <button
-                        type="button"
-                        className="absolute inset-y-0 right-7 pr-3 flex items-center"
-                        onClick={() => clearField("experience")}
-                      >
-                        <RiCloseCircleLine className="text-gray-400 hover:text-gray-600" />
-                      </button>
-                    )}
-                    {errors.experience && (
-                      <p className="text-red-500 text-xs mt-1">
-                        {errors.experience}
-                      </p>
                     )}
                   </div>
                 </div>

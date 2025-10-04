@@ -1,46 +1,77 @@
-// app/samehome/batches/BatchListTab.jsx
+//src/app/smehome/batches/batchListTab/page.js
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
 import { useDataContext } from "../../../context/dataContext";
-import { FiEye, FiEdit, FiChevronDown } from "react-icons/fi";
+import { FiEdit, FiChevronDown } from "react-icons/fi";
 import { RiCloseCircleLine } from "react-icons/ri";
 import { FaSearch } from "react-icons/fa";
 import Image from "next/image";
 import EditStudentModal from "./EditStudentModal";
+import { notification } from "antd";
 
-// Define fixed EPIC statuses to always display
 const EPIC_STATUSES = ["Excellent", "Proficient", "Ideal", "Capable"];
 
 export default function BatchListTab() {
-  // 1. Destructure necessary values from DataContext
-  const {
-    batchesNames,
-    selectedBatch,
-    setSelectedBatch,
-    studentData,
-    batchEpicStats,
-  } = useDataContext();
+  const { batchesNames, selectedBatch, setSelectedBatch } = useDataContext();
 
   const [showBatchDropdown, setShowBatchDropdown] = useState(false);
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [searchInitiated, setSearchInitiated] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [localEpicStats, setLocalEpicStats] = useState({});
 
   const batchDropdownRef = useRef(null);
+  const loginDomain =
+    typeof window !== "undefined" ? localStorage.getItem("domainCode") : null;
+  const [api, contextHolder] = notification.useNotification();
 
-  // --- Helper Functions ---
-  const handleSearch = () => {
-    if (!selectedBatch) {
-      alert("Please select a batch");
+  const handleSearch = async () => {
+    if (!selectedBatch?.trim()) {
+      api.error({
+        message: "Batch Required",
+        description: "Please select a batch before searching.",
+      });
       return;
     }
-    const results = studentData.filter(
-      (student) => student.batch === selectedBatch
-    );
-    setFilteredStudents(results);
-    setSearchInitiated(true);
+
+    const query = encodeURIComponent(selectedBatch.trim());
+    const url = `http://localhost:5000/sme/students/search?query=${query}`;
+    console.log("🔍 Fetching:", url);
+
+    try {
+      const res = await fetch(url);
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+      const data = await res.json();
+
+      if (data.success) {
+        const mappedStudents = data.data.map((s) => ({
+          ...s,
+          bookingId: s.booking_id,
+          batch: s.batch_no,
+          epicStatus: s.epic_status,
+          domainScore: s.domain_score,
+          aptitudeScore: s.aptitude_score,
+          communicationScore: s.communication_score,
+          domain: s.domain,
+        }));
+        setFilteredStudents(mappedStudents);
+        setSearchInitiated(true);
+
+        if (mappedStudents.length === 0) {
+          api.warning({
+            message: "No Students Found",
+            description: `Batch "${selectedBatch}" has no students.`,
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Search failed:", error);
+      api.error({ message: "Search failed", description: error.message });
+    }
   };
 
   const handleReset = () => {
@@ -50,19 +81,35 @@ export default function BatchListTab() {
     setSearchInitiated(false);
   };
 
-  // --- Data Processing ---
   const filteredBatches = Array.isArray(batchesNames) ? batchesNames : [];
 
-  // Always show all EPIC statuses, defaulting to 0 if missing
   const epicStatsForSelectedBatch = selectedBatch
     ? EPIC_STATUSES.reduce((acc, status) => {
-        acc[status] = batchEpicStats[selectedBatch]?.[status] || 0;
+        acc[status] = localEpicStats[selectedBatch]?.[status] || 0;
         return acc;
       }, {})
     : {};
 
-  // --- Effects ---
-  // Close dropdown when clicking outside
+  // Fetch EPIC stats from API
+  useEffect(() => {
+    const fetchEpicStats = async () => {
+      try {
+        const res = await fetch(
+          "http://localhost:5000/sme/students/epic-stats"
+        );
+        if (!res.ok) throw new Error("Failed to load EPIC stats");
+        const data = await res.json();
+        if (data.success) {
+          setLocalEpicStats(data.data);
+        }
+      } catch (err) {
+        console.error("Failed to load EPIC stats:", err);
+      }
+    };
+    fetchEpicStats();
+  }, []);
+
+  // Handle outside clicks for dropdowns
   useEffect(() => {
     function handleClickOutside(e) {
       if (
@@ -86,19 +133,30 @@ export default function BatchListTab() {
     };
   }, []);
 
-  // Update filtered students when dependencies change
-  useEffect(() => {
-    if (searchInitiated && selectedBatch) {
-      const results = studentData.filter(
-        (student) => student.batch === selectedBatch
-      );
-      setFilteredStudents(results);
-    }
-  }, [studentData, selectedBatch, searchInitiated]);
-
-  // --- Rendering ---
   return (
     <>
+      {contextHolder}
+
+      <style jsx global>{`
+        .ant-notification-notice {
+          border: none !important;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+          border-radius: 10px;
+        }
+        .ant-notification-notice-icon,
+        .ant-notification-notice-message {
+          color: #cd5e77 !important;
+        }
+        .ant-notification-notice-close:hover {
+          background-color: #cd5e77 !important;
+          color: white !important;
+        }
+        .ant-notification-notice-progress-bar,
+        .ant-notification-notice-progress {
+          display: none !important;
+        }
+      `}</style>
+
       {/* Search Filters */}
       <div
         id="search-container"
@@ -120,9 +178,7 @@ export default function BatchListTab() {
               }}
               onClick={() => setShowBatchDropdown(true)}
               onKeyDown={(e) => {
-                if (e.key === "Escape") {
-                  setShowBatchDropdown(false);
-                }
+                if (e.key === "Escape") setShowBatchDropdown(false);
               }}
               className="block px-4 pb-2 pt-5 w-[200px] text-sm text-gray-900 bg-[#ffffff] rounded-sm border-2 border-gray-400 appearance-none focus:outline-none focus:border-[#cd5e77] peer cursor-pointer"
               autoComplete="off"
@@ -157,10 +213,7 @@ export default function BatchListTab() {
               <div
                 role="listbox"
                 className="absolute z-10 w-full text-sm bg-[#faeff1] border border-gray-300 rounded-md shadow-md mt-1"
-                style={{
-                  maxHeight: "200px",
-                  overflowY: "auto",
-                }}
+                style={{ maxHeight: "200px", overflowY: "auto" }}
               >
                 {filteredBatches
                   .filter((batchName) =>
@@ -287,19 +340,6 @@ export default function BatchListTab() {
                     </td>
                     <td className="px-5 py-3 text-sm whitespace-nowrap">
                       <div className="flex gap-1 items-center justify-center">
-                        {/* ❌ Commented out since setSelectedStudent & setShowViewModal are not defined */}
-                        {/* <button
-                          type="button"
-                          className="p-1 hover:bg-gray-100 rounded cursor-pointer"
-                          onClick={() => {
-                            setSelectedStudent(student);
-                            setShowViewModal(true);
-                          }}
-                          aria-label={`View details for ${student.name}`}
-                        >
-                          <FiEye className="h-4 w-4" />
-                        </button> */}
-
                         <button
                           type="button"
                           onClick={() => {
@@ -321,7 +361,7 @@ export default function BatchListTab() {
         </div>
       )}
 
-      {/* EPIC Status Display Section */}
+      {/* EPIC Status Display */}
       {searchInitiated && selectedBatch && (
         <div className="mt-6 bg-white rounded-xl md:rounded-2xl shadow-sm md:shadow hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-200 w-1/2">
           <div className="p-4 md:p-5 h-full flex flex-col">
@@ -341,7 +381,6 @@ export default function BatchListTab() {
               EPIC Status for Batch:{" "}
               <span className="text-[#cd5e77] ml-1">{selectedBatch}</span>
             </h3>
-
             <div className="grid grid-cols-4 gap-2 md:gap-3 overflow-y-auto flex-grow">
               {EPIC_STATUSES.map((status) => (
                 <div
@@ -361,10 +400,11 @@ export default function BatchListTab() {
         </div>
       )}
 
-      {/* Edit Student Modal */}
+      {/* Edit Modal */}
       {showEditModal && editingStudent && (
         <EditStudentModal
           student={editingStudent}
+          domain={loginDomain}
           isOpen={showEditModal}
           onClose={() => {
             setShowEditModal(false);

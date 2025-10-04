@@ -1,48 +1,20 @@
+// src/app/smehome/page.js
 "use client";
 
 import React, { useEffect, useState, useMemo } from "react";
 import SMENavbar from "../smehome/smenavbar";
 import Image from "next/image";
-import {
-  useDataContext,
-  fullstackInitial,
-  dataanalyticsInitial,
-  marketingInitial,
-  devopsInitial,
-  sapInitial,
-  bankingInitial,
-  fullstackStudentData,
-  dataAnalyticsStudentData,
-  marketingStudentData,
-  devopsStudentData,
-  sapStudentData,
-  bankingStudentData,
-} from "../context/dataContext";
 import { useRouter } from "next/navigation";
 
 export default function SMEHomePage() {
   const router = useRouter();
-  const {
-    userName,
-    fullstackData = fullstackInitial,
-    dataanalyticsData = dataanalyticsInitial,
-    marketingData = marketingInitial,
-    devopsData = devopsInitial,
-    sapData = sapInitial,
-    bankingData = bankingInitial,
-    fullstackStudent = fullstackStudentData,
-    dataanalyticsStudent = dataAnalyticsStudentData,
-    marketingStudent = marketingStudentData,
-    devopsStudent = devopsStudentData,
-    sapStudent = sapStudentData,
-    bankingStudent = bankingStudentData,
-    setStudentBatchSelect,
-  } = useDataContext();
 
   const [domainInfo, setDomainInfo] = useState(null);
   const [overviewData, setOverviewData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [displayName, setDisplayName] = useState("User");
 
+  // Domain UI mapping
   const domainDetails = {
     fs: { name: "Full Stack Development", icon: "/computer.svg" },
     da: { name: "Data Analytics & Science", icon: "/bar_chart_4_bars.svg" },
@@ -52,154 +24,87 @@ export default function SMEHomePage() {
     sap: { name: "SAP", icon: "/device_hub.svg" },
   };
 
-  const displayName = useMemo(() => {
-    let emailToUse = "";
-    if (userName) {
-      emailToUse = userName.includes("@") ? userName : "";
-    }
-    if (!emailToUse) {
-      emailToUse = localStorage.getItem("loginUser") || "";
-    }
-    if (emailToUse) {
-      const namePart = emailToUse.split("@")[0]?.split(".")[1] || "";
-      return namePart
-        ? namePart.charAt(0).toUpperCase() + namePart.slice(1)
-        : "User";
-    }
-    return "User";
-  }, [userName]);
-
-  const getDataFromContext = (code) => {
-    switch (code) {
-      case "fullstack":
-        return { batches: fullstackData, students: fullstackStudent };
-      case "dataanalytics":
-        return { batches: dataanalyticsData, students: dataanalyticsStudent };
-      case "marketing":
-        return { batches: marketingData, students: marketingStudent };
-      case "devops":
-        return { batches: devopsData, students: devopsStudent };
-      case "sap":
-        return { batches: sapData, students: sapStudent };
-      case "banking":
-        return { batches: bankingData, students: bankingStudent };
-      default:
-        return { batches: [], students: [] };
-    }
+  const domainCodeMap = {
+    fullstack: "fs",
+    dataanalytics: "da",
+    marketing: "mk",
+    devops: "dv",
+    banking: "bk",
+    sap: "sap",
   };
 
-  // Add this effect to handle page refresh
+  // Extract display name from email (e.g., john.doe@xyz.com → Doe)
+  const extractDisplayName = (email) => {
+    if (!email || !email.includes("@")) return "User";
+    const parts = email.split("@")[0].split(".");
+    const lastName = parts[1] || parts[0] || "";
+    return lastName
+      ? lastName.charAt(0).toUpperCase() + lastName.slice(1)
+      : "User";
+  };
+
+  // Auth check + API data fetch
   useEffect(() => {
-    const checkAuth = () => {
+    const initializePage = async () => {
+      // === AUTH VALIDATION ===
       const isAuthenticated = localStorage.getItem("isAuthenticated");
       const domainCode = localStorage.getItem("domainCode");
       const expiration = localStorage.getItem("expiration");
+      const loginUser = localStorage.getItem("loginUser");
 
       if (!isAuthenticated || !domainCode) {
-        router.push("/"); // Redirect to login if not authenticated
+        router.push("/");
         return;
       }
 
-      // Check if session expired
       if (expiration && new Date(expiration) < new Date()) {
         localStorage.clear();
         router.push("/");
         return;
       }
 
-      setIsLoading(false);
-    };
+      setDisplayName(extractDisplayName(loginUser));
 
-    checkAuth();
-  }, [router]);
+      // === FETCH DASHBOARD DATA FROM API ===
+      try {
+        const res = await fetch(
+          `http://localhost:5000/sme/dashboard?domain=${encodeURIComponent(
+            domainCode
+          )}`
+        );
 
-  // Main data loading effect
-  useEffect(() => {
-    if (isLoading) return; // Wait until auth check completes
+        if (!res.ok) {
+          console.error("API request failed:", res.status, res.statusText);
+          setIsLoading(false);
+          return;
+        }
 
-    const rawDomainCode = localStorage.getItem("domainCode");
+        const result = await res.json();
 
-    const domainCodeMap = {
-      fullstack: "fs",
-      dataanalytics: "da",
-      marketing: "mk",
-      devops: "dv",
-      banking: "bk",
-      sap: "sap",
-    };
+        if (!result.success) {
+          console.error("API error:", result.message);
+          setIsLoading(false);
+          return;
+        }
 
-    const actualCode = rawDomainCode;
-    const shortCode = domainCodeMap[rawDomainCode];
+        const shortCode = domainCodeMap[domainCode];
+        if (!shortCode) {
+          console.error("Invalid domain code:", domainCode);
+          setIsLoading(false);
+          return;
+        }
 
-    if (!actualCode || !shortCode) {
-      console.error("Invalid or missing domain code");
-      return;
-    }
-
-    // Tell DataContext which domain to load
-    setStudentBatchSelect(actualCode);
-
-    // Set domain info for UI
-    setDomainInfo(domainDetails[shortCode]);
-
-    // Fetch data for overview cards
-    const { batches: fetchedBatches = [], students: fetchedStudents = [] } =
-      getDataFromContext(actualCode);
-
-    const totalBatches = fetchedBatches.length;
-    const totalStudents = fetchedStudents.length;
-
-    const ongoingCount = fetchedStudents.filter(
-      (s) => s.status?.toLowerCase() === "ongoing"
-    ).length;
-
-    const completedCount = fetchedStudents.filter(
-      (s) => s.status?.toLowerCase() === "completed"
-    ).length;
-
-    const placed = fetchedStudents.filter(
-      (s) => s.placement === "Placed"
-    ).length;
-    const yetToPlace = fetchedStudents.filter(
-      (s) => s.placement === "Yet to Place"
-    ).length;
-    const notPlaced = fetchedStudents.filter(
-      (s) => s.placement === "Not Placed"
-    ).length;
-
-    const epicCountMap = {};
-    fetchedStudents.forEach((s) => {
-      if (s.epicStatus) {
-        epicCountMap[s.epicStatus] = (epicCountMap[s.epicStatus] || 0) + 1;
+        setDomainInfo(domainDetails[shortCode]);
+        setOverviewData(result.data);
+      } catch (error) {
+        console.error("Network error while fetching dashboard data:", error);
+      } finally {
+        setIsLoading(false);
       }
-    });
+    };
 
-    setOverviewData({
-      totalBatches,
-      totalStudents,
-      ongoingCount,
-      completedCount,
-      placed,
-      yetToPlace,
-      notPlaced,
-      epicCountMap,
-    });
-  }, [
-    isLoading,
-    fullstackData,
-    dataanalyticsData,
-    marketingData,
-    devopsData,
-    sapData,
-    bankingData,
-    fullstackStudent,
-    dataanalyticsStudent,
-    marketingStudent,
-    devopsStudent,
-    sapStudent,
-    bankingStudent,
-    setStudentBatchSelect,
-  ]);
+    initializePage();
+  }, [router]);
 
   if (isLoading) {
     return (
@@ -258,7 +163,7 @@ export default function SMEHomePage() {
           }
         `}</style>
 
-        {/* --- MAIN CONTENT AREA (ENHANCED UI) --- */}
+        {/* --- MAIN CONTENT AREA --- */}
         <div className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto">
           {overviewData && (
             <div className="space-y-6 md:space-y-8">
@@ -266,20 +171,13 @@ export default function SMEHomePage() {
                 {domainInfo?.name}
               </h2>
 
-              {/* Stats Grid - Modified Layout */}
+              {/* Stats Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                {/* Total Batches Card - Full width on small screens, 1/2 width on md/lg */}
+                {/* Total Batches */}
                 <div className="bg-white rounded-xl md:rounded-2xl shadow-sm md:shadow hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-200 sm:col-span-2 lg:col-span-2">
                   <div className="flex items-stretch h-full">
-                    {" "}
-                    {/* Use flex for side-by-side layout */}
-                    {/* Icon Container - Larger and on the left */}
                     <div className="flex items-center justify-center bg-[#FAEFF1] px-3 md:px-4">
-                      {" "}
-                      {/* Adjust padding for width */}
                       <div className="p-2 md:p-3 rounded-lg text-[#cd5e77]">
-                        {" "}
-                        {/* Icon wrapper, adjust padding if needed */}
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="h-8 w-8 md:h-10 md:w-10"
@@ -287,8 +185,6 @@ export default function SMEHomePage() {
                           viewBox="0 0 24 24"
                           stroke="currentColor"
                         >
-                          {" "}
-                          {/* Increased icon size */}
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -298,10 +194,7 @@ export default function SMEHomePage() {
                         </svg>
                       </div>
                     </div>
-                    {/* Text Content - Takes remaining space */}
                     <div className="flex-grow p-4 md:p-5 flex flex-col justify-center">
-                      {" "}
-                      {/* flex-col justify-center for vertical alignment */}
                       <p className="text-xs md:text-lg font-medium text-gray-500">
                         Total Batches
                       </p>
@@ -312,7 +205,7 @@ export default function SMEHomePage() {
                   </div>
                 </div>
 
-                {/* Placement Block - Full width on small screens, 1/2 width on md/lg */}
+                {/* Placement */}
                 <div className="bg-white rounded-xl md:rounded-2xl shadow-sm md:shadow hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-200 sm:col-span-2 lg:col-span-2">
                   <div className="p-4 md:p-5">
                     <h3 className="text-base md:text-lg font-semibold text-gray-700 mb-3 md:mb-4 flex items-center">
@@ -348,17 +241,11 @@ export default function SMEHomePage() {
                           {overviewData.yetToPlace}
                         </p>
                       </div>
-                      {/* Optional: Uncomment if you want to display Not Placed count
-                      <div className="bg-red-50 rounded-lg md:rounded-xl p-3 md:p-4 text-center hover:bg-red-100 transition-colors duration-200 col-span-2 sm:col-span-1">
-                        <p className="text-xs md:text-sm font-medium text-gray-600">Not Placed</p>
-                        <p className="text-lg md:text-xl font-bold text-red-700 mt-1">{overviewData.notPlaced}</p>
-                      </div>
-                      */}
                     </div>
                   </div>
                 </div>
 
-                {/* Student Count Block - Full width on small/medium screens, 1/2 width on lg */}
+                {/* Student Count */}
                 <div className="bg-white rounded-xl md:rounded-2xl shadow-sm md:shadow hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-200 sm:col-span-2 lg:col-span-2">
                   <div className="p-4 md:p-5">
                     <h3 className="text-base md:text-lg font-semibold text-gray-700 mb-3 md:mb-4 flex items-center">
@@ -393,14 +280,11 @@ export default function SMEHomePage() {
                   </div>
                 </div>
 
-                {/* EPIC Status Block - Full width on small/medium screens, 1/2 width on lg */}
+                {/* EPIC Status */}
+                {/* EPIC Status Block - Fixed 4-column layout */}
                 <div className="bg-white rounded-xl md:rounded-2xl shadow-sm md:shadow hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-200 sm:col-span-2 lg:col-span-2">
                   <div className="p-4 md:p-5 h-full flex flex-col">
-                    {" "}
-                    {/* Ensure full height and flex column for better alignment */}
                     <h3 className="text-base md:text-lg font-semibold text-gray-700 mb-3 md:mb-4 flex items-center flex-shrink-0">
-                      {" "}
-                      {/* Flex shrink prevents title from growing */}
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-4 w-4 md:h-5 md:w-5 mr-2 text-[#cd5e77]"
@@ -415,34 +299,36 @@ export default function SMEHomePage() {
                       </svg>
                       EPIC Status
                     </h3>
-                    {Object.entries(overviewData.epicCountMap).length > 0 ? (
-                      <div className="grid grid-cols-4 gap-2 md:gap-3 overflow-y-auto flex-grow">
-                        {Object.entries(overviewData.epicCountMap).map(
-                          ([status, count]) => (
-                            <div
-                              key={status}
-                              className="bg-[#FAEFF1] rounded-lg p-2 md:p-3 text-center hover:bg-[#faeef1] transition-colors duration-200 flex flex-col items-center justify-center min-h-[60px]"
-                            >
-                              {" "}
-                              {/* Light Tint background, slightly lighter on hover */}
-                              <p className="text-[0.65rem] md:text-xs font-semibold text-gray-700 truncate w-full">
-                                {status}
-                              </p>{" "}
-                              {/* Darker text for contrast */}
-                              <p className="text-base md:text-lg font-bold text-pink-700 mt-1">
-                                {count}
-                              </p>{" "}
-                              {/* Base Color for count */}
-                            </div>
-                          )
+
+                    {/* Always show 4 fixed EPIC categories */}
+                    {overviewData && (
+                      <div className="grid grid-cols-4 gap-2 md:gap-3">
+                        {["Excellent", "Proficient", "Ideal", "Capable"].map(
+                          (status) => {
+                            const count =
+                              overviewData.epicCountMap?.[status] || 0;
+                            const isEmpty =
+                              Object.keys(overviewData.epicCountMap || {})
+                                .length === 0;
+
+                            return (
+                              <div
+                                key={status}
+                                className={`bg-[#FAEFF1] rounded-lg p-3 md:p-4 text-center ${
+                                  count > 0 ? "hover:bg-[#f5dfe4]" : ""
+                                } transition-colors duration-200 flex flex-col items-center justify-center`}
+                              >
+                                <p className="text-xs md:text-sm font-medium text-gray-600">
+                                  {status}
+                                </p>
+                                <p className="text-lg md:text-xl font-bold text-pink-700 mt-1">
+                                  {count}
+                                </p>
+                              </div>
+                            );
+                          }
                         )}
                       </div>
-                    ) : (
-                      <p className="text-gray-500 italic py-3 md:py-4 text-center text-sm flex-grow flex items-center justify-center">
-                        {" "}
-                        {/* Center text if empty */}
-                        No EPIC data available.
-                      </p>
                     )}
                   </div>
                 </div>
@@ -450,7 +336,6 @@ export default function SMEHomePage() {
             </div>
           )}
         </div>
-        {/* --- END MAIN CONTENT AREA --- */}
       </main>
     </div>
   );
