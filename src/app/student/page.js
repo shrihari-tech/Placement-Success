@@ -1,29 +1,223 @@
+// "use client";
+// import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+// import { FiEye, FiEdit, FiTrash2, FiChevronDown } from "react-icons/fi";
+// import Image from "next/image";
+// import { Toaster, toast } from "sonner";
+// import { FaSearch } from "react-icons/fa";
+// import Opportunity from "./oppotunities";
+// import { RiCloseCircleLine } from "react-icons/ri";
+// import { useDataContext } from "../context/dataContext";
+// import BulkModal from "./bulkModal";
+// import EditStudentModal from "./EditStudentModal";
+// import ViewStudentModal from "./ViewStudentModal";
+// import BatchChange from "./BatchChange";
+// import Scores from "./scores";
+// import Tabs from "./components/tab";
+
+// export default function StudentDataPage() {
+//   const { studentData, batchHead, batchesNames , batchData, deleteStudent } = useDataContext();
+//   const [activeTab, setActiveTab] = useState("Student Data");
+//   const [searchInitiated, setSearchInitiated] = useState(false);
+//   const [selectedBatch, setSelectedBatch] = useState("");
+//   const [selectedStatus, setSelectedStatus] = useState("");
+//   const [selectedPlacement, setSelectedPlacement] = useState("");
+//   const [filteredStudents, setFilteredStudents] = useState(studentData);
+//   const [showBatchDropdown, setShowBatchDropdown] = useState(false);
+//   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
+//   const [showPlacementDropdown, setShowPlacementDropdown] = useState(false);
+//   const [showViewModal, setShowViewModal] = useState(false);
+//   const [selectedStudent, setSelectedStudent] = useState(null);
+//   const [showDeleteModal, setShowDeleteModal] = useState(false);
+//   const [deleteConfirmationInput, setDeleteConfirmationInput] = useState("");
+//   const [deleteError, setDeleteError] = useState("");
+//   const [editingStudent, setEditingStudent] = useState(null);
+//   const [deletingStudent, setDeletingStudent] = useState(null);
+//   const [defaultShow, setDefaultShow] = useState(true);
+
+//   const batchDropdownRef = useRef(null);
+//   const statusDropdownRef = useRef(null);
+//   const placementDropdownRef = useRef(null);
+//   const searchContainerRef = useRef(null);
+
+//   // const batchesNames = useMemo(() => {
+//   //   return [...new Set(studentData.map((s) => s.batch))];
+//   // }, [studentData]);
+
+//   const handleSearch = useCallback(() => {
+//     let results = studentData;
+//     if (
+//       selectedBatch === "" &&
+//       selectedStatus === "" &&
+//       selectedPlacement === ""
+//     ) {
+//       toast.error("Please select at least one filter option to search");
+//       return;
+//     }
+//     if (selectedBatch) {
+//       results = results.filter((student) => student.batch === selectedBatch);
+//     }
+
+//     // Filter by status
+//     if (selectedStatus) {
+//       results = results.filter((student) => {
+//         const batch = batchData.find(
+//           (batch) => batch.batchNo === student.batch
+//         );
+//         if (!batch) return false;
+
+//         const isCompleted =
+//           new Date(batch.sections?.Domain?.endDate) < new Date() &&
+//           new Date(batch.sections?.Aptitude?.endDate) < new Date() &&
+//           new Date(batch.sections?.Communication?.endDate) < new Date();
+
+//         return selectedStatus === "Completed" ? isCompleted : !isCompleted;
+//       });
+//     }
+
+//     // Filter by placement
+//     if (selectedPlacement) {
+//       results = results.filter(
+//         (student) => student.placement === selectedPlacement
+//       );
+//     }
+
+//     setFilteredStudents(results);
+//     setSearchInitiated(true);
+//   }, [
+//     studentData,
+//     selectedBatch,
+//     selectedStatus,
+//     selectedPlacement,
+//     batchData,
+//   ]);
+
+//   const isInitialMount = useRef(true);
+//   useEffect(() => {
+//     if (isInitialMount.current) {
+//       isInitialMount.current = false;
+//     } else {
+//       if (searchInitiated) {
+//         handleSearch();
+//       }
+//     }
+//   }, [studentData]);
+
+//   const handleReset = () => {
+//     setSelectedBatch("");
+//     setSelectedStatus("");
+//     setSelectedPlacement("");
+//     setFilteredStudents(studentData);
+//     setSearchInitiated(false);
+//   };
+
+//   useEffect(() => {
+//     function handleClickOutside(event) {
+//       if (
+//         batchDropdownRef.current &&
+//         !batchDropdownRef.current.contains(event.target)
+//       ) {
+//         setShowBatchDropdown(false);
+//       }
+//       if (
+//         statusDropdownRef.current &&
+//         !statusDropdownRef.current.contains(event.target)
+//       ) {
+//         setShowStatusDropdown(false);
+//       }
+//       if (
+//         placementDropdownRef.current &&
+//         !placementDropdownRef.current.contains(event.target)
+//       ) {
+//         setShowPlacementDropdown(false);
+//       }
+//     }
+//     document.addEventListener("mousedown", handleClickOutside);
+//     return () => {
+//       document.removeEventListener("mousedown", handleClickOutside);
+//     };
+//   }, []);
+
+//   const handleEditStudent = (student) => {
+//     setEditingStudent(student);
+//   };
+
+//   const handleDeleteStudent = () => {
+//     if (!deleteConfirmationInput.trim()) {
+//       setDeleteError("Please enter the booking ID to confirm deletion");
+//       return;
+//     }
+
+//     if (
+//       !deletingStudent ||
+//       deleteConfirmationInput.trim() !== deletingStudent.bookingId
+//     ) {
+//       setDeleteError(
+//         "Booking ID does not match. Please enter the exact booking ID."
+//       );
+//       return;
+//     }
+
+//     // Delete the student from the correct domain and update studentData globally
+//     deleteStudent(deletingStudent.bookingId);
+
+//     // Reset modal states
+//     setShowDeleteModal(false);
+//     setDeleteConfirmationInput("");
+//     setDeleteError("");
+//     setDeletingStudent(null);
+
+//     toast.success("Student deleted successfully");
+
+//     // 🔄 Reapply filters to refresh the displayed list (if any filters were applied)
+//     handleSearch();
+//   };
+
+//   const handleCloseDeleteModal = () => {
+//     setShowDeleteModal(false);
+//     setDeleteConfirmationInput("");
+//     setDeleteError("");
+//     setDeletingStudent(null);
+//   };
+
+//   useEffect(() => {
+//     const handleGlobalKeyDown = (e) => {
+//       if (e.key === "Enter") {
+//         e.preventDefault();
+//         if (activeTab === "Student Data") {
+//           handleSearch();
+//         }
+//       }
+//     };
+
+//     window.addEventListener("keydown", handleGlobalKeyDown);
+//     return () => {
+//       window.removeEventListener("keydown", handleGlobalKeyDown);
+//     };
+//   }, [handleSearch, activeTab]);
 "use client";
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { FiEye, FiEdit, FiTrash2, FiChevronDown } from "react-icons/fi";
-import Image from "next/image";
+import { useState, useEffect, useRef, useCallback } from "react";
+import axios from "axios";
 import { Toaster, toast } from "sonner";
 import { FaSearch } from "react-icons/fa";
-import Opportunity from "./oppotunities";
+// import { FiChevronDown } from "react-icons/fi";
 import { RiCloseCircleLine } from "react-icons/ri";
 import { useDataContext } from "../context/dataContext";
-import BulkModal from "./bulkModal";
-import EditStudentModal from "./EditStudentModal";
+import { FiEye, FiEdit, FiTrash2, FiChevronDown } from "react-icons/fi";
 import ViewStudentModal from "./ViewStudentModal";
-import BatchChange from "./BatchChange";
-import Scores from "./scores";
+import BulkModal from "./bulkModal";
 import Tabs from "./components/tab";
+import Image from "next/image";
 
 export default function StudentDataPage() {
-  const { studentData, batchHead, batchesNames , batchData, deleteStudent } = useDataContext();
+  const { studentData, batchData, deleteStudent, batchHead, batchesNames } = useDataContext();
   const [activeTab, setActiveTab] = useState("Student Data");
-  const [searchInitiated, setSearchInitiated] = useState(false);
+  const [batches, setBatches] = useState([]); // ⬅️ store from API
   const [selectedBatch, setSelectedBatch] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("");
-  const [selectedPlacement, setSelectedPlacement] = useState("");
-  const [filteredStudents, setFilteredStudents] = useState(studentData);
   const [showBatchDropdown, setShowBatchDropdown] = useState(false);
+  const searchContainerRef = useRef(null);
+  const [selectedStatus, setSelectedStatus] = useState("");
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
+  const [selectedPlacement, setSelectedPlacement] = useState("");
   const [showPlacementDropdown, setShowPlacementDropdown] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -33,167 +227,94 @@ export default function StudentDataPage() {
   const [editingStudent, setEditingStudent] = useState(null);
   const [deletingStudent, setDeletingStudent] = useState(null);
   const [defaultShow, setDefaultShow] = useState(true);
-
-  const batchDropdownRef = useRef(null);
+  const [searchInitiated, setSearchInitiated] = useState(false);
   const statusDropdownRef = useRef(null);
   const placementDropdownRef = useRef(null);
-  const searchContainerRef = useRef(null);
+  const [filteredStudents, setFilteredStudents] = useState([]);
 
-  // const batchesNames = useMemo(() => {
-  //   return [...new Set(studentData.map((s) => s.batch))];
-  // }, [studentData]);
+  const batchDropdownRef = useRef(null);
 
-  const handleSearch = useCallback(() => {
-    let results = studentData;
-    if (
-      selectedBatch === "" &&
-      selectedStatus === "" &&
-      selectedPlacement === ""
-    ) {
-      toast.error("Please select at least one filter option to search");
-      return;
-    }
-    if (selectedBatch) {
-      results = results.filter((student) => student.batch === selectedBatch);
-    }
-
-    // Filter by status
-    if (selectedStatus) {
-      results = results.filter((student) => {
-        const batch = batchData.find(
-          (batch) => batch.batchNo === student.batch
-        );
-        if (!batch) return false;
-
-        const isCompleted =
-          new Date(batch.sections?.Domain?.endDate) < new Date() &&
-          new Date(batch.sections?.Aptitude?.endDate) < new Date() &&
-          new Date(batch.sections?.Communication?.endDate) < new Date();
-
-        return selectedStatus === "Completed" ? isCompleted : !isCompleted;
-      });
-    }
-
-    // Filter by placement
-    if (selectedPlacement) {
-      results = results.filter(
-        (student) => student.placement === selectedPlacement
-      );
-    }
-
-    setFilteredStudents(results);
-    setSearchInitiated(true);
-  }, [
-    studentData,
-    selectedBatch,
-    selectedStatus,
-    selectedPlacement,
-    batchData,
-  ]);
-
-  const isInitialMount = useRef(true);
+  // 🔹 Fetch all batches from API
+  // useEffect(() => {
+  //   const fetchBatches = async () => {
+  //     try {
+  //       const res = await axios.get("http://localhost:5000/batches/allBatches");
+  //       setBatches(res.data);
+  //     } catch (err) {
+  //       console.error("Error fetching batches:", err.message || err);
+  //       toast.error("Failed to load batches");
+  //     }
+  //   };
+  //   fetchBatches();
+  // }, []);
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-    } else {
-      if (searchInitiated) {
-        handleSearch();
-      }
+  const fetchBatches = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/batches/allBatches");
+      // Filter batches by current domain head name
+      const filtered = res.data.filter(
+        batch => batch.domain?.toLowerCase() === batchHead?.toLowerCase()
+      );
+      setBatches(filtered);
+      console.log(filtered);
+    } catch (err) {
+      console.error("Error fetching batches:", err.message || err);
+      toast.error("Failed to load batches");
     }
-  }, [studentData]);
+  };
+  fetchBatches();
+}, [batchHead]);
 
-  const handleReset = () => {
+    const handleReset = () => {
     setSelectedBatch("");
     setSelectedStatus("");
     setSelectedPlacement("");
-    setFilteredStudents(studentData);
+    setFilteredStudents([]);
     setSearchInitiated(false);
   };
 
+  // --- Search logic stays same ---
+  // const handleSearch = useCallback(() => {
+  //   if (!selectedBatch) {
+  //     toast.error("Please select a batch");
+  //     return;
+  //   }
+  //   // You already have filter logic here...
+  // }, [studentData, selectedBatch, batchData]);
+  const handleSearch = useCallback(async () => {
+  if (!selectedBatch && !selectedStatus && !selectedPlacement) {
+    toast.error("Please select at least one filter option to search");
+    return;
+  }
+
+  try {
+    const params = {};
+    if (selectedBatch) params.batchName = selectedBatch;
+    if (selectedStatus) params.status = selectedStatus;
+    if (selectedPlacement) params.placement = selectedPlacement;
+
+    const res = await axios.get(`http://localhost:5000/students/${selectedBatch}`);
+    setFilteredStudents(res.data);
+    setSearchInitiated(true);
+  } catch (err) {
+    toast.error("Failed to fetch students");
+    setFilteredStudents([]);
+  }
+}, [selectedBatch, selectedStatus, selectedPlacement]);
+
+  // Close dropdown on outside click
   useEffect(() => {
-    function handleClickOutside(event) {
+    function handleClickOutside(e) {
       if (
         batchDropdownRef.current &&
-        !batchDropdownRef.current.contains(event.target)
+        !batchDropdownRef.current.contains(e.target)
       ) {
         setShowBatchDropdown(false);
       }
-      if (
-        statusDropdownRef.current &&
-        !statusDropdownRef.current.contains(event.target)
-      ) {
-        setShowStatusDropdown(false);
-      }
-      if (
-        placementDropdownRef.current &&
-        !placementDropdownRef.current.contains(event.target)
-      ) {
-        setShowPlacementDropdown(false);
-      }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  const handleEditStudent = (student) => {
-    setEditingStudent(student);
-  };
-
-  const handleDeleteStudent = () => {
-    if (!deleteConfirmationInput.trim()) {
-      setDeleteError("Please enter the booking ID to confirm deletion");
-      return;
-    }
-
-    if (
-      !deletingStudent ||
-      deleteConfirmationInput.trim() !== deletingStudent.bookingId
-    ) {
-      setDeleteError(
-        "Booking ID does not match. Please enter the exact booking ID."
-      );
-      return;
-    }
-
-    // Delete the student from the correct domain and update studentData globally
-    deleteStudent(deletingStudent.bookingId);
-
-    // Reset modal states
-    setShowDeleteModal(false);
-    setDeleteConfirmationInput("");
-    setDeleteError("");
-    setDeletingStudent(null);
-
-    toast.success("Student deleted successfully");
-
-    // 🔄 Reapply filters to refresh the displayed list (if any filters were applied)
-    handleSearch();
-  };
-
-  const handleCloseDeleteModal = () => {
-    setShowDeleteModal(false);
-    setDeleteConfirmationInput("");
-    setDeleteError("");
-    setDeletingStudent(null);
-  };
-
-  useEffect(() => {
-    const handleGlobalKeyDown = (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        if (activeTab === "Student Data") {
-          handleSearch();
-        }
-      }
-    };
-
-    window.addEventListener("keydown", handleGlobalKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleGlobalKeyDown);
-    };
-  }, [handleSearch, activeTab]);
 
   return (
     <div className="flex min-h-screen mt-16 md:mt-1">
@@ -261,7 +382,7 @@ export default function StudentDataPage() {
                       <RiCloseCircleLine size={20} />
                     </button>
                   )}
-                  {showBatchDropdown && (
+                  {/* {showBatchDropdown && (
                     <div
                       className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md"
                       style={{
@@ -311,6 +432,62 @@ export default function StudentDataPage() {
                             }}
                           >
                             {batchName}
+                          </div>
+                        ))}
+                    </div>
+                  )} */}
+                  {showBatchDropdown && (
+                    <div
+                      className="absolute z-10 w-full text-sm bg-[#f3edf7] border border-gray-300 rounded-md shadow-md"
+                      style={{
+                        maxHeight: batches.length > 5 ? "200px" : "auto",
+                        overflowY: batches.length > 5 ? "auto" : "visible",
+                      }}
+                    >
+                      <div
+                        key=""
+                        tabIndex={0}
+                        className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                        onClick={() => {
+                          setSelectedBatch("");
+                          setShowBatchDropdown(false);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            setSelectedBatch("");
+                            setShowBatchDropdown(false);
+                            handleSearch();
+                          }
+                        }}
+                      ></div>
+                      {batches
+                        .filter(
+                          batch =>
+                            batch.domain &&
+                            batch.domain.toLowerCase() === batchHead?.toLowerCase() &&
+                            (!selectedBatch ||
+                              batch.batchName
+                                .toLowerCase()
+                                .includes(selectedBatch.toLowerCase()))
+                        )
+                        .map(batch => (
+                          <div
+                            key={batch.batchName}
+                            tabIndex={0}
+                            className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                            onClick={() => {
+                              setSelectedBatch(batch.batchName);
+                              setShowBatchDropdown(false);
+                            }}
+                            onKeyDown={e => {
+                              if (e.key === "Enter") {
+                                setSelectedBatch(batch.batchName);
+                                setShowBatchDropdown(false);
+                                handleSearch();
+                              }
+                            }}
+                          >
+                            {batch.batchName}
                           </div>
                         ))}
                     </div>
